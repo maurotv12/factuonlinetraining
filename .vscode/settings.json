@@ -1,3 +1,32 @@
 {
-    "php.suggest.basic": false
+    "php.suggest.basic": false,
+    // PHP Namespace Resolver    
+    "namespaceResolver.sortAlphabetically": true,
+    "namespaceResolver.sortOnSave": true,
+    "namespaceResolver.showMessageOnStatusBar": true,
+    // PHP DocBlocker    
+    "php-docblocker.alignParams": true,
+    "php-docblocker.alignReturn": true,
+    "php-docblocker.gap": false,
+    "php-docblocker.useShortNames": true,
+    // PHP Add Property    
+    "phpAddProperty.property.visibility.choose": true,
+    "phpAddProperty.property.visibility.default": "private",
+    "phpAddProperty.contextMenuOptions.enable": true,
+    "phpAddProperty.contextMenuOptions.renameProperty": false,
+    "phpAddProperty.contextMenuOptions.changePropertyType": false,
+    "phpAddProperty.showMessagesOnStatusBar": true,
+    "phpAddProperty.constructor.docblock.enable": true,
+    "phpAddProperty.constructor.docblock.withParameter": true, // Indicar tipo en parámetro del constructor a la vez que en el parámetro del Docblock    
+    // // Configuraciones generales     
+    "editor.dragAndDrop": false,
+    "editor.rulers": [
+        180
+    ],
+    "editor.formatOnSave": true, //extension Format on auto save si uso autoguardado
+    "editor.formatOnPaste": true,
+    "workbench.tree.indent": 20,
+    "explorer.compactFolders": false,
+    "workbench.editor.tabSizing": "shrink",
+    "editor.guides.bracketPairs": true,
 }
