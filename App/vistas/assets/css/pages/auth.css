@@ -1,0 +1,13 @@
+body{background-color:#fff}
+#auth{height:100vh;overflow-x:hidden}
+#auth .auth-colorBtn{background: #1380A1; border: 2px solid #1380A1;}
+#auth .auth-colorBtn:hover{color: #fff; background: #FFB56C; border: 2px solid #ffffff;}
+#auth #auth-right{height:100%;background:url(../../images/bg/fondoAut.jpg),linear-gradient(90deg,#02aec4,#3f5491)}
+#auth #auth-left{padding:2rem 2rem}
+#auth #auth-left .auth-title{
+	font-size: 18px;
+	margin-bottom:1rem;
+	color: #1380A1;
+}
+#auth #auth-left .auth-subtitle{font-size:1.3rem;line-height:1.5rem;color:#a8aebb}
+#auth #auth-left .auth-logo{margin-bottom:3rem}

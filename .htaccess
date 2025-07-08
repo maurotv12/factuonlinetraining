@@ -1,0 +1,3 @@
+Options All -Indexes
+RewriteEngine On
+RewriteRule ^([0-9a-zA-Z-_-áéíóúÁÉÍÓÚñÑ\s]+)$ index.php?pagina=$1

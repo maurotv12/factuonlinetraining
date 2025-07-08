@@ -1,0 +1,265 @@
+.inscribirse-btn {
+    background: #F93F90;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: inherit;
+    font-weight: normal;
+    padding: 8px 15px;
+    transition: 0.5s;
+  }
+
+  .inscribirse-btn:hover {
+    background: #00ECCF;
+    border-color: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+  }
+  .seguir-btn {
+    background: #5EDE05;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: inherit;
+    font-weight: normal;
+    padding: 8px 15px;
+    transition: 0.5s;
+  }
+
+  .seguir-btn:hover {
+    background: #00ECCF;
+    border-color: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+  }
+
+ .containerF {
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.containerF input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #FFB56C;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.containerF:hover input ~ .checkmark {
+  background-color: #eee;
+}
+
+/* When the radio button is checked, add a blue background */
+.containerF input:checked ~ .checkmark {
+  background-color: #1380A1;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.containerF input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.containerF .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Style the checkmark/indicator */
+.containerF .checkmark:after {
+  left: 8px;
+  top: 8px;
+  width: 7px;
+  height: 6px;
+  border: solid white;
+  border-width: 5px 4px 4px 5px;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* 1 columna para smartphones */
+.breakpoint  {
+  max-width: 70%;
+  display: inline-block;
+  margin: 0px auto;
+}
+/* 2 columnas para tablets */
+@media (min-width: 420px) {
+.breakpoint  {
+  max-width: 48%;
+  margin: 0px auto;
+}
+}
+/* 4 columnas para grandes dispositivos*/
+@media (min-width: 760px) {
+.breakpoint  {
+  max-width: 50%;
+  margin: 0px auto;
+}
+}
+.colorCursos {
+  color: #FF3C8C;
+  font-family: 'Nunito', sans-serif;
+}
+.colorCursos2 {
+  color: #00ECCF;
+  font-family: 'Nunito', sans-serif;
+}
+
+.centrar {
+  text-align: center;
+  padding: 0px 0px 0px 0px;
+}
+
+.centrarAvatar {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+}
+.centrarPerfil {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  align-items: center;
+}
+.sombraLink{
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  /*box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;*/
+  margin: auto;
+  padding: 30px 5px 10px 10px;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.botonOff {
+  padding: 0px 0px 0px 0px;
+  color: #02aec4;
+  font-size: 24px;
+}
+
+.botonOff:hover {
+  color: #ff1616;
+  font-size: 24px;
+}
+
+.botonEditar {
+  padding: 0px 0px 0px 0px;
+  color: #02aec4;
+  font-size: 22px;
+}
+
+.botonEditar:hover {
+  color: #FFB56C;
+  font-size: 22px;
+}
+
+
+.tituloLink{
+  font-size: 20px;
+  color: #545454;
+  font-weight: 700;
+  padding: 0px 30px 0px 0px;
+}
+
+.sombraCar{
+ box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  /*box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;*/
+}
+
+.sobraCrearLink{
+ box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+.separador {
+   padding: 0px 30px 0px 0px;
+}
+
+.colorBorde {
+  border-radius: 0px;
+  background: #02aec4;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.colorBorde:hover{
+   opacity: 0.6;
+   font-size: 20px;
+   color: #ffffff;
+}
+
+.linkCliente a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.linkCliente a:hover {
+  color: #0E9704;
+  text-decoration: none;
+}
+
+.tamaño {
+  font-size: 14px;
+}
+
+.btn-perfil {
+  white-space: normal;
+  word-wrap: break-word;
+  padding: 7px 10px 7px 10px;
+  font-size: 1.3rem;
+  border-radius: 50px;
+  box-shadow: 0px 0px 20px #00000010;
+  border: 0;
+  transition: opacity 0.3s, background 0.3s;
+  width: 100%;
+}
+
+.btn-perfil:hover {
+  opacity: 0.6;
+}
+
+.botonCamara {
+  padding: 0px 5px 10px 10px;
+  color: #02aec4;
+  font-size: 24px;
+}
+
+.botonCamara:hover {
+  color: #09E51C;
+  font-size: 24px;
+}
+
+.linkHistorialZize {
+ font-size: 12px;
+}
+
