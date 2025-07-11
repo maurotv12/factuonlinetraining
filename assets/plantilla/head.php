@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
      <title>CursosApp :: Cursos y Talleres</title>
      <meta charset="UTF-8">
@@ -26,5 +27,5 @@
      <!-- https://sweetalert2.github.io/ -->
      <script src="assets/js/plugins/sweetalert2.all.js"></script>
 </head>
-<body>
 
+<body>

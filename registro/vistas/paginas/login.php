@@ -23,8 +23,8 @@
                     <input type="hidden" value="<?php echo $_SERVER['HTTP_USER_AGENT']; ?>" name="navegadorU">
                     <input type="hidden" value="<?php echo $_SERVER['REMOTE_ADDR']; ?>" name="ipU">
                     <?php
-                         $ingreso = new ControladorUsuarios();
-                         $ingreso -> ctrIngresoUsuario();
+                    $ingreso = new ControladorUsuarios();
+                    $ingreso->ctrIngresoUsuario();
                     ?>
                     <div class="d-grid gap-2">
                         <button class="btn btn-primary btn-block btn-lg shadow-lg mt-3 auth-colorBtn">Entrar</button>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-     <div class="col-lg-4 col-12">
-    </div>
+        <div class="col-lg-4 col-12">
+        </div>
     </div>
 </div>

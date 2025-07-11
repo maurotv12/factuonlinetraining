@@ -1,6 +1,6 @@
-<?php 
+<?php
 include "assets/plantilla/head.php";
-include "assets/plantilla/menu.php"; 
+include "assets/plantilla/menu.php";
 ?>
 
 <!--==================================================================
@@ -12,11 +12,12 @@ include "assets/plantilla/menu.php";
 require_once "controladores/cursosInicio.controlador.php";
 //Modelos
 require_once "modelos/cursosInicio.modelo.php";
+require_once "controladores/ruta.controlador.php";
 $item = "id";
 $valor = $curso["idCategoria"];
 $tabla = "categoria";
 $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla);
-
+$rutaInicio = ControladorRuta::ctrRutaInicio();
 ?>
 <div class="fondoCursoBanner">
     <div class="container">
@@ -45,7 +46,7 @@ $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla
                 <br>
                 <img src="registro/<?php echo $curso["banner"]; ?>" class="img-responsive img-fluid rounded" alt="Curso Calibélula">
             </div>
-       </div>
+        </div>
     </div>
 </div>
 <div class="container">
@@ -54,11 +55,11 @@ $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla
             <br>
             <div id="contenedorVideo">
                 <iframe width="640" height="480"
-                  src="assets/<?php echo $curso["promoVideo"]; ?>" frameborder="0" allowfullscreen>
+                    src="assets/<?php echo $curso["promoVideo"]; ?>" frameborder="0" allowfullscreen>
                 </iframe>
             </div>
             <br>
-            <p class="categoria">Descripción del curso</p>
+            <p class="categoria">Descripción del cursos</p>
             <p class="descri"><?php echo $curso["descripcion"]; ?>
             <form method="post" action="registro/register">
                 <input type="hidden" value="<?php echo $curso["id"]; ?>" name="idCurso">
@@ -67,13 +68,13 @@ $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla
                 </div>
             </form>
             </p>
-            
+
         </div>
 
         <div class="col-lg-4 col-sm-4">
             <br>
             <div class="blog_right_sidebar">
-                 <h3 class="widget_title">Profesor</h3>
+                <h3 class="widget_title">Profesor</h3>
                 <aside class="single_sidebar_widget author_widget">
                     <img class="rounded-circle" src="assets/img/taller-dm.png" alt="">
                     <h4>Patricia Elena Patiño Yepes</h4>
@@ -103,7 +104,7 @@ $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla
         </div>
 
         <div class="row">
-             <div class="col-md-12 col-sm-6">
+            <div class="col-md-12 col-sm-6">
 
             </div>
         </div>
@@ -113,5 +114,4 @@ $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla
 </div>
 
 <?php include "assets/plantilla/footer.php"; ?>
- <!-- SCRIPTS -->
-
+<!-- SCRIPTS -->
