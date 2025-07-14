@@ -62,26 +62,28 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
             /*=============================================
 				Páginas del sitio
 				=============================================*/
-            if (isset($_GET["pagina"])) {
-                if (
-                    $_GET["pagina"] == "inicio" ||
-                    $_GET["pagina"] == "suscripciones" ||
-                    $_GET["pagina"] == "misCursos" ||
-                    $_GET["pagina"] == "seguirCurso" ||
-                    $_GET["pagina"] == "perfil" ||
-                    $_GET["pagina"] == "profesores" ||
-                    $_GET["pagina"] == "usuarios" ||
-                    $_GET["pagina"] == "suscripcionesAdmin" ||
-                    $_GET["pagina"] == "soporte" ||
-                    $_GET["pagina"] == "salir"
-                ) {
-                    include "paginas/" . $_GET["pagina"] . ".php";
-                } else {
-                    include "paginas/error404.php";
-                }
-            } else {
-                include "paginas/inicio.php";
-            }
+            include ControladorGeneral::ctrCargarPagina();
+
+            // if (isset($_GET["pagina"])) {
+            //     if (
+            //         $_GET["pagina"] == "inicio" ||
+            //         $_GET["pagina"] == "suscripciones" ||
+            //         $_GET["pagina"] == "misCursos" ||
+            //         $_GET["pagina"] == "seguirCurso" ||
+            //         $_GET["pagina"] == "perfil" ||
+            //         $_GET["pagina"] == "profesores" ||
+            //         $_GET["pagina"] == "usuarios" ||
+            //         $_GET["pagina"] == "suscripcionesAdmin" ||
+            //         $_GET["pagina"] == "soporte" ||
+            //         $_GET["pagina"] == "salir"
+            //     ) {
+            //         include "paginas/" . $_GET["pagina"] . ".php";
+            //     } else {
+            //         include "paginas/error404.php";
+            //     }
+            // } else {
+            //     include "paginas/inicio.php";
+            // }
 
             include "plantillaPartes/footer.php";
             ?>

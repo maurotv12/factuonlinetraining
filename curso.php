@@ -77,7 +77,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
                 <h3 class="widget_title">Profesor</h3>
                 <aside class="single_sidebar_widget author_widget">
                     <img class="rounded-circle" src="assets/img/taller-dm.png" alt="">
-                    <h4>Patricia Elena Patiño Yepes</h4>
+                    <h4>Patriciaaaaaaaaaaaaaaaaaa Elena Patiño Yepes</h4>
                     <p>Directora del Festival Internacional de Cine Infantil y Juvenil :: Calibélula</p>
                     <p>Comunicadora Social Periodista de la Universidad Autónoma de Occidente; con especializaciones en Administración Pública y Gerencia de Marketing, de la Universidad del Valle; diplomados en proyectos internacionales; documental de creación; gestión financiera y de recursos, entre otros estudios.
                     </p>
