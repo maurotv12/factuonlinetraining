@@ -34,7 +34,7 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a href="solicitudes-instructores" class='sidebar-link'>
+                    <a href="solicitudesInstructores" class='sidebar-link'>
                         <i class="bi bi-person-check"></i>
                         <span>Solicitudes de Instructores</span>
                     </a>

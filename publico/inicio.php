@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include "assets/plantilla/head.php";
+include "../assets/plantilla/head.php";
 ?>
 
 <body>
    <?php
-   include "assets/plantilla/menu.php";
+   include "../assets/plantilla/menu.php";
    require_once "controladores/cursosInicio.controlador.php";
    require_once "modelos/cursosInicio.modelo.php";
 
@@ -48,15 +48,15 @@ include "assets/plantilla/head.php";
                   <div class="col-md-4 col-sm-6 team-marg mb-4">
                      <div class="team-thumb">
                         <div class="team-image">
-                           <a href="<?= $value["urlAmiga"] ?>"><img src="<?= $value["banner"] ?>" class="img-responsive" alt="Curso Calibélula"></a>
+                           <a href="<?= $value["url_amiga"] ?>"><img src="<?= $value["banner"] ?>" class="img-responsive" alt="Curso Calibélula"></a>
                         </div>
                         <div class="team-info">
-                           <h3><a href="<?= $value["urlAmiga"] ?>"><?= $rnCurso ?></a></h3>
-                           <a href="<?= $value["urlAmiga"] ?>"><span><?= $resulDescripcion ?></span></a>
+                           <h3><a href="<?= $value["url_amiga"] ?>"><?= $rnCurso ?></a></h3>
+                           <a href="<?= $value["url_amiga"] ?>"><span><?= $resulDescripcion ?></span></a>
                            <h4 class="valorC">$ <?= $value["valor"] == 0 ? "Gratis" : $value["valor"] ?></h4>
-                           <p>Profesor: <?= $value["idPersona"] ?></p>
+                           <p>Profesor: <?= $value["id_persona"] ?></p>
                            <div class="d-grid gap-2">
-                              <a class="ingresar-btn btn btn-default" href="<?= $value["urlAmiga"] ?>" role="button">Ver Curso</a>
+                              <a class="ingresar-btn btn btn-default" href="<?= $value["url_amiga"] ?>" role="button">Ver Curso</a>
                            </div>
                         </div>
                         <ul class="social-icon">
@@ -73,7 +73,7 @@ include "assets/plantilla/head.php";
       </div>
    </section>
 
-   <?php include "assets/plantilla/footer.php"; ?>
+   <?php include "../assets/plantilla/footer.php"; ?>
 </body>
 
 </html>

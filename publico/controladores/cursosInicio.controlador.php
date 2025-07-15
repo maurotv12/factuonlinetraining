@@ -8,9 +8,7 @@ require_once "controladores/ruta.controlador.php";
 
 class ControladorCursosInicio
 {
-     /*--=====================================
-	Mostrar cursos en inicio
-======================================--*/
+     // Mostar Cursos en inicio público
      public static function ctrMostrarCursosInicio()
      {
           $tabla = "curso";

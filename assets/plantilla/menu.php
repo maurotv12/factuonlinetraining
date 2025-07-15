@@ -5,7 +5,7 @@
 <!-- MENU -->
 <?php
 // Usa ruta absoluta para el require
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/controladores/ruta.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/ruta.controlador.php";
 $rutaInicio = ControladorRuta::ctrRutaInicio();
 $rutaLogin = ControladorRuta::ctrRutaLogin(); // Usa la función específica para login
 ?>

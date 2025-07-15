@@ -37,18 +37,21 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 <!-- MENU -->
 <?php include "../assets/plantilla/menu.php"; ?>
 <?php
+// Cargar la página solicitada
+// Si la página es login, register o forgot-password, se carga directamente
+include ControladorRuta::ctrCargarPagina();
 
-if (isset($_GET["pagina"])) {
-  if (
-    $_GET["pagina"] == "login"  ||
-    $_GET["pagina"] == "register" ||
-    $_GET["pagina"] == "forgot-password"
-  ) {
-    include "paginas/" . $_GET["pagina"] . ".php";
-  }
-} else {
-  include "paginas/register.php";
-}
+// if (isset($_GET["pagina"])) {
+//   if (
+//     $_GET["pagina"] == "login"  ||
+//     $_GET["pagina"] == "register" ||
+//     $_GET["pagina"] == "forgot-password"
+//   ) {
+//     include "paginas/" . $_GET["pagina"] . ".php";
+//   }
+// } else {
+//   include "paginas/register.php";
+// }
 ?>
 
 <?php include "../assets/plantilla/footer.php"; ?>

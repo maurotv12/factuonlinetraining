@@ -14,7 +14,7 @@ require_once "controladores/cursosInicio.controlador.php";
 require_once "modelos/cursosInicio.modelo.php";
 require_once "controladores/ruta.controlador.php";
 $item = "id";
-$valor = $curso["idCategoria"];
+$valor = $curso["id_categoria"];
 $tabla = "categoria";
 $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla);
 $rutaInicio = ControladorRuta::ctrRutaInicio();
@@ -55,7 +55,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
             <br>
             <div id="contenedorVideo">
                 <iframe width="640" height="480"
-                    src="assets/<?php echo $curso["promoVideo"]; ?>" frameborder="0" allowfullscreen>
+                    src="assets/<?php echo $curso["promo_video"]; ?>" frameborder="0" allowfullscreen>
                 </iframe>
             </div>
             <br>

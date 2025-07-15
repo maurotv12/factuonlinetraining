@@ -41,7 +41,7 @@ class ModeloUsuarios
 	public static function mdlRegistroIngresoUsuarios($idU, $navU, $ipU)
 	{
 		$tabla = "log_ingreso";
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (usuarioId, navegador, ipUsuario) VALUES (:idU, :navU, :ipU)");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (id_persona, navegador, ip_usuario) VALUES (:idU, :navU, :ipU)");
 		$stmt->bindParam(":idU", $idU, PDO::PARAM_INT);
 		$stmt->bindParam(":navU", $navU, PDO::PARAM_STR);
 		$stmt->bindParam(":ipU", $ipU, PDO::PARAM_STR);
@@ -113,5 +113,33 @@ Actualizar usuario completar datos perfil
 		}
 		$stmt->close();
 		$stmt = null;
+	}
+	public static function mdlActualizarRol($idPersona, $nuevoRol)
+	{
+		$conexion = Conexion::conectar();
+
+		// 1. Obtener el ID del rol por nombre
+		$stmtRol = $conexion->prepare("SELECT id FROM roles WHERE nombre = :nombre");
+		$stmtRol->bindParam(":nombre", $nuevoRol, PDO::PARAM_STR);
+		$stmtRol->execute();
+		$rol = $stmtRol->fetch(PDO::FETCH_ASSOC);
+
+		if (!$rol) {
+			return false; // El rol no existe
+		}
+
+		$idRol = $rol["id"];
+
+		// 2. Eliminar roles anteriores (si solo se permite un rol por persona)
+		$stmtDelete = $conexion->prepare("DELETE FROM persona_roles WHERE id_persona = :idPersona");
+		$stmtDelete->bindParam(":idPersona", $idPersona, PDO::PARAM_INT);
+		$stmtDelete->execute();
+
+		// 3. Insertar nuevo rol
+		$stmtInsert = $conexion->prepare("INSERT INTO persona_roles (id_persona, id_rol) VALUES (:idPersona, :idRol)");
+		$stmtInsert->bindParam(":idPersona", $idPersona, PDO::PARAM_INT);
+		$stmtInsert->bindParam(":idRol", $idRol, PDO::PARAM_INT);
+
+		return $stmtInsert->execute();
 	}
 }
