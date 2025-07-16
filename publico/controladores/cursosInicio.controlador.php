@@ -1,6 +1,6 @@
 <?php
 //importar controlador de rutas
-require_once "controladores/ruta.controlador.php";
+require_once "ruta.controlador.php";
 /**
 @grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
 26/05/2022 Plataforma Cursos Ver cursos en inicio

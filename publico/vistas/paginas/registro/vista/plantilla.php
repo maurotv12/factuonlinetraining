@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 $ruta = ControladorRuta::ctrRuta();
 $rutaInicio = ControladorRuta::ctrRutaInicio();
 // Ruta al inicio de la aplicación
@@ -12,14 +11,14 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CursosApp :: Cursos y Talleres</title>
   <!-- Favicons -->
-  <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/cursosApp/assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/dist/js/bootstrap.min.js"></script>
+  <script src="/cursosApp/assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/cursosApp/assets/dist/js/bootstrap.min.js"></script>
   <!-- MAIN CSS -->
-  <link rel="stylesheet" href="../assets/css/templatemo-style.css">
-  <link rel="stylesheet" href="../assets/css/styleCursos.css">
-  <link rel="stylesheet" href="vistas/css/auth.css">
+  <link rel="stylesheet" href="/cursosApp/assets/css/templatemo-style.css">
+  <link rel=" stylesheet" href="/cursosApp/assets/css/styleCursos.css">
+  <link rel="stylesheet" href="/cursosApp/assets/css/auth.css">
 
   <link rel="icon" href="../favicon.jpg" sizes="32x32" />
   <link rel="icon" href="../favicon-180.jpg" sizes="192x192" />
@@ -35,11 +34,13 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 </body>
 
 <!-- MENU -->
-<?php include "../assets/plantilla/menu.php"; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/menu.php"; ?>
+
 <?php
 // Cargar la página solicitada
 // Si la página es login, register o forgot-password, se carga directamente
-include ControladorRuta::ctrCargarPagina();
+// include ControladorRuta::ctrCargarPagina();
+ControladorRuta::cargarVistaCursoInicio();
 
 // if (isset($_GET["pagina"])) {
 //   if (
@@ -54,6 +55,6 @@ include ControladorRuta::ctrCargarPagina();
 // }
 ?>
 
-<?php include "../assets/plantilla/footer.php"; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/footer.php"; ?>
 
 </html>

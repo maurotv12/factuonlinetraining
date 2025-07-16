@@ -22,8 +22,10 @@ class ControladorRuta
 	//generame la ruta para login
 	public static function ctrRutaLogin()
 	{
-		return "http://localhost/cursosApp/registro/login";
+		// Ruta amigable al login en la carpeta publico
+		return "http://localhost/cursosApp/publico/vistas/paginas/registro/vista/paginas/login";
 	}
+
 
 	public static function ctrRutaApp()
 	{
@@ -31,30 +33,56 @@ class ControladorRuta
 
 	}
 
+	// Unificación de lógica: retorna la ruta de la vista principal (curso, inicio o error404)
 	public static function ctrCargarPagina()
 	{
+		return self::obtenerRutaVistaPrincipal();
+	}
+
+	// Método para cargar la vista de curso o inicio según la url_amiga
+	public static function cargarVistaCursoInicio()
+	{
+		$ruta = self::obtenerRutaVistaPrincipal();
+		if ($ruta && file_exists($ruta)) {
+			include $ruta;
+		} else {
+			include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas/error404.php";
+		}
+	}
+
+	// Método privado auxiliar para decidir la ruta de la vista principal
+	private static function obtenerRutaVistaPrincipal()
+	{
+		// Si la URL corresponde a un curso (url_amiga), priorizar esa lógica
 		if (isset($_GET["pagina"])) {
-
+			$item = "url_amiga";
+			$valor = $_GET["pagina"];
+			if (class_exists('ControladorCursosInicio')) {
+				$curso = ControladorCursosInicio::ctrMostrarUnCursoInicio($item, $valor);
+				if (isset($curso["url_amiga"])) {
+					return $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/curso.php";
+				}
+			}
+		}
+		// Si no es curso, buscar la vista tradicional
+		$basePath = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/";
+		if (isset($_GET["pagina"])) {
 			$pagina = $_GET["pagina"];
-
 			// Seguridad: solo permitimos letras, números, guiones y barras
 			if (!preg_match('/^[a-zA-Z0-9\/_-]+$/', $pagina)) {
-				return "vistas/paginas/error404.php";
+				return $basePath . "vistas/paginas/error404.php";
 			}
-
 			// Búsqueda recursiva en todas las subcarpetas de vistas/paginas
-			$directorioBase = "vistas/paginas";
+			$directorioBase = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas";
 			$archivoBuscado = $pagina . ".php";
-
 			$ruta = self::buscarArchivo($directorioBase, $archivoBuscado);
-
 			if ($ruta) {
-				return $ruta;
+				return $ruta; // $ruta ya es absoluta
 			} else {
-				return "vistas/paginas/error404.php";
+				return $directorioBase . "/error404.php";
 			}
 		} else {
-			return "vistas/paginas/inicio.php";
+			return $basePath . "inicio.php";
 		}
 	}
 
@@ -77,7 +105,6 @@ class ControladorRuta
 
 
 
-
 	//Contar registros en la tabla que se pase como parametro
 	// public static function ctrContarRegistros($tabla)
 	// {
@@ -88,6 +115,7 @@ class ControladorRuta
 	//funcion de redirecionamiento a la plantilla de inicio o index
 	public function ctrPlantilla()
 	{
-		include "vistas/plantilla.php";
+		// include "vistas/paginas/registro/vista/plantilla.php";
+		include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas/registro/vista/plantilla.php";
 	}
 }

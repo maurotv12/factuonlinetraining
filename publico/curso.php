@@ -1,6 +1,6 @@
 <?php
-include "assets/plantilla/head.php";
-include "assets/plantilla/menu.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
 ?>
 
 <!--==================================================================
@@ -8,6 +8,15 @@ include "assets/plantilla/menu.php";
 26/05/2022 Plataforma Calibelula mostrar Cursos
 ===================================================================-->
 <!-- CATEGORIAS -->
+<?php
+if (!isset($curso) && isset($_GET["pagina"])) {
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosInicio.controlador.php";
+    $item = "url_amiga";
+    $valor = $_GET["pagina"];
+    $curso = ControladorCursosInicio::ctrMostrarUnCursoInicio($item, $valor);
+}
+?>
+
 <?php
 require_once "controladores/cursosInicio.controlador.php";
 //Modelos
@@ -113,5 +122,4 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 
 </div>
 
-<?php include "assets/plantilla/footer.php"; ?>
 <!-- SCRIPTS -->

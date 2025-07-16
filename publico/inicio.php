@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include "../assets/plantilla/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
 ?>
 
 <body>
    <?php
-   include "../assets/plantilla/menu.php";
-   require_once "controladores/cursosInicio.controlador.php";
-   require_once "modelos/cursosInicio.modelo.php";
+   include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
+   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/controladores/cursosInicio.controlador.php";
+   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/modelos/cursosInicio.modelo.php";
 
    $cursos = ControladorCursosInicio::ctrMostrarCursosInicio();
    if (!$cursos) {
@@ -73,7 +73,6 @@ include "../assets/plantilla/head.php";
       </div>
    </section>
 
-   <?php include "../assets/plantilla/footer.php"; ?>
 </body>
 
 </html>

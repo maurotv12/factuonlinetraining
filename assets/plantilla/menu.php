@@ -23,7 +23,7 @@ $rutaLogin = ControladorRuta::ctrRutaLogin(); // Usa la función específica par
         <li class="nav-item"><a class="nav-link" href="#cursos">Cursos</a></li>
         <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
         <li class="nav-item"><a class="nav-link" href="#contacto">Contactnos </a></li>
-        <li><a href="/cursosApp/registro/login" class="ingresar-btn btn btn-default">Ingresara</a></li>
+        <li><a href="<?php echo $rutaLogin; ?>" class="ingresar-btn btn btn-default">Ingresara</a></li>
       </ul>
     </div>
   </div>
