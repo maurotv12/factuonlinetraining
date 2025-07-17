@@ -12,7 +12,8 @@
     background: #ffffff;
     font-family: 'Gloria Hallelujah', cursive;
   }
-  .tituloCurso{
+
+  .tituloCurso {
     color: #ffffff;
   }
 
@@ -20,7 +21,12 @@
      TYPOGRAPHY
   -----------------------------------------*/
 
-  h1,h2,h3,h4,h5,h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Gloria Hallelujah', cursive;
     font-weight: bold;
     line-height: inherit;
@@ -55,43 +61,45 @@
     line-height: 24px;
   }
 
-  .bajarBotones{
-  padding: 450px 200px 0px 0px;
+  .bajarBotones {
+    padding: 450px 200px 0px 0px;
   }
-  
 
 
-/*//===================================
+
+  /*//===================================
     Boton submit sin fondo y me gusta
     ===================================*/
-.texMegusta{
-  color: #4CEBCF;
+  .texMegusta {
+    color: #4CEBCF;
   }
-.botonMeGusta {
-    background: transparent;
-    border:0px;
-    font-size: 16px;
-}
 
-.botonMeGusta:hover {
+  .botonMeGusta {
+    background: transparent;
+    border: 0px;
+    font-size: 16px;
+  }
+
+  .botonMeGusta:hover {
     color: #FF3D94;
     background: transparent;
     font-size: 16px;
-}
+  }
 
-.botonSubmitTaller {
+  .botonSubmitTaller {
     background: transparent;
-    border:0px;
+    border: 0px;
     font-size: 14px;
-}
+  }
 
-.botonSubmitTaller:hover {
+  .botonSubmitTaller:hover {
     color: #FF3D94;
     background: transparent;
     font-size: 14px;
-}
-/* boton ingresar menu  */
- .ingresar-btn {
+  }
+
+  /* boton ingresar menu  */
+  .ingresar-btn {
     background: #F93F90;
     border: 1px solid #ffffff;
     color: #ffffff;
@@ -107,22 +115,23 @@
     border: 1px solid #ffffff;
     color: #ffffff;
   }
-/*//===========================
+
+  /*//===========================
     Fin Boton submit sin fondo
     ===========================*/
 
 
-.cardNotas {
--webkit-box-shadow: 7px 20px 32px -16px rgba(0,234,207,0.52);
--moz-box-shadow: 7px 20px 32px -16px rgba(0,234,207,0.52);
-box-shadow: 7px 20px 32px -16px rgba(0,234,207,0.52);
-border: 1px solid rgba(0,234,207,0.52);
-border-radius: 80px 0px 80px 0px;
--moz-border-radius: 80px 0px 80px 0px;
--webkit-border-radius: 80px 0px 80px 0px;
-}
+  .cardNotas {
+    -webkit-box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
+    -moz-box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
+    box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
+    border: 1px solid rgba(0, 234, 207, 0.52);
+    border-radius: 80px 0px 80px 0px;
+    -moz-border-radius: 80px 0px 80px 0px;
+    -webkit-border-radius: 80px 0px 80px 0px;
+  }
 
-  .featureIMG{
+  .featureIMG {
     padding: 30px 40px 0px 0px;
     text-align: right;
   }
@@ -131,40 +140,41 @@ border-radius: 80px 0px 80px 0px;
     width: 250px;
     height: auto;
   }
+
   .feature-nota {
-   padding: 0px 40px 30px 20px;
-   text-align: right;
+    padding: 0px 40px 30px 20px;
+    text-align: right;
   }
 
 
-  input[type="checkbox"]{
-  display:none;
+  input[type="checkbox"] {
+    display: none;
   }
 
-  label[for="politicas"] span{
-    display:inline-block;
-    width:15px;
-    height:15px;
-    background:#E9ECEF;
-    vertical-align:middle;
-    border-radius:100%;
-    border:1px solid #aaa;
-    cursor:pointer;
+  label[for="politicas"] span {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: #E9ECEF;
+    vertical-align: middle;
+    border-radius: 100%;
+    border: 1px solid #aaa;
+    cursor: pointer;
   }
 
-  input[type="checkbox"]:checked + label[for="politicas"] span{
+  input[type="checkbox"]:checked+label[for="politicas"] span {
     background: #F93F90;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    border:1px solid #ffffff;
+    border: 1px solid #ffffff;
   }
 
-/*---------------------------------------
+  /*---------------------------------------
      GENERAL
   -----------------------------------------*/
 
-  html{
+  html {
     -webkit-font-smoothing: antialiased;
   }
 
@@ -176,18 +186,21 @@ border-radius: 80px 0px 80px 0px;
   }
 
   a,
-  input, button,
+  input,
+  button,
   .form-control {
     -webkit-transition: 0.5s;
     transition: 0.5s;
   }
 
-  a:hover, a:active, a:focus {
+  a:hover,
+  a:active,
+  a:focus {
     color: #4CEBCF;
     outline: none;
   }
 
-  ::-webkit-scrollbar{
+  ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
@@ -219,7 +232,7 @@ border-radius: 80px 0px 80px 0px;
   }
 
   .overlay {
-    background: rgba(20,20,20,0.5);
+    background: rgba(20, 20, 20, 0.5);
     position: absolute;
     top: 0;
     right: 0;
@@ -246,9 +259,11 @@ border-radius: 80px 0px 80px 0px;
   .entry-form .form-op {
     color: #ffffff !important;
     margin: 0;
-   }
+  }
 
- .entry-form a:hover, a:active, a:focus {
+  .entry-form a:hover,
+  a:active,
+  a:focus {
     color: #4CEBCF;
     outline: none;
   }
@@ -305,10 +320,10 @@ border-radius: 80px 0px 80px 0px;
     height: 390px;
   }
 
- #team .team-title  {
-     font-family: 'Gloria Hallelujah', cursive;
-     text-align: center;
-     font-weight: bold;
+  #team .team-title {
+    font-family: 'Gloria Hallelujah', cursive;
+    text-align: center;
+    font-weight: bold;
   }
 
 
@@ -326,7 +341,7 @@ border-radius: 80px 0px 80px 0px;
     margin-bottom: 10px;
   }
 
- #registro .registro-btn:hover {
+  #registro .registro-btn:hover {
     background: #4CEBCF;
     color: #ffffff;
   }
@@ -354,9 +369,9 @@ border-radius: 80px 0px 80px 0px;
   /*---------------------------------------
       MENU
   -----------------------------------------*/
-    .ancho-navbar{
-        width: 1250px;
-    }
+  .ancho-navbar {
+    width: 1250px;
+  }
 
 
   .custom-navbar {
@@ -374,19 +389,19 @@ border-radius: 80px 0px 80px 0px;
 
 
 
-/*---------------------------------------
+  /*---------------------------------------
       slid de detalle pelicula
   -----------------------------------------*/
-  #detalleFestival .titleFes  {
-     font-family: 'Gloria Hallelujah', cursive;
-     font-size: 25px;
-     font-weight: bold;
-     text-align: left;
+  #detalleFestival .titleFes {
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: left;
   }
 
 
-   #detalleFestival .sipnosis  {
-     font-size: 16px;
+  #detalleFestival .sipnosis {
+    font-size: 16px;
   }
 
   #detalleFestival .fondoTexto {
@@ -398,29 +413,29 @@ border-radius: 80px 0px 80px 0px;
     padding: 20px 0px 15px 0px;
   }
 
-  .fondo  {
+  .fondo {
     background-color: black;
-   }
+  }
 
-   .fondoFoter  {
+  .fondoFoter {
     background-color: #2A2A2A;
     padding: 10px 0px 10px 0px;
-   }
+  }
 
-   #detalleFestival .peq {
+  #detalleFestival .peq {
     font-size: 15px;
     line-height: 1;
-    }
+  }
 
   #detalleFestival .titulosFooter {
     color: #F93F90;
-    }
+  }
 
-    #detalleFestival .nombreDirector {
+  #detalleFestival .nombreDirector {
     color: #00ECCF;
-    }
+  }
 
-   #detalleFestival .detalleP-btn {
+  #detalleFestival .detalleP-btn {
     background: #F93F90;
     border-radius: 50px;
     border: 1px solid #ffffff;
@@ -431,7 +446,7 @@ border-radius: 80px 0px 80px 0px;
     transition: 0.5s;
   }
 
-   #detalleFestival .detalleP-btn:hover {
+  #detalleFestival .detalleP-btn:hover {
     background: #ffffff;
     border-color: transparent;
     color: #F93F90;
@@ -441,17 +456,17 @@ border-radius: 80px 0px 80px 0px;
   /*---------------------------------------
       FEATURE
   -----------------------------------------*/
-   #festival .titleFes  {
-     font-family: 'Gloria Hallelujah', cursive;
-     text-align: center;
-     font-weight: bold;
+  #festival .titleFes {
+    font-family: 'Gloria Hallelujah', cursive;
+    text-align: center;
+    font-weight: bold;
   }
 
-  #registro .titletaller  {
-     font-family: 'Gloria Hallelujah', cursive;
-     text-align: center;
-     font-weight: bold;
-     color: #FF3D94;
+  #registro .titletaller {
+    font-family: 'Gloria Hallelujah', cursive;
+    text-align: center;
+    font-weight: bold;
+    color: #FF3D94;
   }
 
   .feature-thumb {
@@ -507,17 +522,18 @@ border-radius: 80px 0px 80px 0px;
     line-height: 50px;
     text-align: center;
   }
-   .titleletra  {
-     font-family: 'Gloria Hallelujah', cursive;
+
+  .titleletra {
+    font-family: 'Gloria Hallelujah', cursive;
   }
 
   /*---------------------------------------
     categorias
   -----------------------------------------*/
-   #categorias .titleFes  {
-     font-family: 'Gloria Hallelujah', cursive;
-     text-align: center;
-     font-weight: bold;
+  #categorias .titleFes {
+    font-family: 'Gloria Hallelujah', cursive;
+    text-align: center;
+    font-weight: bold;
   }
 
   #categorias .team-marg {
@@ -529,7 +545,7 @@ border-radius: 80px 0px 80px 0px;
     overflow: hidden;
     text-align: left;
     border-radius: 10px;
-    box-shadow: 5px 5px 20px 7px rgba(0,0,0,0.18), -5px -5px 30px 7px rgba(0,0,0,0.20);
+    box-shadow: 5px 5px 20px 7px rgba(0, 0, 0, 0.18), -5px -5px 30px 7px rgba(0, 0, 0, 0.20);
     cursor: pointer;
     transition: 0.4s;
     padding: 0px 0px 0px 0px;
@@ -538,7 +554,7 @@ border-radius: 80px 0px 80px 0px;
   .team-info {
     padding: 20px 30px;
   }
-  
+
   #categorias .text-info {
     font-size: 14px;
     color: #f0f0f0;
@@ -562,11 +578,13 @@ border-radius: 80px 0px 80px 0px;
     font-size: 16px;
     margin: 0;
   }
-.team-info .valorC {
-  font-size: 20px;
-  color: #00ECCF;
+
+  .team-info .valorC {
+    font-size: 20px;
+    color: #00ECCF;
   }
-.team-info .ver-btn {
+
+  .team-info .ver-btn {
     background: #F93F90;
     border-radius: 50px;
     border: 2px solid #00ECCF;
@@ -590,10 +608,10 @@ border-radius: 80px 0px 80px 0px;
   /*---------------------------------------
       COURSES
   -----------------------------------------*/
- #courses .titleFes  {
-     font-family: 'Gloria Hallelujah', cursive;
-     text-align: center;
-     font-weight: bold;
+  #courses .titleFes {
+    font-family: 'Gloria Hallelujah', cursive;
+    text-align: center;
+    font-weight: bold;
   }
 
   #courses .section-title {
@@ -622,19 +640,20 @@ border-radius: 80px 0px 80px 0px;
   .courses-top {
     position: relative;
   }
+
   .courses-image {
     background: linear-gradient(to right, #202020, #101010);
   }
 
   .courses-image-noticia {
-     background: linear-gradient(to right, #202020, #101010);
-     width: 320px;
-     height: 250px;
+    background: linear-gradient(to right, #202020, #101010);
+    width: 320px;
+    height: 250px;
   }
 
-  .courses-image-noticia img{
-   width:320px;
-   height:250px;
+  .courses-image-noticia img {
+    width: 320px;
+    height: 250px;
   }
 
   .courses-date-noticia {
@@ -675,11 +694,11 @@ border-radius: 80px 0px 80px 0px;
   .courses-detail h3 {
     margin: 0 0 2px 0;
   }
-  
-   #courses .textamano {
+
+  #courses .textamano {
     font-size: 30px !important;
   }
-  
+
 
   .courses-info {
     border-top: 1px solid #f0f0f0;
@@ -728,9 +747,9 @@ border-radius: 80px 0px 80px 0px;
     padding: 20px 0;
   }
 
-  footer .titleFes  {
-     font-family: 'Gloria Hallelujah', cursive;
-     font-weight: bold;
+  footer .titleFes {
+    font-family: 'Gloria Hallelujah', cursive;
+    font-weight: bold;
   }
 
   footer .section-title {
@@ -825,13 +844,14 @@ border-radius: 80px 0px 80px 0px;
      RESPONSIVE STYLES
   -----------------------------------------*/
 
-   @media screen and (max-width: 1170px) {
+  @media screen and (max-width: 1170px) {
     .custom-navbar .navbar-nav.navbar-nav-first {
       margin-left: inherit;
     }
   }
 
   @media only screen and (max-width: 992px) {
+
     section,
     footer {
       padding: 20px 0;
@@ -867,7 +887,9 @@ border-radius: 80px 0px 80px 0px;
       font-size: 2.5em;
     }
 
-    h1,h2,h3 {
+    h1,
+    h2,
+    h3 {
       line-height: normal;
     }
 
@@ -900,7 +922,6 @@ border-radius: 80px 0px 80px 0px;
     .custom-navbar .nav li a,
     .top-nav-collapse .nav li a {
       color: #575757 !important
-
     }
 
     .custom-navbar .navbar-nav.navbar-right li {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Error 404 - Página no encontrada</title>
-    <style>
+    <!-- <style>
         body {
             font-family: Arial, sans-serif;
             background: #f8f8f8;
@@ -30,7 +30,7 @@
         a:hover {
             text-decoration: underline;
         }
-    </style>
+    </style> -->
 </head>
 
 <body>

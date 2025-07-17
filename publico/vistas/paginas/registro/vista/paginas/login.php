@@ -1,5 +1,11 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/ruta.controlador.php";
+
+$rutaRegistro = ControladorRuta::ctrRuta();
+$ruta = ControladorRuta::ctrCargarPagina();
+$rutafpassword = ControladorRuta::ctrRutaForgotPassword();
+
 ?>
 <div id="auth">
     <div class="row h-100">
@@ -34,8 +40,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.
                     </div>
                 </form>
                 <div class="text-center mt-3 text-lg fs-5">
-                    <p class="text-gray-600">¿Aún no tienes una cuenta? <a href="<?php echo $ruta; ?>register" class="font-bold">Crear cuenta</a>.</p>
-                    <p><a class="font-bold" href="<?php echo $ruta; ?>forgot-password">Recuperar contraseña</a>.</p>
+                    <p class="text-gray-600">¿Aún no tienes una cuenta? <a href="<?php echo $rutaRegistro; ?>" class="font-bold">Crear cuenta</a>.</p>
+                    <p><a class="font-bold" href="<?php echo $rutafpassword; ?>">Recuperar contraseña</a>.</p>
                 </div>
             </div>
         </div>

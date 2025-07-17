@@ -17,13 +17,19 @@ class ControladorRuta
 
 	public static function ctrRuta()
 	{
-		return "http://localhost/cursosApp/registro/";
+		return "http://localhost/cursosApp/register";
 	}
 	//generame la ruta para login
 	public static function ctrRutaLogin()
 	{
-		// Ruta amigable al login en la carpeta publico
-		return "http://localhost/cursosApp/publico/vistas/paginas/registro/vista/paginas/login";
+		// Ruta amigable
+		return "http://localhost/cursosApp/login";
+	}
+
+	//Ruta para ingresar al forgot password
+	public static function ctrRutaForgotPassword()
+	{
+		return "http://localhost/cursosApp/forgot-password";
 	}
 
 
@@ -105,13 +111,6 @@ class ControladorRuta
 
 
 
-	//Contar registros en la tabla que se pase como parametro
-	// public static function ctrContarRegistros($tabla)
-	// {
-	// 	$respuesta = ModeloUsuarios::mdlContarRegistros($tabla);
-	// 	return $respuesta;
-	// }
-
 	//funcion de redirecionamiento a la plantilla de inicio o index
 	public function ctrPlantilla()
 	{
@@ -119,3 +118,11 @@ class ControladorRuta
 		include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas/registro/vista/plantilla.php";
 	}
 }
+
+
+	//Contar registros en la tabla que se pase como parametro
+	// public static function ctrContarRegistros($tabla)
+	// {
+	// 	$respuesta = ModeloUsuarios::mdlContarRegistros($tabla);
+	// 	return $respuesta;
+	// }

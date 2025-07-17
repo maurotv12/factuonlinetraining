@@ -1,3 +1,6 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+?>
 <div id="auth">
     <div class="row h-100">
         <div class="col-lg-4 col-12">
