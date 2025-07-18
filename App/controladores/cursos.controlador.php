@@ -17,4 +17,11 @@ class ControladorCursos
 		$respuesta = ModeloCursos::mdlMostrarCursos($tabla, $item, $valor);
 		return $respuesta;
 	}
+
+	public static function ctrCrearCurso($datos)
+	{
+		$tabla = "curso";
+		$respuesta = ModeloCursos::mdlCrearCurso($tabla, $datos);
+		return $respuesta;
+	}
 }

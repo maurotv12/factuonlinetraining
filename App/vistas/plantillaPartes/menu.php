@@ -43,7 +43,14 @@
                 <li class="sidebar-title">Gestión de Cursos</li>
 
                 <li class="sidebar-item">
-                    <a href="cursos" class='sidebar-link'>
+                    <a href="crearCurso" class='sidebar-link'>
+                        <i class="bi-plus-square"></i>
+                        <span>Crear Curso</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="listadoCursos" class='sidebar-link'>
                         <i class="bi bi-journal-bookmark"></i>
                         <span>Todos los Cursos</span>
                     </a>

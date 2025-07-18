@@ -27,4 +27,28 @@ class ModeloCursos
 		$stmt->close();
 		$stmt = null;
 	}
+
+	public static function mdlCrearCurso($tabla, $datos)
+	{
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (url_amiga, nombre, descripcion, banner, promo_video, valor, id_categoria, id_persona, estado) 
+        VALUES (:url_amiga, :nombre, :descripcion, :banner, :promo_video, :valor, :id_categoria, :id_persona, :estado)");
+
+		$stmt->bindParam(":url_amiga", $datos["url_amiga"], PDO::PARAM_STR);
+		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
+		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":banner", $datos["banner"], PDO::PARAM_STR);
+		$stmt->bindParam(":promo_video", $datos["promo_video"], PDO::PARAM_STR);
+		$stmt->bindParam(":valor", $datos["valor"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_categoria", $datos["id_categoria"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_persona", $datos["id_persona"], PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
 }

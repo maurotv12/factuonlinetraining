@@ -18,7 +18,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <!-- MAIN CSS -->
   <link rel="stylesheet" href="/cursosApp/assets/css/templatemo-style.css">
   <link rel=" stylesheet" href="/cursosApp/assets/css/styleCursos.css">
-  <link rel="stylesheet" href="/cursosApp/publico/vistas/assets/css/auth.css">
+  <link rel="stylesheet" href="/cursosApp/assets/css/auth.css">
 
   <link rel="icon" href="../favicon.jpg" sizes="32x32" />
   <link rel="icon" href="../favicon-180.jpg" sizes="192x192" />
