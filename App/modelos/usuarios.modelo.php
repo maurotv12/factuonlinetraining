@@ -142,4 +142,24 @@ Actualizar usuario completar datos perfil
 
 		return $stmtInsert->execute();
 	}
+
+	/*=============================================
+	Obtener roles por usuario
+	=============================================*/
+	public static function mdlObtenerRolesPorUsuario($idPersona)
+	{
+		$conexion = Conexion::conectar();
+
+		$stmt = $conexion->prepare(
+			"SELECT r.id, r.nombre 
+         FROM roles r 
+         INNER JOIN persona_roles pr ON r.id = pr.id_rol 
+         WHERE pr.id_persona = :idPersona"
+		);
+
+		$stmt->bindParam(":idPersona", $idPersona, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devuelve un array de roles
+	}
 }

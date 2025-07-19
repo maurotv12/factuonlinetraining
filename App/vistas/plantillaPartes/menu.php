@@ -1,3 +1,8 @@
+<?php
+$roles = $_SESSION["rolesU"] ?? [];
+$idsRoles = array_column($roles, 'id'); // extrae solo los IDs
+?>
+
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper active">
         <div class="sidebar-header">
@@ -14,93 +19,34 @@
         </div>
 
         <div class="sidebar-menu">
+            <?php
+            // Verificar el rol del usuario y mostrar el menú correspondiente
+            if (in_array(1, $idsRoles)) {
+                include 'menuAdmin.php';         // ID 1 → Admin
+            }
+
+            if (in_array(2, $idsRoles)) {
+                include 'menuProfesor.php';      // ID 2 → Profesor/Instructor
+            }
+
+            if (in_array(3, $idsRoles)) {
+                include 'menuEstudiante.php';    // ID 3 → Estudiante
+            }
+            ?>
+
+            <h3 class="m-5">General</h3>
             <ul class="menu">
-                <li class="sidebar-title">Menú Principal</li>
-
-                <li class="sidebar-item">
-                    <a href="dashboard" class='sidebar-link'>
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-title">Gestión de Usuarios</li>
-
-                <li class="sidebar-item">
-                    <a href="usuarios" class='sidebar-link'>
-                        <i class="bi bi-people"></i>
-                        <span>Usuarios</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="solicitudesInstructores" class='sidebar-link'>
-                        <i class="bi bi-person-check"></i>
-                        <span>Solicitudes de Instructores</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-title">Gestión de Cursos</li>
-
-                <li class="sidebar-item">
-                    <a href="crearCurso" class='sidebar-link'>
-                        <i class="bi-plus-square"></i>
-                        <span>Crear Curso</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="listadoCursos" class='sidebar-link'>
-                        <i class="bi bi-journal-bookmark"></i>
-                        <span>Todos los Cursos</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="cursos-pendientes" class='sidebar-link'>
-                        <i class="bi bi-clock-history"></i>
-                        <span>Cursos Pendientes</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="categorias" class='sidebar-link'>
-                        <i class="bi bi-tags"></i>
-                        <span>Categorías</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-title">Finanzas</li>
-
-                <li class="sidebar-item">
-                    <a href="pagos" class='sidebar-link'>
-                        <i class="bi bi-currency-dollar"></i>
-                        <span>Pagos</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="retiros" class='sidebar-link'>
-                        <i class="bi bi-wallet2"></i>
-                        <span>Retiros de Instructores</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-item">
-                    <a href="reportes-financieros" class='sidebar-link'>
-                        <i class="bi bi-graph-up-arrow"></i>
-                        <span>Reportes Financieros</span>
-                    </a>
-                </li>
-
                 <li class="sidebar-title">Contenido y Soporte</li>
 
-                <li class="sidebar-item">
-                    <a href="paginas" class='sidebar-link'>
-                        <i class="bi bi-file-earmark-text"></i>
-                        <span>Páginas</span>
-                    </a>
-                </li>
+                <?php if (in_array(1, $idsRoles)) { ?>
+                    <li class="sidebar-item">
+                        <a href="paginas" class='sidebar-link'>
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span>Páginas</span>
+                        </a>
+                    </li>
+                <?php } ?>
+
 
                 <li class="sidebar-item">
                     <a href="faq" class='sidebar-link'>
@@ -115,7 +61,9 @@
                         <span>Soporte</span>
                     </a>
                 </li>
+            </ul>
 
+            <ul class="menu">
                 <li class="sidebar-title">Configuración</li>
 
                 <li class="sidebar-item">

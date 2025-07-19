@@ -76,10 +76,15 @@ class ControladorUsuarios
 			$item = "email";
 			$valor = $_POST["emailIngreso"];
 			$respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+			$rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($respuesta["id"]);
 			if ($respuesta["email"] == $_POST["emailIngreso"]  && password_verify($_POST['passIngreso'], $respuesta["password"])) {
 				session_start();
 				$_SESSION["validarSesion"] = "ok";
 				$_SESSION["idU"] = $respuesta["id"];
+				$_SESSION["nombreU"] = $respuesta["nombre"];
+				$_SESSION["emailU"] = $respuesta["email"];
+				$_SESSION["rolesU"] = $rolesUsuario;
+
 
 				$idU = 	$respuesta["id"];
 				$navU = $_POST["navegadorU"];
@@ -150,7 +155,7 @@ class ControladorUsuarios
 	/*=============================================
 	Recuperar contraseña
 =============================================*/
-	public function ctrRecuperarPassword()
+	public static function ctrRecuperarPassword()
 	{
 
 		if (isset($_POST["emailRecuperarPassword"])) {

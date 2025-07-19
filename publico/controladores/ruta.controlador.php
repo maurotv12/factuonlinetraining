@@ -17,7 +17,7 @@ class ControladorRuta
 
 	public static function ctrRuta()
 	{
-		return "http://localhost/cursosApp/registro/";
+		return "http://localhost/cursosApp/registro";
 	}
 	//generame la ruta para login
 	public static function ctrRutaLogin()
@@ -31,6 +31,11 @@ class ControladorRuta
 	{
 		return "http://localhost/cursosApp/App/"; //Ruta ingresar al dashboard entorno local
 
+	}
+
+	public static function ctrRutaForgotPassword()
+	{
+		return "http://localhost/cursosApp/forgot-password";
 	}
 
 	// Unificación de lógica: retorna la ruta de la vista principal (curso, inicio o error404)
