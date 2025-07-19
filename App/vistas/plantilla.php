@@ -60,9 +60,9 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
             include "plantillaPartes/header.php";
 
             /*=============================================
-				Páginas del sitio
+				Páginas del sitio con control de acceso por roles
 				=============================================*/
-            include ControladorGeneral::ctrCargarPagina();
+            include ControladorGeneral::ctrCargarPaginaConAcceso();
 
             // if (isset($_GET["pagina"])) {
             //     if (

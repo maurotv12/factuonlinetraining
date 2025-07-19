@@ -53,7 +53,7 @@ $conn = Conexion::conectar();
 
                                         // Obtener nombre del profesor
                                         $stmtProfesor = $conn->prepare("SELECT nombre FROM persona WHERE id = ?");
-                                        $stmtProfesor->execute([$curso["id_persona"]]);
+                                        $stmtProfesor->execute([$curso["id_instructor"]]);
                                         $profesor = $stmtProfesor->fetchColumn();
                                         ?>
                                         <tr>
