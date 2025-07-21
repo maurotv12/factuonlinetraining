@@ -1,4 +1,4 @@
-<?php session_start();
+<?php
 $ruta = ControladorRuta::ctrRuta();
 $rutaInicio = ControladorRuta::ctrRutaInicio();
 // Ruta al inicio de la aplicación

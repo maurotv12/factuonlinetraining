@@ -5,6 +5,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/conexion.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/cursos.modelo.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/cursos.controlador.php";
 
+// Obtener lista de profesores y categorías
+$profesores = ControladorCursos::ctrObtenerProfesores();
+$categorias = ControladorCursos::ctrObtenerCategorias();
+
 // Procesar el formulario si se envió
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -12,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = $_POST['descripcion'];
     $categoria = $_POST['categoria'];
     $valor = $_POST['precio'];
-    $id_persona = $_SESSION['id_persona']; // Asegúrate de que exista en sesión
+    $id_persona = isset($_POST['profesor']) ? $_POST['profesor'] : $_SESSION['id_persona']; // Usar el profesor seleccionado o el usuario de la sesión
 
     // Generar URL amigable
     $url_amiga = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $nombre)));
@@ -54,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="container mt-5 mb-5">
         <h2 class="mb-4">Crear Nuevo Curso</h2>
-        <form action="" method="POST" enctype="multipart/form-data">
 
+        <form id="form-crear-curso" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre del Curso</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -70,14 +74,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="categoria" class="form-label">Categoría</label>
                 <select class="form-select" id="categoria" name="categoria" required>
                     <option value="" selected disabled>Selecciona una categoría</option>
-                    <?php
-                    // Cargar categorías desde la BD
-                    $conn = Conexion::conectar();
-                    $categorias = $conn->query("SELECT id, nombre FROM categoria");
-                    while ($cat = $categorias->fetch(PDO::FETCH_ASSOC)) {
-                        echo "<option value='{$cat['id']}'>{$cat['nombre']}</option>";
-                    }
-                    ?>
+                    <?php foreach ($categorias as $cat): ?>
+                        <option value="<?= $cat['id'] ?>"><?= $cat['nombre'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="profesor" class="form-label">Profesor</label>
+                <select class="form-select" id="profesor" name="profesor" required>
+                    <option value="" selected disabled>Selecciona un profesor</option>
+                    <?php foreach ($profesores as $prof): ?>
+                        <option value="<?= $prof['id'] ?>"><?= $prof['nombre'] ?> (<?= $prof['email'] ?>)</option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
@@ -100,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
+    <script src="/cursosapp/assets/js/validarImagenCurso.js"></script>
 </body>
 
 </html>
