@@ -1,10 +1,16 @@
+    <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/controladores/ruta.controlador.php";
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/App/controladores/usuarios.controlador.php";
+    $rutaLogin = ControladorRuta::ctrRutaLogin();
+    ?>
+
     <div id="auth">
         <div class="row h-100">
-        <div class="col-lg-4 col-12">
-        </div>
+            <div class="col-lg-4 col-12">
+            </div>
             <div class="col-lg-4 col-12">
                 <div id="auth-left">
-                   <br>
+                    <br>
                     <h1 class="auth-title">Recuperar contraseña</h1>
                     <p class="auth-subtitle mb-5">Ingrese su correo electrónico y le enviaremos un enlace para restablecer la contraseña.</p>
                     <form action="index.html">
@@ -19,12 +25,12 @@
                         </div>
                     </form>
                     <div class="text-center mt-3 text-lg fs-5">
-                        <p class='text-gray-600'>¿Recuerdas tu cuenta? <a href="<?php echo $ruta; ?>login" class="font-bold">Entrar</a>.
+                        <p class='text-gray-600'>¿Recuerdas tu cuenta? <a href="<?php echo $rutaLogin; ?>" class="font-bold">Entrar</a>.
                         </p>
                     </div>
                 </div>
             </div>
-        <div class="col-lg-4 col-12">
+            <div class="col-lg-4 col-12">
+            </div>
         </div>
     </div>
-</div>

@@ -48,7 +48,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
                   <div class="col-md-4 col-sm-6 team-marg mb-4">
                      <div class="team-thumb">
                         <div class="team-image">
-                           <a href="<?= $value["url_amiga"] ?>"><img src="<?= $value["banner"] ?>" class="img-responsive" alt="Curso Calibélula"></a>
+                           <a href="<?= $value["url_amiga"] ?>"><img src="App/<?= $value["banner"] ?>" class="img-responsive" alt="Curso Calibélula"></a>
                         </div>
                         <div class="team-info">
                            <h3><a href="<?= $value["url_amiga"] ?>"><?= $rnCurso ?></a></h3>

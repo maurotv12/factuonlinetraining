@@ -1,5 +1,10 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+
+$registro = new ControladorUsuarios();
+$registro->ctrRegistroUsuario();
+
+$rutaLogin = ControladorRuta::ctrRutaLogin();
 ?>
 <div id="auth">
     <div class="row h-100">
@@ -36,16 +41,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.
                         </label>
                         <span></span>
                     </div>
-                    <?php
-                    $registro = new ControladorUsuarios();
-                    $registro->ctrRegistroUsuario();
-                    ?>
+
                     <div class="d-grid gap-2">
                         <input type="submit" id="submit" class="btn btn-primary btn-lg shadow-lg mt-3 auth-colorBtn" value="Crear Cuenta">
                     </div>
                 </form>
                 <div class="text-center mt-3 text-lg fs-5">
-                    <p class='text-gray-600'>¿Ya tienes una cuenta? <a href="<?php echo $ruta; ?>login"
+                    <p class='text-gray-600'>¿Ya tienes una cuenta? <a href="<?php echo $rutaLogin; ?>"
                             class="font-bold">Entrar</a>.</p>
                 </div>
             </div>

@@ -19,7 +19,7 @@ class ControladorUsuarios
 	/*--=====================================
 	Registro de Usuarios
 ======================================--*/
-	public function ctrRegistroUsuario()
+	public static function ctrRegistroUsuario()
 	{
 		if (isset($_POST["nombreRegistro"])) {
 			$ruta = ControladorRuta::ctrRutaApp();

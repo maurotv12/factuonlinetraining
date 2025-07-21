@@ -17,37 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Generar URL amigable
     $url_amiga = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $nombre)));
 
-    // Subir imagen
-    $banner = null;
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-        $directorio = "App/vistas/img/cursos/";
-        if (!file_exists($directorio)) mkdir($directorio, 0777, true);
-        $nombreImg = uniqid() . "_" . $_FILES['imagen']['name'];
-        $rutaImg = $directorio . $nombreImg;
-        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImg)) {
-            $banner = $rutaImg;
-        }
-    }
-
-    // Subir video promocional (opcional)
-    $video = null;
-    if (!empty($_FILES['video']['name']) && $_FILES['video']['error'] == 0) {
-        $directorioVideo = "videosPromos/";
-        if (!file_exists($directorioVideo)) mkdir($directorioVideo, 0777, true);
-        $nombreVideo = uniqid() . "_" . $_FILES['video']['name'];
-        $rutaVideo = $directorioVideo . $nombreVideo;
-        if (move_uploaded_file($_FILES['video']['tmp_name'], $rutaVideo)) {
-            $video = $rutaVideo;
-        }
-    }
-
     // Enviar datos al controlador
     $datosCurso = array(
         "url_amiga" => $url_amiga,
         "nombre" => $nombre,
         "descripcion" => $descripcion,
-        "banner" => $banner,
-        "promo_video" => $video,
+        "imagen" => isset($_FILES['imagen']) ? $_FILES['imagen'] : null,
+        "video" => isset($_FILES['video']) ? $_FILES['video'] : null,
         "valor" => $valor,
         "id_categoria" => $categoria,
         "id_persona" => $id_persona,

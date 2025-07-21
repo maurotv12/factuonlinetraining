@@ -17,7 +17,7 @@ class ControladorRuta
 
 	public static function ctrRuta()
 	{
-		return "http://localhost/cursosApp/registro";
+		return "http://localhost/cursosApp/register";
 	}
 	//generame la ruta para login
 	public static function ctrRutaLogin()

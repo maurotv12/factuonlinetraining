@@ -53,7 +53,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
             </div>
             <div class="col-md-6 col-sm-4">
                 <br>
-                <img src="registro/<?php echo $curso["banner"]; ?>" class="img-responsive img-fluid rounded" alt="Curso Calibélula">
+                <img src="<?php echo $curso["banner"]; ?>" class="img-responsive img-fluid rounded" alt="Curso Calibélula">
             </div>
         </div>
     </div>
