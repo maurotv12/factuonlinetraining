@@ -608,7 +608,7 @@
   /*---------------------------------------
       COURSES
   -----------------------------------------*/
-  #courses .titleFes {
+  /* #courses .titleFes {
     font-family: 'Gloria Hallelujah', cursive;
     text-align: center;
     font-weight: bold;
@@ -736,7 +736,7 @@
 
   .courses-price.free span {
     background: #00ECCF;
-  }
+  } */
 
   /*---------------------------------------
      FOOTER
@@ -800,44 +800,6 @@
     list-style: none;
     margin: 5px 10px 5px 0;
   }
-
-
-
-  /*---------------------------------------
-     SOCIAL ICON
-  -----------------------------------------*/
-
-  .social-icon {
-    position: relative;
-    padding: 0;
-    margin: 0;
-  }
-
-  .social-icon li {
-    display: inline-block;
-    list-style: none;
-    margin-bottom: 5px;
-  }
-
-  .social-icon li a {
-    border-radius: 100px;
-    color: #4CEBCF;
-    font-size: 15px;
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
-    text-decoration: none;
-    text-align: center;
-    transition: all 0.4s ease-in-out;
-    position: relative;
-    margin: 5px 5px 5px 0;
-  }
-
-  .social-icon li a:hover {
-    background: #4CEBCF;
-    color: #ffffff;
-  }
-
 
 
   /*---------------------------------------

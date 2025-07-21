@@ -32,9 +32,10 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
       </div>
    </section>
 
+
    <section id="cardscursos">
       <div class="container">
-         <div class="row">
+         <div class="row row-eq-height">
             <?php if (count($cursos) === 0): ?>
                <p>No hay cursos para mostrar.</p>
             <?php else: ?>
@@ -46,20 +47,22 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
                   $rnCurso = substr($nCurso, 0, 30);
                   ?>
                   <div class="col-md-4 col-sm-6 team-marg mb-4">
-                     <div class="team-thumb">
+                     <div class="team-thumb card-curso">
                         <div class="team-image">
-                           <a href="<?= $value["url_amiga"] ?>"><img src="App/<?= $value["banner"] ?>" class="img-responsive" alt="Curso Calibélula"></a>
+                           <a href="<?= $value["url_amiga"] ?>"><img src="App/<?= $value["banner"] ?>" class="img-responsive post-curso" alt="Curso"></a>
                         </div>
                         <div class="team-info">
                            <h3><a href="<?= $value["url_amiga"] ?>"><?= $rnCurso ?></a></h3>
                            <a href="<?= $value["url_amiga"] ?>"><span><?= $resulDescripcion ?></span></a>
-                           <h4 class="valorC">$ <?= $value["valor"] == 0 ? "Gratis" : $value["valor"] ?></h4>
-                           <p>Profesor: <?= $value["id_persona"] ?></p>
-                           <div class="d-grid gap-2">
-                              <a class="ingresar-btn btn btn-default" href="<?= $value["url_amiga"] ?>" role="button">Ver Curso</a>
+                           <div class="curso-footer">
+                              <h4 class="valorC">$ <?= $value["valor"] == 0 ? "Gratis" : $value["valor"] ?></h4>
+                              <p>Profesor: <?= $value["id_persona"] ?></p>
+                              <div class="d-grid gap-2">
+                                 <a class="ingresar-btn btn btn-default" href="<?= $value["url_amiga"] ?>" role="button">Ver Curso</a>
+                              </div>
                            </div>
                         </div>
-                        <ul class="social-icon">
+                        <ul class="social-icon mt-auto">
                            <li><a href="https://www.instagram.com/festivaldecine_calibelula/" class="fa fa-instagram" target="_blank"></a></li>
                            <li><a href="https://www.facebook.com/festivaldecinecalibelula/" class="fa fa-facebook-square" target="_blank"></a></li>
                            <li><a href="https://www.youtube.com/channel/UCWbTp6hNKlX7QPKsNMYbCWg" class="fa fa-youtube-play" target="_blank"></a></li>
@@ -72,6 +75,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
          </div>
       </div>
    </section>
+
 
 </body>
 
