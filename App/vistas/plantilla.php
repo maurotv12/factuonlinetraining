@@ -37,6 +37,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <link rel="stylesheet" href="vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="vistas/assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="vistas/assets/vendors/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="vistas/assets/css/menu.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
     <link rel="stylesheet" href="vistas/assets/css/app.css">

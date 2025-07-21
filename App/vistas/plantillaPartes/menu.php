@@ -8,7 +8,13 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
         <div class="sidebar-header">
             <div class="d-flex justify-content-between">
                 <div style="font-family: 'Nunito', sans-serif;">
-                    <span class="colorCursos">Cali</span><span class="colorCursos2">Belula</span>
+                    <?php
+                    // Ruta dinámica que siempre apuntará al logo
+                    $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
+                    $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+                    ?>
+                    <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="Logo">
+
                 </div>
                 <div class="toggler">
                     <a href="#" class="sidebar-hide d-xl-none d-block">
