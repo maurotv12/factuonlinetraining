@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-07-2025 a las 15:36:43
+-- Tiempo de generación: 21-07-2025 a las 21:53:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -82,11 +82,16 @@ CREATE TABLE `curso` (
 --
 
 INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `banner`, `promo_video`, `valor`, `id_categoria`, `id_persona`, `estado`, `fecha_registro`) VALUES
-(1, 'peliculas-y-cortometrajes', 'NIÑOS QUE HACEN PELICULAS Y CORTOMETRAJES EN CALIBELULA', 'Calibélula vivirá un nuevo encuentro con niños y adolescentes, orientados bajo el liderazgo de procesos como La Escuela Audiovisual, Belén de los Andaquies, en el Caquetá, Mi Primer corto Infantil de México y Subí que te veo de Argentina.\r\n', 'App/vistas/img/cursos/1 (1).png', 'videosPromos/PROMO-diverti-motion.mp4', 80000, 2, 1, 'activo', '2025-07-14 16:21:17'),
-(2, 'peliculas-y-cortometrajes-en', 'NIÑOS QUE HACEN PELICULAS Y CORTOMETRAJES EN CALIBELULA', 'Calibélula vivirá un nuevo encuentro con niños y adolescentes, orientados bajo el liderazgo de procesos como La Escuela Audiovisual, Belén de los Andaquies, en el Caquetá, Mi Primer corto Infantil de México y Subí que te veo de Argentina.\r\n', 'App/vistas/img/cursos/1 (2).png', 'videosPromos/PROMO-diverti-motion.mp4', 70000, 2, 1, 'activo', '2025-07-14 16:23:59'),
-(3, 'talleres-libelulitos', 'Talleres Libelulit@s y convocatoria a realizadores cinematográficos', 'La magia del cine y el audiovisual regresan a Cali para el mundo, a partir del 30 de abril, cuando se hará el lanzamiento oficial del 5º- Festival Internacional de Cine Infantil y Juvenil, Calibélula, con la apertura de la convocatoria dirigida a directores, realizadores y productores para que envíen sus producciones cinematográficas antes del 15 de Junio, a través de Festhome y Google Drive. La convocatoria también estará dirigida a instituciones educativas, niños y jóvenes en general para que participen de los talleres de Libelulit@s que se dictáran gratuitamente a partir del mes de mayo.', 'App/vistas/img/cursos/1 (3).png', 'videosPromos/PROMO-diverti-motion.mp4', 100000, 2, 1, 'activo', '2025-07-14 16:24:30'),
-(4, 'curso-php', 'COMO HACER UNA PAGINA WEB', 'Pagina web en PHP y JS', 'App/vistas/img/cursos/1 (5).jpg', 'videosPromos/PROMO-diverti-motion.mp4', 90000, 2, 1, 'activo', '2025-07-14 16:25:20'),
-(5, 'tecnologia-en-aritmetica', 'Tecnologia en Aritmetica', 'Curso es muy importante', 'App/vistas/img/cursos/687a7e30812fe_images.jpg', 'videosPromos/687a7e30818f3_Vídeo de ríos gratis sin copyright 1 _ Paisaje _ Piedra _ Naturaleza - Pixabay - Videos Sin Copyright (720p, h264).mp4', 70000, 1, NULL, 'activo', '2025-07-18 17:02:40');
+(1, 'peliculas-y-cortometrajes', 'NIÑOS QUE HACEN PELICULAS Y CORTOMETRAJES EN CALIBELULA', 'Calibélula vivirá un nuevo encuentro con niños y adolescentes, orientados bajo el liderazgo de procesos como La Escuela Audiovisual, Belén de los Andaquies, en el Caquetá, Mi Primer corto Infantil de México y Subí que te veo de Argentina.\r\n', 'vistas/img/cursos/1 (1).png', 'videosPromos/PROMO-diverti-motion.mp4', 80000, 2, 1, 'activo', '2025-07-14 16:21:17'),
+(2, 'peliculas-y-cortometrajes-en', 'NIÑOS QUE HACEN PELICULAS Y CORTOMETRAJES EN CALIBELULA', 'Calibélula vivirá un nuevo encuentro con niños y adolescentes, orientados bajo el liderazgo de procesos como La Escuela Audiovisual, Belén de los Andaquies, en el Caquetá, Mi Primer corto Infantil de México y Subí que te veo de Argentina.\r\n', 'vistas/img/cursos/1 (2).png', 'videosPromos/PROMO-diverti-motion.mp4', 70000, 2, 1, 'activo', '2025-07-14 16:23:59'),
+(3, 'talleres-libelulitos', 'Talleres Libelulit@s y convocatoria a realizadores cinematográficos', 'La magia del cine y el audiovisual regresan a Cali para el mundo, a partir del 30 de abril, cuando se hará el lanzamiento oficial del 5º- Festival Internacional de Cine Infantil y Juvenil, Calibélula, con la apertura de la convocatoria dirigida a directores, realizadores y productores para que envíen sus producciones cinematográficas antes del 15 de Junio, a través de Festhome y Google Drive. La convocatoria también estará dirigida a instituciones educativas, niños y jóvenes en general para que participen de los talleres de Libelulit@s que se dictáran gratuitamente a partir del mes de mayo.', 'vistas/img/cursos/1 (3).png', 'videosPromos/PROMO-diverti-motion.mp4', 100000, 2, 1, 'activo', '2025-07-14 16:24:30'),
+(4, 'curso-php', 'COMO HACER UNA PAGINA WEB', 'Pagina web en PHP y JS', 'vistas/img/cursos/1 (5).jpg', 'videosPromos/PROMO-diverti-motion.mp4', 90000, 2, 1, 'activo', '2025-07-14 16:25:20'),
+(5, 'tecnologia-en-aritmetica', 'Tecnologia en Aritmetica', 'Curso es muy importante', 'vistas/img/cursos/687a7e30812fe_images.jpg', 'videosPromos/687a7e30818f3_Vídeo de ríos gratis sin copyright 1 _ Paisaje _ Piedra _ Naturaleza - Pixabay - Videos Sin Copyright (720p, h264).mp4', 70000, 1, NULL, 'activo', '2025-07-18 17:02:40'),
+(6, 'tecnologia-en-aritmeticaaaaaaaaa', 'Tecnologia en Aritmeticaaaaaaaaa', 'sadasdad', 'vistas/img/cursos/687e4f78d35ce_3W2KSMRJUVJHDGDB5UZZCJ3PTE.jpg', NULL, 80, 1, NULL, 'activo', '2025-07-21 14:32:24'),
+(7, 'tecnologia-en-programaci-n', 'Tecnologia en Programación', 'gghgfhfh', 'vistas/img/cursos/687e545a8f012_premium_photo-1666672388644-2d99f3feb9f1.jpg', NULL, 23, 2, NULL, 'activo', '2025-07-21 14:53:14'),
+(8, 'tecnologia-en-logica', 'Tecnologia en logica', 'dasdasd', 'vistas/img/cursos/687e564c4c2bd_depositphotos_234542254-stock-illustration-man-profile-smiling-cartoon-vector.jpg', NULL, 23, 1, NULL, 'activo', '2025-07-21 15:01:32'),
+(9, 'tecnologia-en-perritos', 'Tecnologia en perritos', 'La tecnología ha transformado la forma en que cuidamos a nuestros perros, ofreciendo herramientas para mejorar su salud, seguridad y bienestar. Desde dispositivos portátiles que monitorean su actividad y signos vitales, hasta sistemas de ubicación GPS para evitar pérdidas, la innovación tecnológica ha llegado para quedarse en el mundo canino.\r\nWearables:\r\nDispositivos como collares inteligentes con GPS y sensores de salud, que permiten a los dueños monitorear la actividad física, la frecuencia cardíaca y respiratoria, e incluso detectar problemas de salud antes de que se manifiesten síntomas visibles. \r\nComederos y bebederos automáticos:\r\nProgramables para asegurar que tu perro reciba la cantidad adecuada de alimento y agua, incluso cuando no estás en casa. \r\nCámaras de vigilancia:\r\nPermiten observar a tu mascota a distancia, interactuar con ella a través de audio y video, y asegurarte de que está bien. ', 'vistas/img/cursos/687e68537ff02_287133.jpg', NULL, 80, 1, NULL, 'activo', '2025-07-21 16:18:27'),
+(10, 'tecnologia-en-tarott', 'Tecnologia en tarott', 'maksdklajd', 'vistas/img/cursos/687e871a23717_2871333.jpg', NULL, 34, 1, 2, 'activo', '2025-07-21 18:29:46');
 
 -- --------------------------------------------------------
 
@@ -155,7 +160,34 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (16, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-16 11:23:44'),
 (17, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-17 12:06:06'),
 (18, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-18 09:04:10'),
-(19, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-18 14:44:19');
+(19, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-18 14:44:19'),
+(20, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 08:40:33'),
+(21, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 08:40:39'),
+(22, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 08:42:08'),
+(23, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 09:28:01'),
+(24, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 09:51:48'),
+(25, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 09:52:49'),
+(26, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 09:54:03'),
+(27, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 11:17:00'),
+(28, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 11:25:04'),
+(29, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 11:43:17'),
+(30, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 11:47:52'),
+(31, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 11:49:40'),
+(32, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 11:50:10'),
+(33, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 12:01:31'),
+(34, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:12:45'),
+(35, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:22:50'),
+(36, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:25:46'),
+(37, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:29:28'),
+(38, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:49:48'),
+(39, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:49:58'),
+(40, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:53:07'),
+(41, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:53:26'),
+(42, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:55:25'),
+(43, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:55:28'),
+(44, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 13:55:30'),
+(45, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 14:07:06'),
+(46, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-21 14:48:56');
 
 -- --------------------------------------------------------
 
@@ -215,6 +247,16 @@ CREATE TABLE `persona_roles` (
   `id_rol` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `persona_roles`
+--
+
+INSERT INTO `persona_roles` (`id_persona`, `id_rol`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -245,7 +287,7 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`id`, `nombre`) VALUES
 (1, 'admin'),
 (3, 'estudiante'),
-(2, 'instructor');
+(2, 'profesor');
 
 -- --------------------------------------------------------
 
@@ -410,7 +452,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `gestionpagos`
@@ -428,7 +470,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
