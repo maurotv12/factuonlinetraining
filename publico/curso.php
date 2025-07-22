@@ -1,58 +1,69 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
 include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
-?>
 
-
-<!-- CATEGORIAS -->
-<?php
-if (!isset($curso) && isset($_GET["pagina"])) {
-    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosInicio.controlador.php";
-    $item = "url_amiga";
-    $valor = $_GET["pagina"];
-    $curso = ControladorCursosInicio::ctrMostrarUnCursoInicio($item, $valor);
-}
-?>
-
-<?php
+// Importar controladores necesarios
 require_once "controladores/cursosInicio.controlador.php";
-//Modelos
 require_once "modelos/cursosInicio.modelo.php";
 require_once "controladores/ruta.controlador.php";
 
-// Obtener información de la categoría del curso
-$item = "id";
-$valor = $curso["id_categoria"];
-$tabla = "categoria";
-$cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla);
+// Obtener la URL amigable del curso
+$urlAmiga = $_GET["pagina"] ?? '';
 
-// Obtener información del profesor/instructor del curso
-$itemProfesor = "id";
-$valorProfesor = $curso["id_persona"];
-$tablaProfesor = "persona";
-$profesor = ControladorCursosInicio::ctrConsultarUnCursoInicio($itemProfesor, $valorProfesor, $tablaProfesor);
+// Obtener todos los datos del curso desde el controlador
+$datosCurso = ControladorCursosInicio::ctrObtenerDatosCursoCompleto($urlAmiga);
 
-// Obtener todas las categorías para mostrar en el sidebar
-$todasCategorias = ControladorCursosInicio::ctrMostrarCursosInicio();
-// Filtrar para obtener solo categorías únicas
-$categorias = [];
-$categoriasVistas = [];
-foreach ($todasCategorias as $cursoTemp) {
-    if (!in_array($cursoTemp["id_categoria"], $categoriasVistas)) {
-        $categorias[] = ControladorCursosInicio::ctrConsultarUnCursoInicio("id", $cursoTemp["id_categoria"], "categoria");
-        $categoriasVistas[] = $cursoTemp["id_categoria"];
-    }
+// Si no se encuentra el curso, redirigir a error 404
+if (!$datosCurso) {
+    include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas/error404.php";
+    exit;
 }
 
-$rutaInicio = ControladorRuta::ctrRutaInicio();
+// Extraer variables para facilitar el uso en la vista
+extract($datosCurso);
 ?>
+
+<style>
+    .list-icon {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 25px;
+    }
+
+    .list-icon li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .list-icon li i {
+        position: absolute;
+        left: 0;
+        top: 4px;
+    }
+
+    .aprenderas-container,
+    .requisitos-container {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .aprenderas-container h4,
+    .requisitos-container h4 {
+        color: #343a40;
+        margin-bottom: 15px;
+    }
+</style>
 <div class="fondoCursoBanner">
     <div class="container">
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-4 col-sm-4">
                 <h4><span class="tituloCurso"><?php echo $curso["nombre"]; ?></span></h4>
-                <p class="categoria">Categoria: <?php echo $cate["nombre"]; ?></p>
+                <p class="categoria">Categoria: <?php echo $categoria["nombre"]; ?></p>
                 <p class="star">
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
@@ -88,22 +99,15 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
             <br>
 
             <!-- Lo que aprenderás con este curso -->
-            <?php if (!empty($curso["lo_que_aprenderas"])): ?>
+            <?php if (!empty($aprendizajes)): ?>
                 <div class="aprenderas-container">
                     <h4 class="categoria mb-3">Lo que aprenderás con este curso</h4>
                     <div class="row">
                         <div class="col-md-12">
                             <ul class="list-icon">
-                                <?php
-                                $aprendizajes = explode("\n", $curso["lo_que_aprenderas"]);
-                                foreach ($aprendizajes as $aprendizaje):
-                                    if (trim($aprendizaje) !== ""):
-                                ?>
-                                        <li><i class="fa fa-check-circle text-success"></i> <?php echo htmlspecialchars(trim($aprendizaje)); ?></li>
-                                <?php
-                                    endif;
-                                endforeach;
-                                ?>
+                                <?php foreach ($aprendizajes as $aprendizaje): ?>
+                                    <li><i class="fa fa-check-circle text-success"></i> <?php echo $aprendizaje; ?></li>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
                     </div>
@@ -115,22 +119,15 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
             <p class="descri"><?php echo nl2br($curso["descripcion"]); ?></p>
 
             <!-- Requisitos del curso -->
-            <?php if (!empty($curso["requisitos"])): ?>
+            <?php if (!empty($requisitos)): ?>
                 <div class="requisitos-container mt-4">
                     <h4 class="categoria mb-3">Requisitos</h4>
                     <div class="row">
                         <div class="col-md-12">
                             <ul class="list-icon">
-                                <?php
-                                $reqs = explode("\n", $curso["requisitos"]);
-                                foreach ($reqs as $req):
-                                    if (trim($req) !== ""):
-                                ?>
-                                        <li><i class="fa fa-arrow-right text-primary"></i> <?php echo htmlspecialchars(trim($req)); ?></li>
-                                <?php
-                                    endif;
-                                endforeach;
-                                ?>
+                                <?php foreach ($requisitos as $requisito): ?>
+                                    <li><i class="fa fa-arrow-right text-primary"></i> <?php echo $requisito; ?></li>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
                     </div>
@@ -161,20 +158,16 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
                         <p><?php echo $profesor["profesion"]; ?></p>
                     <?php endif; ?>
                     <?php if (!empty($profesor["biografia"])): ?>
-                        <?php
-                        // Procesar la biografía usando el controlador
-                        $bioData = ControladorCursosInicio::ctrProcesarBiografiaProfesor($profesor["biografia"]);
-                        ?>
                         <p id="bio-short" style="display:block;">
-                            <?php echo nl2br(htmlspecialchars($bioData['bioShort'])); ?>
-                            <?php if ($bioData['showVerMas']): ?>... <a href="#" id="ver-mas" onclick="document.getElementById('bio-short').style.display='none';document.getElementById('bio-full').style.display='block';return false;">Ver más</a><?php endif; ?>
+                            <?php echo nl2br(htmlspecialchars($profesor['bioData']['bioShort'])); ?>
+                            <?php if ($profesor['bioData']['showVerMas']): ?>... <a href="#" id="ver-mas" onclick="document.getElementById('bio-short').style.display='none';document.getElementById('bio-full').style.display='block';return false;">Ver más</a><?php endif; ?>
                         </p>
                         <p id="bio-full" style="display:none;">
-                            <?php echo nl2br(htmlspecialchars($bioData['bioFull'])); ?>
+                            <?php echo nl2br(htmlspecialchars($profesor['bioData']['bioFull'])); ?>
                             <a href="#" id="ver-menos" onclick="document.getElementById('bio-full').style.display='none';document.getElementById('bio-short').style.display='block';return false;">Ver menos</a>
                         </p>
                     <?php else: ?>
-                        <p>Instructor especializado en <?php echo $cate["nombre"]; ?></p>
+                        <p>Instructor especializado en <?php echo $categoria["nombre"]; ?></p>
                     <?php endif; ?>
                     <div class="br"></div>
                 </aside>
