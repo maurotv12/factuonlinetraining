@@ -737,7 +737,6 @@
   .courses-price.free span {
     background: #00ECCF;
   } */
-
   /*---------------------------------------
      FOOTER
   -----------------------------------------*/
@@ -745,6 +744,7 @@
   footer {
     background: #252020;
     padding: 20px 0;
+    color: #909090;
   }
 
   footer .titleFes {
@@ -758,6 +758,7 @@
 
   footer h2 {
     font-size: 20px;
+    color: #ffffff;
   }
 
   footer a,
@@ -782,7 +783,6 @@
   }
 
   .footer-info h2 {
-    color: #ffffff;
     padding: 0;
   }
 
@@ -801,6 +801,27 @@
     margin: 5px 10px 5px 0;
   }
 
+  /*---------------------------------------
+     STICKY FOOTER BASE
+  -----------------------------------------*/
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* Este es el contenedor principal del contenido */
+  main {
+    flex: 1;
+  }
 
   /*---------------------------------------
      RESPONSIVE STYLES

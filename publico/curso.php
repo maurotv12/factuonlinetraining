@@ -3,10 +3,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
 include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
 ?>
 
-<!--==================================================================
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/05/2022 Plataforma Calibelula mostrar Cursos
-===================================================================-->
+
 <!-- CATEGORIAS -->
 <?php
 if (!isset($curso) && isset($_GET["pagina"])) {
@@ -22,10 +19,31 @@ require_once "controladores/cursosInicio.controlador.php";
 //Modelos
 require_once "modelos/cursosInicio.modelo.php";
 require_once "controladores/ruta.controlador.php";
+
+// Obtener información de la categoría del curso
 $item = "id";
 $valor = $curso["id_categoria"];
 $tabla = "categoria";
 $cate = ControladorCursosInicio::ctrConsultarUnCursoInicio($item, $valor, $tabla);
+
+// Obtener información del profesor/instructor del curso
+$itemProfesor = "id";
+$valorProfesor = $curso["id_persona"];
+$tablaProfesor = "persona";
+$profesor = ControladorCursosInicio::ctrConsultarUnCursoInicio($itemProfesor, $valorProfesor, $tablaProfesor);
+
+// Obtener todas las categorías para mostrar en el sidebar
+$todasCategorias = ControladorCursosInicio::ctrMostrarCursosInicio();
+// Filtrar para obtener solo categorías únicas
+$categorias = [];
+$categoriasVistas = [];
+foreach ($todasCategorias as $cursoTemp) {
+    if (!in_array($cursoTemp["id_categoria"], $categoriasVistas)) {
+        $categorias[] = ControladorCursosInicio::ctrConsultarUnCursoInicio("id", $cursoTemp["id_categoria"], "categoria");
+        $categoriasVistas[] = $cursoTemp["id_categoria"];
+    }
+}
+
 $rutaInicio = ControladorRuta::ctrRutaInicio();
 ?>
 <div class="fondoCursoBanner">
@@ -68,15 +86,63 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
                 </iframe>
             </div>
             <br>
+
+            <!-- Lo que aprenderás con este curso -->
+            <?php if (!empty($curso["lo_que_aprenderas"])): ?>
+                <div class="aprenderas-container">
+                    <h4 class="categoria mb-3">Lo que aprenderás con este curso</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="list-icon">
+                                <?php
+                                $aprendizajes = explode("\n", $curso["lo_que_aprenderas"]);
+                                foreach ($aprendizajes as $aprendizaje):
+                                    if (trim($aprendizaje) !== ""):
+                                ?>
+                                        <li><i class="fa fa-check-circle text-success"></i> <?php echo htmlspecialchars(trim($aprendizaje)); ?></li>
+                                <?php
+                                    endif;
+                                endforeach;
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- Descripción del curso -->
             <p class="categoria">Descripción del cursos</p>
-            <p class="descri"><?php echo $curso["descripcion"]; ?>
+            <p class="descri"><?php echo nl2br($curso["descripcion"]); ?></p>
+
+            <!-- Requisitos del curso -->
+            <?php if (!empty($curso["requisitos"])): ?>
+                <div class="requisitos-container mt-4">
+                    <h4 class="categoria mb-3">Requisitos</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="list-icon">
+                                <?php
+                                $reqs = explode("\n", $curso["requisitos"]);
+                                foreach ($reqs as $req):
+                                    if (trim($req) !== ""):
+                                ?>
+                                        <li><i class="fa fa-arrow-right text-primary"></i> <?php echo htmlspecialchars(trim($req)); ?></li>
+                                <?php
+                                    endif;
+                                endforeach;
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <form method="post" action="registro/register">
                 <input type="hidden" value="<?php echo $curso["id"]; ?>" name="idCurso">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 mt-4">
                     <input type="submit" id="submit" class="ingresar-btn btn btn-default btn-lg" value="Comprar Curso">
                 </div>
             </form>
-            </p>
 
         </div>
 
@@ -85,11 +151,42 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
             <div class="blog_right_sidebar">
                 <h3 class="widget_title">Profesor</h3>
                 <aside class="single_sidebar_widget author_widget">
-                    <img class="rounded-circle" src="assets/img/taller-dm.png" alt="">
-                    <h4>Patriciaaaaaaaaaaaaaaaaaa Elena Patiño Yepes</h4>
-                    <p>Directora del Festival Internacional de Cine Infantil y Juvenil :: Calibélula</p>
-                    <p>Comunicadora Social Periodista de la Universidad Autónoma de Occidente; con especializaciones en Administración Pública y Gerencia de Marketing, de la Universidad del Valle; diplomados en proyectos internacionales; documental de creación; gestión financiera y de recursos, entre otros estudios.
-                    </p>
+                    <?php if (!empty($profesor["foto"]) && $profesor["foto"] != 'vistas/img/usuarios/default/default.png'): ?>
+                        <img class="rounded-circle" src="App/vistas/img/usuarios/<?php echo basename($profesor["foto"]); ?>" alt="Foto del profesor" style="width: 80px; height: 80px; object-fit: cover;">
+                    <?php else: ?>
+                        <img class="rounded-circle" src="assets/img/taller-dm.png" alt="Foto por defecto" style="width: 80px; height: 80px; object-fit: cover;">
+                    <?php endif; ?>
+                    <h4><?php echo $profesor["nombre"]; ?></h4>
+                    <?php if (!empty($profesor["profesion"])): ?>
+                        <p><?php echo $profesor["profesion"]; ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($profesor["biografia"])): ?>
+                        <?php
+                        $bio = $profesor["biografia"];
+                        $maxChars = 226;
+                        $maxWords = 40;
+                        $bioShort = $bio;
+                        $showVerMas = false;
+                        if (str_word_count($bio) > $maxWords || strlen($bio) > $maxChars) {
+                            $bioShort = mb_substr($bio, 0, $maxChars);
+                            $words = explode(' ', $bioShort);
+                            if (count($words) > $maxWords) {
+                                $bioShort = implode(' ', array_slice($words, 0, $maxWords));
+                            }
+                            $showVerMas = true;
+                        }
+                        ?>
+                        <p id="bio-short" style="display:block;">
+                            <?php echo nl2br(htmlspecialchars($bioShort)); ?>
+                            <?php if ($showVerMas): ?>... <a href="#" id="ver-mas" onclick="document.getElementById('bio-short').style.display='none';document.getElementById('bio-full').style.display='block';return false;">Ver más</a><?php endif; ?>
+                        </p>
+                        <p id="bio-full" style="display:none;">
+                            <?php echo nl2br(htmlspecialchars($bio)); ?>
+                            <a href="#" id="ver-menos" onclick="document.getElementById('bio-full').style.display='none';document.getElementById('bio-short').style.display='block';return false;">Ver menos</a>
+                        </p>
+                    <?php else: ?>
+                        <p>Instructor especializado en <?php echo $cate["nombre"]; ?></p>
+                    <?php endif; ?>
                     <div class="br"></div>
                 </aside>
 
@@ -97,14 +194,11 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
                     <h3 class="widget_title">Categorías</h3>
                     <div class="blog_info">
                         <div class="post_tag">
-                            <a href="#">Cine,</a>
-                            <a class="active" href="#">Stop Motion, </a>
-                            <a href="#">Animación 3D, </a>
-                            <a href="#">Cursos, </a>
-                            <a href="#">Animación, </a>
-                            <a href="#">Cine,</a>
-                            <a href="#">Películas animadas, </a>
-                            <a href="#">Series animadas.</a>
+                            <?php foreach ($categorias as $categoria): ?>
+                                <a href="#" class="<?php echo ($categoria["id"] == $curso["id_categoria"]) ? 'active' : ''; ?>">
+                                    <?php echo $categoria["nombre"]; ?>,
+                                </a>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </aside>

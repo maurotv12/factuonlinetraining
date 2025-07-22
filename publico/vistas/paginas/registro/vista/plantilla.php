@@ -20,6 +20,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <link rel=" stylesheet" href="/cursosApp/assets/css/styleCursos.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/auth.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/cursosInicio.css">
+  <link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublico.css">
 
   <link rel="icon" href="../favicon.jpg" sizes="32x32" />
   <link rel="icon" href="../favicon-180.jpg" sizes="192x192" />
@@ -29,33 +30,20 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 </head>
 
 <body>
+  <!-- MENU -->
+  <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/menu.php"; ?>
 
+  </main>
+  <?php
+  // Cargar la página solicitada
+  ControladorRuta::cargarVistaCursoInicio();
+  ?>
+  <main>
 
-
+    <footer>
+      <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/footer.php"; ?>
+    </footer>
 </body>
 
-<!-- MENU -->
-<?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/menu.php"; ?>
-
-<?php
-// Cargar la página solicitada
-// Si la página es login, register o forgot-password, se carga directamente
-// include ControladorRuta::ctrCargarPagina();
-ControladorRuta::cargarVistaCursoInicio();
-
-// if (isset($_GET["pagina"])) {
-//   if (
-//     $_GET["pagina"] == "login"  ||
-//     $_GET["pagina"] == "register" ||
-//     $_GET["pagina"] == "forgot-password"
-//   ) {
-//     include "paginas/" . $_GET["pagina"] . ".php";
-//   }
-// } else {
-//   include "paginas/register.php";
-// }
-?>
-
-<?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/footer.php"; ?>
 
 </html>
