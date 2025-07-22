@@ -1,10 +1,7 @@
 <?php
 //importar controlador de rutas
 require_once "ruta.controlador.php";
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/05/2022 Plataforma Cursos Ver cursos en inicio
- */
+
 
 class ControladorCursosInicio
 {
@@ -22,7 +19,7 @@ class ControladorCursosInicio
      /*--==========================================
      Mostrar cursos en inicio todos o solo 1
 ============================================--*/
-     static public function ctrMostrarUnCursoInicio($item, $valor)
+     public static function ctrMostrarUnCursoInicio($item, $valor)
      {
           $tabla = "curso";
           $cursos = ModeloCursosInicio::mdlMostrarCursosInicio($tabla, $item, $valor);
@@ -32,9 +29,47 @@ class ControladorCursosInicio
      /*--==========================================
   Consultar los datos de un curso en inicio
 ============================================--*/
-     static public function ctrConsultarUnCursoInicio($item, $valor, $tabla)
+     public static function ctrConsultarUnCursoInicio($item, $valor, $tabla)
      {
           $resul = ModeloCursosInicio::mdlConsultarUnCursoInicio($item, $valor, $tabla);
           return $resul;
+     }
+
+     /*--==========================================
+     Procesar biografía del profesor para vista
+     ============================================--*/
+     public static function ctrProcesarBiografiaProfesor($biografia, $maxWords = 40, $maxChars = 226)
+     {
+          if (empty($biografia)) {
+               return [
+                    'bioShort' => '',
+                    'bioFull' => '',
+                    'showVerMas' => false
+               ];
+          }
+
+          $bioFull = $biografia;
+          $bioShort = $biografia;
+          $showVerMas = false;
+
+          // Verificar si excede los límites
+          if (str_word_count($biografia) > $maxWords || strlen($biografia) > $maxChars) {
+               // Cortar por caracteres primero
+               $bioShort = mb_substr($biografia, 0, $maxChars);
+
+               // Luego verificar por palabras
+               $words = explode(' ', $bioShort);
+               if (count($words) > $maxWords) {
+                    $bioShort = implode(' ', array_slice($words, 0, $maxWords));
+               }
+
+               $showVerMas = true;
+          }
+
+          return [
+               'bioShort' => $bioShort,
+               'bioFull' => $bioFull,
+               'showVerMas' => $showVerMas
+          ];
      }
 }

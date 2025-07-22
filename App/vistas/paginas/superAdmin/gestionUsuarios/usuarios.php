@@ -35,9 +35,16 @@ $usuarios = ControladorUsuarios::ctrMostrarusuarios($item, $valor);
                                 <th>Usuario</th>
                                 <th>Nombre</th>
                                 <th>e-Mail</th>
-                                <th>Estado</th>
+                                <th>Número de Identificación</th>
+                                <th>Profesión</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Biografia</th>
                                 <th>País</th>
+                                <th>Ciudad</th>
+                                <th>Estado</th>
                                 <th>Fecha registro</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,8 +55,14 @@ $usuarios = ControladorUsuarios::ctrMostrarusuarios($item, $valor);
                                     <td><?php echo $value["usuario_link"] ?></td>
                                     <td><?php echo $value["nombre"] ?></td>
                                     <td><?php echo $value["email"] ?></td>
-                                    <td><?php echo $value["estado"] ?></td>
+                                    <td><?php echo $value["nro_identificacion"] ?></td>
+                                    <td><?php echo $value["profesion"] ?></td>
+                                    <td><?php echo $value["telefono"] ?></td>
+                                    <td><?php echo $value["direccion"] ?></td>
+                                    <td><?php echo $value["biografia"] ?></td>
                                     <td><?php echo $value["pais"] ?></td>
+                                    <td><?php echo $value["ciudad"] ?></td>
+                                    <td><?php echo $value["estado"] ?></td>
                                     <td><?php echo $value["fecha_registro"] ?></td>
                                 </tr>
 

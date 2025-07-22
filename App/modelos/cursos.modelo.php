@@ -30,12 +30,15 @@ class ModeloCursos
 
 	public static function mdlCrearCurso($tabla, $datos)
 	{
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (url_amiga, nombre, descripcion, banner, promo_video, valor, id_categoria, id_persona, estado) 
-        VALUES (:url_amiga, :nombre, :descripcion, :banner, :promo_video, :valor, :id_categoria, :id_persona, :estado)");
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (url_amiga, nombre, descripcion, lo_que_aprenderas, requisitos, para_quien, banner, promo_video, valor, id_categoria, id_persona, estado) 
+        VALUES (:url_amiga, :nombre, :descripcion, :lo_que_aprenderas, :requisitos, :para_quien, :banner, :promo_video, :valor, :id_categoria, :id_persona, :estado)");
 
 		$stmt->bindParam(":url_amiga", $datos["url_amiga"], PDO::PARAM_STR);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":lo_que_aprenderas", $datos["lo_que_aprenderas"], PDO::PARAM_STR);
+		$stmt->bindParam(":requisitos", $datos["requisitos"], PDO::PARAM_STR);
+		$stmt->bindParam(":para_quien", $datos["para_quien"], PDO::PARAM_STR);
 		$stmt->bindParam(":banner", $datos["banner"], PDO::PARAM_STR);
 		$stmt->bindParam(":promo_video", $datos["promo_video"], PDO::PARAM_STR);
 		$stmt->bindParam(":valor", $datos["valor"], PDO::PARAM_INT);

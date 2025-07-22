@@ -162,26 +162,15 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
                     <?php endif; ?>
                     <?php if (!empty($profesor["biografia"])): ?>
                         <?php
-                        $bio = $profesor["biografia"];
-                        $maxChars = 226;
-                        $maxWords = 40;
-                        $bioShort = $bio;
-                        $showVerMas = false;
-                        if (str_word_count($bio) > $maxWords || strlen($bio) > $maxChars) {
-                            $bioShort = mb_substr($bio, 0, $maxChars);
-                            $words = explode(' ', $bioShort);
-                            if (count($words) > $maxWords) {
-                                $bioShort = implode(' ', array_slice($words, 0, $maxWords));
-                            }
-                            $showVerMas = true;
-                        }
+                        // Procesar la biografía usando el controlador
+                        $bioData = ControladorCursosInicio::ctrProcesarBiografiaProfesor($profesor["biografia"]);
                         ?>
                         <p id="bio-short" style="display:block;">
-                            <?php echo nl2br(htmlspecialchars($bioShort)); ?>
-                            <?php if ($showVerMas): ?>... <a href="#" id="ver-mas" onclick="document.getElementById('bio-short').style.display='none';document.getElementById('bio-full').style.display='block';return false;">Ver más</a><?php endif; ?>
+                            <?php echo nl2br(htmlspecialchars($bioData['bioShort'])); ?>
+                            <?php if ($bioData['showVerMas']): ?>... <a href="#" id="ver-mas" onclick="document.getElementById('bio-short').style.display='none';document.getElementById('bio-full').style.display='block';return false;">Ver más</a><?php endif; ?>
                         </p>
                         <p id="bio-full" style="display:none;">
-                            <?php echo nl2br(htmlspecialchars($bio)); ?>
+                            <?php echo nl2br(htmlspecialchars($bioData['bioFull'])); ?>
                             <a href="#" id="ver-menos" onclick="document.getElementById('bio-full').style.display='none';document.getElementById('bio-short').style.display='block';return false;">Ver menos</a>
                         </p>
                     <?php else: ?>
