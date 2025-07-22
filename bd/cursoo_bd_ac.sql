@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-07-2025 a las 18:01:14
+-- Tiempo de generación: 22-07-2025 a las 23:03:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -94,7 +94,9 @@ INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `lo_que_aprende
 (7, 'tecnologia-en-programaci-n', 'Tecnologia en Programación', 'gghgfhfh', NULL, NULL, NULL, 'vistas/img/cursos/687e545a8f012_premium_photo-1666672388644-2d99f3feb9f1.jpg', NULL, 23, 2, 1, 'activo', '2025-07-21 14:53:14'),
 (8, 'tecnologia-en-logica', 'Tecnologia en logica', 'dasdasd', NULL, NULL, NULL, 'vistas/img/cursos/687e564c4c2bd_depositphotos_234542254-stock-illustration-man-profile-smiling-cartoon-vector.jpg', NULL, 23, 1, 2, 'activo', '2025-07-21 15:01:32'),
 (9, 'tecnologia-en-perritos', 'Tecnologia en perritos', 'La tecnología ha transformado la forma en que cuidamos a nuestros perros, ofreciendo herramientas para mejorar su salud, seguridad y bienestar. Desde dispositivos portátiles que monitorean su actividad y signos vitales, hasta sistemas de ubicación GPS para evitar pérdidas, la innovación tecnológica ha llegado para quedarse en el mundo canino.\r\nWearables:\r\nDispositivos como collares inteligentes con GPS y sensores de salud, que permiten a los dueños monitorear la actividad física, la frecuencia cardíaca y respiratoria, e incluso detectar problemas de salud antes de que se manifiesten síntomas visibles. \r\nComederos y bebederos automáticos:\r\nProgramables para asegurar que tu perro reciba la cantidad adecuada de alimento y agua, incluso cuando no estás en casa. \r\nCámaras de vigilancia:\r\nPermiten observar a tu mascota a distancia, interactuar con ella a través de audio y video, y asegurarte de que está bien. ', NULL, NULL, NULL, 'vistas/img/cursos/687e68537ff02_287133.jpg', NULL, 80, 1, 1, 'activo', '2025-07-21 16:18:27'),
-(10, 'tecnologia-en-tarott', 'Tecnologia en tarott', 'maksdklajd', NULL, NULL, NULL, 'vistas/img/cursos/687e871a23717_2871333.jpg', NULL, 34, 1, 2, 'activo', '2025-07-21 18:29:46');
+(10, 'tecnologia-en-tarott', 'Tecnologia en tarott', 'maksdklajd', NULL, NULL, NULL, 'vistas/img/cursos/687e871a23717_2871333.jpg', NULL, 34, 1, 2, 'activo', '2025-07-21 18:29:46'),
+(11, 'metodolog-a-de-la-programaci-n-pseint-dfd-c-', 'Metodología de la Programación | PSeInt, DFD, C++', 'Dirigido para principiantes que quieren aprender a crear algoritmos en PSeInt para migrar su contenido a diagramas de flujo y después a un lenguaje de programación conociendo sus fundamentos previos y entender el manejo de los programas.\r\n\r\nConocerás la metodología para resolver problemas usando la programación en un ambiente institucional educativo y laboral \r\n\r\nConceptos básicos de la programación\r\n\r\nDiseñaras tus primeros algoritmos en PSeInt\r\n\r\nConoce el software que crea diagramas de flujo funcionales como lo es DFD\r\n\r\nTemario Principal\r\n\r\nBienvenidos\r\n\r\nMetas\r\n\r\nUniversidad\r\n\r\nVentajas de estudiar programación\r\n\r\nLenguajes de programación\r\n\r\n¿Qué es un algoritmo?\r\n\r\nCaracteristicas de los algoritmos\r\n\r\n¿Qué es un diagrama de flujo?\r\n\r\nSímbolos utilizados en los diagramas de flujo\r\n\r\n¿Qué es un pseudocódigo?\r\n\r\n¿Qué es PSeInt?\r\n\r\nDefiniciones\r\n\r\nUna variable es un espacio de la memoria donde guardar información\r\n\r\nLa información que se guarda en la variable puede ser de diversos tipos y puede ir cambiando a lo largo del programa\r\n\r\nCada variable tiene un tipo de dato asociado, por lo que siempre guardará el mismo tipo de dato\r\n\r\nUna variable que guarde un número no podrá guardar después otro tipo que no sea un número\r\n\r\nLas expresiones son combinaciones de constantes, variables y operadores que nos permiten trabajar con los datos\r\n\r\nDependiendo de los operadores utilizados en ellas, pueden ser de varios tipos: aritméticas, relacionales, lógicas, alfanuméricas y de asignación', NULL, NULL, NULL, 'vistas/img/cursos/687fbedfc3004_2871333a.jpg', NULL, 90000, 2, 1, 'activo', '2025-07-22 16:39:59'),
+(12, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'asd', 'asd', 'asd', 'asd', 'vistas/img/cursos/687fc17e343f8_2871333aa.jpg', NULL, 234324, 1, 2, 'activo', '2025-07-22 16:51:10');
 
 -- --------------------------------------------------------
 
@@ -210,7 +212,17 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (49, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 08:46:40'),
 (50, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 10:36:32'),
 (51, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 10:36:41'),
-(52, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 10:49:52');
+(52, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 10:49:52'),
+(53, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 11:19:44'),
+(54, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 11:54:00'),
+(55, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 14:19:51'),
+(56, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 14:20:17'),
+(57, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:04:35'),
+(58, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:22:17'),
+(59, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:35:15'),
+(60, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:40:09'),
+(61, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:41:13'),
+(62, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:52:11');
 
 -- --------------------------------------------------------
 
@@ -484,7 +496,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `email_verificacion_tokens`
@@ -508,7 +520,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
