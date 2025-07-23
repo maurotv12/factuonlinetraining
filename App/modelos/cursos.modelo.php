@@ -54,4 +54,176 @@ class ModeloCursos
 
 		$stmt = null;
 	}
+
+	/*=============================================
+	Actualizar Curso
+	=============================================*/
+	public static function mdlActualizarCurso($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("UPDATE curso SET 
+			nombre = :nombre,
+			descripcion = :descripcion,
+			lo_que_aprenderas = :lo_que_aprenderas,
+			requisitos = :requisitos,
+			para_quien = :para_quien,
+			valor = :valor,
+			id_categoria = :id_categoria,
+			id_persona = :id_persona,
+			estado = :estado
+			WHERE id = :id");
+
+		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
+		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":lo_que_aprenderas", $datos["lo_que_aprenderas"], PDO::PARAM_STR);
+		$stmt->bindParam(":requisitos", $datos["requisitos"], PDO::PARAM_STR);
+		$stmt->bindParam(":para_quien", $datos["para_quien"], PDO::PARAM_STR);
+		$stmt->bindParam(":valor", $datos["valor"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_categoria", $datos["id_categoria"], PDO::PARAM_INT);
+		$stmt->bindParam(":id_persona", $datos["id_persona"], PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
+
+	/*=============================================
+	Métodos para gestión de secciones
+	=============================================*/
+	public static function mdlCrearSeccion($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden, estado) 
+			VALUES (:id_curso, :titulo, :descripcion, :orden, :estado)");
+
+		$stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
+		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return Conexion::conectar()->lastInsertId();
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
+
+	public static function mdlActualizarSeccion($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("UPDATE curso_secciones SET 
+			titulo = :titulo,
+			descripcion = :descripcion,
+			orden = :orden,
+			estado = :estado
+			WHERE id = :id");
+
+		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
+
+	public static function mdlEliminarSeccion($id)
+	{
+		$stmt = Conexion::conectar()->prepare("DELETE FROM curso_secciones WHERE id = :id");
+		$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
+
+	/*=============================================
+	Métodos para gestión de contenido de secciones
+	=============================================*/
+	public static function mdlCrearContenido($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("INSERT INTO seccion_contenido 
+			(id_seccion, titulo, descripcion, tipo, archivo_url, duracion, tamaño_archivo, orden, estado) 
+			VALUES (:id_seccion, :titulo, :descripcion, :tipo, :archivo_url, :duracion, :tamaño_archivo, :orden, :estado)");
+
+		$stmt->bindParam(":id_seccion", $datos["id_seccion"], PDO::PARAM_INT);
+		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_STR);
+		$stmt->bindParam(":archivo_url", $datos["archivo_url"], PDO::PARAM_STR);
+		$stmt->bindParam(":duracion", $datos["duracion"], PDO::PARAM_STR);
+		$stmt->bindParam(":tamaño_archivo", $datos["tamaño_archivo"], PDO::PARAM_INT);
+		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return Conexion::conectar()->lastInsertId();
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
+
+	public static function mdlActualizarContenido($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido SET 
+			titulo = :titulo,
+			descripcion = :descripcion,
+			tipo = :tipo,
+			archivo_url = :archivo_url,
+			duracion = :duracion,
+			tamaño_archivo = :tamaño_archivo,
+			orden = :orden,
+			estado = :estado
+			WHERE id = :id");
+
+		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+		$stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_STR);
+		$stmt->bindParam(":archivo_url", $datos["archivo_url"], PDO::PARAM_STR);
+		$stmt->bindParam(":duracion", $datos["duracion"], PDO::PARAM_STR);
+		$stmt->bindParam(":tamaño_archivo", $datos["tamaño_archivo"], PDO::PARAM_INT);
+		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
+
+	public static function mdlEliminarContenido($id)
+	{
+		$stmt = Conexion::conectar()->prepare("DELETE FROM seccion_contenido WHERE id = :id");
+		$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+
+		$stmt = null;
+	}
 }

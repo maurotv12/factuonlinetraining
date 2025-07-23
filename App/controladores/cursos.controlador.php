@@ -217,4 +217,72 @@ class ControladorCursos
 		// Delegar al método del controlador de usuarios
 		return ControladorUsuarios::ctrProcesarBiografiaUsuario($biografia, $maxWords, $maxChars);
 	}
+
+	/*--==========================================
+	Gestión de secciones del curso
+	============================================--*/
+	public static function ctrCrearSeccion($datos)
+	{
+		$respuesta = ModeloCursos::mdlCrearSeccion($datos);
+		return $respuesta;
+	}
+
+	public static function ctrActualizarSeccion($datos)
+	{
+		$respuesta = ModeloCursos::mdlActualizarSeccion($datos);
+		return $respuesta;
+	}
+
+	public static function ctrEliminarSeccion($id)
+	{
+		$respuesta = ModeloCursos::mdlEliminarSeccion($id);
+		return $respuesta;
+	}
+
+	/*--==========================================
+	Gestión de contenido de secciones
+	============================================--*/
+	public static function ctrCrearContenido($datos)
+	{
+		$respuesta = ModeloCursos::mdlCrearContenido($datos);
+		return $respuesta;
+	}
+
+	public static function ctrActualizarContenido($datos)
+	{
+		$respuesta = ModeloCursos::mdlActualizarContenido($datos);
+		return $respuesta;
+	}
+
+	public static function ctrEliminarContenido($id)
+	{
+		$respuesta = ModeloCursos::mdlEliminarContenido($id);
+		return $respuesta;
+	}
+
+	/*--==========================================
+	Subir archivos para contenido
+	============================================--*/
+	public static function ctrSubirArchivoContenido($archivo, $tipo)
+	{
+		if (isset($archivo) && $archivo['error'] == 0) {
+			$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+			$nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
+			
+			// Directorio según el tipo
+			$directorio = $tipo == 'video' ? 'vistas/videos/' : 'vistas/documentos/';
+			
+			if (!file_exists($directorio)) {
+				mkdir($directorio, 0777, true);
+			}
+			
+			$rutaDestino = $directorio . $nombreArchivo;
+			
+			if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+				return $rutaDestino;
+			}
+		}
+		
+		return false;
+	}
 }

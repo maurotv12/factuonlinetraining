@@ -19,8 +19,11 @@ class ControladorGeneral
 	public static function ctrRutaApp()
 	{
 		return "http://localhost/cursosApp/registro/App/"; //Ruta ingresar al dashboard entorno local
+	}
 
-
+	public static function ctrRutaVerCurso()
+	{
+		return "http://localhost/cursosApp/verCurso.php"; //Ruta para ver un curso específico
 	}
 	public static function ctrCargarPagina()
 	{

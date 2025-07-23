@@ -14,6 +14,8 @@ $cursos = ControladorCursos::ctrMostrarCursos(null, null);
 
 // Conexión directa para obtener info de categorías y profesores
 $conn = Conexion::conectar();
+
+
 ?>
 
 <div class="container-fluid mt-4">
@@ -77,7 +79,7 @@ $conn = Conexion::conectar();
                                             <td><?= date("Y-m-d", strtotime($curso["fecha_registro"])) ?></td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="superAdmin/gestionCursos/verCurso&id=<?= $curso['id'] ?>" class="btn btn-sm btn-info">
+                                                    <a href="superAdmin/gestionCursos/verCurso=<?= $curso['id'] ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
                                                     </a>
                                                     <a href="superAdmin/gestionCursos/editarCurso&id=<?= $curso["id"] ?>" class="btn btn-sm btn-warning">

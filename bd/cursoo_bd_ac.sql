@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-07-2025 a las 23:03:44
+-- Tiempo de generación: 23-07-2025 a las 22:09:58
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -97,6 +97,23 @@ INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `lo_que_aprende
 (10, 'tecnologia-en-tarott', 'Tecnologia en tarott', 'maksdklajd', NULL, NULL, NULL, 'vistas/img/cursos/687e871a23717_2871333.jpg', NULL, 34, 1, 2, 'activo', '2025-07-21 18:29:46'),
 (11, 'metodolog-a-de-la-programaci-n-pseint-dfd-c-', 'Metodología de la Programación | PSeInt, DFD, C++', 'Dirigido para principiantes que quieren aprender a crear algoritmos en PSeInt para migrar su contenido a diagramas de flujo y después a un lenguaje de programación conociendo sus fundamentos previos y entender el manejo de los programas.\r\n\r\nConocerás la metodología para resolver problemas usando la programación en un ambiente institucional educativo y laboral \r\n\r\nConceptos básicos de la programación\r\n\r\nDiseñaras tus primeros algoritmos en PSeInt\r\n\r\nConoce el software que crea diagramas de flujo funcionales como lo es DFD\r\n\r\nTemario Principal\r\n\r\nBienvenidos\r\n\r\nMetas\r\n\r\nUniversidad\r\n\r\nVentajas de estudiar programación\r\n\r\nLenguajes de programación\r\n\r\n¿Qué es un algoritmo?\r\n\r\nCaracteristicas de los algoritmos\r\n\r\n¿Qué es un diagrama de flujo?\r\n\r\nSímbolos utilizados en los diagramas de flujo\r\n\r\n¿Qué es un pseudocódigo?\r\n\r\n¿Qué es PSeInt?\r\n\r\nDefiniciones\r\n\r\nUna variable es un espacio de la memoria donde guardar información\r\n\r\nLa información que se guarda en la variable puede ser de diversos tipos y puede ir cambiando a lo largo del programa\r\n\r\nCada variable tiene un tipo de dato asociado, por lo que siempre guardará el mismo tipo de dato\r\n\r\nUna variable que guarde un número no podrá guardar después otro tipo que no sea un número\r\n\r\nLas expresiones son combinaciones de constantes, variables y operadores que nos permiten trabajar con los datos\r\n\r\nDependiendo de los operadores utilizados en ellas, pueden ser de varios tipos: aritméticas, relacionales, lógicas, alfanuméricas y de asignación', NULL, NULL, NULL, 'vistas/img/cursos/687fbedfc3004_2871333a.jpg', NULL, 90000, 2, 1, 'activo', '2025-07-22 16:39:59'),
 (12, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'asd', 'asd', 'asd', 'asd', 'vistas/img/cursos/687fc17e343f8_2871333aa.jpg', NULL, 234324, 1, 2, 'activo', '2025-07-22 16:51:10');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `curso_secciones`
+--
+
+CREATE TABLE `curso_secciones` (
+  `id` int(11) NOT NULL,
+  `id_curso` int(11) NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `orden` int(11) NOT NULL DEFAULT 1,
+  `estado` enum('activo','inactivo') DEFAULT 'activo',
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -222,7 +239,15 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (59, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:35:15'),
 (60, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:40:09'),
 (61, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:41:13'),
-(62, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:52:11');
+(62, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-22 15:52:11'),
+(63, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 08:37:57'),
+(64, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 08:53:52'),
+(65, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 09:17:10'),
+(66, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 10:20:22'),
+(67, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 12:09:16'),
+(68, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:09:33'),
+(69, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:19:57'),
+(70, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:54:58');
 
 -- --------------------------------------------------------
 
@@ -354,6 +379,27 @@ INSERT INTO `secciones` (`id`, `id_curso`, `nombre`, `descripcion`, `duracion`, 
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `seccion_contenido`
+--
+
+CREATE TABLE `seccion_contenido` (
+  `id` int(11) NOT NULL,
+  `id_seccion` int(11) NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `tipo` enum('video','pdf','texto','enlace') NOT NULL,
+  `archivo_url` varchar(500) DEFAULT NULL,
+  `duracion` varchar(10) DEFAULT NULL,
+  `tamaño_archivo` bigint(20) DEFAULT NULL,
+  `orden` int(11) NOT NULL DEFAULT 1,
+  `estado` enum('activo','inactivo') DEFAULT 'activo',
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `solicitudes_instructores`
 --
 
@@ -396,6 +442,13 @@ ALTER TABLE `curso`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_categoria` (`id_categoria`),
   ADD KEY `id_persona` (`id_persona`);
+
+--
+-- Indices de la tabla `curso_secciones`
+--
+ALTER TABLE `curso_secciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_curso_orden` (`id_curso`,`orden`);
 
 --
 -- Indices de la tabla `email_verificacion_tokens`
@@ -470,6 +523,13 @@ ALTER TABLE `secciones`
   ADD KEY `id_curso` (`id_curso`);
 
 --
+-- Indices de la tabla `seccion_contenido`
+--
+ALTER TABLE `seccion_contenido`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_seccion_orden` (`id_seccion`,`orden`);
+
+--
 -- Indices de la tabla `solicitudes_instructores`
 --
 ALTER TABLE `solicitudes_instructores`
@@ -499,6 +559,12 @@ ALTER TABLE `curso`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT de la tabla `curso_secciones`
+--
+ALTER TABLE `curso_secciones`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `email_verificacion_tokens`
 --
 ALTER TABLE `email_verificacion_tokens`
@@ -520,7 +586,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -553,6 +619,12 @@ ALTER TABLE `secciones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT de la tabla `seccion_contenido`
+--
+ALTER TABLE `seccion_contenido`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `solicitudes_instructores`
 --
 ALTER TABLE `solicitudes_instructores`
@@ -574,6 +646,12 @@ ALTER TABLE `archivos_adicionales`
 ALTER TABLE `curso`
   ADD CONSTRAINT `curso_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id`),
   ADD CONSTRAINT `curso_ibfk_2` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id`);
+
+--
+-- Filtros para la tabla `curso_secciones`
+--
+ALTER TABLE `curso_secciones`
+  ADD CONSTRAINT `curso_secciones_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `email_verificacion_tokens`
@@ -625,6 +703,12 @@ ALTER TABLE `requisitos_curso`
 --
 ALTER TABLE `secciones`
   ADD CONSTRAINT `secciones_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`);
+
+--
+-- Filtros para la tabla `seccion_contenido`
+--
+ALTER TABLE `seccion_contenido`
+  ADD CONSTRAINT `seccion_contenido_ibfk_1` FOREIGN KEY (`id_seccion`) REFERENCES `curso_secciones` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `solicitudes_instructores`
