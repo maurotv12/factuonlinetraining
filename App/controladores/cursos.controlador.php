@@ -268,21 +268,21 @@ class ControladorCursos
 		if (isset($archivo) && $archivo['error'] == 0) {
 			$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
 			$nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
-			
+
 			// Directorio según el tipo
 			$directorio = $tipo == 'video' ? 'vistas/videos/' : 'vistas/documentos/';
-			
+
 			if (!file_exists($directorio)) {
 				mkdir($directorio, 0777, true);
 			}
-			
+
 			$rutaDestino = $directorio . $nombreArchivo;
-			
+
 			if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
 				return $rutaDestino;
 			}
 		}
-		
+
 		return false;
 	}
 }
