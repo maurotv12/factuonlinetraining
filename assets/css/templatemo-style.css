@@ -27,7 +27,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Gloria Hallelujah', cursive;
+    font-family: 'Poppins', sans-serif;
     font-weight: bold;
     line-height: inherit;
   }
@@ -81,7 +81,7 @@
   }
 
   .botonMeGusta:hover {
-    color: #FF3D94;
+    color: #071491;
     background: transparent;
     font-size: 16px;
   }
@@ -93,14 +93,14 @@
   }
 
   .botonSubmitTaller:hover {
-    color: #FF3D94;
+    color: #0b0472;
     background: transparent;
     font-size: 14px;
   }
 
   /* boton ingresar menu  */
   .ingresar-btn {
-    background: #F93F90;
+    background: #0b0472;
     border: 1px solid #ffffff;
     color: #ffffff;
     font-size: inherit;
@@ -110,7 +110,7 @@
   }
 
   .ingresar-btn:hover {
-    background: #00ECCF;
+    background: #000000;
     border-color: transparent;
     border: 1px solid #ffffff;
     color: #ffffff;
@@ -120,16 +120,16 @@
     Fin Boton submit sin fondo
     ===========================*/
 
-
+  /* 
   .cardNotas {
-    -webkit-box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
+    -webkit-box-shadow: 7px 20px 32px -16px rgba(49, 46, 68, 0.52);
     -moz-box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
     box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
     border: 1px solid rgba(0, 234, 207, 0.52);
     border-radius: 80px 0px 80px 0px;
     -moz-border-radius: 80px 0px 80px 0px;
     -webkit-border-radius: 80px 0px 80px 0px;
-  }
+  } */
 
   .featureIMG {
     padding: 30px 40px 0px 0px;
@@ -163,7 +163,7 @@
   }
 
   input[type="checkbox"]:checked+label[for="politicas"] span {
-    background: #F93F90;
+    background: #000277;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
