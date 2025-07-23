@@ -1,10 +1,6 @@
 <?php
 
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-12/06/2022 Plataforma Cursos
- */
+
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -446,6 +442,63 @@ Cambiar contraseña
 				echo '<script>
 						window.location = "' . $rutaApp . 'perfil";
 					</script>';
+			}
+		}
+	}
+
+	/*--==========================================
+	Procesar biografía del usuario para mostrar Ver más/Ver menos
+	============================================--*/
+	public static function ctrProcesarBiografiaUsuario($biografia, $maxWords = 15, $maxChars = 100)
+	{
+		if (empty($biografia)) {
+			return [
+				'bioShort' => '',
+				'bioFull' => '',
+				'showVerMas' => false
+			];
+		}
+
+		$bioFull = $biografia;
+		$bioShort = $biografia;
+		$showVerMas = false;
+
+		// Verificar si excede los límites
+		if (str_word_count($biografia) > $maxWords || strlen($biografia) > $maxChars) {
+			// Cortar por caracteres primero
+			$bioShort = mb_substr($biografia, 0, $maxChars);
+
+			// Luego verificar por palabras
+			$words = explode(' ', $bioShort);
+			if (count($words) > $maxWords) {
+				$bioShort = implode(' ', array_slice($words, 0, $maxWords));
+			}
+
+			$showVerMas = true;
+		}
+
+		return [
+			'bioShort' => $bioShort,
+			'bioFull' => $bioFull,
+			'showVerMas' => $showVerMas
+		];
+	}
+
+	/*--==========================================
+	Actualizar roles de usuario
+	============================================--*/
+	public static function ctrActualizarRolesUsuario()
+	{
+		if (isset($_POST['idUsuario']) && isset($_POST['roles'])) {
+			$idUsuario = $_POST['idUsuario'];
+			$rolesSeleccionados = $_POST['roles'];
+
+			$respuesta = ModeloUsuarios::mdlActualizarRolesUsuario($idUsuario, $rolesSeleccionados);
+
+			if ($respuesta == "ok") {
+				return "ok";
+			} else {
+				return "error";
 			}
 		}
 	}

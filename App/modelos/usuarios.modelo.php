@@ -162,4 +162,49 @@ Actualizar usuario completar datos perfil
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devuelve un array de roles
 	}
+
+	/*=============================================
+	Obtener todos los roles disponibles
+	=============================================*/
+	public static function mdlObtenerRoles()
+	{
+		$conexion = Conexion::conectar();
+		$stmt = $conexion->prepare("SELECT id, nombre FROM roles ORDER BY nombre ASC");
+		$stmt->execute();
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/*=============================================
+	Actualizar roles de usuario
+	=============================================*/
+	public static function mdlActualizarRolesUsuario($idPersona, $rolesSeleccionados)
+	{
+		$conexion = Conexion::conectar();
+
+		try {
+			$conexion->beginTransaction();
+
+			// 1. Eliminar roles actuales
+			$stmtDelete = $conexion->prepare("DELETE FROM persona_roles WHERE id_persona = :idPersona");
+			$stmtDelete->bindParam(":idPersona", $idPersona, PDO::PARAM_INT);
+			$stmtDelete->execute();
+
+			// 2. Insertar nuevos roles seleccionados
+			if (!empty($rolesSeleccionados)) {
+				$stmtInsert = $conexion->prepare("INSERT INTO persona_roles (id_persona, id_rol) VALUES (:idPersona, :idRol)");
+
+				foreach ($rolesSeleccionados as $idRol) {
+					$stmtInsert->bindParam(":idPersona", $idPersona, PDO::PARAM_INT);
+					$stmtInsert->bindParam(":idRol", $idRol, PDO::PARAM_INT);
+					$stmtInsert->execute();
+				}
+			}
+
+			$conexion->commit();
+			return "ok";
+		} catch (Exception $e) {
+			$conexion->rollBack();
+			return "error: " . $e->getMessage();
+		}
+	}
 }

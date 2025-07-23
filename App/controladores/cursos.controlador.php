@@ -113,4 +113,108 @@ class ControladorCursos
 		$respuesta = ModeloCursos::mdlCrearCurso($tabla, $datos);
 		return $respuesta;
 	}
+
+	/*--==========================================
+	Consultar los datos de un curso específico
+	============================================--*/
+	public static function ctrConsultarUnCurso($item, $valor, $tabla)
+	{
+		$resul = ModeloCursos::mdlMostrarCursos($tabla, $item, $valor);
+		return $resul;
+	}
+
+	/*--==========================================
+	Obtener todos los datos del curso para la vista
+	============================================--*/
+	public static function ctrObtenerDatosCursoCompleto($item, $valor)
+	{
+		// Obtener datos del curso
+		$curso = self::ctrMostrarCursos($item, $valor);
+
+		if (!$curso) {
+			return null; // Curso no encontrado
+		}
+
+		// Obtener datos de la categoría
+		$categoria = self::ctrConsultarUnCurso("id", $curso["id_categoria"], "categoria");
+
+		// Obtener datos del profesor
+		$profesor = self::ctrConsultarUnCurso("id", $curso["id_persona"], "persona");
+
+		// Procesar biografía del profesor
+		$bioData = self::ctrProcesarBiografiaProfesor($profesor["biografia"] ?? '');
+
+		// Obtener y procesar todas las categorías
+		$todosCursos = self::ctrMostrarCursos(null, null);
+		$categorias = self::procesarCategorias($todosCursos);
+
+		// Procesar los campos de viñetas del curso
+		$aprendizajes = self::procesarViñetas($curso["lo_que_aprenderas"] ?? '');
+		$requisitos = self::procesarViñetas($curso["requisitos"] ?? '');
+		$paraQuien = self::procesarViñetas($curso["para_quien"] ?? '');
+
+		return [
+			'curso' => $curso,
+			'categoria' => $categoria,
+			'profesor' => array_merge($profesor, ['bioData' => $bioData]),
+			'categorias' => $categorias,
+			'aprendizajes' => $aprendizajes,
+			'requisitos' => $requisitos,
+			'paraQuien' => $paraQuien
+		];
+	}
+
+	/*--==========================================
+	Procesar categorías únicas
+	============================================--*/
+	private static function procesarCategorias($todosCursos)
+	{
+		$categorias = [];
+		$categoriasVistas = [];
+
+		foreach ($todosCursos as $cursoTemp) {
+			if (!in_array($cursoTemp["id_categoria"], $categoriasVistas)) {
+				$categorias[] = self::ctrConsultarUnCurso("id", $cursoTemp["id_categoria"], "categoria");
+				$categoriasVistas[] = $cursoTemp["id_categoria"];
+			}
+		}
+
+		return $categorias;
+	}
+
+	/*--==========================================
+	Procesar texto de viñetas (separado por \n)
+	============================================--*/
+	private static function procesarViñetas($texto)
+	{
+		if (empty($texto)) {
+			return [];
+		}
+
+		$items = explode("\n", $texto);
+		$viñetas = [];
+
+		foreach ($items as $item) {
+			$item = trim($item);
+			if ($item !== '') {
+				$viñetas[] = htmlspecialchars($item);
+			}
+		}
+
+		return $viñetas;
+	}
+
+	/*--==========================================
+	Procesar biografía del profesor para vista (mantiene compatibilidad)
+	============================================--*/
+	public static function ctrProcesarBiografiaProfesor($biografia, $maxWords = 40, $maxChars = 226)
+	{
+		// Verificar si existe el controlador de usuarios, si no, incluirlo
+		if (!class_exists('ControladorUsuarios')) {
+			require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+		}
+
+		// Delegar al método del controlador de usuarios
+		return ControladorUsuarios::ctrProcesarBiografiaUsuario($biografia, $maxWords, $maxChars);
+	}
 }
