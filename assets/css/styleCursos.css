@@ -1,52 +1,57 @@
+.fondoCursoBanner {
+  background: #ff8c11;
+  padding: 50px 0;
+}
 
-  .fondoCursoBanner {
-    background: #00ECCF;
-    padding: 50px 0;
-  }
+.titleCursos {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-weight: bold;
+}
 
- .titleCursos  {
-     font-family: 'Gloria Hallelujah', cursive;
-     font-weight: bold;
-  }
+.categoria {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-weight: bold;
+  color: #ff8c11;
+  font-size: 16px;
+}
 
-  .categoria  {
-     font-family: 'Gloria Hallelujah', cursive;
-     font-weight: bold;
-     color: #F93F90;
-     font-size: 16px;
-  }
-  .descripcion  {
-     font-family: 'Gloria Hallelujah', cursive;
-     font-weight: bold;
-     color: #575757;
-     font-size: 14px;
-  }
-   .star i{
-    font-size: 18px;
-    color: #FFF100;
-   }
-  .valor  {
-     font-weight: bold;
-     font-size: 18px;
-  }
-  .ver-btn {
-    background: #F93F90;
-    border-radius: 50px;
-    border: 2px solid #00ECCF;
-    color: #ffffff;
-    font-size: 16px;
-    padding: 7px 15px 7px 15px;
-    transition: 0.5s;
-  }
-  .ver-btn:hover {
-    background: #5BDB01;
-    border-radius: 50px;
-    border-color: 2px solid #5BDB01;
-  }
-  .descri{
-    padding: 50px 0;
-    font-size: 16px;
-    }
+.descripcion {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-weight: bold;
+  color: #575757;
+  font-size: 14px;
+}
+
+.star i {
+  font-size: 18px;
+  color: #FFF100;
+}
+
+.valor {
+  font-weight: bold;
+  font-size: 50px;
+}
+
+.ver-btn {
+  background: #ff8c11;
+  border-radius: 50px;
+  border: 2px solid #00ECCF;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 7px 15px 7px 15px;
+  transition: 0.5s;
+}
+
+.ver-btn:hover {
+  background: #5BDB01;
+  border-radius: 50px;
+  border-color: 2px solid #5BDB01;
+}
+
+.descri {
+  padding: 50px 0;
+  font-size: 16px;
+}
 
 #contenedorVideo {
   position: relative;
@@ -54,8 +59,8 @@
   padding-top: 30px;
   height: 0;
   overflow: hidden;
-  display:block;
-  }
+  display: block;
+}
 
 #contenedorVideo iframe,
 #contenedorVideo object,
@@ -68,50 +73,57 @@
 }
 
 .blog_right_sidebar {
-    border: 1px solid #eeeeee;
-    background: #fafaff;
-    padding: 0px 30px 0px 30px
+  border: 1px solid #eeeeee;
+  background: #fafaff;
+  padding: 0px 30px 0px 30px
 }
+
 .blog_right_sidebar .widget_title {
-    font-size: 18px;
-    line-height: 25px;
-    background: #00A8F4;
-    text-align: center;
-    color: #fff;
-    padding: 8px 0px;
-    margin-bottom: 30px
+  font-size: 18px;
+  line-height: 25px;
+  background: #173f65;
+  text-align: center;
+  color: #fff;
+  padding: 8px 0px;
+  margin-bottom: 30px
 }
 
 .blog_right_sidebar .author_widget {
-    text-align: center
+  text-align: center
 }
+
 .blog_right_sidebar .author_widget h4 {
-    font-size: 18px;
-    line-height: 20px;
-    color: #3a414e;
-    margin-bottom: 5px;
-    margin-top: 30px
+  font-size: 18px;
+  line-height: 20px;
+  color: #3a414e;
+  margin-bottom: 5px;
+  margin-top: 30px
 }
+
 .blog_right_sidebar .author_widget p {
-    margin-bottom: 0px
+  margin-bottom: 0px
 }
+
 .blog_right_sidebar .author_widget img {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
 }
 
 .blog_info .post_tag {
-    padding-bottom: 20px;
-    font-family: 'Gloria Hallelujah', cursive;
+  padding-bottom: 20px;
+  font-family: 'Gloria Hallelujah', cursive;
 }
+
 .blog_info .post_tag a {
-    color: #3a414e;
-    font-size: 16px
+  color: #3a414e;
+  font-size: 16px
 }
+
 .blog_info .post_tag a.active {
-    color: #00EBCF;
+  color: #173f65;
 }
+
 .blog_info .post_tag a:hover {
-    color: #F93F90;
+  color: #ff8c11;
 }

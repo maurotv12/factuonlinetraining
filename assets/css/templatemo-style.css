@@ -71,7 +71,7 @@
     Boton submit sin fondo y me gusta
     ===================================*/
   .texMegusta {
-    color: #4CEBCF;
+    color: #ff8c11;
   }
 
   .botonMeGusta {
@@ -81,7 +81,7 @@
   }
 
   .botonMeGusta:hover {
-    color: #071491;
+    color: #173f65;
     background: transparent;
     font-size: 16px;
   }
@@ -93,20 +93,21 @@
   }
 
   .botonSubmitTaller:hover {
-    color: #0b0472;
+    color: #173f65;
     background: transparent;
     font-size: 14px;
   }
 
   /* boton ingresar menu  */
   .ingresar-btn {
-    background: #0b0472;
-    border: 1px solid #ffffff;
+    background: #173f65;
+    border: none;
     color: #ffffff;
     font-size: inherit;
     font-weight: normal;
     padding: 8px 15px;
     transition: 0.5s;
+    border-radius: 20px;
   }
 
   .ingresar-btn:hover {
@@ -163,7 +164,7 @@
   }
 
   input[type="checkbox"]:checked+label[for="politicas"] span {
-    background: #000277;
+    background: #173f65;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -196,7 +197,7 @@
   a:hover,
   a:active,
   a:focus {
-    color: #4CEBCF;
+    color: #ff8c11;
     outline: none;
   }
 
@@ -264,7 +265,7 @@
   .entry-form a:hover,
   a:active,
   a:focus {
-    color: #4CEBCF;
+    color: #ff8c11;
     outline: none;
   }
 
@@ -284,7 +285,7 @@
   }
 
   .entry-form .submit-btn {
-    background: #F93F90;
+    background: #ff8c11;
     border-radius: 50px;
     border: 0;
     color: #252020;
@@ -295,7 +296,7 @@
   }
 
   .entry-form .submit-btn:hover {
-    background: #4CEBCF;
+    background: #ff8c11;
     color: #ffffff;
   }
 
@@ -331,7 +332,7 @@
      BUTTONS
   -----------------------------------------*/
   #registro .registro-btn {
-    background: #F93F90;
+    background: #173f65;
     border-radius: 50px;
     border: 0;
     color: #252020;
@@ -342,12 +343,12 @@
   }
 
   #registro .registro-btn:hover {
-    background: #4CEBCF;
+    background: #ff8c11;
     color: #ffffff;
   }
 
   .section-btn {
-    background: #00ECCF;
+    background: #ff8c11;
     border-radius: 50px;
     border: 1px solid #ffffff;
     color: #ffffff;
@@ -377,7 +378,7 @@
   .custom-navbar {
     font-family: 'Gloria Hallelujah', cursive;
     background: #ffffff;
-    border-top: 5px solid #F93F90;
+    border-top: 5px solid #ff8c11;
     border-bottom: 0;
     -webkit-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
@@ -428,15 +429,15 @@
   }
 
   #detalleFestival .titulosFooter {
-    color: #F93F90;
+    color: #173f65;
   }
 
   #detalleFestival .nombreDirector {
-    color: #00ECCF;
+    color: #ff8c11;
   }
 
   #detalleFestival .detalleP-btn {
-    background: #F93F90;
+    background: #173f65;
     border-radius: 50px;
     border: 1px solid #ffffff;
     color: #ffffff;
@@ -449,7 +450,7 @@
   #detalleFestival .detalleP-btn:hover {
     background: #ffffff;
     border-color: transparent;
-    color: #F93F90;
+    color: #173f65;
   }
 
 
@@ -466,7 +467,7 @@
     font-family: 'Gloria Hallelujah', cursive;
     text-align: center;
     font-weight: bold;
-    color: #FF3D94;
+    color: #173f65;
   }
 
   .feature-thumb {
@@ -552,7 +553,7 @@
   }
 
   .team-info {
-    padding: 20px 30px;
+    padding: 5px 20px;
   }
 
   #categorias .text-info {
@@ -581,13 +582,13 @@
 
   .team-info .valorC {
     font-size: 20px;
-    color: #00ECCF;
+    color: #ff8c11;
   }
 
   .team-info .ver-btn {
-    background: #F93F90;
+    background: #0b0472;
     border-radius: 50px;
-    border: 2px solid #00ECCF;
+    border: 2px solid #ff8c11;
     color: #ffffff;
     font-size: 16px;
     padding: 5px 5px;
@@ -595,9 +596,9 @@
   }
 
   .team-info .ver-btn:hover {
-    background: #00ECCF;
+    background: #ff8c11;
     border-radius: 50px;
-    border-color: 2px solid #F93F90;
+    border-color: 2px solid #173f65;
     color: #000000;
   }
 

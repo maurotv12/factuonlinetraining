@@ -1,13 +1,43 @@
-body{background-color:#fff}
-#auth{overflow-x:hidden}
-#auth .auth-colorBtn{background: #F93F90; border: 2px solid #ffffff;}
-#auth .auth-colorBtn:hover{color: #fff; background: #00F0D4; border: 2px solid #ffffff;}
-#auth #auth-right{height:100%;background:url(../../images/bg/fondoAut.jpg),linear-gradient(90deg,#02aec4,#3f5491)}
-#auth #auth-left{padding:2rem 2rem}
-#auth #auth-left .auth-title{
-	font-size: 24px;
-	margin-bottom:1rem;
-	color: #F93F90;
+body {
+	background-color: #fff
 }
-#auth #auth-left .auth-subtitle{font-size:1.3rem;line-height:1.5rem;color:#a8aebb}
-#auth #auth-left .auth-logo{margin-bottom:3rem}
+
+#auth {
+	overflow-x: hidden
+}
+
+#auth .auth-colorBtn {
+	background: #173f65;
+	border: 2px solid #ffffff;
+}
+
+#auth .auth-colorBtn:hover {
+	color: #fff;
+	background: #ff8c11;
+	border: 2px solid #ffffff;
+}
+
+#auth #auth-right {
+	height: 100%;
+	background: url(../../images/bg/fondoAut.jpg), linear-gradient(90deg, #ff8c11, #3f5491)
+}
+
+#auth #auth-left {
+	padding: 2rem 2rem
+}
+
+#auth #auth-left .auth-title {
+	font-size: 24px;
+	margin-bottom: 1rem;
+	color: #173f65;
+}
+
+#auth #auth-left .auth-subtitle {
+	font-size: 1.3rem;
+	line-height: 1.5rem;
+	color: #a8aebb
+}
+
+#auth #auth-left .auth-logo {
+	margin-bottom: 3rem
+}
