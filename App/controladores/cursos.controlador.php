@@ -14,6 +14,9 @@ class ControladorCursos
 	public static function ctrMostrarCursos($item, $valor)
 	{
 		$tabla = "curso";
+		$item = null;
+		$valor = null;
+		$rutaInicio = ControladorGeneral::ctrRuta();
 		$respuesta = ModeloCursos::mdlMostrarCursos($tabla, $item, $valor);
 		return $respuesta;
 	}

@@ -5,13 +5,19 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin'])) {
     return;
 }
 
+
 require_once "modelos/conexion.php";
 require_once "modelos/cursos.modelo.php";
 require_once "controladores/cursos.controlador.php";
 
 // Obtener todos los cursos
 $cursos = ControladorCursos::ctrMostrarCursos(null, null);
-
+if (!$cursos) {
+    $cursos = [];
+}
+if (isset($cursos['id'])) {
+    $cursos = [$cursos];
+}
 // Conexión directa para obtener info de categorías y profesores
 $conn = Conexion::conectar();
 
@@ -82,7 +88,7 @@ $conn = Conexion::conectar();
                                                     <a href="superAdmin/gestionCursos/verCurso=<?= $curso['id'] ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
                                                     </a>
-                                                    <a href="superAdmin/gestionCursos/editarCurso&id=<?= $curso["id"] ?>" class="btn btn-sm btn-warning">
+                                                    <a href="<?= $curso["url_amiga"] ?>" class="btn btn-sm btn-warning">
                                                         <i class="bi bi-pencil"></i> Editar
                                                     </a>
                                                 </div>

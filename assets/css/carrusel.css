@@ -1,0 +1,109 @@
+/* Estilos para el carrusel de cursos destacados */
+.carousel-img-container {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    padding: 15px;
+    bottom: 20px;
+    max-width: 80%;
+    margin: 0 auto;
+    left: 10%;
+    right: 10%;
+}
+
+.carousel-caption h3 {
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.carousel-caption p {
+    font-size: 16px;
+}
+
+/* Estilo para los botones dentro del carrusel */
+.carousel-caption .btn-primary {
+    background-color: #ff5722;
+    border-color: #ff5722;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.carousel-caption .btn-primary:hover {
+    background-color: #e64a19;
+    border-color: #e64a19;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para los indicadores del carrusel */
+.carousel-indicators {
+    bottom: -5px;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: #ddd;
+    opacity: 0.7;
+}
+
+.carousel-indicators button.active {
+    background-color: #ff5722;
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+/* Mejorar visibilidad de los controles */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    opacity: 0.7;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+}
+
+/* Efecto de transición en las imágenes */
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 767px) {
+    .carousel-img-container {
+        height: 250px !important;
+    }
+
+    .carousel-caption {
+        display: block !important;
+        padding: 10px;
+        bottom: 10px;
+    }
+
+    .carousel-caption h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .carousel-caption p {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .carousel-caption .btn-primary {
+        font-size: 14px;
+        padding: 5px 15px;
+    }
+}

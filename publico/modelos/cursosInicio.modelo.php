@@ -49,7 +49,25 @@ class ModeloCursosInicio
 		$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 		$stmt->execute();
 		return $stmt->fetch();
-		$stmt->close();
-		$stmt = null;
+	}
+
+	/**
+	 * Obtiene los cursos destacados para mostrar en el carrusel
+	 * @param string $tabla Nombre de la tabla
+	 * @param int $limite Cantidad máxima de cursos a obtener
+	 * @return array Lista de cursos destacados
+	 */
+	static public function mdlObtenerCursosDestacados($tabla, $limite = 3)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE destacado = 1 ORDER BY fecha_creacion DESC LIMIT :limite");
+			$stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
+			$stmt->execute();
+			$resultado = $stmt->fetchAll();
+			return $resultado;
+		} catch (PDOException $e) {
+			// Registrar error si es necesario
+			return [];
+		}
 	}
 }

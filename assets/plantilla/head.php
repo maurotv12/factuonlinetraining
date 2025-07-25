@@ -13,6 +13,7 @@
 
 
      <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link href="/cursosapp/assets/css/carrusel.css" rel="stylesheet">
 
      <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
      <script src="../assets/dist/js/bootstrap.min.js"></script>
