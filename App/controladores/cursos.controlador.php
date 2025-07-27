@@ -317,6 +317,12 @@ class ControladorCursos
 			];
 		}
 
+		// Validar campos de viñetas
+		$validacionViñetas = self::ctrValidarCamposViñetas($datos);
+		if ($validacionViñetas['error']) {
+			return $validacionViñetas;
+		}
+
 		// Generar URL amigable
 		$datos['url_amiga'] = self::generarUrlAmigable($datos['nombre']);
 
@@ -328,12 +334,77 @@ class ControladorCursos
 				'error' => false,
 				'mensaje' => 'Curso creado exitosamente.'
 			];
+		} elseif ($respuesta === "error_dimensiones") {
+			return [
+				'error' => true,
+				'mensaje' => 'La imagen debe tener dimensiones exactas de 600x400 píxeles.'
+			];
 		} else {
 			return [
 				'error' => true,
 				'mensaje' => 'Error al crear el curso: ' . $respuesta
 			];
 		}
+	}
+
+	/*=============================================
+	Validar campos de viñetas (líneas con máximo de caracteres)
+	=============================================*/
+	public static function ctrValidarCamposViñetas($datos)
+	{
+		$camposViñetas = [
+			'lo_que_aprenderas' => 'Lo que aprenderás',
+			'requisitos' => 'Requisitos',
+			'para_quien' => 'Para quién es este curso'
+		];
+
+		$maxCaracteres = 70;
+
+		foreach ($camposViñetas as $campo => $nombreAmigable) {
+			if (!empty($datos[$campo])) {
+				$lineas = explode("\n", $datos[$campo]);
+
+				foreach ($lineas as $numeroLinea => $linea) {
+					$linea = trim($linea);
+					if (!empty($linea) && strlen($linea) > $maxCaracteres) {
+						return [
+							'error' => true,
+							'mensaje' => "En el campo '{$nombreAmigable}', la línea " . ($numeroLinea + 1) . " excede el límite de {$maxCaracteres} caracteres."
+						];
+					}
+				}
+			}
+		}
+
+		return ['error' => false];
+	}
+
+	/*=============================================
+	Procesar formulario de creación desde POST
+	=============================================*/
+	public static function ctrProcesarFormularioCreacion()
+	{
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			return null;
+		}
+
+		// Recopilar datos del formulario
+		$datos = [
+			"nombre" => $_POST['nombre'] ?? '',
+			"descripcion" => $_POST['descripcion'] ?? '',
+			"lo_que_aprenderas" => $_POST['lo_que_aprenderas'] ?? '',
+			"requisitos" => $_POST['requisitos'] ?? '',
+			"para_quien" => $_POST['para_quien'] ?? '',
+			"imagen" => $_FILES['imagen'] ?? null,
+			"video" => $_FILES['video'] ?? null,
+			"valor" => $_POST['precio'] ?? 0,
+			"id_categoria" => $_POST['categoria'] ?? '',
+			"id_persona" => $_POST['profesor'] ?? $_SESSION['idU'] ?? '',
+			"estado" => "activo"
+		];
+
+		// Procesar la creación
+		return self::ctrProcesarCreacionCurso($datos);
 	}
 
 	/*=============================================

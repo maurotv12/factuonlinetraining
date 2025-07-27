@@ -8,41 +8,170 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin', 'profes
 // Importaciones necesarias
 require_once "controladores/cursos.controlador.php";
 
+// Procesar el formulario si se envió
+$resultado = ControladorCursos::ctrProcesarFormularioCreacion();
+
 // Usar el controlador para cargar datos necesarios
 $datosCreacion = ControladorCursos::ctrCargarCreacionCurso();
 $profesores = $datosCreacion['profesores'];
 $categorias = $datosCreacion['categorias'];
+?>
 
-// Procesar el formulario si se envió
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+<!-- Incluir CSS específico para esta página -->
+<link rel="stylesheet" href="vistas/assets/css/pages/crearCurso.css">
 
-    $nombre = $_POST['nombre'];
-    $descripcion = $_POST['descripcion'];
-    $categoria = $_POST['categoria'];
-    $valor = $_POST['precio'];
-    $id_persona = isset($_POST['profesor']) ? $_POST['profesor'] : $_SESSION['idU']; // Usar el profesor seleccionado o el usuario de la sesión
+<div class="crear-curso-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="bi bi-plus-circle"></i>
+                        Crear Nuevo Curso
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form id="form-crear-curso" method="POST" enctype="multipart/form-data">
 
-    // Obtener los nuevos campos
-    $lo_que_aprenderas = $_POST['lo_que_aprenderas'] ?? '';
-    $requisitos = $_POST['requisitos'] ?? '';
-    $para_quien = $_POST['para_quien'] ?? '';
+                        <!-- Información básica del curso -->
+                        <div class="section-header">
+                            <h5><i class="bi bi-info-circle"></i> Información Básica</h5>
+                        </div>
 
-    $datosCurso = [
-        "nombre" => $nombre,
-        "descripcion" => $descripcion,
-        "lo_que_aprenderas" => $lo_que_aprenderas,
-        "requisitos" => $requisitos,
-        "para_quien" => $para_quien,
-        "imagen" => $_FILES['imagen'] ?? null,
-        "video" => $_FILES['video'] ?? null,
-        "valor" => $valor,
-        "id_categoria" => $categoria,
-        "id_persona" => $id_persona,
-        "estado" => "activo"
-    ];
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Curso <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
 
-    $resultado = ControladorCursos::ctrProcesarCreacionCurso($datosCurso);
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required></textarea>
+                        </div>
 
+                        <!-- Contenido del curso -->
+                        <div class="section-header">
+                            <h5><i class="bi bi-book"></i> Contenido del Curso</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lo_que_aprenderas" class="form-label">
+                                Lo que aprenderás con este curso
+                                <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span>
+                            </label>
+                            <textarea class="form-control" id="lo_que_aprenderas" name="lo_que_aprenderas" rows="5"
+                                placeholder="Ejemplo:&#10;Aprenderás a utilizar herramientas avanzadas de diseño gráfico.&#10;Dominarás las técnicas de ilustración digital."></textarea>
+                            <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="requisitos" class="form-label">
+                                Requisitos
+                                <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span>
+                            </label>
+                            <textarea class="form-control" id="requisitos" name="requisitos" rows="4"
+                                placeholder="Ejemplo:&#10;Conocimientos básicos de diseño.&#10;Computador con Adobe Photoshop instalado."></textarea>
+                            <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="para_quien" class="form-label">
+                                Para quién es este curso
+                                <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span>
+                            </label>
+                            <textarea class="form-control" id="para_quien" name="para_quien" rows="4"
+                                placeholder="Ejemplo:&#10;Diseñadores gráficos que quieran mejorar sus habilidades.&#10;Emprendedores que deseen crear sus propias piezas gráficas."></textarea>
+                            <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso.</div>
+                        </div>
+
+                        <!-- Configuración del curso -->
+                        <div class="section-header">
+                            <h5><i class="bi bi-gear"></i> Configuración</h5>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="categoria" name="categoria" required>
+                                        <option value="" selected disabled>Selecciona una categoría</option>
+                                        <?php foreach ($categorias as $cat): ?>
+                                            <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="profesor" class="form-label">Profesor <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="profesor" name="profesor" required>
+                                        <option value="" selected disabled>Selecciona un profesor</option>
+                                        <?php foreach ($profesores as $prof): ?>
+                                            <option value="<?= $prof['id'] ?>">
+                                                <?= htmlspecialchars($prof['nombre']) ?> (<?= htmlspecialchars($prof['email']) ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Archivos multimedia -->
+                        <div class="section-header">
+                            <h5><i class="bi bi-image"></i> Archivos Multimedia</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="imagen" class="form-label">
+                                Imagen del Curso <span class="text-danger">*</span>
+                                <small class="text-muted">(Dimensiones: 600x400 píxeles)</small>
+                            </label>
+                            <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" required>
+                            <div class="form-text">Formatos permitidos: JPG, PNG, GIF, WebP. Tamaño recomendado: 600x400px</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="video" class="form-label">Video Promocional (opcional)</label>
+                            <input class="form-control" type="file" id="video" name="video" accept="video/*">
+                            <div class="form-text">Formatos de video soportados: MP4, AVI, MOV, WebM</div>
+                        </div>
+
+                        <!-- Precio -->
+                        <div class="section-header">
+                            <h5><i class="bi bi-currency-dollar"></i> Precio</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="precio" class="form-label">Precio (COP) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="precio" name="precio" min="0" required>
+                                <span class="input-group-text">COP</span>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-flex justify-content-between">
+                            <a href="superAdmin/gestionCursos/listadoCursos" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver al listado
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Crear Curso
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir el archivo JavaScript para la página -->
+<script src="vistas/assets/js/pages/crearCurso.js"></script>
+
+<?php
+// Mostrar mensajes de resultado después del procesamiento
+if ($resultado) {
     if (!$resultado['error']) {
         echo '<script>
             Swal.fire({
@@ -65,156 +194,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </script>';
     }
 }
-
-// Incluir CSS para la página
-echo '<link rel="stylesheet" href="vistas/assets/css/pages/crearCurso.css">';
 ?>
-
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Crear Curso</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-
-    <div class="container mt-5 mb-5">
-        <h2 class="mb-4">Crear Nuevo Curso</h2>
-
-        <form id="form-crear-curso" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre del Curso</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="lo_que_aprenderas" class="form-label">Lo que aprenderás con este curso <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span></label>
-                <textarea class="form-control" id="lo_que_aprenderas" name="lo_que_aprenderas" rows="5" placeholder="Ejemplo:&#10;Aprenderás a utilizar herramientas avanzadas de diseño gráfico.&#10;Dominarás las técnicas de ilustración digital."></textarea>
-                <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso.</div>
-            </div>
-
-            <div class="mb-3">
-                <label for="requisitos" class="form-label">Requisitos <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span></label>
-                <textarea class="form-control" id="requisitos" name="requisitos" rows="4" placeholder="Ejemplo:&#10;Conocimientos básicos de diseño.&#10;Computador con Adobe Photoshop instalado."></textarea>
-                <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso.</div>
-            </div>
-
-            <div class="mb-3">
-                <label for="para_quien" class="form-label">Para quién es este curso <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span></label>
-                <textarea class="form-control" id="para_quien" name="para_quien" rows="4" placeholder="Ejemplo:&#10;Diseñadores gráficos que quieran mejorar sus habilidades.&#10;Emprendedores que deseen crear sus propias piezas gráficas."></textarea>
-                <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso.</div>
-            </div>
-
-            <div class="mb-3">
-                <label for="categoria" class="form-label">Categoría</label>
-                <select class="form-select" id="categoria" name="categoria" required>
-                    <option value="" selected disabled>Selecciona una categoría</option>
-                    <?php foreach ($categorias as $cat): ?>
-                        <option value="<?= $cat['id'] ?>"><?= $cat['nombre'] ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="profesor" class="form-label">Profesor</label>
-                <select class="form-select" id="profesor" name="profesor" required>
-                    <option value="" selected disabled>Selecciona un profesor</option>
-                    <?php foreach ($profesores as $prof): ?>
-                        <option value="<?= $prof['id'] ?>"><?= $prof['nombre'] ?> (<?= $prof['email'] ?>)</option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="imagen" class="form-label">Imagen del Curso</label>
-                <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="video" class="form-label">Video Promocional (opcional)</label>
-                <input class="form-control" type="file" id="video" name="video" accept="video/*">
-            </div>
-
-            <div class="mb-3">
-                <label for="precio" class="form-label">Precio (COP)</label>
-                <input type="number" class="form-control" id="precio" name="precio" min="0" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Crear Curso</button>
-        </form>
-    </div>
-
-    <script src="/cursosapp/assets/js/validarImagenCurso.js"></script>
-
-    <script>
-        // Función para validar el límite de caracteres por línea
-        function validarLineaViñeta(e) {
-            const textarea = e.target;
-            const lines = textarea.value.split('\n');
-            const maxCaracteres = 70;
-
-            // Verificar cada línea
-            let lineaDemasiado = lines.findIndex(line => line.length > maxCaracteres);
-
-            // Si hay una línea con más de 70 caracteres, mostrar advertencia
-            if (lineaDemasiado >= 0) {
-                alert(`La línea ${lineaDemasiado + 1} excede el límite de ${maxCaracteres} caracteres.`);
-                // Resaltar el área del problema
-                textarea.setSelectionRange(
-                    textarea.value.split('\n').slice(0, lineaDemasiado).join('\n').length + (lineaDemasiado > 0 ? 1 : 0),
-                    textarea.value.split('\n').slice(0, lineaDemasiado + 1).join('\n').length
-                );
-                textarea.focus();
-            }
-        }
-
-        // Asignar validación a los campos de viñetas
-        document.getElementById('lo_que_aprenderas').addEventListener('change', validarLineaViñeta);
-        document.getElementById('requisitos').addEventListener('change', validarLineaViñeta);
-        document.getElementById('para_quien').addEventListener('change', validarLineaViñeta);
-
-        // Validar antes de enviar el formulario
-        document.getElementById('form-crear-curso').addEventListener('submit', function(e) {
-            const textareas = ['lo_que_aprenderas', 'requisitos', 'para_quien'];
-            const maxCaracteres = 70;
-
-            for (let id of textareas) {
-                const textarea = document.getElementById(id);
-                if (!textarea.value) continue; // Saltamos si está vacío
-
-                const lines = textarea.value.split('\n');
-
-                // Verificar cada línea
-                let lineaDemasiado = lines.findIndex(line => line.length > maxCaracteres);
-
-                if (lineaDemasiado >= 0) {
-                    e.preventDefault();
-                    alert(`El campo "${textarea.previousElementSibling.innerText.split(' ')[0]}" tiene una línea (${lineaDemasiado + 1}) que excede el límite de ${maxCaracteres} caracteres.`);
-                    textarea.focus();
-
-                    // Resaltar el área del problema
-                    textarea.setSelectionRange(
-                        textarea.value.split('\n').slice(0, lineaDemasiado).join('\n').length + (lineaDemasiado > 0 ? 1 : 0),
-                        textarea.value.split('\n').slice(0, lineaDemasiado + 1).join('\n').length
-                    );
-
-                    return;
-                }
-            }
-        });
-    </script>
-
-    <!-- Incluir el archivo JavaScript para la página -->
-    <script src="vistas/assets/js/pages/crearCurso.js"></script>
-
-</body>
-
-</html>

@@ -1,23 +1,378 @@
-/**
- * Crear Curso - Funcionalidades JavaScript
- * Gestiona la validación, previsualización y envío del formulario de crear curso
- */
-
-// Variables globales
-let currentStep = 1;
-const totalSteps = 3;
-
-// Inicializar cuando la página esté lista
+// JavaScript para la página de crear curso
 document.addEventListener('DOMContentLoaded', function () {
-    inicializarFormulario();
-    configurarValidaciones();
-    configurarPrevistalizaciones();
-    configurarContadores();
+    console.log('Crear curso - JavaScript cargado');
+
+    // Inicializar validaciones
+    inicializarValidacionViñetas();
+    inicializarValidacionFormulario();
+    configurarVistaPrevia();
 });
 
 /**
- * Inicializa los componentes del formulario
+ * Configurar validación de campos de viñetas
  */
+function inicializarValidacionViñetas() {
+    const camposViñetas = ['lo_que_aprenderas', 'requisitos', 'para_quien'];
+
+    camposViñetas.forEach(id => {
+        const textarea = document.getElementById(id);
+        if (textarea) {
+            // Validación en tiempo real
+            textarea.addEventListener('blur', validarLineaViñeta);
+            textarea.addEventListener('input', mostrarContadorCaracteres);
+
+            // Agregar contador de caracteres
+            agregarContadorCaracteres(textarea);
+        }
+    });
+}
+
+/**
+ * Validar límite de caracteres por línea en campos de viñetas
+ */
+function validarLineaViñeta(e) {
+    const textarea = e.target;
+    const lines = textarea.value.split('\n');
+    const maxCaracteres = 70;
+
+    // Limpiar mensajes de error previos
+    limpiarMensajeError(textarea);
+
+    // Verificar cada línea
+    let lineaProblematica = -1;
+
+    for (let i = 0; i < lines.length; i++) {
+        const linea = lines[i].trim();
+        if (linea.length > maxCaracteres) {
+            lineaProblematica = i;
+            break;
+        }
+    }
+
+    if (lineaProblematica >= 0) {
+        mostrarMensajeError(
+            textarea,
+            `La línea ${lineaProblematica + 1} excede el límite de ${maxCaracteres} caracteres.`
+        );
+
+        // Resaltar el área del problema
+        resaltarLineaProblematica(textarea, lineaProblematica);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Mostrar contador de caracteres para cada línea
+ */
+function mostrarContadorCaracteres(e) {
+    const textarea = e.target;
+    const lines = textarea.value.split('\n');
+    const maxCaracteres = 70;
+
+    // Encontrar la línea actual
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = textarea.value.substring(0, cursorPos);
+    const currentLineIndex = textBeforeCursor.split('\n').length - 1;
+
+    if (lines[currentLineIndex]) {
+        const caracteresActuales = lines[currentLineIndex].length;
+        const caracteresRestantes = maxCaracteres - caracteresActuales;
+
+        actualizarContadorCaracteres(textarea, caracteresActuales, caracteresRestantes);
+    }
+}
+
+/**
+ * Agregar contador de caracteres visual
+ */
+function agregarContadorCaracteres(textarea) {
+    const contador = document.createElement('div');
+    contador.className = 'contador-caracteres';
+    contador.style.cssText = `
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+        text-align: right;
+    `;
+
+    const contenedor = textarea.parentNode;
+    contenedor.appendChild(contador);
+
+    // Almacenar referencia para actualizar
+    textarea.contadorElemento = contador;
+}
+
+/**
+ * Actualizar contador de caracteres
+ */
+function actualizarContadorCaracteres(textarea, actuales, restantes) {
+    if (textarea.contadorElemento) {
+        const color = restantes < 10 ? '#dc3545' : restantes < 20 ? '#fd7e14' : '#6c757d';
+        textarea.contadorElemento.innerHTML = `
+            <span style="color: ${color};">
+                Línea actual: ${actuales}/70 caracteres
+                ${restantes < 0 ? `(${Math.abs(restantes)} caracteres de más)` : ''}
+            </span>
+        `;
+    }
+}
+
+/**
+ * Resaltar línea problemática
+ */
+function resaltarLineaProblematica(textarea, lineaIndex) {
+    const lines = textarea.value.split('\n');
+    let startPos = 0;
+
+    // Calcular posición de inicio de la línea problemática
+    for (let i = 0; i < lineaIndex; i++) {
+        startPos += lines[i].length + 1; // +1 por el \n
+    }
+
+    const endPos = startPos + lines[lineaIndex].length;
+
+    // Seleccionar la línea problemática
+    textarea.setSelectionRange(startPos, endPos);
+    textarea.focus();
+}
+
+/**
+ * Mostrar mensaje de error
+ */
+function mostrarMensajeError(textarea, mensaje) {
+    limpiarMensajeError(textarea);
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-viñeta text-danger';
+    errorDiv.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+
+    textarea.parentNode.appendChild(errorDiv);
+    textarea.errorElemento = errorDiv;
+}
+
+/**
+ * Limpiar mensaje de error
+ */
+function limpiarMensajeError(textarea) {
+    if (textarea.errorElemento) {
+        textarea.errorElemento.remove();
+        textarea.errorElemento = null;
+    }
+}
+
+/**
+ * Configurar validación del formulario completo
+ */
+function inicializarValidacionFormulario() {
+    const form = document.getElementById('form-crear-curso');
+
+    if (form) {
+        form.addEventListener('submit', validarFormularioCompleto);
+    }
+}
+
+/**
+ * Validar formulario completo antes del envío
+ */
+function validarFormularioCompleto(e) {
+    const camposViñetas = ['lo_que_aprenderas', 'requisitos', 'para_quien'];
+    let formularioValido = true;
+    let primerCampoConError = null;
+
+    // Validar cada campo de viñetas
+    camposViñetas.forEach(id => {
+        const textarea = document.getElementById(id);
+        if (textarea && textarea.value.trim()) {
+            const evento = { target: textarea };
+            const esValido = validarLineaViñeta(evento);
+
+            if (!esValido && !primerCampoConError) {
+                primerCampoConError = textarea;
+                formularioValido = false;
+            }
+        }
+    });
+
+    // Validar imagen
+    const imagen = document.getElementById('imagen');
+    if (imagen && imagen.files.length > 0) {
+        const archivo = imagen.files[0];
+        if (!validarTipoImagen(archivo)) {
+            mostrarErrorImagen('Solo se permiten archivos de imagen (JPG, PNG, GIF, WebP).');
+            formularioValido = false;
+            if (!primerCampoConError) primerCampoConError = imagen;
+        }
+    }
+
+    // Si hay errores, prevenir envío y enfocar primer campo con error
+    if (!formularioValido) {
+        e.preventDefault();
+
+        if (primerCampoConError) {
+            primerCampoConError.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            primerCampoConError.focus();
+        }
+
+        // Mostrar mensaje general
+        Swal.fire({
+            icon: 'warning',
+            title: 'Formulario incompleto',
+            text: 'Por favor, corrija los errores antes de continuar.',
+            confirmButtonText: 'Entendido'
+        });
+    }
+}
+
+/**
+ * Validar tipo de archivo de imagen
+ */
+function validarTipoImagen(archivo) {
+    const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    return tiposPermitidos.includes(archivo.type);
+}
+
+/**
+ * Mostrar error de imagen
+ */
+function mostrarErrorImagen(mensaje) {
+    const imagen = document.getElementById('imagen');
+    const errorExistente = imagen.parentNode.querySelector('.error-imagen');
+
+    if (errorExistente) {
+        errorExistente.remove();
+    }
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-imagen text-danger';
+    errorDiv.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+
+    imagen.parentNode.appendChild(errorDiv);
+}
+
+/**
+ * Configurar vista previa de archivos
+ */
+function configurarVistaPrevia() {
+    const inputImagen = document.getElementById('imagen');
+    const inputVideo = document.getElementById('video');
+
+    if (inputImagen) {
+        inputImagen.addEventListener('change', mostrarVistaPreviaImagen);
+    }
+
+    if (inputVideo) {
+        inputVideo.addEventListener('change', mostrarVistaPreviaVideo);
+    }
+}
+
+/**
+ * Mostrar vista previa de imagen
+ */
+function mostrarVistaPreviaImagen(e) {
+    const archivo = e.target.files[0];
+    const contenedor = e.target.parentNode;
+
+    // Limpiar vista previa existente
+    const vistaPreviaExistente = contenedor.querySelector('.vista-previa-imagen');
+    if (vistaPreviaExistente) {
+        vistaPreviaExistente.remove();
+    }
+
+    if (archivo && validarTipoImagen(archivo)) {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.className = 'vista-previa-imagen';
+            img.style.cssText = `
+                max-width: 200px;
+                max-height: 150px;
+                margin-top: 0.5rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                object-fit: cover;
+            `;
+
+            contenedor.appendChild(img);
+        };
+
+        reader.readAsDataURL(archivo);
+    }
+}
+
+/**
+ * Mostrar información de video
+ */
+function mostrarVistaPreviaVideo(e) {
+    const archivo = e.target.files[0];
+    const contenedor = e.target.parentNode;
+
+    // Limpiar información existente
+    const infoExistente = contenedor.querySelector('.info-video');
+    if (infoExistente) {
+        infoExistente.remove();
+    }
+
+    if (archivo) {
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'info-video';
+        infoDiv.style.cssText = 'margin-top: 0.5rem; font-size: 0.9rem; color: #6c757d;';
+
+        const tamaño = (archivo.size / (1024 * 1024)).toFixed(2);
+        infoDiv.innerHTML = `
+            <i class="fas fa-video"></i> 
+            ${archivo.name} (${tamaño} MB)
+        `;
+
+        contenedor.appendChild(infoDiv);
+    }
+}
+
+/**
+ * Utilidades adicionales
+ */
+
+// Función para limpiar el formulario
+function limpiarFormulario() {
+    document.getElementById('form-crear-curso').reset();
+
+    // Limpiar vistas previas y mensajes de error
+    document.querySelectorAll('.vista-previa-imagen, .info-video, .error-viñeta, .error-imagen').forEach(el => {
+        el.remove();
+    });
+
+    // Limpiar contadores
+    document.querySelectorAll('.contador-caracteres').forEach(contador => {
+        contador.innerHTML = '';
+    });
+}
+
+// Función para autocompletar campos (útil para desarrollo/testing)
+function autocompletarFormulario() {
+    if (window.location.hostname === 'localhost') {
+        document.getElementById('nombre').value = 'Curso de Ejemplo';
+        document.getElementById('descripcion').value = 'Esta es una descripción de ejemplo para el curso.';
+        document.getElementById('lo_que_aprenderas').value = 'Aprenderás conceptos básicos\nDominarás las herramientas\nAplicarás conocimientos prácticos';
+        document.getElementById('requisitos').value = 'Conocimientos básicos de informática\nComputador con internet\nGanas de aprender';
+        document.getElementById('para_quien').value = 'Principiantes en el tema\nPersonas que quieran mejorar\nEstudiantes y profesionales';
+        document.getElementById('precio').value = '50000';
+    }
+}
+
+// Exponer funciones globalmente para debugging
+window.crearCursoJS = {
+    limpiarFormulario,
+    autocompletarFormulario,
+    validarLineaViñeta
+};
 function inicializarFormulario() {
     // Configurar drag & drop para archivos
     configurarDragAndDrop();
