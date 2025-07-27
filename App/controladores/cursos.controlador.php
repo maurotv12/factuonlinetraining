@@ -288,4 +288,93 @@ class ControladorCursos
 
 		return false;
 	}
+
+	/*=============================================
+	Cargar página de editar curso con datos completos
+	=============================================*/
+	public static function ctrCargarEdicionCurso($idCurso)
+	{
+		// Verificar que el ID del curso sea válido
+		if (!$idCurso) {
+			return [
+				'error' => true,
+				'mensaje' => 'ID de curso no válido.'
+			];
+		}
+
+		// Obtener los datos del curso
+		$curso = self::ctrMostrarCursos("id", $idCurso);
+
+		if (!$curso) {
+			return [
+				'error' => true,
+				'mensaje' => 'Curso no encontrado.'
+			];
+		}
+
+		// Obtener datos adicionales necesarios para la vista
+		$categorias = self::ctrObtenerCategorias();
+		$profesores = self::ctrObtenerProfesores();
+
+		// Obtener conexión para las secciones
+		$conn = Conexion::conectar();
+
+		// Obtener secciones del curso
+		$stmtSecciones = $conn->prepare("
+			SELECT * FROM curso_secciones 
+			WHERE id_curso = ? 
+			ORDER BY orden ASC
+		");
+		$stmtSecciones->execute([$idCurso]);
+		$secciones = $stmtSecciones->fetchAll(PDO::FETCH_ASSOC);
+
+		// Obtener contenido de cada sección
+		$contenidoSecciones = [];
+		foreach ($secciones as $seccion) {
+			$stmtContenido = $conn->prepare("
+				SELECT * FROM seccion_contenido 
+				WHERE id_seccion = ? 
+				ORDER BY orden ASC
+			");
+			$stmtContenido->execute([$seccion['id']]);
+			$contenidoSecciones[$seccion['id']] = $stmtContenido->fetchAll(PDO::FETCH_ASSOC);
+		}
+
+		// Retornar todos los datos necesarios para la vista
+		return [
+			'error' => false,
+			'curso' => $curso,
+			'categorias' => $categorias,
+			'profesores' => $profesores,
+			'secciones' => $secciones,
+			'contenidoSecciones' => $contenidoSecciones
+		];
+	}
+
+	/*=============================================
+	Procesar actualización del curso
+	=============================================*/
+	public static function ctrActualizarDatosCurso($datos)
+	{
+		if (empty($datos['id'])) {
+			return [
+				'error' => true,
+				'mensaje' => 'ID de curso no válido.'
+			];
+		}
+
+		$respuesta = ModeloCursos::mdlActualizarCurso($datos);
+
+		if ($respuesta == "ok") {
+			return [
+				'error' => false,
+				'mensaje' => 'Los datos del curso se han actualizado correctamente.'
+			];
+		} else {
+			return [
+				'error' => true,
+				'mensaje' => 'Error al actualizar el curso.'
+			];
+		}
+	}
 }
