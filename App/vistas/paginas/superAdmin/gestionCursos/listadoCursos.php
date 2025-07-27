@@ -5,26 +5,27 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin'])) {
     return;
 }
 
-
-require_once "modelos/conexion.php";
-require_once "modelos/cursos.modelo.php";
 require_once "controladores/cursos.controlador.php";
 
-// Obtener todos los cursos
-$cursos = ControladorCursos::ctrMostrarCursos(null, null);
-if (!$cursos) {
-    $cursos = [];
-}
-if (isset($cursos['id'])) {
-    $cursos = [$cursos];
-}
-// Conexión directa para obtener info de categorías y profesores
-$conn = Conexion::conectar();
+// Cargar datos para el listado
+$cursos = ControladorCursos::ctrCargarListadoCursos();
 
-
+// Debug temporal - solo mostrar si hay problema
+if (empty($cursos) || !isset($cursos[0]['valor'])) {
+    echo '<div class="alert alert-info">Debug: ';
+    if (empty($cursos)) {
+        echo 'No hay cursos cargados.';
+    } else {
+        echo 'Primer curso - campos disponibles: ' . implode(', ', array_keys($cursos[0]));
+    }
+    echo '</div>';
+}
 ?>
 
-<div class="container-fluid mt-4">
+<!-- Incluir CSS específico para esta página -->
+<link rel="stylesheet" href="vistas/assets/css/pages/listadoCursos.css">
+
+<div class="listado-cursos-container">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -53,17 +54,6 @@ $conn = Conexion::conectar();
                             <tbody>
                                 <?php if (!empty($cursos)) : ?>
                                     <?php foreach ($cursos as $index => $curso) : ?>
-                                        <?php
-                                        // Obtener categoría
-                                        $stmtCategoria = $conn->prepare("SELECT nombre FROM categoria WHERE id = ?");
-                                        $stmtCategoria->execute([$curso["id_categoria"]]);
-                                        $categoria = $stmtCategoria->fetchColumn();
-
-                                        // Obtener nombre del profesor
-                                        $stmtProfesor = $conn->prepare("SELECT nombre FROM persona WHERE id = ?");
-                                        $stmtProfesor->execute([$curso["id_persona"]]);
-                                        $profesor = $stmtProfesor->fetchColumn();
-                                        ?>
                                         <tr>
                                             <td><?= $index + 1 ?></td>
                                             <td>
@@ -74,15 +64,21 @@ $conn = Conexion::conectar();
                                                 <?php endif; ?>
                                             </td>
                                             <td><?= htmlspecialchars($curso["nombre"]) ?></td>
-                                            <td><?= htmlspecialchars($categoria ?: 'Sin categoría') ?></td>
-                                            <td>$<?= number_format($curso["valor"], 0, ',', '.') ?></td>
+                                            <td><?= htmlspecialchars($curso["categoria"]) ?></td>
+                                            <td>
+                                                <?php if (isset($curso["valor"]) && $curso["valor"] !== null): ?>
+                                                    <?= number_format($curso["valor"], 0, ',', '.') ?>
+                                                <?php else: ?>
+                                                    <span class="text-muted">Sin valor</span>
+                                                <?php endif; ?>
+                                            </td>
                                             <td>
                                                 <span class="badge bg-<?= $curso["estado"] == 'activo' ? 'success' : 'secondary' ?>">
                                                     <?= htmlspecialchars($curso["estado"]) ?>
                                                 </span>
                                             </td>
-                                            <td><?= htmlspecialchars($profesor ?: 'Desconocido') ?></td>
-                                            <td><?= date("Y-m-d", strtotime($curso["fecha_registro"])) ?></td>
+                                            <td><?= htmlspecialchars($curso["profesor"]) ?></td>
+                                            <td><?= $curso["fecha_formateada"] ?></td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="superAdmin/gestionCursos/verCurso=<?= $curso['id'] ?>" class="btn btn-sm btn-info">
@@ -111,3 +107,6 @@ $conn = Conexion::conectar();
         </div>
     </div>
 </div>
+
+<!-- Incluir el archivo JavaScript para la página -->
+<script src="vistas/assets/js/pages/listadoCursos.js"></script>

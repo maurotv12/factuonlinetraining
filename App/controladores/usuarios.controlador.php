@@ -502,4 +502,52 @@ Cambiar contraseña
 			}
 		}
 	}
+
+	/*--==========================================
+	Cargar datos para administración de usuarios
+	============================================--*/
+	public static function ctrCargarDatosUsuariosAdmin()
+	{
+		// Obtener todos los usuarios
+		$usuarios = self::ctrMostrarusuarios(null, null);
+		if (!$usuarios) {
+			$usuarios = [];
+		}
+
+		// Obtener cursos para mostrar información adicional
+		require_once "controladores/cursos.controlador.php";
+		$cursos = ControladorCursos::ctrMostrarCursos(null, null);
+
+		// Crear un array asociativo para facilitar el acceso a los cursos por profesor
+		$cursosPorProfesor = [];
+		if ($cursos) {
+			// Si es un solo curso, convertirlo en array
+			if (isset($cursos['id'])) {
+				$cursos = [$cursos];
+			}
+
+			foreach ($cursos as $curso) {
+				if (!isset($cursosPorProfesor[$curso['id_persona']])) {
+					$cursosPorProfesor[$curso['id_persona']] = [];
+				}
+				$cursosPorProfesor[$curso['id_persona']][] = $curso;
+			}
+		}
+
+		// Obtener todos los roles disponibles
+		$roles = ModeloUsuarios::mdlObtenerRoles();
+
+		// Obtener los roles por usuario
+		$rolesPorUsuario = [];
+		foreach ($usuarios as $usuario) {
+			$rolesPorUsuario[$usuario["id"]] = ModeloUsuarios::mdlObtenerRolesPorUsuario($usuario["id"]);
+		}
+
+		return [
+			'usuarios' => $usuarios,
+			'cursosPorProfesor' => $cursosPorProfesor,
+			'roles' => $roles,
+			'rolesPorUsuario' => $rolesPorUsuario
+		];
+	}
 }

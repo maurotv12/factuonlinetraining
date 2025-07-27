@@ -1,13 +1,17 @@
 <?php
-// session_start(); // Asegúrate de tener activa la sesión
+// Verificar acceso (solo administradores y profesores)
+if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin', 'profesor'])) {
+    echo '<div class="alert alert-danger">No tienes permisos para acceder a esta página.</div>';
+    return;
+}
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/conexion.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/cursos.modelo.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/cursos.controlador.php";
+// Importaciones necesarias
+require_once "controladores/cursos.controlador.php";
 
-// Obtener lista de profesores y categorías
-$profesores = ControladorCursos::ctrObtenerProfesores();
-$categorias = ControladorCursos::ctrObtenerCategorias();
+// Usar el controlador para cargar datos necesarios
+$datosCreacion = ControladorCursos::ctrCargarCreacionCurso();
+$profesores = $datosCreacion['profesores'];
+$categorias = $datosCreacion['categorias'];
 
 // Procesar el formulario si se envió
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,41 +20,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = $_POST['descripcion'];
     $categoria = $_POST['categoria'];
     $valor = $_POST['precio'];
-    $id_persona = isset($_POST['profesor']) ? $_POST['profesor'] : $_SESSION['id_persona']; // Usar el profesor seleccionado o el usuario de la sesión
-
-    // Generar URL amigable
-    $url_amiga = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $nombre)));
+    $id_persona = isset($_POST['profesor']) ? $_POST['profesor'] : $_SESSION['idU']; // Usar el profesor seleccionado o el usuario de la sesión
 
     // Obtener los nuevos campos
-    $lo_que_aprenderas = isset($_POST['lo_que_aprenderas']) ? $_POST['lo_que_aprenderas'] : '';
-    $requisitos = isset($_POST['requisitos']) ? $_POST['requisitos'] : '';
-    $para_quien = isset($_POST['para_quien']) ? $_POST['para_quien'] : '';
+    $lo_que_aprenderas = $_POST['lo_que_aprenderas'] ?? '';
+    $requisitos = $_POST['requisitos'] ?? '';
+    $para_quien = $_POST['para_quien'] ?? '';
 
-    // Enviar datos al controlador
-    $datosCurso = array(
-        "url_amiga" => $url_amiga,
+    $datosCurso = [
         "nombre" => $nombre,
         "descripcion" => $descripcion,
         "lo_que_aprenderas" => $lo_que_aprenderas,
         "requisitos" => $requisitos,
         "para_quien" => $para_quien,
-        "imagen" => isset($_FILES['imagen']) ? $_FILES['imagen'] : null,
-        "video" => isset($_FILES['video']) ? $_FILES['video'] : null,
+        "imagen" => $_FILES['imagen'] ?? null,
+        "video" => $_FILES['video'] ?? null,
         "valor" => $valor,
         "id_categoria" => $categoria,
         "id_persona" => $id_persona,
         "estado" => "activo"
-    );
+    ];
 
-    $respuesta = ControladorCursos::ctrCrearCurso($datosCurso);
+    $resultado = ControladorCursos::ctrProcesarCreacionCurso($datosCurso);
 
-    if ($respuesta === "ok") {
-        echo "<script>alert('Curso creado exitosamente'); window.location='cursos';</script>";
-        exit;
+    if (!$resultado['error']) {
+        echo '<script>
+            Swal.fire({
+                icon: "success",
+                title: "¡Curso creado!",
+                text: "' . $resultado['mensaje'] . '",
+                confirmButtonText: "Aceptar"
+            }).then(() => {
+                window.location = "superAdmin/gestionCursos/listadoCursos";
+            });
+        </script>';
     } else {
-        echo "<script>alert('Error al crear el curso');</script>";
+        echo '<script>
+            Swal.fire({
+                icon: "error", 
+                title: "Error",
+                text: "' . $resultado['mensaje'] . '",
+                confirmButtonText: "Aceptar"
+            });
+        </script>';
     }
 }
+
+// Incluir CSS para la página
+echo '<link rel="stylesheet" href="vistas/assets/css/pages/crearCurso.css">';
 ?>
 
 <!DOCTYPE html>
@@ -194,6 +211,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     </script>
+
+    <!-- Incluir el archivo JavaScript para la página -->
+    <script src="vistas/assets/js/pages/crearCurso.js"></script>
+
 </body>
 
 </html>

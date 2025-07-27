@@ -42,6 +42,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <!-- <link rel="stylesheet" href="vistas/assets/css/pages/usuarios.css"> -->
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="vistas/assets/css/dataTables-custom.css">
 
     <link rel="stylesheet" href="vistas/assets/css/app.css">
     <!-- SWEET ALERT 2 -->
@@ -105,23 +106,33 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
     <script>
         $(document).ready(function() {
-            $('#table_id').DataTable({
-                "language": {
-                    "lengthMenu": "Mostrar _MENU_ registros por página",
-                    "zeroRecords": "No se encontraron resultados en su búsqueda",
-                    "searchPlaceholder": "Buscar registros",
-                    "info": "Mostrando registros de _START_ al _END_ de un total de  _TOTAL_ registros",
-                    "infoEmpty": "No existen registros",
-                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
-                    "search": "Buscar:",
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                }
-            });
+            // Solo inicializar DataTable si no se ha cargado un script específico para la página
+            // y si la tabla existe
+            if ($('#table_id').length &&
+                !window.dataTableInitialized &&
+                !$('script[src*="usuariosAdmin.js"]').length &&
+                !$('script[src*="listadoCursos.js"]').length) {
+
+                $('#table_id').DataTable({
+                    "language": {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "zeroRecords": "No se encontraron resultados en su búsqueda",
+                        "searchPlaceholder": "Buscar registros",
+                        "info": "Mostrando registros de _START_ al _END_ de un total de  _TOTAL_ registros",
+                        "infoEmpty": "No existen registros",
+                        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                        "search": "Buscar:",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                    }
+                });
+
+                window.dataTableInitialized = true;
+            }
         });
     </script>
 </body>

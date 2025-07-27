@@ -107,24 +107,8 @@ $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
                                                 <div class="cursos-asignados">
                                                     <?php
                                                     if (isset($cursosPorProfesor[$value["id"]]) && !empty($cursosPorProfesor[$value["id"]])) {
-                                                        $totalCursos = count($cursosPorProfesor[$value["id"]]);
-                                                        $contador = 0;
-
                                                         foreach ($cursosPorProfesor[$value["id"]] as $curso) {
-                                                            $contador++;
-                                                            $nombreCurso = htmlspecialchars($curso["nombre"]);
-
-                                                            // Truncar nombres muy largos para mejor visualización
-                                                            if (strlen($nombreCurso) > 50) {
-                                                                $nombreCurso = substr($nombreCurso, 0, 47) . '...';
-                                                            }
-
-                                                            echo '<span class="badge bg-primary course-badge" title="' . htmlspecialchars($curso["nombre"]) . '">' . $nombreCurso . '</span>';
-
-                                                            // Agregar un salto suave cada 2 cursos para mejor organización
-                                                            if ($contador % 2 == 0 && $contador < $totalCursos) {
-                                                                echo '<br class="course-break">';
-                                                            }
+                                                            echo '<span class="badge bg-primary me-1 mb-1 text-break">' . htmlspecialchars($curso["nombre"]) . '</span>';
                                                         }
                                                     } else {
                                                         echo '<span class="text-muted">Sin cursos asignados</span>';

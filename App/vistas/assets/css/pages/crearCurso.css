@@ -1,0 +1,193 @@
+/* Estilos para la página de crear curso */
+.crear-curso-container {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.card-crear-curso {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border: none;
+}
+
+.card-header-custom h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.form-section h5 {
+    color: #495057;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-crear-curso {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-crear-curso:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.file-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover {
+    border-color: #667eea;
+    background-color: #f8f9fa;
+}
+
+.file-upload-area.dragover {
+    border-color: #667eea;
+    background-color: #e3f2fd;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.precio-input {
+    position: relative;
+}
+
+.precio-input::before {
+    content: '$';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.precio-input input {
+    padding-left: 25px;
+}
+
+.textarea-counter {
+    position: relative;
+}
+
+.char-counter {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.required-field::after {
+    content: ' *';
+    color: #dc3545;
+}
+
+.form-floating {
+    position: relative;
+}
+
+.progress-bar-custom {
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    margin-bottom: 20px;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 0 5px;
+    background: #e9ecef;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.step.completed {
+    background: #28a745;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .crear-curso-container {
+        padding: 10px;
+    }
+
+    .card-header-custom {
+        padding: 20px;
+    }
+
+    .form-section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .step-indicator {
+        flex-direction: column;
+    }
+
+    .step {
+        margin: 2px 0;
+    }
+}

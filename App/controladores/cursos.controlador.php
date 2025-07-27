@@ -290,6 +290,61 @@ class ControladorCursos
 	}
 
 	/*=============================================
+	Cargar página de crear curso con datos necesarios
+	=============================================*/
+	public static function ctrCargarCreacionCurso()
+	{
+		// Obtener lista de profesores y categorías
+		$profesores = self::ctrObtenerProfesores();
+		$categorias = self::ctrObtenerCategorias();
+
+		return [
+			'profesores' => $profesores,
+			'categorias' => $categorias
+		];
+	}
+
+	/*=============================================
+	Procesar creación de curso con validaciones mejoradas
+	=============================================*/
+	public static function ctrProcesarCreacionCurso($datos)
+	{
+		// Validaciones básicas
+		if (empty($datos['nombre']) || empty($datos['descripcion'])) {
+			return [
+				'error' => true,
+				'mensaje' => 'El nombre y descripción son obligatorios.'
+			];
+		}
+
+		// Generar URL amigable
+		$datos['url_amiga'] = self::generarUrlAmigable($datos['nombre']);
+
+		// Usar el método existente para crear curso que ya maneja archivos
+		$respuesta = self::ctrCrearCurso($datos);
+
+		if ($respuesta === "ok") {
+			return [
+				'error' => false,
+				'mensaje' => 'Curso creado exitosamente.'
+			];
+		} else {
+			return [
+				'error' => true,
+				'mensaje' => 'Error al crear el curso: ' . $respuesta
+			];
+		}
+	}
+
+	/*=============================================
+	Generar URL amigable
+	=============================================*/
+	private static function generarUrlAmigable($texto)
+	{
+		return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $texto)));
+	}
+
+	/*=============================================
 	Cargar página de editar curso con datos completos
 	=============================================*/
 	public static function ctrCargarEdicionCurso($idCurso)
@@ -376,5 +431,44 @@ class ControladorCursos
 				'mensaje' => 'Error al actualizar el curso.'
 			];
 		}
+	}
+
+	/*=============================================
+	CARGAR DATOS PARA LISTADO DE CURSOS
+	=============================================*/
+	static public function ctrCargarListadoCursos()
+	{
+		// Obtener todos los cursos
+		$cursos = self::ctrMostrarCursos(null, null);
+		if (!$cursos) {
+			$cursos = [];
+		}
+		if (isset($cursos['id'])) {
+			$cursos = [$cursos];
+		}
+
+		// Enriquecer cada curso con información adicional
+		$conn = Conexion::conectar();
+		foreach ($cursos as &$curso) {
+			// Asegurar que el valor esté presente
+			if (!isset($curso["valor"])) {
+				$curso["valor"] = 0;
+			}
+
+			// Obtener categoría
+			$stmtCategoria = $conn->prepare("SELECT nombre FROM categoria WHERE id = ?");
+			$stmtCategoria->execute([$curso["id_categoria"]]);
+			$curso["categoria"] = $stmtCategoria->fetchColumn() ?: 'Sin categoría';
+
+			// Obtener nombre del profesor
+			$stmtProfesor = $conn->prepare("SELECT nombre FROM persona WHERE id = ?");
+			$stmtProfesor->execute([$curso["id_persona"]]);
+			$curso["profesor"] = $stmtProfesor->fetchColumn() ?: 'Desconocido';
+
+			// Formatear fecha
+			$curso["fecha_formateada"] = date("Y-m-d", strtotime($curso["fecha_registro"]));
+		}
+
+		return $cursos;
 	}
 }
