@@ -25,6 +25,7 @@ class ControladorGeneral
 	{
 		return "http://localhost/cursosApp/verCurso.php"; //Ruta para ver un curso específico
 	}
+
 	public static function ctrCargarPagina()
 	{
 		if (isset($_GET["pagina"])) {
@@ -55,14 +56,35 @@ class ControladorGeneral
 	// Método auxiliar para buscar archivos recursivamente
 	private static function buscarArchivo($directorio, $archivoBuscado)
 	{
+		// Obtener la ruta absoluta del directorio base
+		$directorioCompleto = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $directorio;
+		$directorioCompleto = realpath($directorioCompleto);
+
+		if (!$directorioCompleto || !is_dir($directorioCompleto)) {
+			return false;
+		}
+
+		// Construir la ruta completa del archivo que buscamos
+		$rutaCompleta = $directorioCompleto . DIRECTORY_SEPARATOR . $archivoBuscado;
+		$rutaCompleta = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $rutaCompleta);
+
+		// Verificar si el archivo existe directamente
+		if (file_exists($rutaCompleta)) {
+			// Devolver la ruta relativa desde la carpeta App
+			return $directorio . DIRECTORY_SEPARATOR . $archivoBuscado;
+		}
+
+		// Si no existe, usar el método original como fallback
 		$iterator = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator($directorio),
+			new RecursiveDirectoryIterator($directorioCompleto),
 			RecursiveIteratorIterator::LEAVES_ONLY
 		);
 
 		foreach ($iterator as $archivo) {
-			if ($archivo->isFile() && $archivo->getFilename() == $archivoBuscado) {
-				return $archivo->getPathname();
+			if ($archivo->isFile() && $archivo->getFilename() == basename($archivoBuscado)) {
+				// Convertir a ruta relativa desde la carpeta App
+				$rutaRelativa = str_replace($directorioCompleto . DIRECTORY_SEPARATOR, $directorio . DIRECTORY_SEPARATOR, $archivo->getPathname());
+				return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $rutaRelativa);
 			}
 		}
 
@@ -127,6 +149,27 @@ class ControladorGeneral
 		if (isset($_GET["pagina"])) {
 			$pagina = $_GET["pagina"];
 
+			// Verificar si es una ruta de editar curso (editarCurso/url-amiga)
+			if (preg_match('/^editarCurso\/(.+)$/', $pagina, $matches)) {
+				$urlAmiga = $matches[1];
+
+				// Buscar el curso por URL amigable y obtener su ID
+				require_once "modelos/cursos.modelo.php";
+				$curso = ModeloCursos::mdlMostrarCursos("curso", "url_amiga", $urlAmiga);
+
+				if ($curso) {
+					// Establecer el ID del curso en GET para que la página lo use
+					$_GET['id'] = $curso['id'];
+					$pagina = "superAdmin/gestionCursos/editarCurso";
+				} else {
+					return "vistas/paginas/error404.php";
+				}
+			}
+			// Si es la ruta directa a editarCurso con ID, mantenerla
+			elseif (preg_match('/^superAdmin\/gestionCursos\/editarCurso$/', $pagina) && isset($_GET['id'])) {
+				// Ya tiene el ID, no hacer nada adicional
+			}
+
 			// Seguridad: solo permitimos letras, números, guiones y barras
 			if (!preg_match('/^[a-zA-Z0-9\/_-]+$/', $pagina)) {
 				return "vistas/paginas/error404.php";
@@ -169,11 +212,14 @@ class ControladorGeneral
 		return [
 			// Páginas solo para administradores
 			'superAdmin/usuarios' => ['admin', 'superadmin'],
+			'superAdmin/gestionUsuarios/usuarios' => ['admin', 'superadmin'],
 			'superAdmin/configuracion' => ['admin', 'superadmin'],
 			'superAdmin/reportes' => ['admin', 'superadmin'],
 			'soporte' => ['admin', 'superadmin'],
 			'listadoCursos' => ['admin', 'superadmin'],
 			'superAdmin/gestionCursos/listadoCursos' => ['admin', 'superadmin'],
+			'superAdmin/gestionCursos/crearCurso' => ['admin', 'superadmin', 'profesor'],
+			'superAdmin/gestionCursos/editarCurso' => ['admin', 'superadmin', 'profesor'],
 
 			// Páginas para profesores y administradores
 			'cursos' => ['profesor', 'admin', 'superadmin'],

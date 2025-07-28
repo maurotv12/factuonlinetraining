@@ -3,7 +3,7 @@
     <li class="sidebar-title">Cursos</li>
 
     <li class="sidebar-item">
-        <a href="dashboard" class='sidebar-link'>
+        <a href="/cursosApp/App/dashboard" class='sidebar-link'>
             <i class="bi bi-speedometer2"></i>
             <span>Mis Cursos</span>
         </a>

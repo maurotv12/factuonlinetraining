@@ -28,26 +28,26 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="vistas/assets/css/bootstrap.css">
-    <link rel="stylesheet" href="vistas/assets/css/style.css">
-    <link rel="stylesheet" href="vistas/assets/css/pages/email.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/style.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/email.css">
 
-    <link rel="stylesheet" href="vistas/assets/vendors/iconly/bold.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/iconly/bold.css">
 
-    <link rel="stylesheet" href="vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="vistas/assets/vendors/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="vistas/assets/vendors/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" href="vistas/assets/css/pages/menu.css">
-    <link rel="stylesheet" href="vistas/assets/css/pages/usuarios.css">
-    <!-- <link rel="stylesheet" href="vistas/assets/css/pages/usuarios.css"> -->
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/menu.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css">
+    <!-- <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css"> -->
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="vistas/assets/css/dataTables-custom.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/dataTables-custom.css">
 
-    <link rel="stylesheet" href="vistas/assets/css/app.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/app.css">
     <!-- SWEET ALERT 2 -->
     <!-- https://sweetalert2.github.io/ -->
-    <script src="vistas/assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="/cursosApp/App/vistas/assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <!-- DATATABLES -->
     <!-- https://datatables.net/examples/basic_init/zero_configuration.html -->
     <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -95,14 +95,14 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
         </div>
     </div>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-    <script src="vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="vistas/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="vistas/assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="vistas/assets/js/pages/dashboard.js"></script>
-    <script src="vistas/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="vistas/assets/js/script.js"></script>
+    <script src="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/cursosApp/App/vistas/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/cursosApp/App/vistas/assets/vendors/apexcharts/apexcharts.js"></script>
+    <script src="/cursosApp/App/vistas/assets/js/pages/dashboard.js"></script>
+    <script src="/cursosApp/App/vistas/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/cursosApp/App/vistas/assets/js/script.js"></script>
 
-    <script src="vistas/assets/js/main.js"></script>
+    <script src="/cursosApp/App/vistas/assets/js/main.js"></script>
 
     <script>
         $(document).ready(function() {

@@ -151,7 +151,7 @@ $categorias = $datosCreacion['categorias'];
 
                         <!-- Botones de acción -->
                         <div class="d-flex justify-content-between">
-                            <a href="superAdmin/gestionCursos/listadoCursos" class="btn btn-secondary">
+                            <a href="listadoCursos" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Volver al listado
                             </a>
                             <button type="submit" class="btn btn-primary">
@@ -180,7 +180,7 @@ if ($resultado) {
                 text: "' . $resultado['mensaje'] . '",
                 confirmButtonText: "Aceptar"
             }).then(() => {
-                window.location = "superAdmin/gestionCursos/listadoCursos";
+                window.location = "listadoCursos";
             });
         </script>';
     } else {

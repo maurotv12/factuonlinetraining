@@ -1,7 +1,5 @@
 .course-editor {
-    background: #f8f9fa;
-    min-height: 100vh;
-    padding: 20px 0;
+    /* Los estilos base se heredan de la plantilla principal */
 }
 
 .course-header {
@@ -27,7 +25,7 @@
     border-radius: 10px 10px 0 0;
     cursor: pointer;
     display: flex;
-    justify-content: between;
+    justify-content: space-between;
     align-items: center;
 }
 

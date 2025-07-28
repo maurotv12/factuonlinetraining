@@ -46,7 +46,7 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
 
                 <?php if (in_array(1, $idsRoles)) { ?>
                     <li class="sidebar-item">
-                        <a href="paginas" class='sidebar-link'>
+                        <a href="/cursosApp/App/paginas" class='sidebar-link'>
                             <i class="bi bi-file-earmark-text"></i>
                             <span>Páginas</span>
                         </a>
@@ -55,14 +55,14 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
 
 
                 <li class="sidebar-item">
-                    <a href="faq" class='sidebar-link'>
+                    <a href="/cursosApp/App/faq" class='sidebar-link'>
                         <i class="bi bi-question-circle"></i>
                         <span>FAQs</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item">
-                    <a href="soporte" class='sidebar-link'>
+                    <a href="/cursosApp/App/soporte" class='sidebar-link'>
                         <i class="bi bi-envelope-paper"></i>
                         <span>Soporte</span>
                     </a>
@@ -73,21 +73,21 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
                 <li class="sidebar-title">Configuración</li>
 
                 <li class="sidebar-item">
-                    <a href="configuracion" class='sidebar-link'>
+                    <a href="/cursosApp/App/configuracion" class='sidebar-link'>
                         <i class="bi bi-gear-fill"></i>
                         <span>Configuración General</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item">
-                    <a href="perfil" class='sidebar-link'>
+                    <a href="/cursosApp/App/perfil" class='sidebar-link'>
                         <i class="bi bi-person-circle"></i>
                         <span>Perfil</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item">
-                    <a href="salir" class='sidebar-link text-danger'>
+                    <a href="#" onclick="cerrarSesion()" class='sidebar-link text-danger'>
                         <i class="bi bi-door-closed"></i>
                         <span>Salir</span>
                     </a>
@@ -98,3 +98,11 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
         <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
     </div>
 </div>
+
+<script>
+    function cerrarSesion() {
+        if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+            window.location.href = '/cursosApp/App/index.php?pagina=general/salir';
+        }
+    }
+</script>

@@ -17,13 +17,19 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
         echo 'No hay cursos cargados.';
     } else {
         echo 'Primer curso - campos disponibles: ' . implode(', ', array_keys($cursos[0]));
+        // Verificar si url_amiga está disponible
+        if (isset($cursos[0]['url_amiga'])) {
+            echo ' | URL amiga encontrada: ' . $cursos[0]['url_amiga'];
+        } else {
+            echo ' | URL amiga NO encontrada';
+        }
     }
     echo '</div>';
 }
 ?>
 
 <!-- Incluir CSS específico para esta página -->
-<link rel="stylesheet" href="vistas/assets/css/pages/listadoCursos.css">
+<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/listadoCursos.css">
 
 <div class="listado-cursos-container">
     <div class="row">
@@ -81,10 +87,17 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                             <td><?= $curso["fecha_formateada"] ?></td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="superAdmin/gestionCursos/verCurso=<?= $curso['id'] ?>" class="btn btn-sm btn-info">
+                                                    <a href="/cursosApp/App/verCurso/<?= $curso['id'] ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
                                                     </a>
-                                                    <a href="<?= $curso["url_amiga"] ?>" class="btn btn-sm btn-warning">
+                                                    <?php
+                                                    // Usar URL amigable si está disponible, sino usar ID
+                                                    $urlEditar = !empty($curso["url_amiga"])
+                                                        ? "/cursosApp/App/editarCurso/" . $curso["url_amiga"]
+                                                        : "/cursosApp/App/superAdmin/gestionCursos/editarCurso?id=" . $curso["id"];
+                                                    ?>
+                                                    <a href="<?= $urlEditar ?>" class="btn btn-sm btn-warning"
+                                                        title="URL: <?= htmlspecialchars($urlEditar) ?>">
                                                         <i class="bi bi-pencil"></i> Editar
                                                     </a>
                                                 </div>
@@ -109,4 +122,4 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
 </div>
 
 <!-- Incluir el archivo JavaScript para la página -->
-<script src="vistas/assets/js/pages/listadoCursos.js"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/listadoCursos.js"></script>

@@ -542,4 +542,33 @@ class ControladorCursos
 
 		return $cursos;
 	}
+
+	/*=============================================
+	Generar URLs amigables para cursos existentes sin URL amigable
+	=============================================*/
+	public static function ctrGenerarUrlsAmigablesFaltantes()
+	{
+		$conn = Conexion::conectar();
+
+		// Buscar cursos sin URL amigable
+		$stmt = $conn->prepare("SELECT id, nombre FROM curso WHERE url_amiga IS NULL OR url_amiga = ''");
+		$stmt->execute();
+		$cursosSinUrl = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		$actualizados = 0;
+		foreach ($cursosSinUrl as $curso) {
+			$urlAmiga = self::generarUrlAmigable($curso['nombre']);
+
+			// Actualizar el curso con la nueva URL amigable
+			$stmtUpdate = $conn->prepare("UPDATE curso SET url_amiga = ? WHERE id = ?");
+			if ($stmtUpdate->execute([$urlAmiga, $curso['id']])) {
+				$actualizados++;
+			}
+		}
+
+		return [
+			'total_encontrados' => count($cursosSinUrl),
+			'actualizados' => $actualizados
+		];
+	}
 }
