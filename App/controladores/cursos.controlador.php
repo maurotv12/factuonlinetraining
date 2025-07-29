@@ -349,7 +349,7 @@ class ControladorCursos
 			'para_quien' => 'Para quién es este curso'
 		];
 
-		$maxCaracteres = 70;
+		$maxCaracteres = 100;
 
 		foreach ($camposViñetas as $campo => $nombreAmigable) {
 			if (!empty($datos[$campo])) {
