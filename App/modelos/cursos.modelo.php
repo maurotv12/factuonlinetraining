@@ -97,7 +97,8 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlCrearSeccion($datos)
 	{
-		$stmt = Conexion::conectar()->prepare("INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden, estado) 
+		$conn = Conexion::conectar();
+		$stmt = $conn->prepare("INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden, estado) 
 			VALUES (:id_curso, :titulo, :descripcion, :orden, :estado)");
 
 		$stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
@@ -107,7 +108,7 @@ class ModeloCursos
 		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
 
 		if ($stmt->execute()) {
-			return Conexion::conectar()->lastInsertId();
+			return $conn->lastInsertId();
 		} else {
 			return "error";
 		}

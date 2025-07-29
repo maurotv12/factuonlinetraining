@@ -1,4 +1,9 @@
 <?php
+// Iniciar sesión una sola vez al principio
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Verificar acceso (solo administradores)
 if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin'])) {
     echo '<div class="alert alert-danger">No tienes permisos para acceder a esta página.</div>';
@@ -27,6 +32,14 @@ $profesores = $datosEdicion['profesores'];
 $secciones = $datosEdicion['secciones'];
 $contenidoSecciones = $datosEdicion['contenidoSecciones'];
 
+// Debug: Verificar que se está cargando la información del curso
+if (empty($curso)) {
+    echo '<div class="alert alert-warning">
+        <strong>Aviso:</strong> No se pudo cargar la información del curso. 
+        ID recibido: ' . htmlspecialchars($idCurso ?? 'NULL') . '
+    </div>';
+}
+
 // Procesar actualización del curso básico
 if (isset($_POST['actualizarCurso'])) {
     $datosActualizar = [
@@ -44,31 +57,49 @@ if (isset($_POST['actualizarCurso'])) {
 
     $resultadoActualizacion = ControladorCursos::ctrActualizarDatosCurso($datosActualizar);
 
+    // Usar sesión para mostrar mensaje después de la redirección (sesión ya iniciada)
     if (!$resultadoActualizacion['error']) {
-        echo '<script>
+        $_SESSION['mensaje_exito'] = 'Los datos del curso se han actualizado correctamente.';
+    } else {
+        $_SESSION['mensaje_error'] = $resultadoActualizacion['mensaje'];
+    }
+
+    // Redireccionar para evitar reenvío del formulario
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Mostrar mensajes de la sesión si existen (sesión ya iniciada)
+if (isset($_SESSION['mensaje_exito'])) {
+    echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
             Swal.fire({
                 icon: "success",
                 title: "¡Curso actualizado!",
-                text: "Los datos del curso se han actualizado correctamente.",
+                text: "' . $_SESSION['mensaje_exito'] . '",
                 confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.reload();
             });
-        </script>';
-    } else {
-        echo '<script>
+        });
+    </script>';
+    unset($_SESSION['mensaje_exito']);
+}
+
+if (isset($_SESSION['mensaje_error'])) {
+    echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "' . $resultadoActualizacion['mensaje'] . '",
+                text: "' . $_SESSION['mensaje_error'] . '",
                 confirmButtonText: "Aceptar"
             });
-        </script>';
-    }
+        });
+    </script>';
+    unset($_SESSION['mensaje_error']);
 }
 
 // Incluir CSS para la página
-echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editarCurso.css">';
+echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editarCurso.css?v=' . time() . '">';
 ?>
 
 <!-- Input oculto con el ID del curso para JavaScript -->
@@ -91,7 +122,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editar
                             <div class="row">
                                 <div class="col-lg-8">
                                     <div class="d-flex align-items-center mb-3">
-                                        <a href="/cursosApp/App/superAdmin/gestionCursos/listadoCursos" class="btn btn-outline-secondary me-3">
+                                        <a href="/cursosApp/App/listadoCursos" class="btn btn-outline-secondary me-3">
                                             <i class="bi bi-arrow-left"></i> Volver al listado
                                         </a>
                                         <h2 class="mb-0"><?= htmlspecialchars($curso['nombre'] ?? 'Curso sin nombre') ?></h2>
@@ -180,7 +211,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editar
                                             </div>
                                         </div>
 
-                                        <button type="submit" name="actualizarCurso" class="btn btn-primary">
+                                        <button type="submit" name="actualizarCurso" class="btn btn-primary" id="btnActualizar">
                                             <i class="bi bi-save"></i> Actualizar datos básicos
                                         </button>
                                     </form>
@@ -370,4 +401,19 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editar
     </div>
 
     <!-- Incluir el archivo JavaScript para la página -->
-    <script src="/cursosApp/App/vistas/assets/js/pages/editarCurso.js"></script>
+    <script src="/cursosApp/App/vistas/assets/js/pages/editarCurso.js?v=<?= time() ?>"></script>
+
+    <script>
+        // Manejar el formulario de actualización de curso
+        document.addEventListener('DOMContentLoaded', function() {
+            const formCursoBasico = document.getElementById('formCursoBasico');
+            const btnActualizar = document.getElementById('btnActualizar');
+
+            if (formCursoBasico && btnActualizar) {
+                formCursoBasico.addEventListener('submit', function() {
+                    btnActualizar.disabled = true;
+                    btnActualizar.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Actualizando...';
+                });
+            }
+        });
+    </script>

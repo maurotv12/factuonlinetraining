@@ -1,3 +1,13 @@
 Options All -Indexes
 RewriteEngine On
+
+# Excluir archivos reales (CSS, JS, imágenes, AJAX, etc.)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule .* - [L]
+
+# Excluir directorios reales
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule .* - [L]
+
+# Regla para URLs amigables (solo si no es un archivo o directorio real)
 RewriteRule ^([0-9a-zA-Z-_-áéíóúÁÉÍÓÚñÑ\s]+)$ index.php?pagina=$1
