@@ -45,8 +45,8 @@ function inicializarListeners() {
  * Muestra/oculta campos del modal según el tipo de contenido
  */
 function toggleCamposPorTipo(tipo) {
-    const campoArchivo = document.querySelector('#modalContenido .campo-archivo');
-    const campoDuracion = document.querySelector('#modalContenido .campo-duracion');
+    const campoArchivo = document.getElementById('campoArchivo');
+    const campoDuracion = document.getElementById('campoDuracion');
     const archivoContenido = document.getElementById('archivoContenido');
 
     if (tipo === 'video') {
@@ -92,7 +92,7 @@ function agregarSeccion() {
  */
 function crearSeccion(titulo) {
     // Llamada AJAX para crear sección
-    fetch('ajax/curso_secciones.ajax.php', {
+    fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -103,7 +103,12 @@ function crearSeccion(titulo) {
             'titulo': titulo
         })
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 location.reload();
@@ -113,7 +118,7 @@ function crearSeccion(titulo) {
         })
         .catch(error => {
             console.error('Error:', error);
-            Swal.fire('Error', 'Error de conexión', 'error');
+            Swal.fire('Error', 'Error de conexión: ' + error.message, 'error');
         });
 }
 
@@ -174,14 +179,15 @@ function guardarContenido() {
     const titulo = formData.get('titulo');
     const tipo = formData.get('tipo');
     const archivo = formData.get('archivo');
+    const idContenido = formData.get('idContenido');
 
     // Validaciones
-    if (!titulo) {
+    if (!titulo || titulo.trim() === '') {
         Swal.fire('Error', 'El título es obligatorio', 'error');
         return;
     }
 
-    if ((tipo === 'video' || tipo === 'pdf') && !archivo && !formData.get('idContenido')) {
+    if ((tipo === 'video' || tipo === 'pdf') && !archivo && !idContenido) {
         Swal.fire('Error', 'Debes seleccionar un archivo', 'error');
         return;
     }
@@ -199,7 +205,7 @@ function guardarContenido() {
     });
 
     // Enviar mediante AJAX
-    fetch('ajax/curso_secciones.ajax.php', {
+    fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
         method: 'POST',
         body: formData
     })
@@ -208,6 +214,10 @@ function guardarContenido() {
             if (data.success) {
                 Swal.fire('Éxito', data.message || 'Contenido guardado correctamente', 'success')
                     .then(() => {
+                        // Cerrar modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalContenido'));
+                        if (modal) modal.hide();
+                        // Recargar página
                         location.reload();
                     });
             } else {
@@ -225,7 +235,7 @@ function guardarContenido() {
  */
 function editarContenido(idContenido) {
     // Obtener datos del contenido mediante AJAX
-    fetch('ajax/curso_secciones.ajax.php', {
+    fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -280,7 +290,7 @@ function eliminarContenido(idContenido) {
     }).then((result) => {
         if (result.isConfirmed) {
             // Eliminar mediante AJAX
-            fetch('ajax/curso_secciones.ajax.php', {
+            fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -322,7 +332,7 @@ function eliminarSeccion(idSeccion) {
     }).then((result) => {
         if (result.isConfirmed) {
             // Eliminar mediante AJAX
-            fetch('ajax/curso_secciones.ajax.php', {
+            fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -352,7 +362,7 @@ function eliminarSeccion(idSeccion) {
  * Actualiza el título de una sección
  */
 function actualizarTituloSeccion(idSeccion, nuevoTitulo) {
-    fetch('ajax/curso_secciones.ajax.php', {
+    fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

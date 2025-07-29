@@ -258,9 +258,14 @@ class ControladorCursos
 			$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
 			$nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
 
-			// Directorio según el tipo
-			$directorio = $tipo == 'video' ? 'vistas/videos/' : 'vistas/documentos/';
+			// Directorio según el tipo - usar la estructura existente
+			if ($tipo == 'video') {
+				$directorio = 'subidas/videos/';
+			} else {
+				$directorio = 'subidas/documentos/';
+			}
 
+			// Crear directorio si no existe
 			if (!file_exists($directorio)) {
 				mkdir($directorio, 0777, true);
 			}
