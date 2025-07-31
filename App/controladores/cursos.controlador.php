@@ -498,7 +498,7 @@ class ControladorCursos
 	/*=============================================
 	CARGAR DATOS PARA LISTADO DE CURSOS
 	=============================================*/
-	static public function ctrCargarListadoCursos()
+	public static function ctrCargarListadoCursos()
 	{
 		// Obtener todos los cursos
 		$cursos = self::ctrMostrarCursos(null, null);
@@ -509,8 +509,11 @@ class ControladorCursos
 			$cursos = [$cursos];
 		}
 
+		// Obtener todas las categorías y profesores
+		$categorias = self::ctrObtenerCategorias();
+		$profesores = self::ctrObtenerProfesores();
+
 		// Enriquecer cada curso con información adicional
-		$conn = Conexion::conectar();
 		foreach ($cursos as &$curso) {
 			// Asegurar que el valor esté presente
 			if (!isset($curso["valor"])) {
@@ -518,17 +521,79 @@ class ControladorCursos
 			}
 
 			// Obtener categoría
-			$stmtCategoria = $conn->prepare("SELECT nombre FROM categoria WHERE id = ?");
-			$stmtCategoria->execute([$curso["id_categoria"]]);
-			$curso["categoria"] = $stmtCategoria->fetchColumn() ?: 'Sin categoría';
+			$categoria = array_filter($categorias, function ($cat) use ($curso) {
+				return $cat['id'] == $curso['id_categoria'];
+			});
+			$curso["categoria"] = $categoria ? reset($categoria)['nombre'] : 'Sin categoría';
 
 			// Obtener nombre del profesor
-			$stmtProfesor = $conn->prepare("SELECT nombre FROM persona WHERE id = ?");
-			$stmtProfesor->execute([$curso["id_persona"]]);
-			$curso["profesor"] = $stmtProfesor->fetchColumn() ?: 'Desconocido';
+			$profesor = array_filter($profesores, function ($prof) use ($curso) {
+				return $prof['id'] == $curso['id_persona'];
+			});
+			$curso["profesor"] = $profesor ? reset($profesor)['nombre'] : 'Desconocido';
 
 			// Formatear fecha
 			$curso["fecha_formateada"] = date("Y-m-d", strtotime($curso["fecha_registro"]));
+		}
+
+		return $cursos;
+	}
+
+	/*=============================================
+	CARGAR DATOS PARA LISTADO DE CURSOS DEL PROFESOR LOGUEADO
+	=============================================*/
+	public static function ctrCargarListadoCursosProfesor($idProfesor = null)
+	{
+		// Si no se proporciona ID, usar el de la sesión
+		if (!$idProfesor && isset($_SESSION['idU'])) {
+			$idProfesor = $_SESSION['idU'];
+		}
+
+		if (!$idProfesor) {
+			return [];
+		}
+
+		// Obtener cursos del profesor específico
+		$cursos = self::ctrMostrarCursos("id_persona", $idProfesor);
+		if (!$cursos) {
+			$cursos = [];
+		}
+		if (isset($cursos['id'])) {
+			$cursos = [$cursos];
+		}
+
+		// Obtener todas las categorías para mapear
+		$categorias = self::ctrObtenerCategorias();
+
+		// Enriquecer cada curso con información adicional
+		foreach ($cursos as &$curso) {
+			// Asegurar que el valor esté presente
+			if (!isset($curso["valor"])) {
+				$curso["valor"] = 0;
+			}
+
+			// Obtener categoría
+			$categoria = array_filter($categorias, function ($cat) use ($curso) {
+				return $cat['id'] == $curso['id_categoria'];
+			});
+			$curso["categoria"] = $categoria ? reset($categoria)['nombre'] : 'Sin categoría';
+
+			// El profesor ya es conocido (es el logueado)
+			$curso["profesor"] = $_SESSION['nombreU'] ?? 'Profesor';
+
+			// Formatear fecha
+			$curso["fecha_formateada"] = date("Y-m-d", strtotime($curso["fecha_registro"]));
+
+			// Agregar contador de secciones si existe la tabla
+			try {
+				$conn = Conexion::conectar();
+				$stmtSecciones = $conn->prepare("SELECT COUNT(*) as total_secciones FROM curso_secciones WHERE id_curso = ?");
+				$stmtSecciones->execute([$curso['id']]);
+				$secciones = $stmtSecciones->fetch(PDO::FETCH_ASSOC);
+				$curso["total_secciones"] = $secciones['total_secciones'] ?? 0;
+			} catch (Exception $e) {
+				$curso["total_secciones"] = 0;
+			}
 		}
 
 		return $cursos;
