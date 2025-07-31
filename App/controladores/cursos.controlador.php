@@ -11,6 +11,12 @@ class ControladorCursos
 	/*=============================================
 	Mostrar Cursos
 =============================================*/
+	/**
+	 * Mostrar Cursos con normalizacion de resultados
+	 * @param string|null $item Campo para filtrar
+	 * @param mixed|null $valor Valor para el filtro
+	 * @return array|null Devuelve array de cursos o null
+	 */
 	public static function ctrMostrarCursos($item, $valor)
 	{
 		$tabla = "curso";
@@ -18,7 +24,26 @@ class ControladorCursos
 		// $valor = null;
 		$rutaInicio = ControladorGeneral::ctrRuta();
 		$respuesta = ModeloCursos::mdlMostrarCursos($tabla, $item, $valor);
-		return $respuesta;
+
+		// Normalizar resultado para garantizar formato consistente
+		if ($respuesta === false || $respuesta === null) {
+			return null;
+		}
+
+		// Si es un único registro (array asociativo sin índice numérico en primer nivel)
+		if (is_array($respuesta) && !isset($respuesta[0]) && !empty($respuesta)) {
+			// Verificar si tiene índices duplicados (asociativos y numéricos)
+			// Si es así, filtrar solo las claves asociativas
+			$resultado = [];
+			foreach ($respuesta as $key => $value) {
+				if (!is_numeric($key)) {
+					$resultado[$key] = $value;
+				}
+			}
+			return [$resultado]; // Devolver como array de elementos para consistencia
+		}
+
+		return $respuesta; // Ya es un array de elementos
 	}
 
 	public static function ctrObtenerCategorias()
@@ -553,13 +578,15 @@ class ControladorCursos
 			return [];
 		}
 
-		// Obtener cursos del profesor específico
-		$cursos = self::ctrMostrarCursos("id_persona", $idProfesor);
+		// Obtener cursos del profesor específico directamente desde la base de datos
+		// para asegurar que obtenemos TODOS los cursos, no solo el primero
+		$conn = Conexion::conectar();
+		$stmt = $conn->prepare("SELECT * FROM curso WHERE id_persona = ? ORDER BY fecha_registro DESC");
+		$stmt->execute([$idProfesor]);
+		$cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 		if (!$cursos) {
-			$cursos = [];
-		}
-		if (isset($cursos['id'])) {
-			$cursos = [$cursos];
+			return [];
 		}
 
 		// Obtener todas las categorías para mapear
@@ -586,7 +613,6 @@ class ControladorCursos
 
 			// Agregar contador de secciones si existe la tabla
 			try {
-				$conn = Conexion::conectar();
 				$stmtSecciones = $conn->prepare("SELECT COUNT(*) as total_secciones FROM curso_secciones WHERE id_curso = ?");
 				$stmtSecciones->execute([$curso['id']]);
 				$secciones = $stmtSecciones->fetch(PDO::FETCH_ASSOC);

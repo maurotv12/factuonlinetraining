@@ -12,20 +12,41 @@ class ModeloCursos
 	/*=============================================
 	Mostrar Cursos
 ==============================================*/
+	/**
+	 * Obtener cursos de la base de datos
+	 * @param string $tabla Nombre de la tabla
+	 * @param string|null $item Campo por el que se filtra
+	 * @param mixed|null $valor Valor del campo para filtrar
+	 * @return array|false Array con los cursos encontrados o false si hay error
+	 */
 	public static function mdlMostrarCursos($tabla, $item, $valor)
 	{
-		if ($item != null && $valor != null) {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item");
-			$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
-			$stmt->execute();
-			return $stmt->fetch();
-		} else {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
-			$stmt->execute();
-			return $stmt->fetchAll();
+		try {
+			if ($item != null && $valor != null) {
+				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item");
+				$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
+				$stmt->execute();
+
+				// Verificamos si es un ID único (esperamos solo un resultado)
+				if ($item === 'id') {
+					$resultado = $stmt->fetch(PDO::FETCH_ASSOC); // Solo asociativo para evitar duplicados
+					return $resultado ? $resultado : false;
+				} else {
+					// Para otros criterios, devolvemos todos los resultados que coincidan
+					return $stmt->fetchAll(PDO::FETCH_ASSOC);
+				}
+			} else {
+				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
+				$stmt->execute();
+				return $stmt->fetchAll(PDO::FETCH_ASSOC);
+			}
+		} catch (Exception $e) {
+			return false;
+		} finally {
+			if (isset($stmt)) {
+				$stmt = null;
+			}
 		}
-		$stmt->close();
-		$stmt = null;
 	}
 
 	public static function mdlCrearCurso($tabla, $datos)
