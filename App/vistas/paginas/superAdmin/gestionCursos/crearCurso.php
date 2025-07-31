@@ -17,9 +17,6 @@ $profesores = $datosCreacion['profesores'];
 $categorias = $datosCreacion['categorias'];
 ?>
 
-<!-- Incluir CSS específico para esta página -->
-<link rel="stylesheet" href="vistas/assets/css/pages/crearCurso.css">
-
 <div class="crear-curso-container">
     <div class="row">
         <div class="col-12">
@@ -56,7 +53,7 @@ $categorias = $datosCreacion['categorias'];
                         <div class="mb-3">
                             <label for="lo_que_aprenderas" class="form-label">
                                 Lo que aprenderás con este curso
-                                <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span>
+                                <span class="text-muted">(Una frase por línea, máximo 100 caracteres cada una)</span>
                             </label>
                             <textarea class="form-control" id="lo_que_aprenderas" name="lo_que_aprenderas" rows="5"
                                 placeholder="Ejemplo:&#10;Aprenderás a utilizar herramientas avanzadas de diseño gráfico.&#10;Dominarás las técnicas de ilustración digital."></textarea>
@@ -66,7 +63,7 @@ $categorias = $datosCreacion['categorias'];
                         <div class="mb-3">
                             <label for="requisitos" class="form-label">
                                 Requisitos
-                                <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span>
+                                <span class="text-muted">(Una frase por línea, máximo 100 caracteres cada una)</span>
                             </label>
                             <textarea class="form-control" id="requisitos" name="requisitos" rows="4"
                                 placeholder="Ejemplo:&#10;Conocimientos básicos de diseño.&#10;Computador con Adobe Photoshop instalado."></textarea>
@@ -76,7 +73,7 @@ $categorias = $datosCreacion['categorias'];
                         <div class="mb-3">
                             <label for="para_quien" class="form-label">
                                 Para quién es este curso
-                                <span class="text-muted">(Una frase por línea, máximo 70 caracteres cada una)</span>
+                                <span class="text-muted">(Una frase por línea, máximo 100 caracteres cada una)</span>
                             </label>
                             <textarea class="form-control" id="para_quien" name="para_quien" rows="4"
                                 placeholder="Ejemplo:&#10;Diseñadores gráficos que quieran mejorar sus habilidades.&#10;Emprendedores que deseen crear sus propias piezas gráficas."></textarea>
@@ -126,7 +123,7 @@ $categorias = $datosCreacion['categorias'];
                                 <small class="text-muted">(Dimensiones: 600x400 píxeles)</small>
                             </label>
                             <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" required>
-                            <div class="form-text">Formatos permitidos: JPG, PNG, GIF, WebP. Tamaño recomendado: 600x400px</div>
+                            <div class="form-text">Formatos permitidos: JPG, PNG, GIF, WebP. Tamaño aceptado: 600x400px</div>
                         </div>
 
                         <div class="mb-3">
