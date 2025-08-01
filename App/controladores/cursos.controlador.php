@@ -434,18 +434,34 @@ class ControladorCursos
 	/*=============================================
 	Cargar página de editar curso con datos completos
 	=============================================*/
-	public static function ctrCargarEdicionCurso($idCurso)
+	public static function ctrCargarEdicionCurso($identificador)
 	{
-		// Verificar que el ID del curso sea válido
-		if (!$idCurso) {
+		// Verificar que el identificador sea válido
+		if (!$identificador) {
 			return [
 				'error' => true,
-				'mensaje' => 'ID de curso no válido.'
+				'mensaje' => 'Identificador de curso no válido.'
 			];
 		}
 
+		// Determinar si es un ID numérico o una URL amigable
+		$esCursoId = is_numeric($identificador);
+		$campo = $esCursoId ? "id" : "url_amiga";
+
 		// Obtener los datos del curso
-		$curso = self::ctrMostrarCursos("id", $idCurso);
+		$cursosArray = self::ctrMostrarCursos($campo, $identificador);
+
+		// Como ctrMostrarCursos puede devolver un array de cursos, necesitamos obtener el primer elemento
+		$curso = null;
+		if (is_array($cursosArray) && !empty($cursosArray)) {
+			// Si es un array indexado, tomar el primer elemento
+			if (isset($cursosArray[0])) {
+				$curso = $cursosArray[0];
+			} else {
+				// Si es un array asociativo directo, usarlo
+				$curso = $cursosArray;
+			}
+		}
 
 		if (!$curso) {
 			return [
@@ -453,6 +469,9 @@ class ControladorCursos
 				'mensaje' => 'Curso no encontrado.'
 			];
 		}
+
+		// Asegurar que tenemos el ID del curso para las consultas posteriores
+		$idCurso = $curso['id'];
 
 		// Obtener datos adicionales necesarios para la vista
 		$categorias = self::ctrObtenerCategorias();

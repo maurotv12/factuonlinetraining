@@ -13,11 +13,11 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin'])) {
 // Importaciones necesarias
 require_once "controladores/cursos.controlador.php";
 
-// Obtener el ID del curso de la URL
-$idCurso = isset($_GET['id']) ? $_GET['id'] : null;
+// Obtener el identificador del curso de la URL (puede ser ID o URL amigable)
+$identificadorCurso = isset($_GET['identificador']) ? $_GET['identificador'] : (isset($_GET['id']) ? $_GET['id'] : null);
 
 // Usar el controlador para cargar todos los datos necesarios
-$datosEdicion = ControladorCursos::ctrCargarEdicionCurso($idCurso);
+$datosEdicion = ControladorCursos::ctrCargarEdicionCurso($identificadorCurso);
 
 // Verificar si hubo error
 if ($datosEdicion['error']) {
@@ -36,14 +36,14 @@ $contenidoSecciones = $datosEdicion['contenidoSecciones'];
 if (empty($curso)) {
     echo '<div class="alert alert-warning">
         <strong>Aviso:</strong> No se pudo cargar la información del curso. 
-        ID recibido: ' . htmlspecialchars($idCurso ?? 'NULL') . '
+        Identificador recibido: ' . htmlspecialchars($identificadorCurso ?? 'NULL') . '
     </div>';
 }
 
 // Procesar actualización del curso básico
 if (isset($_POST['actualizarCurso'])) {
     $datosActualizar = [
-        'id' => $idCurso,
+        'id' => $curso['id'], // Usar el ID real del curso obtenido
         'nombre' => $_POST['nombre'],
         'descripcion' => $_POST['descripcion'],
         'lo_que_aprenderas' => $_POST['lo_que_aprenderas'],
@@ -103,7 +103,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editar
 ?>
 
 <!-- Input oculto con el ID del curso para JavaScript -->
-<input type="hidden" id="idCurso" value="<?= $idCurso ?>">
+<input type="hidden" id="idCurso" value="<?= $curso['id'] ?? '' ?>">
 
 <div class="course-editor">
     <div class="row">

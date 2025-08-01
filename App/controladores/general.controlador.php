@@ -26,32 +26,32 @@ class ControladorGeneral
 		return "http://localhost/cursosApp/verCurso.php"; //Ruta para ver un curso específico
 	}
 
-	public static function ctrCargarPagina()
-	{
-		if (isset($_GET["pagina"])) {
+	// public static function ctrCargarPagina()
+	// {
+	// 	if (isset($_GET["pagina"])) {
 
-			$pagina = $_GET["pagina"];
+	// 		$pagina = $_GET["pagina"];
 
-			// Seguridad: solo permitimos letras, números, guiones y barras
-			if (!preg_match('/^[a-zA-Z0-9\/_-]+$/', $pagina)) {
-				return "vistas/paginas/error404.php";
-			}
+	// 		// Seguridad: solo permitimos letras, números, guiones y barras
+	// 		if (!preg_match('/^[a-zA-Z0-9\/_-]+$/', $pagina)) {
+	// 			return "vistas/paginas/error404.php";
+	// 		}
 
-			// Búsqueda recursiva en todas las subcarpetas de vistas/paginas
-			$directorioBase = "vistas/paginas";
-			$archivoBuscado = $pagina . ".php";
+	// 		// Búsqueda recursiva en todas las subcarpetas de vistas/paginas
+	// 		$directorioBase = "vistas/paginas";
+	// 		$archivoBuscado = $pagina . ".php";
 
-			$ruta = self::buscarArchivo($directorioBase, $archivoBuscado);
+	// 		$ruta = self::buscarArchivo($directorioBase, $archivoBuscado);
 
-			if ($ruta) {
-				return $ruta;
-			} else {
-				return "vistas/paginas/error404.php";
-			}
-		} else {
-			return "vistas/paginas/inicio.php";
-		}
-	}
+	// 		if ($ruta) {
+	// 			return $ruta;
+	// 		} else {
+	// 			return "vistas/paginas/error404.php";
+	// 		}
+	// 	} else {
+	// 		return "vistas/paginas/inicio.php";
+	// 	}
+	// }
 
 	// Método auxiliar para buscar archivos recursivamente
 	private static function buscarArchivo($directorio, $archivoBuscado)
@@ -158,16 +158,19 @@ class ControladorGeneral
 				$curso = ModeloCursos::mdlMostrarCursos("curso", "url_amiga", $urlAmiga);
 
 				if ($curso) {
-					// Establecer el ID del curso en GET para que la página lo use
-					$_GET['id'] = $curso['id'];
+					// Establecer tanto el ID como la URL amigable para que la página los use
+					$_GET['identificador'] = $urlAmiga;
 					$pagina = "superAdmin/gestionCursos/editarCurso";
+				} elseif ($curso) {
+					$_GET['id'] = $curso['id'];
 				} else {
 					return "vistas/paginas/error404.php";
 				}
 			}
 			// Si es la ruta directa a editarCurso con ID, mantenerla
 			elseif (preg_match('/^superAdmin\/gestionCursos\/editarCurso$/', $pagina) && isset($_GET['id'])) {
-				// Ya tiene el ID, no hacer nada adicional
+				// Ya tiene el ID, establecer también el identificador para consistencia
+				$_GET['identificador'] = $_GET['id'];
 			}
 
 			// Seguridad: solo permitimos letras, números, guiones y barras
@@ -211,29 +214,31 @@ class ControladorGeneral
 	{
 		return [
 			// Páginas solo para administradores
-			'superAdmin/usuarios' => ['admin', 'superadmin'],
-			'superAdmin/gestionUsuarios/usuarios' => ['admin', 'superadmin'],
-			'superAdmin/configuracion' => ['admin', 'superadmin'],
-			'superAdmin/reportes' => ['admin', 'superadmin'],
-			'soporte' => ['admin', 'superadmin'],
-			'listadoCursos' => ['admin', 'superadmin'],
-			'superAdmin/gestionCursos/listadoCursos' => ['admin', 'superadmin'],
-			'superAdmin/gestionCursos/crearCurso' => ['admin', 'superadmin', 'profesor'],
-			'superAdmin/gestionCursos/editarCurso' => ['admin', 'superadmin', 'profesor'],
+			'superAdmin/gestionUsuarios/solicitudesInstructores' => ['admin'],
+			'superAdmin/gestionUsuarios/usuarios' => ['admin'],
+			'superAdmin/gestionUsuarios/verCurso' => ['admin'],
+			'superAdmin/gestionCursos/listadoCursos' => ['admin'],
+			'superAdmin/gestionCursos/crearCurso' => ['admin', 'profesor'],
+			'superAdmin/gestionCursos/editarCurso' => ['admin', 'profesor'],
+
+			'superAdmin/configuracion' => ['admin'],
+			'superAdmin/reportes' => ['admin'],
+			'soporte' => ['admin'],
+			'listadoCursos' => ['admin'],
 
 			// Páginas para profesores y administradores
-			'cursos' => ['profesor', 'admin', 'superadmin'],
-			'profesores' => ['profesor', 'admin', 'superadmin'],
+			'cursos' => ['profesor', 'admin'],
+			'profesores' => ['profesor', 'admin'],
 
 			// Páginas para estudiantes, profesores y administradores
-			'misCursos' => ['estudiante', 'profesor', 'admin', 'superadmin'],
-			'seguirCurso' => ['estudiante', 'profesor', 'admin', 'superadmin'],
-			'inscripciones' => ['estudiante', 'profesor', 'admin', 'superadmin'],
+			'misCursos' => ['estudiante', 'profesor', 'admin'],
+			'seguirCurso' => ['estudiante', 'profesor', 'admin'],
+			'inscripciones' => ['estudiante', 'profesor', 'admin'],
 
 			// Páginas de perfil (todos los usuarios autenticados)
-			'perfil' => ['estudiante', 'profesor', 'admin', 'superadmin'],
-			'modalPassword' => ['estudiante', 'profesor', 'admin', 'superadmin'],
-			'modalFoto' => ['estudiante', 'profesor', 'admin', 'superadmin'],
+			'perfil' => ['estudiante', 'profesor', 'admin'],
+			'modalPassword' => ['estudiante', 'profesor', 'admin'],
+			'modalFoto' => ['estudiante', 'profesor', 'admin'],
 		];
 	}
 
