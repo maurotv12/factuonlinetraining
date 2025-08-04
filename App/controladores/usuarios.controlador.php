@@ -30,7 +30,7 @@ class ControladorUsuarios
 	public static function ctrActualizarUsuario($id, $item, $valor)
 	{
 
-		$tabla = "usuarios";
+		$tabla = "persona";
 
 		$respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
 
@@ -89,7 +89,7 @@ DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
 				}
 				// final condicion
 				$rutaApp = ControladorGeneral::ctrRutaApp();
-				$tabla = "usuarios";
+				$tabla = "persona";
 				$id = $_POST["idClienteImagen"];
 				$item = "foto";
 				$valor = $ruta;
@@ -110,7 +110,7 @@ DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
 	{
 		if (isset($_POST["nombreUsuario"])) {
 			$rutaApp = ControladorGeneral::ctrRutaApp();
-			$tabla = "usuarios";
+			$tabla = "persona";
 			$datos = array(
 				"id" => $_POST["idUsuario"],
 				"nombre" => $_POST["nombreUsuario"],

@@ -1,7 +1,8 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/autenticacion.controlador.php";
 
-$registro = new ControladorUsuarios();
+$registro = new ControladorAutenticacion();
 $registro->ctrRegistroUsuario();
 
 $rutaLogin = ControladorRuta::ctrRutaLogin();

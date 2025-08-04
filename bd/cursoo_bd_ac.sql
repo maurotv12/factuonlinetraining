@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-07-2025 a las 22:09:58
+-- Tiempo de generación: 04-08-2025 a las 21:50:09
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -247,7 +247,12 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (67, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 12:09:16'),
 (68, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:09:33'),
 (69, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:19:57'),
-(70, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:54:58');
+(70, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-07-23 14:54:58'),
+(71, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-04 13:57:55'),
+(72, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-04 14:04:31'),
+(73, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-04 14:08:59'),
+(74, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-04 14:13:35'),
+(75, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-04 14:23:34');
 
 -- --------------------------------------------------------
 
@@ -276,7 +281,6 @@ CREATE TABLE `persona` (
   `usuario_link` varchar(100) NOT NULL,
   `nombre` varchar(200) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `nro_identificacion` varchar(50) DEFAULT NULL,
   `password` text NOT NULL,
   `verificacion` int(11) NOT NULL DEFAULT 0,
   `foto` varchar(100) DEFAULT 'vistas/img/usuarios/default/default.png',
@@ -287,6 +291,10 @@ CREATE TABLE `persona` (
   `pais` varchar(200) DEFAULT NULL,
   `ciudad` varchar(100) DEFAULT NULL,
   `estado` enum('activo','inactivo') DEFAULT 'activo',
+  `mostrar_email` tinyint(1) DEFAULT 0 COMMENT 'Mostrar email públicamente',
+  `mostrar_telefono` tinyint(1) DEFAULT 0 COMMENT 'Mostrar teléfono públicamente',
+  `mostrar_identificacion` tinyint(1) DEFAULT 0 COMMENT 'Mostrar número de identificación públicamente',
+  `numero_identificacion` varchar(50) DEFAULT NULL COMMENT 'Número de identificación del usuario',
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -294,9 +302,9 @@ CREATE TABLE `persona` (
 -- Volcado de datos para la tabla `persona`
 --
 
-INSERT INTO `persona` (`id`, `usuario_link`, `nombre`, `email`, `nro_identificacion`, `password`, `verificacion`, `foto`, `profesion`, `telefono`, `direccion`, `biografia`, `pais`, `ciudad`, `estado`, `fecha_registro`) VALUES
-(1, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozsanchez12@gmail.com', NULL, '$2y$10$XJjXQcSuxiVhdhkovif7B.YfVKNSkVEK2Tl0ZBJa48CDWKY3.r80a', 0, 'vistas/img/usuarios/default/default.png', 'Contador', '3135529157', 'cra26k8121', '¿Por qué he llegado a más de 400k estudiantes pero mi calificación global no baja de 4.7 estrellas?\n\nPrimero, porque hago todo esto con mucho amor.\n\nEn segundo lugar, porque me lo tomo muy en serio, pero sin dejar de divertirme. Aunque tal vez también porque soy un apasionado por aprender y por compartir lo aprendido.\n\nSoy como mis estudiantes: quiero ser mejor, cada día, un poquito.\n\nMe he propuesto desarrollar cursos en Udemy (¡más de 50 ya!) para transmitir mi experiencia, conocer personas con ganas de ser mejores, y mejorar mi calidad de vida haciendo lo que me gusta. Más de 400k estudiantes se han unido a esta aventura.\n\nSoy el fundador de Escuela Directa, una usina de contenido que promueve la educación ACCESIBLE para TODOS.\n\nHasta los 42 años, mi profesión formal era la Psicología (con más de 20 años de experiencia clínica y especializado en Drogadependencias).\n\nMi profesión me ha llevado a trabajar mucho en docencia y en especial con jóvenes.\n\nTambién soy Licenciado en Artes Plásticas, y me paso horas dibujando cómics, programando, o tomando fotos. He cantado en coros, he bailado en murgas, he militado en política, me apasiona la buena cocina, viajar mucho, participar en mi comunidad y tener mis sentidos siempre abiertos.\n\nY ya que estamos, soy Especialista en Excel (MO-200) certificado por Microsoft.\n\nDe todos modos, mi profesión no me define. Soy lo que hago cada día, y cada día es un día nuevo.\n\nTe invito a que nos reinventemos juntos.', 'Colombia', NULL, 'activo', '2025-07-10 19:18:15'),
-(2, 'clienteRegistro', 'Derly Pipicano', 'm-mau55@hotmail.com', NULL, '$2y$10$AlrkWRiRR2kIBFLn7qA.nux7d6//Va6PB818ZJK7NnrENSAv8a6kS', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', '2025-07-15 13:42:06');
+INSERT INTO `persona` (`id`, `usuario_link`, `nombre`, `email`, `password`, `verificacion`, `foto`, `profesion`, `telefono`, `direccion`, `biografia`, `pais`, `ciudad`, `estado`, `mostrar_email`, `mostrar_telefono`, `mostrar_identificacion`, `numero_identificacion`, `fecha_registro`) VALUES
+(1, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozsanchez12@gmail.com', '$2y$10$XJjXQcSuxiVhdhkovif7B.YfVKNSkVEK2Tl0ZBJa48CDWKY3.r80a', 0, 'vistas/img/usuarios/default/default.png', 'Contador', '3135529157', 'cra26k8121', '¿Por qué he llegado a más de 400k estudiantes pero mi calificación global no baja de 4.7 estrellas?\n\nPrimero, porque hago todo esto con mucho amor.\n\nEn segundo lugar, porque me lo tomo muy en serio, pero sin dejar de divertirme. Aunque tal vez también porque soy un apasionado por aprender y por compartir lo aprendido.\n\nSoy como mis estudiantes: quiero ser mejor, cada día, un poquito.\n\nMe he propuesto desarrollar cursos en Udemy (¡más de 50 ya!) para transmitir mi experiencia, conocer personas con ganas de ser mejores, y mejorar mi calidad de vida haciendo lo que me gusta. Más de 400k estudiantes se han unido a esta aventura.\n\nSoy el fundador de Escuela Directa, una usina de contenido que promueve la educación ACCESIBLE para TODOS.\n\nHasta los 42 años, mi profesión formal era la Psicología (con más de 20 años de experiencia clínica y especializado en Drogadependencias).\n\nMi profesión me ha llevado a trabajar mucho en docencia y en especial con jóvenes.\n\nTambién soy Licenciado en Artes Plásticas, y me paso horas dibujando cómics, programando, o tomando fotos. He cantado en coros, he bailado en murgas, he militado en política, me apasiona la buena cocina, viajar mucho, participar en mi comunidad y tener mis sentidos siempre abiertos.\n\nY ya que estamos, soy Especialista en Excel (MO-200) certificado por Microsoft.\n\nDe todos modos, mi profesión no me define. Soy lo que hago cada día, y cada día es un día nuevo.\n\nTe invito a que nos reinventemos juntos.', 'Colombia', NULL, 'activo', 0, 0, 0, '66847374', '2025-07-10 19:18:15'),
+(2, 'clienteRegistro', 'Derly Pipicano', 'm-mau55@hotmail.com', '$2y$10$AlrkWRiRR2kIBFLn7qA.nux7d6//Va6PB818ZJK7NnrENSAv8a6kS', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-07-15 13:42:06');
 
 -- --------------------------------------------------------
 
@@ -586,7 +594,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`

@@ -1,0 +1,570 @@
+/* Perfil General Styles */
+:root {
+    --primary-color: #3682c4;
+    --accent-color: #ff8d14;
+    --dark-color: #040c2c;
+    --background-color: #fffffe;
+    --gray-color: #8a9cac;
+    --light-gray: #f8f9fa;
+    --border-color: #e9ecef;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.2);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* Layout General */
+.page-content {
+    background-color: var(--light-gray);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.page-title {
+    margin-bottom: 2rem;
+}
+
+.page-title h3 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.widget-user-header h4 {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.widget-user-desc {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--gray-color);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    background-color: var(--background-color);
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+    background-color: var(--light-gray);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-title {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Profile Photo Section */
+.profile-photo-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.5rem;
+    cursor: pointer;
+}
+
+.avatar.avatar-xl img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    transition: var(--transition);
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(54, 130, 196, 0.8);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+    color: white;
+    font-size: 0.8rem;
+}
+
+.profile-photo-container:hover .photo-overlay {
+    opacity: 1;
+}
+
+.photo-overlay i {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Profile Info */
+.profile-info h5 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.profile-email {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.profile-location {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.profile-location i {
+    color: var(--primary-color);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.6rem 1.5rem;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563aa;
+    transform: translateY(-1px);
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-accent:hover {
+    background-color: #e67c0a;
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline-accent {
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    background: transparent;
+}
+
+.btn-outline-accent:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Form Fields */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    color: var(--dark-color);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background-color: var(--background-color);
+    color: var(--dark-color);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(54, 130, 196, 0.25);
+}
+
+.form-control:hover {
+    border-color: var(--primary-color);
+}
+
+/* Editable Fields */
+.editable-field {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.display-value {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: var(--light-gray);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.display-value:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(54, 130, 196, 0.05);
+}
+
+.edit-icon {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.display-value:hover .edit-icon {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.edit-mode {
+    display: none;
+}
+
+.edit-mode.active {
+    display: block;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-hover);
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+}
+
+/* File Upload */
+.file-upload-container {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.file-upload-container:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(54, 130, 196, 0.05);
+}
+
+.file-upload-container.dragover {
+    border-color: var(--accent-color);
+    background-color: rgba(255, 141, 20, 0.05);
+}
+
+.upload-icon {
+    font-size: 2rem;
+    color: var(--gray-color);
+    margin-bottom: 1rem;
+}
+
+.upload-text {
+    color: var(--gray-color);
+    margin-bottom: 0.5rem;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Image Preview */
+.image-preview {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+/* Success/Error Messages */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-info {
+    background-color: rgba(54, 130, 196, 0.1);
+    color: var(--dark-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-content {
+        padding: 1rem 0.5rem;
+    }
+
+    .avatar.avatar-xl img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-photo-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title h3 {
+        font-size: 1.5rem;
+    }
+
+    .edit-actions {
+        flex-direction: column;
+    }
+
+    .edit-actions .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Custom Utilities */
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.text-accent-custom {
+    color: var(--accent-color) !important;
+}
+
+.text-dark-custom {
+    color: var(--dark-color) !important;
+}
+
+.text-gray-custom {
+    color: var(--gray-color) !important;
+}
+
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-accent-custom {
+    background-color: var(--accent-color) !important;
+}
+
+/* Configuración de Privacidad */
+.privacy-field {
+    padding: 1rem;
+    background-color: rgba(var(--primary-color-rgb, 54, 130, 196), 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(var(--primary-color-rgb, 54, 130, 196), 0.1);
+    transition: var(--transition);
+}
+
+.privacy-field:hover {
+    background-color: rgba(var(--primary-color-rgb, 54, 130, 196), 0.08);
+    border-color: rgba(var(--primary-color-rgb, 54, 130, 196), 0.2);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(54, 130, 196, 0.25);
+}
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-check-label small {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Campos de texto extensos (biografía) */
+.editable-field[data-field="biografia"] .edit-mode textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.editable-field[data-field="biografia"] .display-value {
+    max-height: 150px;
+    overflow-y: auto;
+    line-height: 1.6;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.form-control:focus,
+.display-value:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}

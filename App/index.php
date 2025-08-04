@@ -10,6 +10,7 @@ require_once "controladores/usuarios.controlador.php";
 require_once "controladores/inscripciones.controlador.php";
 require_once "controladores/cursos.controlador.php";
 require_once "controladores/instructores.controlador.php";
+require_once "controladores/autenticacion.controlador.php";
 
 require_once "modelos/general.modelo.php";
 require_once "modelos/usuarios.modelo.php";

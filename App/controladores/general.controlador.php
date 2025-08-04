@@ -18,7 +18,7 @@ class ControladorGeneral
 
 	public static function ctrRutaApp()
 	{
-		return "http://localhost/cursosApp/registro/App/"; //Ruta ingresar al dashboard entorno local
+		return "http://localhost/cursosApp/App/"; //Ruta ingresar al dashboard entorno local
 	}
 
 	public static function ctrRutaVerCurso()
@@ -290,6 +290,7 @@ class ControladorGeneral
 			// Páginas para profesores y administradores
 			'cursos' => ['profesor', 'admin'],
 			'profesores' => ['profesor', 'admin'],
+			'profesores/gestionPerfil/perfilProfesor' => ['profesor'],
 
 			// Páginas para estudiantes, profesores y administradores
 			'misCursos' => ['estudiante', 'profesor', 'admin'],

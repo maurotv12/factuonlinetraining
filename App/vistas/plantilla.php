@@ -100,11 +100,6 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <script src="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="/cursosApp/App/vistas/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/cursosApp/App/vistas/assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/pages/dashboard.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/script.js"></script>
-
-    <script src="/cursosApp/App/vistas/assets/js/main.js"></script>
 
     <script>
         $(document).ready(function() {

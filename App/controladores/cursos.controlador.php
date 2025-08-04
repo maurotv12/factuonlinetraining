@@ -5,6 +5,10 @@
 12/06/2022 Plataforma Calibelula mostrar Cursos
 Controlador de cursos registro
  */
+
+// Incluir modelo de cursos
+require_once "modelos/cursos.modelo.php";
+
 class ControladorCursos
 {
 

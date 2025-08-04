@@ -63,7 +63,7 @@ $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
                                             <td><?php echo $value["usuario_link"] ?></td>
                                             <td><?php echo $value["nombre"] ?></td>
                                             <td><?php echo $value["email"] ?></td>
-                                            <td><?php echo $value["nro_identificacion"] ?></td>
+                                            <td><?php echo $value["numero_identificacion"] ?></td>
                                             <td><?php echo $value["profesion"] ?></td>
                                             <td><?php echo $value["telefono"] ?></td>
                                             <td><?php echo $value["direccion"] ?></td>
