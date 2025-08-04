@@ -19,7 +19,6 @@ class ControladorInstructores
         if (!in_array($nuevoEstado, ['aprobada', 'rechazada'])) {
             return false;
         }
-
         // Cambiar estado en la tabla de solicitudes
         $respuesta = ModeloInstructores::mdlActualizarEstadoSolicitud($idSolicitud, $nuevoEstado);
 

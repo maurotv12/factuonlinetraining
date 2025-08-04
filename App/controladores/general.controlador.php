@@ -161,14 +161,33 @@ class ControladorGeneral
 					// Establecer tanto el ID como la URL amigable para que la página los use
 					$_GET['identificador'] = $urlAmiga;
 					$pagina = "superAdmin/gestionCursos/editarCurso";
-				} elseif ($curso) {
-					$_GET['id'] = $curso['id'];
+				} else {
+					return "vistas/paginas/error404.php";
+				}
+			}
+			// Verificar si es una ruta de editar curso para profesores (editarCursoProfe/url-amiga)
+			elseif (preg_match('/^editarCursoProfe\/(.+)$/', $pagina, $matches)) {
+				$urlAmiga = $matches[1];
+
+				// Buscar el curso por URL amigable y obtener su ID
+				require_once "modelos/cursos.modelo.php";
+				$curso = ModeloCursos::mdlMostrarCursos("curso", "url_amiga", $urlAmiga);
+
+				if ($curso) {
+					// Establecer tanto el ID como la URL amigable para que la página los use
+					$_GET['identificador'] = $urlAmiga;
+					$pagina = "profesores/gestionCursosPr/editarCursoProfe";
 				} else {
 					return "vistas/paginas/error404.php";
 				}
 			}
 			// Si es la ruta directa a editarCurso con ID, mantenerla
 			elseif (preg_match('/^superAdmin\/gestionCursos\/editarCurso$/', $pagina) && isset($_GET['id'])) {
+				// Ya tiene el ID, establecer también el identificador para consistencia
+				$_GET['identificador'] = $_GET['id'];
+			}
+			// Si es la ruta directa a editarCursoProfe con ID, mantenerla
+			elseif (preg_match('/^profesores\/gestionCursosPr\/editarCursoProfe$/', $pagina) && isset($_GET['id'])) {
 				// Ya tiene el ID, establecer también el identificador para consistencia
 				$_GET['identificador'] = $_GET['id'];
 			}

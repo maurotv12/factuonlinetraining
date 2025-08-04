@@ -113,7 +113,8 @@ if (empty($cursos)) {
                                                     <a href="<?= $urlEditar ?>" class="btn btn-sm btn-warning" title="Editar curso">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <button class="btn btn-sm btn-success" title="Gestionar contenido" onclick="gestionarContenido(<?= $curso['id'] ?>)">
+                                                    <button class="btn btn-sm btn-success" title="Gestionar contenido"
+                                                        onclick="gestionarContenido('<?= !empty($curso['url_amiga']) ? $curso['url_amiga'] : $curso['id'] ?>', <?= !empty($curso['url_amiga']) ? 'true' : 'false' ?>)">
                                                         <i class="bi bi-collection-play"></i>
                                                     </button>
                                                 </div>
@@ -148,8 +149,11 @@ if (empty($cursos)) {
 
 <script>
     // Función para gestionar contenido del curso
-    function gestionarContenido(idCurso) {
-        // Redirigir a la página de edición avanzada del curso
-        window.location.href = `/cursosApp/App/editarCursoProfe?id=${idCurso}`;
+    function gestionarContenido(identificador, esUrlAmiga) {
+        if (esUrlAmiga) {
+            window.location.href = `/cursosApp/App/editarCursoProfe/${identificador}`;
+        } else {
+            window.location.href = `/cursosApp/App/editarCursoProfe?id=${identificador}`;
+        }
     }
 </script>

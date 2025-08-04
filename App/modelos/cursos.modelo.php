@@ -27,9 +27,9 @@ class ModeloCursos
 				$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 				$stmt->execute();
 
-				// Verificamos si es un ID único (esperamos solo un resultado)
-				if ($item === 'id') {
-					$resultado = $stmt->fetch(PDO::FETCH_ASSOC); // Solo asociativo para evitar duplicados
+				// Para campos únicos (id, url_amiga), devolvemos solo un registro
+				if ($item === 'id' || $item === 'url_amiga') {
+					$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 					return $resultado ? $resultado : false;
 				} else {
 					// Para otros criterios, devolvemos todos los resultados que coincidan
