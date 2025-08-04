@@ -165,6 +165,22 @@ class ControladorGeneral
 					return "vistas/paginas/error404.php";
 				}
 			}
+			// Verificar si es una ruta de ver curso (verCurso/url-amiga)
+			elseif (preg_match('/^verCurso\/(.+)$/', $pagina, $matches)) {
+				$urlAmiga = $matches[1];
+
+				// Buscar el curso por URL amigable y obtener su ID
+				require_once "modelos/cursos.modelo.php";
+				$curso = ModeloCursos::mdlMostrarCursos("curso", "url_amiga", $urlAmiga);
+
+				if ($curso) {
+					// Establecer tanto el ID como la URL amigable para que la página los use
+					$_GET['identificador'] = $urlAmiga;
+					$pagina = "superAdmin/gestionCursos/verCurso";
+				} else {
+					return "vistas/paginas/error404.php";
+				}
+			}
 			// Verificar si es una ruta de editar curso para profesores (editarCursoProfe/url-amiga)
 			elseif (preg_match('/^editarCursoProfe\/(.+)$/', $pagina, $matches)) {
 				$urlAmiga = $matches[1];
@@ -181,13 +197,39 @@ class ControladorGeneral
 					return "vistas/paginas/error404.php";
 				}
 			}
+			// Verificar si es una ruta de ver curso para profesores (verCursoProfe/url-amiga)
+			elseif (preg_match('/^verCursoProfe\/(.+)$/', $pagina, $matches)) {
+				$urlAmiga = $matches[1];
+
+				// Buscar el curso por URL amigable y obtener su ID
+				require_once "modelos/cursos.modelo.php";
+				$curso = ModeloCursos::mdlMostrarCursos("curso", "url_amiga", $urlAmiga);
+
+				if ($curso) {
+					// Establecer tanto el ID como la URL amigable para que la página los use
+					$_GET['identificador'] = $urlAmiga;
+					$pagina = "profesores/gestionCursosPr/verCursoProfe";
+				} else {
+					return "vistas/paginas/error404.php";
+				}
+			}
 			// Si es la ruta directa a editarCurso con ID, mantenerla
 			elseif (preg_match('/^superAdmin\/gestionCursos\/editarCurso$/', $pagina) && isset($_GET['id'])) {
 				// Ya tiene el ID, establecer también el identificador para consistencia
 				$_GET['identificador'] = $_GET['id'];
 			}
+			// Si es la ruta directa a verCurso con ID, mantenerla
+			elseif (preg_match('/^superAdmin\/gestionCursos\/verCurso$/', $pagina) && isset($_GET['id'])) {
+				// Ya tiene el ID, establecer también el identificador para consistencia
+				$_GET['identificador'] = $_GET['id'];
+			}
 			// Si es la ruta directa a editarCursoProfe con ID, mantenerla
 			elseif (preg_match('/^profesores\/gestionCursosPr\/editarCursoProfe$/', $pagina) && isset($_GET['id'])) {
+				// Ya tiene el ID, establecer también el identificador para consistencia
+				$_GET['identificador'] = $_GET['id'];
+			}
+			// Si es la ruta directa a verCursoProfe con ID, mantenerla
+			elseif (preg_match('/^profesores\/gestionCursosPr\/verCursoProfe$/', $pagina) && isset($_GET['id'])) {
 				// Ya tiene el ID, establecer también el identificador para consistencia
 				$_GET['identificador'] = $_GET['id'];
 			}

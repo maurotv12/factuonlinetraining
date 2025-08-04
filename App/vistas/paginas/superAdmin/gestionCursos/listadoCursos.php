@@ -87,11 +87,17 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                             <td><?= $curso["fecha_formateada"] ?></td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="/cursosApp/App/verCurso/<?= $curso['id'] ?>" class="btn btn-sm btn-info">
+                                                    <?php
+                                                    // Usar URL amigable si está disponible, sino usar ID para ver
+                                                    $urlVer = !empty($curso["url_amiga"])
+                                                        ? "/cursosApp/App/verCurso/" . $curso["url_amiga"]
+                                                        : "/cursosApp/App/superAdmin/gestionCursos/verCurso?id=" . $curso["id"];
+                                                    ?>
+                                                    <a href="<?= $urlVer ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
                                                     </a>
                                                     <?php
-                                                    // Usar URL amigable si está disponible, sino usar ID
+                                                    // Usar URL amigable si está disponible, sino usar ID para editar
                                                     $urlEditar = !empty($curso["url_amiga"])
                                                         ? "/cursosApp/App/editarCurso/" . $curso["url_amiga"]
                                                         : "/cursosApp/App/superAdmin/gestionCursos/editarCurso?id=" . $curso["id"];

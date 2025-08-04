@@ -123,7 +123,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editar
                         <?php endif; ?>
                     </h4>
                     <div>
-                        <a href="/cursosApp/App/profesores/gestionCursosPr/listadoCursosProfe" class="btn btn-secondary">
+                        <a href="/cursosApp/App/listadoCursosProfe" class="btn btn-secondary">
                             <i class="bi bi-arrow-left"></i> Volver al listado
                         </a>
                     </div>

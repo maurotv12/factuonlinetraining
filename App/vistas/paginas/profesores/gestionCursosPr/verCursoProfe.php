@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verificar acceso (administradores o profesores)
-if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin', 'profesor'])) {
+// Verificar acceso (solo profesores)
+if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
     echo '<div class="alert alert-danger">No tienes permisos para acceder a esta página.</div>';
     return;
 }
@@ -36,11 +36,8 @@ $profesores = $datosVisualizacion['profesores'];
 $secciones = $datosVisualizacion['secciones'];
 $contenidoSecciones = $datosVisualizacion['contenidoSecciones'];
 
-// Verificar permisos de profesor (solo puede ver sus propios cursos)
-$esProfesor = ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor']);
-$esAdmin = ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin']);
-
-if ($esProfesor && !$esAdmin && $curso['id_persona'] != $_SESSION['idU']) {
+// Verificar que el profesor puede ver este curso (solo sus propios cursos)
+if ($curso['id_persona'] != $_SESSION['idU']) {
     echo '<div class="alert alert-danger">No tienes permisos para ver este curso.</div>';
     return;
 }
@@ -67,22 +64,16 @@ foreach ($categorias as $cat) {
 echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
 ?>
 
-<!-- Vista del curso -->
+<!-- Vista del curso para profesores -->
 <div class="ver-curso-container">
     <!-- Header del curso -->
     <div class="curso-header">
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="breadcrumb-custom">
-                    <?php if ($esAdmin): ?>
-                        <a href="/cursosApp/App/listadoCursos" class="breadcrumb-link">
-                            <i class="bi bi-arrow-left"></i> Volver al listado
-                        </a>
-                    <?php else: ?>
-                        <a href="/cursosApp/App/profesores/gestionCursosPr/listadoCursosProfe" class="breadcrumb-link">
-                            <i class="bi bi-arrow-left"></i> Volver a mis cursos
-                        </a>
-                    <?php endif; ?>
+                    <a href="/cursosApp/App/listadoCursosProfe" class="breadcrumb-link">
+                        <i class="bi bi-arrow-left"></i> Volver a mis cursos
+                    </a>
                 </div>
                 <h1 class="curso-titulo"><?= htmlspecialchars($curso['nombre']) ?></h1>
                 <div class="curso-meta">
@@ -92,12 +83,9 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                 </div>
             </div>
             <div class="col-md-4 text-end">
-                <?php if ($esAdmin || ($esProfesor && $curso['id_persona'] == $_SESSION['idU'])): ?>
-                    <a href="/cursosApp/App/<?= $esAdmin ? 'editarCurso' : 'editarCursoProfe' ?>/<?= $curso['url_amiga'] ?>"
-                        class="btn btn-primary">
-                        <i class="bi bi-pencil"></i> Editar Curso
-                    </a>
-                <?php endif; ?>
+                <a href="/cursosApp/App/editarCursoProfe/<?= $curso['url_amiga'] ?>" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Editar Curso
+                </a>
             </div>
         </div>
     </div>
@@ -156,9 +144,9 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profesor-tab" data-bs-toggle="tab"
-                                data-bs-target="#profesor" type="button" role="tab">
-                                Instructor
+                            <button class="nav-link" id="estadisticas-tab" data-bs-toggle="tab"
+                                data-bs-target="#estadisticas" type="button" role="tab">
+                                Estadísticas
                             </button>
                         </li>
                     </ul>
@@ -218,19 +206,34 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="profesor" role="tabpanel">
+                        <div class="tab-pane fade" id="estadisticas" role="tabpanel">
                             <div class="content-section">
-                                <div class="profesor-info">
-                                    <div class="profesor-avatar">
-                                        <img src="<?= $profesor['foto'] ?? '/cursosApp/App/vistas/assets/images/default-avatar.png' ?>"
-                                            alt="Foto del profesor" class="avatar-img">
+                                <h5>Estadísticas del curso</h5>
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <i class="bi bi-people"></i>
+                                        <div class="stat-number">0</div>
+                                        <div class="stat-label">Estudiantes inscritos</div>
                                     </div>
-                                    <div class="profesor-datos">
-                                        <h5><?= htmlspecialchars($profesor['nombre'] ?? 'Instructor no especificado') ?></h5>
-                                        <p class="profesor-email"><?= htmlspecialchars($profesor['email'] ?? '') ?></p>
-                                        <!-- Aquí podrías agregar más información del profesor -->
+                                    <div class="stat-card">
+                                        <i class="bi bi-star"></i>
+                                        <div class="stat-number">0</div>
+                                        <div class="stat-label">Calificación promedio</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <i class="bi bi-clock"></i>
+                                        <div class="stat-number"><?= count($secciones) ?></div>
+                                        <div class="stat-label">Secciones</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <i class="bi bi-calendar"></i>
+                                        <div class="stat-number"><?= date('d/m/Y', strtotime($curso['fecha_registro'])) ?></div>
+                                        <div class="stat-label">Fecha de creación</div>
                                     </div>
                                 </div>
+                                <p class="text-muted mt-3">
+                                    <small>Las estadísticas se actualizan diariamente.</small>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -250,7 +253,6 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                         </span>
                         <span class="stat-item">
                             <i class="bi bi-clock"></i>
-                            <!-- Aquí podrías calcular la duración total -->
                             Duración variable
                         </span>
                     </div>
@@ -323,6 +325,9 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                             <i class="bi bi-collection"></i>
                             <h6>Sin contenido disponible</h6>
                             <p>Este curso aún no tiene secciones de contenido configuradas.</p>
+                            <a href="/cursosApp/App/editarCursoProfe/<?= $curso['url_amiga'] ?>" class="btn btn-primary btn-sm mt-2">
+                                <i class="bi bi-plus"></i> Agregar contenido
+                            </a>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -330,6 +335,46 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
         </div>
     </div>
 </div>
+
+<!-- CSS adicional para estadísticas -->
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--accent-color);
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+</style>
 
 <!-- Incluir JavaScript para la página -->
 <script src="/cursosApp/App/vistas/assets/js/pages/verCurso.js?v=<?= time() ?>"></script>

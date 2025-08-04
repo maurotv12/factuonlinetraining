@@ -101,7 +101,13 @@ if (empty($cursos)) {
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="/cursosApp/App/verCurso/<?= $curso['id'] ?>" class="btn btn-sm btn-info" title="Ver curso">
+                                                    <?php
+                                                    // Usar URL amigable si está disponible, sino usar ID para ver
+                                                    $urlVer = !empty($curso["url_amiga"])
+                                                        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
+                                                        : "/cursosApp/App/profesores/gestionCursosPr/verCursoProfe?id=" . $curso["id"];
+                                                    ?>
+                                                    <a href="<?= $urlVer ?>" class="btn btn-sm btn-info" title="Ver curso">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
                                                     <?php
