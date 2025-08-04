@@ -1,5 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/autenticacion.controller.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/ruta.controlador.php";
 
 $rutaRegistro = ControladorRuta::ctrRuta();
@@ -32,7 +33,7 @@ $rutafpassword = ControladorRuta::ctrRutaForgotPassword();
                     <input type="hidden" value="<?php echo $_SERVER['HTTP_USER_AGENT']; ?>" name="navegadorU">
                     <input type="hidden" value="<?php echo $_SERVER['REMOTE_ADDR']; ?>" name="ipU">
                     <?php
-                    $ingreso = new ControladorUsuarios();
+                    $ingreso = new ControladorAutenticacion();
                     $ingreso->ctrIngresoUsuario();
                     ?>
                     <div class="d-grid gap-2">
