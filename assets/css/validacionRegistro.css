@@ -109,3 +109,166 @@
 .requirement.invalid {
     color: #dc3545;
 }
+
+/* ===== ESTILOS PARA CHECKBOX DE POLÍTICAS ===== */
+
+/* Container del checkbox */
+.politicas-container {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    border: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.politicas-container.checked {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.politicas-container.error {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Estilo personalizado del checkbox */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.custom-checkbox .checkmark {
+    height: 20px;
+    width: 20px;
+    background-color: #ffffff;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.custom-checkbox:hover .checkmark {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.custom-checkbox input:checked~.checkmark {
+    background-color: #28a745;
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.custom-checkbox input:checked~.checkmark:after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    top: 1px;
+    left: 6px;
+}
+
+/* Texto del checkbox */
+.politicas-text {
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.politicas-text a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.politicas-text a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Animación de error */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-3px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(3px);
+    }
+}
+
+/* Mensaje de error específico para políticas */
+.politicas-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    display: none;
+}
+
+.politicas-error.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .politicas-container {
+        padding: 0.5rem;
+    }
+
+    .politicas-text {
+        font-size: 0.85rem;
+    }
+
+    .custom-checkbox .checkmark {
+        height: 18px;
+        width: 18px;
+        margin-right: 0.5rem;
+    }
+}

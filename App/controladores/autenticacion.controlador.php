@@ -123,17 +123,36 @@ class ControladorAutenticacion
                     return;
                 }
 
+                // Validar que las políticas de privacidad estén aceptadas
+                if (!isset($_POST["politicas"]) || $_POST["politicas"] != "on") {
+                    echo '<script>
+                        swal({
+                            type:"error",
+                            title: "¡POLÍTICAS REQUERIDAS!",
+                            text: "Debe aceptar las políticas de privacidad para continuar con el registro",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                        });
+                    </script>';
+                    return;
+                }
+
                 $hashPassword = password_hash($password, PASSWORD_DEFAULT);
                 $tabla = "persona";
                 $datos = array(
                     "usuario" => $_POST["usuarioRegistro"],
                     "nombre" => $_POST["nombreRegistro"],
                     "email" => $_POST["emailRegistro"],
-                    "password" => $hashPassword
+                    "password" => $hashPassword,
+                    "politicas" => $_POST["politicas"]
                 );
                 $respuesta2 = ModeloUsuarios::mdlRegistroUsuario($tabla, $datos);
                 if ($respuesta2 == "ok") {
-                    session_start();
+                    // La sesión ya está iniciada al comienzo del archivo
                     $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
 
                     // Asignar rol de "estudiante" por defecto al nuevo usuario
@@ -147,9 +166,24 @@ class ControladorAutenticacion
                     $rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($idUsuario);
                     $_SESSION["rolesU"] = $rolesUsuario;
 
+                    // Obtener la ruta de la aplicación
+                    $ruta = ControladorGeneral::ctrRutaApp();
+
                     echo '<script>
-							window.location = "' . $ruta . 'inicio";
-						</script>';
+                        if (typeof Swal !== "undefined") {
+                            Swal.fire({
+                                icon: "success",
+                                title: "¡Registro Exitoso!",
+                                text: "Su cuenta ha sido creada y verificada correctamente",
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(function() {
+                                window.location = "' . $ruta . 'inicio";
+                            });
+                        } else {
+                            window.location = "' . $ruta . 'inicio";
+                        }
+                    </script>';
                 }
             }
         }

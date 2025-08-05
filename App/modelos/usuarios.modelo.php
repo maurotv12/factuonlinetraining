@@ -18,8 +18,11 @@ class ModeloUsuarios
 	{
 		$foto = "vistas/img/usuarios/default/default.png";
 		$estado = 'activo';
-		$verificacion = 0;
+		// Si las políticas están aceptadas, verificacion = 1, sino = 0
+		$verificacion = isset($datos["politicas"]) ? 1 : 0;
+
 		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(`usuario_link`, `nombre`, `email`, `password`, `verificacion`, `foto`, `estado`) VALUES (:usuario_link, :nombre, :email, :password, :verificacion, :foto, :estado)");
+
 		$stmt->bindParam(":usuario_link", $datos["usuario"], PDO::PARAM_STR);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
@@ -27,6 +30,7 @@ class ModeloUsuarios
 		$stmt->bindParam(":verificacion", $verificacion, PDO::PARAM_INT);
 		$stmt->bindParam(":foto", $foto, PDO::PARAM_STR);
 		$stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
+
 		if ($stmt->execute()) {
 			return "ok";
 		} else {

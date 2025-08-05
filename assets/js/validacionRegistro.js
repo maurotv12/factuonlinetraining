@@ -21,9 +21,10 @@ function inicializarValidacion() {
     const passwordInput = document.querySelector('input[name="passRegistro"]');
     const submitButton = document.querySelector('#submit');
     const nombreInput = document.querySelector('input[name="nombreRegistro"]');
+    const politicasCheckbox = document.querySelector('#politicas');
 
     // Salir si no se encuentran los elementos necesarios
-    if (!emailInput || !passwordInput || !submitButton || !nombreInput) {
+    if (!emailInput || !passwordInput || !submitButton || !nombreInput || !politicasCheckbox) {
         // Solo hacer un intento adicional, después salir definitivamente
         let intentos = parseInt(sessionStorage.getItem('validacionIntentos') || '0');
         if (intentos < 3) {
@@ -44,10 +45,11 @@ function inicializarValidacion() {
     let passwordValido = false;
     let nombreValido = false;
     let emailDisponible = false;
+    let politicasAceptadas = false;
 
     // Función para actualizar el estado del botón
     function actualizarBoton() {
-        if (emailValido && passwordValido && nombreValido && emailDisponible) {
+        if (emailValido && passwordValido && nombreValido && emailDisponible && politicasAceptadas) {
             submitButton.disabled = false;
             submitButton.classList.remove('btn-secondary');
             submitButton.classList.add('btn-primary');
@@ -282,21 +284,147 @@ function inicializarValidacion() {
         actualizarBoton();
     });
 
+    // ===== VALIDACIÓN DE POLÍTICAS DE PRIVACIDAD =====
+    // Al aceptar las políticas, el campo 'verificacion' en BD se establece en 1
+
+    const politicasContainer = document.querySelector('#politicasContainer');
+    const politicasError = document.querySelector('#politicasError');
+    const aceptarPoliticasBtn = document.querySelector('#aceptarPoliticas');
+
+    // Manejar cambio en el checkbox de políticas
+    politicasCheckbox.addEventListener('change', function () {
+        politicasAceptadas = this.checked;
+
+        if (this.checked) {
+            // Políticas aceptadas
+            politicasContainer.classList.add('checked');
+            politicasContainer.classList.remove('error');
+            politicasError.classList.remove('show');
+        } else {
+            // Políticas no aceptadas
+            politicasContainer.classList.remove('checked');
+        }
+
+        actualizarBoton();
+    });
+
+    // Manejar el botón "Acepto las Políticas" del modal
+    if (aceptarPoliticasBtn) {
+        aceptarPoliticasBtn.addEventListener('click', function () {
+            // Marcar el checkbox como seleccionado
+            politicasCheckbox.checked = true;
+            politicasAceptadas = true;
+
+            // Actualizar estilos
+            politicasContainer.classList.add('checked');
+            politicasContainer.classList.remove('error');
+            politicasError.classList.remove('show');
+
+            // Cerrar el modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalPoliticas'));
+            if (modal) {
+                modal.hide();
+            } else {
+                document.getElementById('modalPoliticas').style.display = 'none';
+                document.querySelector('.modal-backdrop')?.remove();
+                document.body.classList.remove('modal-open');
+            }
+
+            // Mostrar notificación de éxito
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Perfecto!',
+                    text: 'Has aceptado las políticas de privacidad',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            }
+
+            actualizarBoton();
+        });
+    }
+
+    // Validar políticas en tiempo real
+    function validarPoliticasEnTiempoReal() {
+        if (!politicasCheckbox.checked) {
+            politicasContainer.classList.add('error');
+            politicasError.classList.add('show');
+            return false;
+        } else {
+            politicasContainer.classList.remove('error');
+            politicasError.classList.remove('show');
+            return true;
+        }
+    }
+
+    // Manejar envío del formulario
+    const form = submitButton.closest('form');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            if (!validarPoliticasEnTiempoReal()) {
+                e.preventDefault();
+
+                // Hacer scroll hacia el checkbox de políticas
+                politicasContainer.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                // Mostrar alerta
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '¡Atención!',
+                        text: 'Debe aceptar las políticas de privacidad para continuar',
+                        confirmButtonText: 'Entendido'
+                    });
+                } else {
+                    alert('Debe aceptar las políticas de privacidad para continuar');
+                }
+
+                return false;
+            }
+        });
+    }
+
     // Inicializar estado del botón
     actualizarBoton();
 } // Cerrar la función inicializarValidacion
 
-// Función para validar políticas (mantener la existente)
+// Función para validar políticas (mejorada)
 function validarPoliticas() {
     const politicas = document.getElementById('politicas');
+    const politicasContainer = document.querySelector('#politicasContainer');
+    const politicasError = document.querySelector('#politicasError');
+
     if (!politicas.checked) {
+        // Agregar clase de error
+        if (politicasContainer) {
+            politicasContainer.classList.add('error');
+        }
+        if (politicasError) {
+            politicasError.classList.add('show');
+        }
+
+        // Hacer scroll hacia las políticas
+        if (politicasContainer) {
+            politicasContainer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+
         // Verificar si SweetAlert está disponible
         if (typeof Swal !== 'undefined') {
             Swal.fire({
-                icon: 'error',
+                icon: 'warning',
                 title: '¡ATENCIÓN!',
                 text: 'Debe aceptar las políticas de privacidad para continuar',
-                confirmButtonText: 'Cerrar'
+                confirmButtonText: 'Entendido',
+                allowOutsideClick: false
             });
         } else {
             // Fallback si SweetAlert no está disponible
@@ -304,5 +432,14 @@ function validarPoliticas() {
         }
         return false;
     }
+
+    // Remover clases de error si las políticas están aceptadas
+    if (politicasContainer) {
+        politicasContainer.classList.remove('error');
+    }
+    if (politicasError) {
+        politicasError.classList.remove('show');
+    }
+
     return true;
 }
