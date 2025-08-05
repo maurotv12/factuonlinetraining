@@ -375,7 +375,7 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                                 </label>
                                             </div>
                                             <small class="text-muted">
-                                                Identificación: <?php echo htmlspecialchars($profesor['nro_identificacion'] ?? 'No especificado'); ?>
+                                                Identificación: <?php echo htmlspecialchars($profesor['numero_identificacion'] ?? 'No especificado'); ?>
                                             </small>
                                         </div>
                                     </div>
@@ -457,5 +457,19 @@ if (file_exists("controladores/cursos.controlador.php")) {
         </div>
     </div>
 <?php endif; ?>
+
+<script>
+    // Pasar datos del profesor a JavaScript
+    window.profesorData = {
+        id: <?php echo json_encode($profesor['id'] ?? ''); ?>,
+        email: <?php echo json_encode($profesor['email'] ?? ''); ?>,
+        telefono: <?php echo json_encode($profesor['telefono'] ?? ''); ?>,
+        numero_identificacion: <?php echo json_encode($profesor['numero_identificacion'] ?? ''); ?>,
+        nro_identificacion: <?php echo json_encode($profesor['nro_identificacion'] ?? ''); ?>,
+        mostrar_email: <?php echo json_encode((isset($profesor['mostrar_email']) && $profesor['mostrar_email']) ? true : false); ?>,
+        mostrar_telefono: <?php echo json_encode((isset($profesor['mostrar_telefono']) && $profesor['mostrar_telefono']) ? true : false); ?>,
+        mostrar_identificacion: <?php echo json_encode((isset($profesor['mostrar_identificacion']) && $profesor['mostrar_identificacion']) ? true : false); ?>
+    };
+</script>
 
 <script src="vistas/assets/js/pages/perfilProfesor.js"></script>

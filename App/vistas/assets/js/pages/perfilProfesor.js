@@ -31,6 +31,44 @@ function initializeProfile() {
 
     // Configurar eventos de teclado
     setupKeyboardEvents();
+
+    // Inicializar preview de contacto con datos reales
+    setTimeout(() => {
+        initializeContactPreview();
+    }, 100);
+}
+
+/**
+ * Inicializar el preview de contacto con los datos correctos
+ */
+function initializeContactPreview() {
+    // Verificar que tengamos los datos del profesor
+    if (typeof window.profesorData === 'undefined') {
+        console.warn('Esperando datos del profesor...');
+        // Intentar de nuevo en 500ms
+        setTimeout(initializeContactPreview, 500);
+        return;
+    }
+
+    // Sincronizar checkboxes con los datos del servidor
+    const emailCheckbox = document.getElementById('showEmail');
+    const phoneCheckbox = document.getElementById('showPhone');
+    const identificationCheckbox = document.getElementById('showIdentification');
+
+    if (emailCheckbox) {
+        emailCheckbox.checked = window.profesorData.mostrar_email;
+    }
+
+    if (phoneCheckbox) {
+        phoneCheckbox.checked = window.profesorData.mostrar_telefono;
+    }
+
+    if (identificationCheckbox) {
+        identificationCheckbox.checked = window.profesorData.mostrar_identificacion;
+    }
+
+    // Actualizar el preview inicial
+    updateContactPreview();
 }
 
 /**
@@ -405,16 +443,23 @@ function updateContactPreview() {
     const preview = document.querySelector('.contact-preview');
     if (!preview) return;
 
-    // Obtener estados de los checkboxes
+    // Verificar que tengamos los datos del profesor
+    if (typeof window.profesorData === 'undefined') {
+        console.warn('Datos del profesor no disponibles para el preview');
+        return;
+    }
+
+    // Obtener estados actuales de los checkboxes
     const showEmail = document.getElementById('showEmail')?.checked || false;
     const showPhone = document.getElementById('showPhone')?.checked || false;
     const showIdentification = document.getElementById('showIdentification')?.checked || false;
 
     let html = '';
 
+    // Email
     if (showEmail) {
-        const email = getFieldValue('email');
-        if (email) {
+        const email = window.profesorData.email;
+        if (email && email.trim() !== '') {
             html += `
                 <div class="contact-item">
                     <i class="bi bi-envelope"></i>
@@ -424,49 +469,64 @@ function updateContactPreview() {
         }
     }
 
+    // Teléfono
     if (showPhone) {
-        const phone = getFieldValue('telefono');
-        if (phone) {
+        const telefono = window.profesorData.telefono;
+        if (telefono && telefono.trim() !== '') {
             html += `
                 <div class="contact-item">
                     <i class="bi bi-telephone"></i>
-                    <span>${escapeHtml(phone)}</span>
+                    <span>${escapeHtml(telefono)}</span>
                 </div>
             `;
         }
     }
 
+    // Identificación
     if (showIdentification) {
-        const identification = getFieldValue('numero_identificacion');
-        if (identification) {
+        const identificacion = window.profesorData.numero_identificacion;
+        if (identificacion && identificacion.trim() !== '') {
             html += `
                 <div class="contact-item">
                     <i class="bi bi-card-text"></i>
-                    <span>${escapeHtml(identification)}</span>
+                    <span>${escapeHtml(identificacion)}</span>
                 </div>
             `;
         }
     }
 
+    // Si no hay información de contacto habilitada
     if (!html) {
         html = '<p class="text-muted">No has habilitado ninguna información de contacto para mostrar públicamente.</p>';
     }
 
-    preview.innerHTML = html;
+    // Actualizar el contenido con animación suave
+    preview.style.opacity = '0.5';
+    setTimeout(() => {
+        preview.innerHTML = html;
+        preview.style.opacity = '1';
+    }, 150);
 }
 
 /**
- * Obtener valor de un campo (helper function)
+ * Obtener valor de un campo desde los datos del profesor
  */
 function getFieldValue(fieldName) {
-    // En una implementación real, esto podría venir de variables PHP o AJAX
-    // Por ahora retornamos valores de ejemplo
-    const values = {
-        'email': 'profesor@ejemplo.com',
-        'telefono': '+57 300 123 4567',
-        'numero_identificacion': '1234567890'
+    // Verificar si tenemos los datos del profesor disponibles
+    if (typeof window.profesorData === 'undefined') {
+        console.warn('Datos del profesor no disponibles');
+        return '';
+    }
+
+    // Mapear nombres de campos a las propiedades correctas
+    const fieldMapping = {
+        'email': 'email',
+        'telefono': 'telefono',
+        'numero_identificacion': 'numero_identificacion' // Por si acaso usa este nombre
     };
-    return values[fieldName] || '';
+
+    const actualFieldName = fieldMapping[fieldName] || fieldName;
+    return window.profesorData[actualFieldName] || '';
 }
 
 /**
@@ -600,7 +660,16 @@ if (window.location.hostname === 'localhost') {
     window.profileDebug = {
         getCurrentField: () => currentEditField,
         getOriginalValues: () => originalValues,
+        getProfessorData: () => window.profesorData,
         testAlert: (message, type) => showAlert(message, type),
-        resetField: (fieldName) => cancelEdit(fieldName)
+        resetField: (fieldName) => cancelEdit(fieldName),
+        updatePreview: () => updateContactPreview(),
+        checkData: () => {
+            console.log('Datos del profesor:', window.profesorData);
+            console.log('Checkboxes estado:');
+            console.log('- Email:', document.getElementById('showEmail')?.checked);
+            console.log('- Teléfono:', document.getElementById('showPhone')?.checked);
+            console.log('- Identificación:', document.getElementById('showIdentification')?.checked);
+        }
     };
 }
