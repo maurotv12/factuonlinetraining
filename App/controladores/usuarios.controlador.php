@@ -1,7 +1,5 @@
 <?php
 
-
-
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -117,7 +115,7 @@ DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
 				"email" => $_POST["email"],
 				"pais" => $_POST["pais"],
 				"ciudad" => $_POST["ciudad"],
-				"contenido" => $_POST["contenido"]
+				"biografia" => $_POST["biografia"]
 			);
 			$respuesta = ModeloUsuarios::mdlActualizarPerfilUsuario($tabla, $datos);
 			if ($respuesta == "ok") {

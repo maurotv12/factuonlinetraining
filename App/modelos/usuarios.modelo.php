@@ -17,13 +17,14 @@ class ModeloUsuarios
 	public static function mdlRegistroUsuario($tabla, $datos)
 	{
 		$foto = "vistas/img/usuarios/default/default.png";
-		$estado = 1;
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(`usuarioLink`, `nombre`, `email`, `password`, `verificacion`, `foto`, `estado`) VALUES (:usuarioLink, :nombre, :email, :password, :verificacion, :foto, :estado)");
-		$stmt->bindParam(":usuarioLink", $datos["usuario"], PDO::PARAM_STR);
+		$estado = 'activo';
+		$verificacion = 0;
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(`usuario_link`, `nombre`, `email`, `password`, `verificacion`, `foto`, `estado`) VALUES (:usuario_link, :nombre, :email, :password, :verificacion, :foto, :estado)");
+		$stmt->bindParam(":usuario_link", $datos["usuario"], PDO::PARAM_STR);
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
 		$stmt->bindParam(":password", $datos["password"], PDO::PARAM_STR);
-		$stmt->bindParam(":verificacion", $datos["verificacion"], PDO::PARAM_STR);
+		$stmt->bindParam(":verificacion", $verificacion, PDO::PARAM_INT);
 		$stmt->bindParam(":foto", $foto, PDO::PARAM_STR);
 		$stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
 		if ($stmt->execute()) {
@@ -45,10 +46,14 @@ class ModeloUsuarios
 		$stmt->bindParam(":idU", $idU, PDO::PARAM_INT);
 		$stmt->bindParam(":navU", $navU, PDO::PARAM_STR);
 		$stmt->bindParam(":ipU", $ipU, PDO::PARAM_STR);
-		$stmt->execute();
-		return print_r("Ingresando....");
-		$stmt->close();
-		$stmt = null;
+
+		if ($stmt->execute()) {
+			$stmt = null;
+			return "ok";
+		} else {
+			$stmt = null;
+			return "error";
+		}
 	}
 
 
@@ -98,13 +103,13 @@ Actualizar usuario completar datos perfil
 	public static function mdlActualizarPerfilUsuario($tabla, $datos)
 	{
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre = :nombre, email = :email, pais = :pais, ciudad = :ciudad, contenido = :contenido WHERE id = :idUsuario");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre = :nombre, email = :email, pais = :pais, ciudad = :ciudad, biografia = :biografia WHERE id = :idUsuario");
 
 		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
 		$stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
 		$stmt->bindParam(":pais", $datos["pais"], PDO::PARAM_STR);
 		$stmt->bindParam(":ciudad", $datos["ciudad"], PDO::PARAM_STR);
-		$stmt->bindParam(":contenido", $datos["contenido"], PDO::PARAM_STR);
+		$stmt->bindParam(":biografia", $datos["biografia"], PDO::PARAM_STR);
 		$stmt->bindParam(":idUsuario", $datos["id"], PDO::PARAM_INT);
 		if ($stmt->execute()) {
 			return "ok";

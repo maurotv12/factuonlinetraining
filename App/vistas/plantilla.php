@@ -1,5 +1,4 @@
 <?php
-session_start();
 $rutaInicio = ControladorGeneral::ctrRuta(); //Ruta al login o registro
 $ruta = ControladorGeneral::ctrRutaApp(); //Ruta dentro de dashboard
 
@@ -23,7 +22,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <title>Tablero :: Cursos</title>
 
     <!-- Favicons -->
-    <link href="favicon.png" rel="icon">
+    <link rel="icon" href="/cursosApp/assets/favicon.ico" sizes="32x32" />
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">

@@ -7,6 +7,25 @@ $registro->ctrRegistroUsuario();
 
 $rutaLogin = ControladorRuta::ctrRutaLogin();
 ?>
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .is-valid {
+        border-color: #28a745 !important;
+    }
+
+    .error-message {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    #submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
 <div id="auth">
     <div class="row h-100">
         <div class="col-lg-4 col-12">

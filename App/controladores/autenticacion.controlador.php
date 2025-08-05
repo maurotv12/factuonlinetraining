@@ -1,6 +1,8 @@
 <?php
-
-
+// Iniciar sesión al comienzo si no está ya iniciada
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -20,13 +22,15 @@ class ControladorAutenticacion
     public static function ctrRegistroUsuario()
     {
         if (isset($_POST["nombreRegistro"])) {
-            $ruta = ControladorRuta::ctrRutaApp();
+            $ruta = ControladorGeneral::ctrRutaApp();
             $tabla = "persona";
             $item = "email";
             $valor = $_POST["emailRegistro"];
 
             $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
-            if ($respuesta["email"] == $_POST["emailRegistro"]) {
+
+            // Verificar si el usuario ya existe
+            if ($respuesta && isset($respuesta["email"]) && $respuesta["email"] == $_POST["emailRegistro"]) {
                 echo '<script>
 					swal({
 						type:"error",
@@ -41,23 +45,110 @@ class ControladorAutenticacion
 					});
 				</script>';
             } else {
-                $hashPassword = password_hash($_POST['passRegistro'], PASSWORD_DEFAULT);
+                // Validar formato de contraseña
+                $password = $_POST['passRegistro'];
+                $erroresPassword = [];
+
+                // Verificar longitud mínima
+                if (strlen($password) < 8) {
+                    $erroresPassword[] = "mínimo 8 caracteres";
+                }
+
+                // Verificar letra mayúscula
+                if (!preg_match('/[A-Z]/', $password)) {
+                    $erroresPassword[] = "una letra mayúscula";
+                }
+
+                // Verificar letra minúscula
+                if (!preg_match('/[a-z]/', $password)) {
+                    $erroresPassword[] = "una letra minúscula";
+                }
+
+                // Verificar número
+                if (!preg_match('/[0-9]/', $password)) {
+                    $erroresPassword[] = "un número";
+                }
+
+                // Si hay errores de contraseña, mostrarlos
+                if (!empty($erroresPassword)) {
+                    echo '<script>
+                        swal({
+                            type:"error",
+                            title: "¡CONTRASEÑA INVÁLIDA!",
+                            text: "La contraseña debe contener: ' . implode(', ', $erroresPassword) . '",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                        });
+                    </script>';
+                    return;
+                }
+
+                // Validar nombre
+                $nombre = trim($_POST["nombreRegistro"]);
+                if (strlen($nombre) < 2) {
+                    echo '<script>
+                        swal({
+                            type:"error",
+                            title: "¡NOMBRE INVÁLIDO!",
+                            text: "El nombre debe tener al menos 2 caracteres",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                        });
+                    </script>';
+                    return;
+                }
+
+                if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $nombre)) {
+                    echo '<script>
+                        swal({
+                            type:"error",
+                            title: "¡NOMBRE INVÁLIDO!",
+                            text: "El nombre solo puede contener letras y espacios",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                        });
+                    </script>';
+                    return;
+                }
+
+                $hashPassword = password_hash($password, PASSWORD_DEFAULT);
                 $tabla = "persona";
                 $datos = array(
                     "usuario" => $_POST["usuarioRegistro"],
                     "nombre" => $_POST["nombreRegistro"],
                     "email" => $_POST["emailRegistro"],
-                    "password" => $hashPassword,
-                    "verificacion" => 0
+                    "password" => $hashPassword
                 );
                 $respuesta2 = ModeloUsuarios::mdlRegistroUsuario($tabla, $datos);
                 if ($respuesta2 == "ok") {
                     session_start();
                     $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+
+                    // Asignar rol de "estudiante" por defecto al nuevo usuario
+                    $idUsuario = $respuesta["id"];
+                    $rolEstudiante = ModeloUsuarios::mdlActualizarRol($idUsuario, "estudiante");
+
                     $_SESSION["nombre"] = $respuesta["nombre"];
                     $_SESSION["id"] = $respuesta["id"];
+
+                    // Obtener roles del usuario recién registrado para la sesión
+                    $rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($idUsuario);
+                    $_SESSION["rolesU"] = $rolesUsuario;
+
                     echo '<script>
-							window.location = "' . $ruta . 'paraQuien";
+							window.location = "' . $ruta . 'inicio";
 						</script>';
                 }
             }
@@ -74,39 +165,56 @@ class ControladorAutenticacion
             $item = "email";
             $valor = $_POST["emailIngreso"];
             $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
-            $rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($respuesta["id"]);
-            if ($respuesta["email"] == $_POST["emailIngreso"]  && password_verify($_POST['passIngreso'], $respuesta["password"])) {
-                session_start();
-                $_SESSION["validarSesion"] = "ok";
-                $_SESSION["idU"] = $respuesta["id"];
-                $_SESSION["nombreU"] = $respuesta["nombre"];
-                $_SESSION["emailU"] = $respuesta["email"];
-                $_SESSION["rolesU"] = $rolesUsuario;
+
+            if ($respuesta && isset($respuesta["id"]) && isset($respuesta["email"]) && isset($respuesta["password"])) {
+                $rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($respuesta["id"]);
+                if ($respuesta["email"] == $_POST["emailIngreso"] && password_verify($_POST['passIngreso'], $respuesta["password"])) {
+                    // La sesión ya está iniciada al comienzo del archivo
+                    $_SESSION["validarSesion"] = "ok";
+                    $_SESSION["idU"] = $respuesta["id"];
+                    $_SESSION["nombreU"] = $respuesta["nombre"];
+                    $_SESSION["emailU"] = $respuesta["email"];
+                    $_SESSION["rolesU"] = $rolesUsuario;
 
 
-                $idU =     $respuesta["id"];
-                $navU = $_POST["navegadorU"];
-                $ipU =     $_POST["ipU"];
-                $res = ModeloUsuarios::mdlRegistroIngresoUsuarios($idU, $navU, $ipU);
+                    $idU =     $respuesta["id"];
+                    $navU = $_POST["navegadorU"];
+                    $ipU =     $_POST["ipU"];
+                    $res = ModeloUsuarios::mdlRegistroIngresoUsuarios($idU, $navU, $ipU);
 
-                $ruta = ControladorRuta::ctrRutaApp();
-                echo '<script>
+                    $ruta = ControladorGeneral::ctrRutaApp();
+                    echo '<script>
 			 		window.location = "' . $ruta . '";
 			 		</script>';
+                } else {
+                    echo '<script>
+                            swal({
+                                type:"error",
+                                title: "¡ERROR!",
+                                text: "¡El e-Mail o contraseña no son correctas, inténtalo de nuevo o recupera tu contraseña!",
+                                showConfirmButton: true,
+                                confirmButtonText: "Cerrar"
+                                }).then(function(result){
+                                if(result.value){
+                                    history.back();
+                                }
+                                });	
+                            </script>';
+                }
             } else {
                 echo '<script>
-							swal({
-								type:"error",
-								title: "¡ERROR!",
-								text: "¡El e-Mail o contraseña no son correctas, inténtalo de nuevo o recupera tu contraseña!",
-								showConfirmButton: true,
-								confirmButtonText: "Cerrar"
-								}).then(function(result){
-								if(result.value){
-									history.back();
-								}
-								});	
-							</script>';
+                        swal({
+                            type:"error",
+                            title: "¡ERROR!",
+                            text: "¡Usuario no encontrado!",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                            });	
+                        </script>';
             }
         }
     }
