@@ -14,10 +14,6 @@ if (!$profesor) {
     exit;
 }
 
-// Procesar formularios de actualización (comentado temporalmente para debug)
-// $controladorUsuarios = new ControladorUsuarios();
-// $controladorUsuarios->ctrActualizarPerfilUsuario();
-// $controladorUsuarios->ctrCambiarFoto();
 
 // Procesar biografía de forma simple y segura
 $biografiaTexto = $profesor['biografia'] ?? '';
