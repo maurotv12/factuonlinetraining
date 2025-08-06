@@ -41,7 +41,7 @@ $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
                                         <th>Usuario</th>
                                         <th>Nombre</th>
                                         <th>e-Mail</th>
-                                        <th>Número de Identificación</th>
+                                        <th>Identificación</th>
                                         <th>Profesión</th>
                                         <th>Teléfono</th>
                                         <th>Dirección</th>

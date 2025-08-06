@@ -39,6 +39,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/menu.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/crearCurso.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/estudiante.css">
 
     <!-- <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css"> -->
 
