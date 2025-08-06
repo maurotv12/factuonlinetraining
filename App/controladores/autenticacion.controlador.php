@@ -152,7 +152,6 @@ class ControladorAutenticacion
                 );
                 $respuesta2 = ModeloUsuarios::mdlRegistroUsuario($tabla, $datos);
                 if ($respuesta2 == "ok") {
-                    // La sesión ya está iniciada al comienzo del archivo
                     $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
 
                     // Asignar rol de "estudiante" por defecto al nuevo usuario

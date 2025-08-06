@@ -18,7 +18,56 @@ class ControladorGeneral
 
 	public static function ctrRutaApp()
 	{
-		return "http://localhost/cursosApp/App/"; //Ruta ingresar al dashboard entorno local
+		// Verificar si hay sesión activa
+		$idUsuario = null;
+		if (isset($_SESSION['idU']) && !empty($_SESSION['idU'])) {
+			$idUsuario = $_SESSION['idU'];
+		} elseif (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
+			$idUsuario = $_SESSION['id'];
+		}
+
+		// Si no hay usuario logueado, redirigir al área pública
+		if (!$idUsuario) {
+			return "http://localhost/cursosApp/";
+		}
+
+		// Obtener roles del usuario desde la sesión o base de datos
+		$rolesUsuario = [];
+		if (isset($_SESSION['rolesU']) && !empty($_SESSION['rolesU'])) {
+			$rolesUsuario = $_SESSION['rolesU'];
+		} else {
+			// Si no están en sesión, obtenerlos de la base de datos
+			require_once "modelos/usuarios.modelo.php";
+			$rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($idUsuario);
+			$_SESSION['rolesU'] = $rolesUsuario; // Guardar en sesión
+		}
+
+		// Si no tiene roles, redirigir a área pública
+		if (empty($rolesUsuario)) {
+			return "http://localhost/cursosApp/";
+		}
+
+		// Extraer solo los nombres de los roles
+		$nombresRoles = array_column($rolesUsuario, 'nombre');
+
+		// Determinar ruta según prioridad de roles:
+		// 1. Admin tiene máxima prioridad
+		if (in_array('admin', $nombresRoles) || in_array('superadmin', $nombresRoles)) {
+			return "http://localhost/cursosApp/App/usuarios";
+		}
+
+		// 2. Profesor (si no es admin)
+		if (in_array('profesor', $nombresRoles)) {
+			return "http://localhost/cursosApp/App/listadoCursosProfe";
+		}
+
+		// 3. Estudiante (si no tiene roles superiores)
+		if (in_array('estudiante', $nombresRoles)) {
+			return "http://localhost/cursosApp/App/inicioEstudiante";
+		}
+
+		// Fallback: dashboard general
+		return "http://localhost/cursosApp/App/dashboard";
 	}
 
 	public static function ctrRutaVerCurso()
@@ -26,32 +75,6 @@ class ControladorGeneral
 		return "http://localhost/cursosApp/verCurso.php"; //Ruta para ver un curso específico
 	}
 
-	// public static function ctrCargarPagina()
-	// {
-	// 	if (isset($_GET["pagina"])) {
-
-	// 		$pagina = $_GET["pagina"];
-
-	// 		// Seguridad: solo permitimos letras, números, guiones y barras
-	// 		if (!preg_match('/^[a-zA-Z0-9\/_-]+$/', $pagina)) {
-	// 			return "vistas/paginas/error404.php";
-	// 		}
-
-	// 		// Búsqueda recursiva en todas las subcarpetas de vistas/paginas
-	// 		$directorioBase = "vistas/paginas";
-	// 		$archivoBuscado = $pagina . ".php";
-
-	// 		$ruta = self::buscarArchivo($directorioBase, $archivoBuscado);
-
-	// 		if ($ruta) {
-	// 			return $ruta;
-	// 		} else {
-	// 			return "vistas/paginas/error404.php";
-	// 		}
-	// 	} else {
-	// 		return "vistas/paginas/inicio.php";
-	// 	}
-	// }
 
 	// Método auxiliar para buscar archivos recursivamente
 	private static function buscarArchivo($directorio, $archivoBuscado)
