@@ -1,9 +1,3 @@
-            <header class="mb-3">
-                <a href="#" class="burger-btn d-block d-xl-none">
-                    <i class="bi bi-justify fs-3"></i>
-                </a>
-            </header>
-
             <script>
                 function cerrarSesion() {
                     if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
@@ -18,6 +12,24 @@
                         <div class="col-12 col-md-6 order-md-1 order-last">
                             <p class="text-subtitle text-muted"><?php echo $usuario["nombre"]; ?></p>
                         </div>
+
+                        <div class="d-flex align-items-center flex-shrink-0">
+                            <button class="btn btn1 me-3 d-none d-lg-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                                ☰ <span class="ms-2">Menú</span>
+                            </button>
+                            <button class="btn btn1 me-3 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                                ☰
+                            </button>
+                            <a class="navbar-brand d-flex align-items-center" href="/">
+                                <?php
+                                // Ruta dinámica que siempre apuntará al logo
+                                $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
+                                $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+                                ?>
+                                <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 40px;">
+                            </a>
+                        </div>
+
                         <div class="col-12 col-md-6 order-md-2 order-first">
                             <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                                 <ol class="breadcrumb">

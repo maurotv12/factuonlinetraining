@@ -3,27 +3,24 @@ $roles = $_SESSION["rolesU"] ?? [];
 $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
 ?>
 
-<div id="sidebar" class="active">
-    <div class="sidebar-wrapper active">
-        <div class="sidebar-header">
-            <div class="d-flex justify-content-between">
-                <div style="font-family: 'Nunito', sans-serif;">
-                    <?php
-                    // Ruta dinámica que siempre apuntará al logo
-                    $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
-                    $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
-                    ?>
-                    <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="Logo">
-
-                </div>
-                <div class="toggler">
-                    <a href="#" class="sidebar-hide d-xl-none d-block">
-                        <i class="bi bi-x bi-middle"></i>
-                    </a>
-                </div>
-            </div>
+<!-- Bootstrap Offcanvas Menu -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+    <!-- Offcanvas Header -->
+    <div class="offcanvas-header">
+        <div style="font-family: 'Nunito', sans-serif;" class="d-flex align-items-center">
+            <?php
+            // Ruta dinámica que siempre apuntará al logo
+            $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
+            $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+            ?>
+            <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 40px;">
+            <h5 class="offcanvas-title mb-0" id="offcanvasSidebarLabel">CursosApp</h5>
         </div>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
 
+    <!-- Offcanvas Body -->
+    <div class="offcanvas-body p-0">
         <div class="sidebar-menu">
             <?php
             // Verificar el rol del usuario y mostrar el menú correspondiente
@@ -94,8 +91,6 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
                 </li>
             </ul>
         </div>
-
-        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
     </div>
 </div>
 

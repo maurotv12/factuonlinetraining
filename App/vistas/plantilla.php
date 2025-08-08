@@ -26,15 +26,14 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/bootstrap.css">
+    <!-- 
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/bootstrap.css"> -->
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/style.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/email.css">
 
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/iconly/bold.css">
 
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/menu.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css">
@@ -45,6 +44,11 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/dataTables-custom.css">
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/app.css">
     <!-- SWEET ALERT 2 -->
@@ -62,7 +66,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
         <?php
         include "plantillaPartes/menu.php";
         ?>
-        <div id="main">
+        <div id="main" class="main-content">
             <?php
             include "plantillaPartes/header.php";
 
@@ -96,10 +100,6 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
             ?>
         </div>
     </div>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-    <script src="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="/cursosApp/App/vistas/assets/vendors/apexcharts/apexcharts.js"></script>
 
     <script>
         $(document).ready(function() {
