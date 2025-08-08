@@ -12,7 +12,6 @@ $actualizarPassword = new ControladorAutenticacion();
 $actualizarPassword->ctrCambiarPassword();
 ?>
 
-<link rel="stylesheet" href="vistas/assets/css/pages/perfil.css">
 
 <div class="page-content">
   <div class="page-title">
@@ -447,7 +446,6 @@ $actualizarPassword->ctrCambiarPassword();
   </div>
 </div>
 
-<script src="vistas/assets/js/pages/perfil.js"></script>
 
 <script>
   // Funciones auxiliares para compatibilidad con el sistema existente

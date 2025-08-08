@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/publico/vistas/paginas/registro/vista/plantillaPartesInicio/head.php";
 ?>
 
 <body>
    <?php
-   include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
+   include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/publico/vistas/paginas/registro/vista/plantillaPartesInicio/menu.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/controladores/cursosInicio.controlador.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/controladores/cursosDestacados.controlador.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/modelos/cursosInicio.modelo.php";
@@ -174,7 +174,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
    </section>
 
    <!-- Script para el carrusel -->
-   <script src="/cursosapp/assets/js/carrusel.js"></script>
+
 
 </body>
 

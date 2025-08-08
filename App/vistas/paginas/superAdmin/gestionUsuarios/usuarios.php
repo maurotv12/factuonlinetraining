@@ -16,10 +16,6 @@ $cursosPorProfesor = $datosUsuarios['cursosPorProfesor'];
 $roles = $datosUsuarios['roles'];
 $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
 ?>
-
-<!-- Incluir CSS específico para esta página -->
-<link rel="stylesheet" href="vistas/assets/css/pages/usuariosAdmin.css">
-
 <section class="content">
     <div class="usuarios-admin-container">
         <div class="row">

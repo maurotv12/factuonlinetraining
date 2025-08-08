@@ -1,6 +1,6 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/publico/vistas/paginas/registro/vista/plantillaPartesInicio/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/publico/vistas/paginas/registro/vista/plantillaPartesInicio/menu.php";
 
 // Importar controladores necesarios
 require_once "controladores/cursosInicio.controlador.php";

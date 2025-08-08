@@ -290,8 +290,6 @@ $estadisticas = [
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript específico para estudiantes -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudiante.js"></script>
 
 <script>
     // Funciones específicas para mis cursos

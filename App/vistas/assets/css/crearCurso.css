@@ -1,0 +1,326 @@
+/* Estilos para la página de crear curso */
+.crear-curso-container {
+    padding: 2rem 1rem;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.crear-curso-container .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.crear-curso-container .card:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.crear-curso-container .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+    border: none;
+}
+
+.crear-curso-container .card-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.crear-curso-container .card-title i {
+    font-size: 1.5rem;
+}
+
+.crear-curso-container .card-body {
+    padding: 2rem;
+}
+
+/* Secciones del formulario */
+.section-header {
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.section-header:first-child {
+    margin-top: 0;
+}
+
+.section-header h5 {
+    color: #495057;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h5 i {
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+/* Campos del formulario */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Campos de texto largo (textareas) */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Estilos para contadores de caracteres */
+.contador-caracteres {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    text-align: right;
+}
+
+/* Mensajes de error */
+.error-viñeta,
+.error-imagen {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Vista previa de archivos */
+.vista-previa-imagen {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    object-fit: cover;
+}
+
+.info-video {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Botones */
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6169;
+    transform: translateY(-1px);
+}
+
+/* Input group para precio */
+.input-group .input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Campos requeridos */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .crear-curso-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .crear-curso-container .card-body {
+        padding: 1.5rem;
+    }
+
+    .section-header h5 {
+        font-size: 1.1rem;
+    }
+}
+
+.btn-crear-curso {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-crear-curso:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.file-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover {
+    border-color: #667eea;
+    background-color: #f8f9fa;
+}
+
+.file-upload-area.dragover {
+    border-color: #667eea;
+    background-color: #e3f2fd;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.precio-input {
+    position: relative;
+}
+
+.precio-input::before {
+    content: '$';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.precio-input input {
+    padding-left: 25px;
+}
+
+.textarea-counter {
+    position: relative;
+}
+
+.char-counter {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.required-field::after {
+    content: ' *';
+    color: #dc3545;
+}
+
+.form-floating {
+    position: relative;
+}
+
+.progress-bar-custom {
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    margin-bottom: 20px;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 0 5px;
+    background: #e9ecef;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.step.completed {
+    background: #28a745;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .crear-curso-container {
+        padding: 10px;
+    }
+
+    .card-header-custom {
+        padding: 20px;
+    }
+
+    .form-section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .step-indicator {
+        flex-direction: column;
+    }
+
+    .step {
+        margin: 2px 0;
+    }
+}

@@ -163,8 +163,6 @@ $categorias = $datosCreacion['categorias'];
     </div>
 </div>
 
-<!-- Incluir el archivo JavaScript para la página -->
-<script src="vistas/assets/js/pages/crearCurso.js"></script>
 
 <?php
 // Mostrar mensajes de resultado después del procesamiento
