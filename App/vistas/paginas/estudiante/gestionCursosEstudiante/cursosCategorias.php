@@ -182,7 +182,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
 <!-- JavaScript específico para estudiantes -->
-<script src="/cursosApp/App/vistas/assets/js/estudiante.js"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/estudiante.js"></script>
 
 <script>
     // Función para filtrar por categoría
