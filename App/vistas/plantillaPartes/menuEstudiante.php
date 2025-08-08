@@ -1,4 +1,3 @@
-<h3 class="m-5">Estudiante</h3>
 <ul class="menu">
     <li class="sidebar-item">
         <a href="/cursosApp/App/inicioEstudiante" class='sidebar-link'>

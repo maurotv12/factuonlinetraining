@@ -5,25 +5,31 @@
 }
 
 .offcanvas-header {
-    background: linear-gradient(135deg, #3682c4 0%, #2c6cb0 100%);
-    color: white;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #ffffff;
+    color: rgb(26, 24, 24);
+    border-bottom: 1px solid #e9ecef;
     padding: 1rem 1.5rem;
 }
 
 .offcanvas-title {
-    color: white;
+    color: rgb(14, 13, 13);
     font-weight: 600;
     font-size: 1.25rem;
 }
 
 .btn-close {
-    filter: invert(1);
-    opacity: 0.8;
+    filter: none;
+    opacity: 1;
+    background-color: #6c757d;
+    border-radius: 0.375rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='m.5 1.163 1.97-1.97c.293-.293.768-.293 1.061 0L8 3.94 12.47-.37c.293-.293.768-.293 1.061 0l1.97 1.97c.293.293.293.768 0 1.061L11.06 8l4.44 4.44c.293.293.293.768 0 1.061l-1.97 1.97c-.293.293-.768.293-1.061 0L8 11.06l-4.44 4.44c-.293.293-.768.293-1.061 0l-1.97-1.97c-.293-.293-.293-.768 0-1.061L4.94 8 .5 3.56c-.293-.293-.293-.768 0-1.061z'/%3e%3c/svg%3e");
 }
 
 .btn-close:hover {
-    opacity: 1;
+    opacity: 0.8;
+    background-color: #5a6268;
 }
 
 .logo-offcanvas {
@@ -53,7 +59,98 @@
 
 /* Sidebar menu styles inside offcanvas */
 .sidebar-menu {
-    padding: 1rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Flex grow para empujar el botón General hacia abajo */
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+/* Accordion Styles */
+.accordion-flush .accordion-item {
+    background-color: transparent;
+    border: none;
+}
+
+.accordion-flush .accordion-button {
+    background-color: transparent;
+    border: none;
+    padding: 1rem 1.5rem;
+    color: #040c2c;
+    font-weight: 600;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.accordion-flush .accordion-button:not(.collapsed) {
+    background-color: rgba(54, 130, 196, 0.1);
+    color: #3682c4;
+    box-shadow: none;
+}
+
+.accordion-flush .accordion-button:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.accordion-flush .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23040c2c'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-flush .accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%233682c4'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-body {
+    padding: 0;
+}
+
+/* Sección General en la parte inferior */
+.general-section-bottom {
+    margin-top: auto;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn-general-toggle {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 0;
+    color: #040c2c;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-general-toggle:hover {
+    background-color: rgba(54, 130, 196, 0.1);
+    color: #3682c4;
+}
+
+.btn-general-toggle:focus {
+    box-shadow: none;
+    background-color: rgba(54, 130, 196, 0.1);
+    color: #3682c4;
+}
+
+.btn-general-toggle[aria-expanded="true"] {
+    background-color: rgba(54, 130, 196, 0.1);
+    color: #3682c4;
+}
+
+.btn-general-toggle[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+.general-content {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .sidebar-menu h3 {

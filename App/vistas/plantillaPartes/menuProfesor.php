@@ -1,4 +1,3 @@
-<h3 class="m-5">Profesor</h3>
 <ul class="menu">
     <li class="sidebar-title">Cursos</li>
 
