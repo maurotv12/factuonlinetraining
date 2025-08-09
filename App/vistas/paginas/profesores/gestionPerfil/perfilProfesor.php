@@ -47,6 +47,7 @@ if (file_exists("controladores/cursos.controlador.php")) {
 }
 ?>
 
+<link rel="stylesheet" href="vistas/assets/css/pages/perfilProfesor.css">
 
 <div class="container-fluid">
     <div class="page-heading">
@@ -466,3 +467,5 @@ if (file_exists("controladores/cursos.controlador.php")) {
         mostrar_identificacion: <?php echo json_encode((isset($profesor['mostrar_identificacion']) && $profesor['mostrar_identificacion']) ? true : false); ?>
     };
 </script>
+
+<script src="vistas/assets/js/pages/perfilProfesor.js"></script>

@@ -59,6 +59,9 @@ foreach ($categorias as $cat) {
         break;
     }
 }
+
+// Incluir CSS para la página
+echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
 ?>
 
 <!-- Vista del curso para profesores -->

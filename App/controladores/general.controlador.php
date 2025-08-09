@@ -323,6 +323,7 @@ class ControladorGeneral
 			// Páginas de perfil (todos los usuarios autenticados)
 			'perfil' => ['estudiante', 'profesor', 'admin'],
 			'modalPassword' => ['estudiante', 'profesor', 'admin'],
+			'modalFoto' => ['estudiante', 'profesor', 'admin'],
 		];
 	}
 

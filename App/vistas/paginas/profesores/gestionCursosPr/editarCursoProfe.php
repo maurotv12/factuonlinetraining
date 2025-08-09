@@ -104,6 +104,8 @@ if (isset($_SESSION['mensaje_error'])) {
     unset($_SESSION['mensaje_error']);
 }
 
+// Incluir CSS para la página
+echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editarCurso.css?v=' . time() . '">';
 ?>
 
 <!-- Input oculto con el ID del curso para JavaScript -->

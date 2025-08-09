@@ -20,6 +20,7 @@ if (empty($cursos)) {
 ?>
 
 <!-- Incluir CSS específico para esta página -->
+<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/listadoCursos.css">
 
 <div class="listado-cursos-container">
     <div class="row">
@@ -149,6 +150,8 @@ if (empty($cursos)) {
     </div>
 </div>
 
+<!-- Incluir el archivo JavaScript para la página -->
+<script src="/cursosApp/App/vistas/assets/js/pages/listadoCursosProfe.js"></script>
 
 <script>
     // Función para gestionar contenido del curso

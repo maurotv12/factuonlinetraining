@@ -1,6 +1,6 @@
 <?php
 $rutaInicio = ControladorGeneral::ctrRuta(); //Ruta al login o registro
-$ruta = ControladorGeneral::ctrRutaApp();
+$ruta = ControladorGeneral::ctrRutaApp(); //Ruta dentro de dashboard
 
 if (!isset($_SESSION["validarSesion"])) {
     echo '<script>
@@ -26,27 +26,24 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- 
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/bootstrap.css"> -->
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/style.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/email.css">
 
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/iconly/bold.css">
 
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/menu.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/crearCurso.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/estudiante.css">
 
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/menu.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/usuarios.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/crearCurso.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/estudiante.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/perfil.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/perfilProfesor.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/usuariosAdmin.css">
-    <?php
-    echo '
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/editarCurso.css?v=' . time() . '">';
-    echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/verCurso.css?v=' . time() . '">';
-    ?>
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/listadoCursos.css">
+    <!-- <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css"> -->
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/dataTables-custom.css">
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -77,6 +74,27 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 				Páginas del sitio con control de acceso por roles
 				=============================================*/
             include ControladorGeneral::ctrCargarPaginaConAcceso();
+
+            // if (isset($_GET["pagina"])) {
+            //     if (
+            //         $_GET["pagina"] == "inicio" ||
+            //         $_GET["pagina"] == "suscripciones" ||
+            //         $_GET["pagina"] == "misCursos" ||
+            //         $_GET["pagina"] == "seguirCurso" ||
+            //         $_GET["pagina"] == "perfil" ||
+            //         $_GET["pagina"] == "profesores" ||
+            //         $_GET["pagina"] == "usuarios" ||
+            //         $_GET["pagina"] == "suscripcionesAdmin" ||
+            //         $_GET["pagina"] == "soporte" ||
+            //         $_GET["pagina"] == "salir"
+            //     ) {
+            //         include "paginas/" . $_GET["pagina"] . ".php";
+            //     } else {
+            //         include "paginas/error404.php";
+            //     }
+            // } else {
+            //     include "paginas/inicio.php";
+            // }
 
             include "plantillaPartes/footer.php";
             ?>
@@ -114,17 +132,6 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
             }
         });
     </script>
-
-    <script src="/cursosApp/App/vistas/assets/js/crearCurso.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/editarCurso.js?v=<?= time() ?>"></script>
-    <script src="/cursosApp/App/vistas/assets/js/estudiante.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/listadoCursos.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/listadoCursosProfe.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/perfil.js"></script>
-    <script src="/cursosApp/App/vistas/assets/js/perfilProfesor.js"></script>
-
-
-
 </body>
 
 </html>
