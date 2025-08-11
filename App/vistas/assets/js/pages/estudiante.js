@@ -137,7 +137,7 @@ function displayCourses(courses) {
 // ===== CREAR CARD DE CURSO =====
 function createCourseCard(course) {
     const price = course.precio ? `$${parseInt(course.precio).toLocaleString()}` : 'Gratis';
-    const image = course.banner || '/cursosApp/App/vistas/assets/images/course-default.jpg';
+    const image = course.banner || '/cursosApp/App/vistas/assets/img/cursos/default/defaultCurso.png';
     const professor = course.profesor || 'Instructor';
 
     return `
@@ -146,7 +146,7 @@ function createCourseCard(course) {
             ${course.esPopular ? '<div class="course-badge badge-popular">Popular</div>' : ''}
             
             <img src="${image}" alt="${course.nombre}" class="course-image" 
-                 onerror="this.src='/cursosApp/App/vistas/assets/images/course-default.jpg'">
+                 onerror="this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
             
             <div class="course-content">
                 <h3 class="course-title">${course.nombre}</h3>

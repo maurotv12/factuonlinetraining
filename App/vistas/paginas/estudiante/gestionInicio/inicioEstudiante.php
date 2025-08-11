@@ -115,10 +115,10 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                             <div class="course-badge badge-new">Nuevo</div>
                         <?php endif; ?>
 
-                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/assets/images/course-default.jpg'; ?>"
+                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/assets/img/cursos/default/defaultCurso.png'; ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.src='/cursosApp/App/vistas/assets/images/course-default.jpg'">
+                            onerror="this.src='/cursosApp/App/vistas/assets/img/cursos/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
