@@ -568,6 +568,9 @@ class ControladorCursos
 				$curso["valor"] = 0;
 			}
 
+			// Validar imagen del banner
+			$curso["banner"] = self::ctrValidarImagenCurso($curso["banner"]);
+
 			// Obtener categoría
 			$categoria = array_filter($categorias, function ($cat) use ($curso) {
 				return $cat['id'] == $curso['id_categoria'];
@@ -622,6 +625,9 @@ class ControladorCursos
 				$curso["valor"] = 0;
 			}
 
+			// Validar imagen del banner
+			$curso["banner"] = self::ctrValidarImagenCurso($curso["banner"]);
+
 			// Obtener categoría
 			$categoria = array_filter($categorias, function ($cat) use ($curso) {
 				return $cat['id'] == $curso['id_categoria'];
@@ -675,5 +681,31 @@ class ControladorCursos
 			'total_encontrados' => count($cursosSinUrl),
 			'actualizados' => $actualizados
 		];
+	}
+
+	/*=============================================
+	Validar imagen del curso y devolver imagen por defecto si no existe
+	=============================================*/
+	public static function ctrValidarImagenCurso($rutaImagen)
+	{
+		// Si no hay imagen asignada, devolver imagen por defecto
+		if (empty($rutaImagen) || $rutaImagen === null) {
+			return 'vistas/img/cursos/default/defaultCurso.png';
+		}
+
+		// Construir la ruta completa del archivo
+		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $rutaImagen;
+
+		// Verificar si el archivo existe
+		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
+			// Verificar que sea una imagen válida
+			$infoImagen = @getimagesize($rutaCompleta);
+			if ($infoImagen !== false) {
+				return $rutaImagen; // La imagen existe y es válida
+			}
+		}
+
+		// Si llegamos aquí, la imagen no existe o no es válida
+		return 'vistas/img/cursos/default/defaultCurso.png';
 	}
 }

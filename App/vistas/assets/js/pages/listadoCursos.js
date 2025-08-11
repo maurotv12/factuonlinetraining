@@ -1,6 +1,5 @@
 // JavaScript para el listado de cursos
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Listado de cursos cargado');
 
     // Marcar que este script maneja la inicialización de DataTable
     window.dataTableInitialized = true;
@@ -18,6 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Configurar previsualización de imágenes
     configurarPrevisualizacionImagenes();
+
+    // Verificar imágenes después de un pequeño delay
+    setTimeout(verificarImagenesCursos, 1000);
 });
 
 /**
@@ -63,10 +65,10 @@ function inicializarDataTable() {
                     // Reconfigurar eventos después de cada redibujado
                     configurarEventosBotones();
                     configurarTooltips();
+                    configurarPrevisualizacionImagenes();
                 }
             });
 
-            console.log('DataTable inicializado correctamente');
         }
     } catch (error) {
         console.error('Error al inicializar DataTable:', error);
@@ -143,12 +145,25 @@ function configurarTooltips() {
  */
 function configurarPrevisualizacionImagenes() {
     document.querySelectorAll('.banner-mini').forEach(img => {
+        // Manejar error de imagen no encontrada
+        img.addEventListener('error', function () {
+            if (this.src !== 'vistas/img/cursos/default/defaultCurso.png') {
+                console.warn('Imagen no encontrada, usando imagen por defecto:', this.src);
+                this.src = 'vistas/img/cursos/default/defaultCurso.png';
+                this.alt = 'Imagen no disponible';
+                this.title = 'Imagen por defecto - Original no encontrada';
+            }
+        });
+
         img.addEventListener('click', function () {
             mostrarModalImagen(this.src, this.alt);
         });
 
         // Añadir cursor pointer
         img.style.cursor = 'pointer';
+
+        // Añadir clase para identificar que se ha procesado
+        img.classList.add('imagen-procesada');
     });
 }
 
@@ -156,44 +171,55 @@ function configurarPrevisualizacionImagenes() {
  * Mostrar modal con imagen ampliada
  */
 function mostrarModalImagen(src, alt) {
-    // Crear modal dinámicamente
-    const modalHtml = `
-        <div class="modal fade" id="modalImagenCurso" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Vista previa de imagen</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
     // Eliminar modal existente si lo hay
     const modalExistente = document.getElementById('modalImagenCurso');
     if (modalExistente) {
         modalExistente.remove();
     }
 
+    // Crear modal más simple sin usar Bootstrap Modal JavaScript
+    const modalHtml = `
+        <div class="modal fade show" id="modalImagenCurso" style="display: block;" tabindex="-1">
+            <div class="modal-backdrop fade show"></div>
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="z-index: 1060;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Vista previa de imagen</h5>
+                        <button type="button" class="btn-close" onclick="cerrarModalImagen()"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;"
+                             onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='vistas/img/cursos/default/defaultCurso.png';">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalImagen()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
     // Añadir modal al DOM
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // Mostrar modal
-    if (typeof bootstrap !== 'undefined') {
-        const modal = new bootstrap.Modal(document.getElementById('modalImagenCurso'));
-        modal.show();
+    // Añadir evento para cerrar con ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            cerrarModalImagen();
+        }
+    }, { once: true });
 
-        // Eliminar modal del DOM al cerrar
-        document.getElementById('modalImagenCurso').addEventListener('hidden.bs.modal', function () {
-            this.remove();
-        });
+    // Cerrar al hacer clic en el backdrop
+    document.querySelector('.modal-backdrop').addEventListener('click', cerrarModalImagen);
+}
+
+/**
+ * Cerrar modal de imagen
+ */
+function cerrarModalImagen() {
+    const modal = document.getElementById('modalImagenCurso');
+    if (modal) {
+        modal.remove();
     }
 }
 
@@ -248,6 +274,32 @@ function exportarDatos(formato) {
             console.log('Exportando a CSV...');
             break;
     }
+}
+
+/**
+ * Verificar y corregir imágenes faltantes
+ */
+function verificarImagenesCursos() {
+    document.querySelectorAll('.banner-mini:not(.imagen-procesada)').forEach(img => {
+        // Verificar si la imagen existe
+        const testImg = new Image();
+        testImg.onload = function () {
+            // Imagen existe, no hacer nada
+        };
+        testImg.onerror = function () {
+            // Imagen no existe, cambiar a imagen por defecto
+            if (img.src !== 'vistas/img/cursos/default/defaultCurso.png') {
+                console.warn('Imagen no encontrada, cambiando a imagen por defecto:', img.src);
+                img.src = 'vistas/img/cursos/default/defaultCurso.png';
+                img.alt = 'Imagen no disponible';
+                img.title = 'Imagen por defecto - Original no encontrada';
+            }
+        };
+        testImg.src = img.src;
+
+        // Marcar como procesada
+        img.classList.add('imagen-procesada');
+    });
 }
 
 /**

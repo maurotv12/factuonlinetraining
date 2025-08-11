@@ -144,12 +144,40 @@ function configurarTooltips() {
  */
 function configurarPrevisualizacionImagenes() {
     document.querySelectorAll('.banner-mini').forEach(img => {
+        // Configurar imagen por defecto en caso de error
+        img.addEventListener('error', function () {
+            if (this.src.indexOf('defaultCurso.png') === -1) {
+                console.log('Error cargando imagen:', this.src);
+                this.src = 'vistas/img/cursos/default/defaultCurso.png';
+                this.alt = 'Imagen por defecto del curso';
+            }
+        });
+
         img.addEventListener('click', function () {
             mostrarModalImagen(this.src, this.alt);
         });
 
         // Añadir cursor pointer
         img.style.cursor = 'pointer';
+    });
+
+    // Verificar imágenes existentes
+    verificarImagenesCursos();
+}
+
+/**
+ * Verificar todas las imágenes de cursos y aplicar imagen por defecto si es necesario
+ */
+function verificarImagenesCursos() {
+    document.querySelectorAll('.banner-mini').forEach(img => {
+        if (img.complete && img.naturalWidth === 0) {
+            // La imagen ya se cargó pero falló
+            if (img.src.indexOf('defaultCurso.png') === -1) {
+                console.log('Imagen no válida detectada:', img.src);
+                img.src = 'vistas/img/cursos/default/defaultCurso.png';
+                img.alt = 'Imagen por defecto del curso';
+            }
+        }
     });
 }
 
@@ -166,7 +194,8 @@ function mostrarModalImagen(src, alt) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;">
+                        <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;" 
+                             onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='vistas/img/cursos/default/defaultCurso.png';">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
