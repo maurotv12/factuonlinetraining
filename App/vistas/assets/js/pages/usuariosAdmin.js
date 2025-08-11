@@ -1,13 +1,12 @@
 // JavaScript para la gestión de usuarios administrativos
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Gestión de usuarios cargada');
-
     // Marcar que este script maneja la inicialización de DataTable
     window.dataTableInitialized = true;
 
     // Inicializar componentes
     inicializarDataTable();
     configurarModalRoles();
+    configurarModalCursos();
     configurarEventosTabla();
     configurarTooltips();
 });
@@ -31,7 +30,7 @@ function inicializarDataTable() {
                 responsive: true,
                 pageLength: 10,
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-                order: [[15, 'desc']], // Ordenar por fecha de registro descendente
+                order: [[15, 'asc']], // Ordenar por fecha de registro ascendente
                 columnDefs: [
                     {
                         targets: [1, 9, 12, 13, 16], // Foto, biografía, cursos, roles, acciones
@@ -58,11 +57,11 @@ function inicializarDataTable() {
                 drawCallback: function () {
                     // Reconfigurar eventos después de cada redibujado
                     configurarModalRoles();
+                    configurarModalCursos();
                     configurarTooltips();
                 }
             });
 
-            console.log('DataTable inicializado correctamente');
         }
     } catch (error) {
         console.error('Error al inicializar DataTable:', error);
@@ -133,6 +132,196 @@ function configurarModalRoles() {
             mostrarCargandoModal();
         });
     }
+}
+
+/**
+ * Configurar el modal de cursos
+ */
+function configurarModalCursos() {
+    // Obtener referencias a los elementos del DOM
+    const modalCursos = document.getElementById('modalCursos');
+    const btnsVerCursos = document.querySelectorAll('.ver-cursos');
+
+    if (!modalCursos || btnsVerCursos.length === 0) {
+        console.log('Modal de cursos o botones no encontrados');
+        return;
+    }
+
+    // Cursos por profesor (debería estar disponible desde PHP)
+    const cursosPorProfesor = window.cursosPorProfesor || {};
+
+    // Agregar evento a los botones de ver cursos
+    btnsVerCursos.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const usuarioId = this.getAttribute('data-usuario-id');
+            const usuarioNombre = this.getAttribute('data-usuario-nombre');
+
+            // Actualizar el título del modal
+            const spanNombre = document.getElementById('nombreUsuarioCursos');
+            if (spanNombre) spanNombre.textContent = usuarioNombre;
+
+            // Mostrar indicador de carga
+            mostrarCargandoCursos();
+
+            // Simular un pequeño delay para mejorar la experiencia del usuario
+            setTimeout(() => {
+                cargarCursosEnModal(usuarioId, cursosPorProfesor);
+            }, 500);
+
+            // Añadir efectos visuales al botón
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+
+            setTimeout(() => {
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-book"></i> Ver Cursos (' +
+                    (cursosPorProfesor[usuarioId] ? cursosPorProfesor[usuarioId].length : 0) + ')';
+            }, 1000);
+        });
+    });
+}
+
+/**
+ * Cargar cursos en el modal
+ */
+function cargarCursosEnModal(usuarioId, cursosPorProfesor) {
+    const listaCursos = document.getElementById('listaCursos');
+
+    if (!listaCursos) {
+        console.error('Container de lista de cursos no encontrado');
+        return;
+    }
+
+    // Limpiar contenido anterior
+    listaCursos.innerHTML = '';
+
+    // Verificar si el usuario tiene cursos asignados
+    if (!cursosPorProfesor[usuarioId] || cursosPorProfesor[usuarioId].length === 0) {
+        listaCursos.innerHTML = `
+            <div class="sin-cursos">
+                <i class="fas fa-book-open"></i>
+                <h5>Sin cursos asignados</h5>
+                <p class="text-muted">Este usuario no tiene cursos asignados actualmente.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Crear la lista de cursos
+    const cursos = cursosPorProfesor[usuarioId];
+    let cursosHtml = '';
+
+    cursos.forEach((curso, index) => {
+        const descripcion = curso.descripcion || 'Sin descripción disponible';
+        const estado = curso.estado || 'activo';
+        const fechaCreacion = curso.fecha_registro || 'No disponible';
+        const precio = curso.valor || '0';
+
+        cursosHtml += `
+            <div class="curso-item" style="animation-delay: ${index * 0.1}s">
+                <div class="curso-titulo">
+                    <i class="fas fa-graduation-cap"></i>
+                    ${escapeHtml(curso.nombre)}
+                </div>
+                <div class="curso-descripcion">
+                    ${escapeHtml(descripcion.substring(0, 150))}${descripcion.length > 150 ? '...' : ''}
+                </div>
+                <div class="curso-meta">
+                    <div class="curso-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Creado: ${formatearFecha(fechaCreacion)}</span>
+                    </div>
+                    <div class="curso-meta-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Valor: $${formatearPrecio(precio)}</span>
+                    </div>
+                    <div class="curso-meta-item">
+                        <span class="curso-estado ${estado.toLowerCase()}">${estado}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    listaCursos.innerHTML = cursosHtml;
+
+    // Agregar animación de entrada
+    setTimeout(() => {
+        const items = listaCursos.querySelectorAll('.curso-item');
+        items.forEach((item, index) => {
+            setTimeout(() => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'all 0.3s ease';
+
+                requestAnimationFrame(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                });
+            }, index * 100);
+        });
+    }, 100);
+}
+
+/**
+ * Mostrar indicador de carga para cursos
+ */
+function mostrarCargandoCursos() {
+    const listaCursos = document.getElementById('listaCursos');
+    if (listaCursos) {
+        listaCursos.innerHTML = `
+            <div class="loading-cursos">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3 text-muted">Cargando cursos...</p>
+            </div>
+        `;
+    }
+}
+
+/**
+ * Escapar HTML para prevenir XSS
+ */
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+}
+
+/**
+ * Formatear fecha para mostrar
+ */
+function formatearFecha(fecha) {
+    if (!fecha || fecha === 'No disponible') return 'No disponible';
+
+    try {
+        const fechaObj = new Date(fecha);
+        return fechaObj.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (e) {
+        return fecha;
+    }
+}
+
+/**
+ * Formatear precio para mostrar
+ */
+function formatearPrecio(precio) {
+    if (!precio || isNaN(precio)) return '0';
+
+    return new Intl.NumberFormat('es-CO', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(precio);
 }
 
 /**

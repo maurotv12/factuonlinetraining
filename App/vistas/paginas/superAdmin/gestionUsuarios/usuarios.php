@@ -108,24 +108,13 @@ $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
                                                     <?php
                                                     if (isset($cursosPorProfesor[$value["id"]]) && !empty($cursosPorProfesor[$value["id"]])) {
                                                         $totalCursos = count($cursosPorProfesor[$value["id"]]);
-                                                        $contador = 0;
-
-                                                        foreach ($cursosPorProfesor[$value["id"]] as $curso) {
-                                                            $contador++;
-                                                            $nombreCurso = htmlspecialchars($curso["nombre"]);
-
-                                                            // Truncar nombres muy largos para mejor visualización
-                                                            if (strlen($nombreCurso) > 50) {
-                                                                $nombreCurso = substr($nombreCurso, 0, 47) . '...';
-                                                            }
-
-                                                            echo '<span class="badge bg-primary course-badge" title="' . htmlspecialchars($curso["nombre"]) . '">' . $nombreCurso . '</span>';
-
-                                                            // Agregar un salto suave cada 2 cursos para mejor organización
-                                                            if ($contador % 2 == 0 && $contador < $totalCursos) {
-                                                                echo '<br class="course-break">';
-                                                            }
-                                                        }
+                                                        echo '<button type="button" class="btn btn-sm btn-outline-primary ver-cursos" 
+                                                              data-bs-toggle="modal" 
+                                                              data-bs-target="#modalCursos" 
+                                                              data-usuario-id="' . $value["id"] . '"
+                                                              data-usuario-nombre="' . htmlspecialchars($value["nombre"]) . '">';
+                                                        echo '<i class="fas fa-book"></i> Ver Cursos (' . $totalCursos . ')';
+                                                        echo '</button>';
                                                     } else {
                                                         echo '<span class="text-muted">Sin cursos asignados</span>';
                                                     }
@@ -233,11 +222,35 @@ $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
             </div>
         </div>
     </div>
+
+    <!-- Modal para mostrar cursos asignados -->
+    <div class="modal fade" id="modalCursos" tabindex="-1" aria-labelledby="modalCursosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCursosLabel">
+                        <i class="fas fa-book"></i>
+                        Cursos asignados a <span id="nombreUsuarioCursos"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="listaCursos">
+                        <!-- Los cursos se cargarán dinámicamente aquí -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- Pasar datos a JavaScript -->
 <script>
     window.rolesPorUsuario = <?php echo json_encode($rolesPorUsuario); ?>;
+    window.cursosPorProfesor = <?php echo json_encode($cursosPorProfesor); ?>;
 </script>
 
 <!-- Incluir el archivo JavaScript para la página -->
