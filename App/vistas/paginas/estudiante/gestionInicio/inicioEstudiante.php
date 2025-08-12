@@ -115,10 +115,31 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                             <div class="course-badge badge-new">Nuevo</div>
                         <?php endif; ?>
 
-                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/assets/img/cursos/default/defaultCurso.png'; ?>"
+                        <img src="<?php
+                                    // Construir la ruta de la imagen
+                                    if ($curso['banner']) {
+                                        // Si la ruta comienza con "vistas/", construir ruta completa desde App/
+                                        if (strpos($curso['banner'], 'vistas/') === 0) {
+                                            $imagePath = '/cursosApp/App/' . $curso['banner'];
+                                        } else {
+                                            // Si ya tiene ruta completa, usarla tal como está
+                                            $imagePath = $curso['banner'];
+                                        }
+
+                                        // Verificar si la imagen física existe
+                                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+                                        if (!file_exists($fullPath)) {
+                                            $imagePath = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png';
+                                        }
+                                    } else {
+                                        // Si no hay banner, usar imagen por defecto
+                                        $imagePath = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png';
+                                    }
+                                    echo $imagePath;
+                                    ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.src='/cursosApp/App/vistas/assets/img/cursos/default/defaultCurso.png'">
+                            onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
@@ -161,8 +182,9 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript específico para estudiantes -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudiante.js"></script>
+<!-- JavaScript base y específico para inicio de estudiante -->
+<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/inicioEstudiante.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

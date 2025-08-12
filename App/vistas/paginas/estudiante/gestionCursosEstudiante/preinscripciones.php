@@ -112,10 +112,10 @@ $preinscripciones = []; // Aquí se cargarían las preinscripciones reales desde
                             Preinscrito
                         </div>
 
-                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/assets/images/course-default.jpg'; ?>"
+                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'; ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.src='/cursosApp/App/vistas/assets/images/course-default.jpg'">
+                            onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
@@ -204,146 +204,11 @@ $preinscripciones = []; // Aquí se cargarían las preinscripciones reales desde
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript específico para estudiantes -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudiante.js"></script>
+<!-- JavaScript base y específico para preinscripciones -->
+<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/preinscripciones.js"></script>
 
 <script>
-    // Funciones específicas para preinscripciones
-    function completarInscripcion(courseId) {
-        Swal.fire({
-            title: '¿Completar inscripción?',
-            text: 'Serás redirigido al proceso de pago',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#ff8d14',
-            cancelButtonColor: '#8a9cac',
-            confirmButtonText: 'Sí, inscribirme',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Aquí iría la lógica para completar la inscripción
-                window.location.href = `/cursosApp/App/inscripcion/${courseId}`;
-            }
-        });
-    }
-
-    function removerPreinscripcion(courseId) {
-        Swal.fire({
-            title: '¿Eliminar de preinscripciones?',
-            text: 'El curso será removido de tu lista',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#8a9cac',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Aquí iría la lógica AJAX para remover la preinscripción
-                removePreregistrationCard(courseId);
-
-                Swal.fire({
-                    title: '¡Eliminado!',
-                    text: 'El curso ha sido removido de tus preinscripciones',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        });
-    }
-
-    function completarTodasInscripciones() {
-        Swal.fire({
-            title: '¿Inscribirse a todos los cursos?',
-            text: 'Serás redirigido al proceso de pago múltiple',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#ff8d14',
-            cancelButtonColor: '#8a9cac',
-            confirmButtonText: 'Sí, proceder',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Aquí iría la lógica para inscripción múltiple
-                window.location.href = '/cursosApp/App/inscripcionMultiple';
-            }
-        });
-    }
-
-    function limpiarPreinscripciones() {
-        Swal.fire({
-            title: '¿Limpiar todas las preinscripciones?',
-            text: 'Esta acción no se puede deshacer',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#8a9cac',
-            confirmButtonText: 'Sí, limpiar todo',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Aquí iría la lógica AJAX para limpiar todas las preinscripciones
-                document.getElementById('preregistrationsContainer').innerHTML = `
-                <div class="no-preregistrations" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
-                    <i class="bi bi-check-circle" style="font-size: 5rem; color: var(--accent); margin-bottom: 2rem;"></i>
-                    <h3 style="color: var(--dark); margin-bottom: 1rem;">Lista limpiada</h3>
-                    <p style="color: var(--gray); margin-bottom: 2rem;">
-                        Todas las preinscripciones han sido eliminadas
-                    </p>
-                    <a href="/cursosApp/App/cursosCategorias" class="course-btn" style="text-decoration: none;">
-                        Explorar nuevos cursos
-                    </a>
-                </div>
-            `;
-
-                updateTotalCount(0);
-
-                Swal.fire({
-                    title: '¡Limpiado!',
-                    text: 'Todas las preinscripciones han sido eliminadas',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        });
-    }
-
-    function removePreregistrationCard(courseId) {
-        const card = document.querySelector(`[data-course-id="${courseId}"]`);
-        if (card) {
-            card.style.animation = 'fadeOut 0.3s ease';
-            setTimeout(() => {
-                card.remove();
-                updateTotalCount();
-            }, 300);
-        }
-    }
-
-    function updateTotalCount(count = null) {
-        const container = document.getElementById('preregistrationsContainer');
-        const cards = container.querySelectorAll('.course-card');
-        const totalCount = count !== null ? count : cards.length;
-
-        document.getElementById('totalCount').textContent = totalCount;
-
-        // Calcular precio total
-        let totalPrice = 0;
-        cards.forEach(card => {
-            const priceElement = card.querySelector('.course-price');
-            if (priceElement) {
-                const priceText = priceElement.textContent.replace(/[^\d]/g, '');
-                if (priceText) {
-                    totalPrice += parseInt(priceText);
-                }
-            }
-        });
-
-        document.getElementById('totalPrice').textContent = totalPrice > 0 ?
-            '$' + totalPrice.toLocaleString() : '$0';
-    }
-
     // Cargar datos iniciales
     document.addEventListener('DOMContentLoaded', function() {
         updateTotalCount();

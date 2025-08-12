@@ -1,21 +1,11 @@
 /**
- * JavaScript para la vista de estudiante
- * Funcionalidades: búsqueda de cursos, filtros, interacciones
+ * JavaScript base para vistas de estudiante
+ * Funcionalidades compartidas entre todas las vistas de estudiante
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    initEstudianteView();
-});
+// ===== FUNCIONALIDADES COMPARTIDAS =====
 
-function initEstudianteView() {
-    initSearchFunctionality();
-    initCourseCards();
-    initQuickActions();
-    initResponsiveNavbar();
-    loadCourses();
-}
-
-// ===== FUNCIONALIDAD DE BÚSQUEDA =====
+// Funcionalidad de búsqueda común
 function initSearchFunctionality() {
     const searchInput = document.getElementById('courseSearch');
     const searchButton = document.getElementById('searchButton');
@@ -31,7 +21,8 @@ function initSearchFunctionality() {
                 if (query.length >= 2) {
                     searchCourses(query);
                 } else if (query.length === 0) {
-                    loadCourses(); // Recargar todos los cursos
+                    // Recargar la página para mostrar los cursos originales
+                    window.location.reload();
                 }
             }, 300);
         });
@@ -58,33 +49,51 @@ function initSearchFunctionality() {
     }
 }
 
-// ===== BÚSQUEDA DE CURSOS =====
+// Búsqueda de cursos
 function searchCourses(query) {
     showLoadingCards();
 
-    // Simular búsqueda (aquí irá la llamada AJAX real)
-    setTimeout(() => {
-        fetch('/cursosApp/App/ajax/buscarCursos.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'query=' + encodeURIComponent(query)
+    fetch('/cursosApp/App/ajax/buscarCursos.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'query=' + encodeURIComponent(query)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
         })
-            .then(response => response.json())
-            .then(data => {
+        .then(data => {
+            if (data.success) {
                 displayCourses(data.courses || []);
                 updateResultsCount(data.total || 0, query);
-            })
-            .catch(error => {
-                console.error('Error en búsqueda:', error);
-                showErrorMessage('Error al buscar cursos. Intente nuevamente.');
-            });
-    }, 500);
+            } else {
+                console.error('Error en búsqueda:', data.error);
+                showErrorMessage(data.error || 'Error al buscar cursos');
+            }
+        })
+        .catch(error => {
+            console.error('Error en búsqueda:', error);
+            showErrorMessage('Error al buscar cursos. Intente nuevamente.');
+        });
 }
 
-// ===== CARGAR CURSOS =====
-function loadCourses(category = null) {
+// Cargar cursos
+function loadCourses(category = null, forceReload = false) {
+    // Si ya hay cursos cargados desde PHP y no es una recarga forzada, no hacer nada
+    const container = document.getElementById('coursesContainer');
+    if (!forceReload && container && container.children.length > 0) {
+        const existingCourses = container.querySelectorAll('.course-card');
+        if (existingCourses.length > 0) {
+            // Solo reinicializar la funcionalidad de las cards
+            initCourseCards();
+            return;
+        }
+    }
+
     showLoadingCards();
 
     let url = '/cursosApp/App/ajax/obtenerCursos.php';
@@ -101,10 +110,20 @@ function loadCourses(category = null) {
         },
         body: body
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            displayCourses(data.courses || []);
-            updateResultsCount(data.total || 0);
+            if (data.success) {
+                displayCourses(data.courses || []);
+                updateResultsCount(data.total || 0);
+            } else {
+                console.error('Error al cargar cursos:', data.error);
+                showErrorMessage(data.error || 'Error al cargar cursos');
+            }
         })
         .catch(error => {
             console.error('Error al cargar cursos:', error);
@@ -112,7 +131,7 @@ function loadCourses(category = null) {
         });
 }
 
-// ===== MOSTRAR CURSOS =====
+// Mostrar cursos
 function displayCourses(courses) {
     const container = document.getElementById('coursesContainer');
     if (!container) return;
@@ -134,11 +153,25 @@ function displayCourses(courses) {
     initCourseCards();
 }
 
-// ===== CREAR CARD DE CURSO =====
+// Crear card de curso
 function createCourseCard(course) {
-    const price = course.precio ? `$${parseInt(course.precio).toLocaleString()}` : 'Gratis';
-    const image = course.banner || '/cursosApp/App/vistas/assets/img/cursos/default/defaultCurso.png';
+    const price = course.valor ? `$${parseInt(course.valor).toLocaleString()}` : 'Gratis';
     const professor = course.profesor || 'Instructor';
+
+    // Manejar la ruta de la imagen
+    let image;
+    if (course.banner) {
+        // Si la ruta comienza con "vistas/", construir ruta completa desde App/
+        if (course.banner.startsWith('vistas/')) {
+            image = '/cursosApp/App/' + course.banner;
+        } else {
+            // Si ya tiene ruta completa, usarla tal como está
+            image = course.banner;
+        }
+    } else {
+        // Si no hay banner, usar imagen por defecto
+        image = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png';
+    }
 
     return `
         <div class="course-card" data-course-id="${course.id}">
@@ -146,7 +179,7 @@ function createCourseCard(course) {
             ${course.esPopular ? '<div class="course-badge badge-popular">Popular</div>' : ''}
             
             <img src="${image}" alt="${course.nombre}" class="course-image" 
-                 onerror="this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
+                 onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
             
             <div class="course-content">
                 <h3 class="course-title">${course.nombre}</h3>
@@ -167,7 +200,7 @@ function createCourseCard(course) {
     `;
 }
 
-// ===== FUNCIONALIDAD DE CARDS =====
+// Funcionalidad de cards
 function initCourseCards() {
     const cards = document.querySelectorAll('.course-card');
 
@@ -193,12 +226,12 @@ function initCourseCards() {
     });
 }
 
-// ===== VER CURSO =====
+// Ver curso
 function viewCourse(courseId) {
     window.location.href = `/cursosApp/App/verCurso/${courseId}`;
 }
 
-// ===== ACCIONES RÁPIDAS =====
+// Acciones rápidas de navegación
 function initQuickActions() {
     const categoryBtn = document.getElementById('categoriesBtn');
     const preregistrationBtn = document.getElementById('preregistrationBtn');
@@ -226,7 +259,7 @@ function initQuickActions() {
     }
 }
 
-// ===== NAVBAR RESPONSIVE =====
+// Navbar responsive
 function initResponsiveNavbar() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
@@ -247,7 +280,7 @@ function initResponsiveNavbar() {
     }
 }
 
-// ===== UTILIDADES =====
+// ===== UTILIDADES COMPARTIDAS =====
 function showLoadingCards() {
     const container = document.getElementById('coursesContainer');
     if (!container) return;
@@ -288,21 +321,18 @@ function updateResultsCount(total, query = null) {
     countElement.textContent = text;
 }
 
-// ===== FILTROS POR CATEGORÍA =====
-function filterByCategory(categoryId, categoryName) {
-    // Actualizar título de sección
-    const sectionTitle = document.getElementById('sectionTitle');
-    if (sectionTitle) {
-        sectionTitle.textContent = `Cursos de ${categoryName}`;
-    }
-
-    loadCourses(categoryId);
-}
-
 // ===== FUNCIONES PÚBLICAS =====
 window.viewCourse = viewCourse;
-window.filterByCategory = filterByCategory;
 window.loadCourses = loadCourses;
+window.searchCourses = searchCourses;
+window.initSearchFunctionality = initSearchFunctionality;
+window.initCourseCards = initCourseCards;
+window.initQuickActions = initQuickActions;
+window.initResponsiveNavbar = initResponsiveNavbar;
+window.showLoadingCards = showLoadingCards;
+window.showErrorMessage = showErrorMessage;
+window.updateResultsCount = updateResultsCount;
+window.displayCourses = displayCourses;
+window.createCourseCard = createCourseCard;
 
-// ===== INICIALIZACIÓN =====
-console.log('Vista de estudiante cargada correctamente');
+console.log('Funcionalidades base de estudiante cargadas');

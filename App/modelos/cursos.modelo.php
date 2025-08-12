@@ -22,8 +22,18 @@ class ModeloCursos
 	public static function mdlMostrarCursos($tabla, $item, $valor)
 	{
 		try {
+			// Query con JOIN para obtener información relacionada
+			$sql = "SELECT 
+						c.*, 
+						cat.nombre as categoria,
+						p.nombre as profesor
+					FROM $tabla c
+					LEFT JOIN categoria cat ON c.id_categoria = cat.id
+					LEFT JOIN persona p ON c.id_persona = p.id";
+
 			if ($item != null && $valor != null) {
-				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item");
+				$sql .= " WHERE c.$item = :$item";
+				$stmt = Conexion::conectar()->prepare($sql);
 				$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 				$stmt->execute();
 
@@ -36,7 +46,7 @@ class ModeloCursos
 					return $stmt->fetchAll(PDO::FETCH_ASSOC);
 				}
 			} else {
-				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
+				$stmt = Conexion::conectar()->prepare($sql);
 				$stmt->execute();
 				return $stmt->fetchAll(PDO::FETCH_ASSOC);
 			}

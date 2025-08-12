@@ -124,10 +124,10 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
             <?php if ($cursos && count($cursos) > 0): ?>
                 <?php foreach ($cursos as $curso): ?>
                     <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
-                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/assets/images/course-default.jpg'; ?>"
+                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'; ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.src='/cursosApp/App/vistas/assets/images/course-default.jpg'">
+                            onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
@@ -181,21 +181,11 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript específico para estudiantes -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudiante.js"></script>
+<!-- JavaScript base y específico para categorías -->
+<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/cursosCategorias.js"></script>
 
 <script>
-    // Función para filtrar por categoría
-    function filterCategory(categoryId, categoryName) {
-        const url = new URL(window.location);
-        if (categoryId) {
-            url.searchParams.set('categoria', categoryId);
-        } else {
-            url.searchParams.delete('categoria');
-        }
-        window.location.href = url.toString();
-    }
-
     // Función para ver curso
     window.viewCourse = function(courseId) {
         window.location.href = `/cursosApp/App/verCurso/${courseId}`;

@@ -172,10 +172,10 @@ $estadisticas = [
                             <?php echo $badgeText; ?>
                         </div>
 
-                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/assets/images/course-default.jpg'; ?>"
+                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'; ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.src='/cursosApp/App/vistas/assets/images/course-default.jpg'">
+                            onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
@@ -290,86 +290,11 @@ $estadisticas = [
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript específico para estudiantes -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudiante.js"></script>
+<!-- JavaScript base y específico para mis cursos -->
+<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/cursosEstudiante.js"></script>
 
 <script>
-    // Funciones específicas para mis cursos
-    function continuarCurso(courseId) {
-        // Aquí iría la lógica para continuar el curso
-        window.location.href = `/cursosApp/App/curso/${courseId}/continuar`;
-    }
-
-    function revisarCurso(courseId) {
-        // Aquí iría la lógica para revisar el curso completado
-        window.location.href = `/cursosApp/App/curso/${courseId}/revisar`;
-    }
-
-    function verCertificado(courseId) {
-        // Aquí iría la lógica para ver/descargar el certificado
-        window.location.href = `/cursosApp/App/certificado/${courseId}`;
-    }
-
-    function filterCourses(filter) {
-        // Actualizar botones activos
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-
-        // Filtrar cursos
-        const courses = document.querySelectorAll('.course-card.my-course');
-        courses.forEach(course => {
-            const status = course.getAttribute('data-status');
-
-            if (filter === 'todos') {
-                course.style.display = 'block';
-            } else if (filter === 'en_progreso' && status === 'en_progreso') {
-                course.style.display = 'block';
-            } else if (filter === 'completados' && status === 'completado') {
-                course.style.display = 'block';
-            } else if (filter === 'no_iniciados' && status === 'no_iniciado') {
-                course.style.display = 'block';
-            } else {
-                course.style.display = 'none';
-            }
-        });
-    }
-
-    function sortCourses(sortBy) {
-        const container = document.getElementById('myCoursesContainer');
-        const courses = Array.from(container.querySelectorAll('.course-card.my-course'));
-
-        courses.sort((a, b) => {
-            switch (sortBy) {
-                case 'nombre':
-                    const nameA = a.querySelector('.course-title').textContent.toLowerCase();
-                    const nameB = b.querySelector('.course-title').textContent.toLowerCase();
-                    return nameA.localeCompare(nameB);
-
-                case 'progreso':
-                    const progressA = parseInt(a.querySelector('.progress-fill').style.width) || 0;
-                    const progressB = parseInt(b.querySelector('.progress-fill').style.width) || 0;
-                    return progressB - progressA;
-
-                case 'fecha_inscripcion':
-                    // Por ahora ordenamos por ID (simulando fecha)
-                    const idA = parseInt(a.getAttribute('data-course-id'));
-                    const idB = parseInt(b.getAttribute('data-course-id'));
-                    return idB - idA;
-
-                case 'recientes':
-                default:
-                    return 0; // Mantener orden actual
-            }
-        });
-
-        // Reordenar en el DOM
-        courses.forEach(course => {
-            container.appendChild(course);
-        });
-    }
-
     // Cargar datos iniciales
     document.addEventListener('DOMContentLoaded', function() {
         // Inicializar filtros y estadísticas si es necesario
