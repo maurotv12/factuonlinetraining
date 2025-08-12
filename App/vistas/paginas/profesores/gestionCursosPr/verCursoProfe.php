@@ -378,4 +378,3 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
 
 <!-- Incluir JavaScript para la página -->
 <script src="/cursosApp/App/vistas/assets/js/pages/verCurso.js?v=<?= time() ?>"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

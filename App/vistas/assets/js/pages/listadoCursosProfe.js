@@ -31,7 +31,7 @@ function inicializarDataTableProfe() {
         if (typeof $ !== 'undefined' && $.fn.DataTable) {
             $('#table_id').DataTable({
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                    "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
                 },
                 "responsive": true,
                 "pageLength": 10,

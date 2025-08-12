@@ -26,6 +26,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <link rel="stylesheet" href="/cursosApp/assets/css/auth.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/cursosInicio.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublico.css">
+  <link rel="stylesheet" href="/cursosapp/assets/css/carrusel.css">
   <!-- CSS para validación de registro -->
   <link rel="stylesheet" href="/cursosApp/assets/css/validacionRegistro.css">
 
