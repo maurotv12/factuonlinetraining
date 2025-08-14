@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-08-2025 a las 17:34:23
+-- Tiempo de generación: 14-08-2025 a las 21:08:49
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -55,7 +55,8 @@ CREATE TABLE `categoria` (
 
 INSERT INTO `categoria` (`id`, `nombre`, `descripcion`, `fecha_registro`) VALUES
 (1, 'Stop Motion', 'La animación en volumen​ o animación fotograma a fotograma​ es una técnica de animación que consiste en aparentar el movimiento de objetos estáticos por medio de una serie de imágenes fijas sucesivas.', '2025-07-14 11:21:58'),
-(2, 'Animación 3D', 'La animación 3D usa gráficos por computadora para que parezca que los objetos se mueven en un espacio tridimensional.', '2025-07-14 11:21:58');
+(2, 'Animación 3D', 'La animación 3D usa gráficos por computadora para que parezca que los objetos se mueven en un espacio tridimensional.', '2025-07-14 11:21:58'),
+(3, 'Robotica', 'La robotica del siglo XXI', '2025-08-11 15:42:15');
 
 -- --------------------------------------------------------
 
@@ -398,7 +399,38 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (218, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-08 11:38:41'),
 (219, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-08 11:43:42'),
 (220, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-08 15:52:56'),
-(221, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-11 09:04:08');
+(221, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-11 09:04:08'),
+(222, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-11 15:44:46'),
+(223, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 08:57:33'),
+(224, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 08:58:22'),
+(225, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 08:58:45'),
+(226, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 09:00:11'),
+(227, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 11:52:46'),
+(228, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 14:30:11'),
+(229, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 14:30:39'),
+(230, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 14:33:26'),
+(231, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 14:51:09'),
+(232, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 14:53:02'),
+(233, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:11:36'),
+(234, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:12:59'),
+(235, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:22:57'),
+(236, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:23:07'),
+(237, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:23:30'),
+(238, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:23:55'),
+(239, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:24:26'),
+(240, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:24:35'),
+(241, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:26:07'),
+(242, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:47:55'),
+(243, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:48:46'),
+(244, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:48:56'),
+(245, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:49:39'),
+(246, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:51:13'),
+(247, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-12 15:51:28'),
+(248, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-13 09:13:17'),
+(249, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-13 09:13:42'),
+(250, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '2025-08-13 09:13:55'),
+(251, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-14 09:11:56'),
+(252, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-14 09:12:57');
 
 -- --------------------------------------------------------
 
@@ -475,9 +507,8 @@ CREATE TABLE `persona_roles` (
 --
 
 INSERT INTO `persona_roles` (`id_persona`, `id_rol`) VALUES
-(1, 1),
 (1, 2),
-(1, 3),
+(2, 1),
 (2, 2),
 (2, 3),
 (3, 3),
@@ -522,31 +553,6 @@ INSERT INTO `roles` (`id`, `nombre`) VALUES
 (1, 'admin'),
 (3, 'estudiante'),
 (2, 'profesor');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `secciones`
---
-
-CREATE TABLE `secciones` (
-  `id` int(11) NOT NULL,
-  `id_curso` int(11) DEFAULT NULL,
-  `nombre` varchar(300) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
-  `duracion` varchar(100) DEFAULT NULL,
-  `url` varchar(250) DEFAULT NULL,
-  `tipo` varchar(200) DEFAULT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `secciones`
---
-
-INSERT INTO `secciones` (`id`, `id_curso`, `nombre`, `descripcion`, `duracion`, `url`, `tipo`, `fecha_registro`) VALUES
-(1, NULL, 'PROMOCIONAL Diverti Motion', 'PROMOCIONAL Diverti Motion', '28 Segundos', 'videosPromos/PROMO-diverti-motion.mp4', 'video', '2025-07-14 16:35:16'),
-(2, NULL, 'PROMOCIONAL Diverti Motion', 'PROMOCIONAL Diverti Motion', '28 Segundos', 'videosPromos/PROMO-diverti-motion.mp4', 'Video', '2025-07-14 16:35:16');
 
 -- --------------------------------------------------------
 
@@ -688,13 +694,6 @@ ALTER TABLE `roles`
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indices de la tabla `secciones`
---
-ALTER TABLE `secciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_curso` (`id_curso`);
-
---
 -- Indices de la tabla `seccion_contenido`
 --
 ALTER TABLE `seccion_contenido`
@@ -722,13 +721,13 @@ ALTER TABLE `archivos_adicionales`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `curso_secciones`
@@ -758,7 +757,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=253;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -783,12 +782,6 @@ ALTER TABLE `requisitos_curso`
 --
 ALTER TABLE `roles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `secciones`
---
-ALTER TABLE `secciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `seccion_contenido`
@@ -869,12 +862,6 @@ ALTER TABLE `persona_roles`
 --
 ALTER TABLE `requisitos_curso`
   ADD CONSTRAINT `requisitos_curso_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`);
-
---
--- Filtros para la tabla `secciones`
---
-ALTER TABLE `secciones`
-  ADD CONSTRAINT `secciones_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`);
 
 --
 -- Filtros para la tabla `seccion_contenido`
