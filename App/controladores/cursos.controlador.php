@@ -152,8 +152,8 @@ class ControladorCursos
 			return "formato_invalido";
 		}
 
-		// Validar tamaño (máximo 50MB)
-		if ($video['size'] > 50 * 1024 * 1024) {
+		// Validar tamaño (máximo 500MB para videos HD/FHD)
+		if ($video['size'] > 500 * 1024 * 1024) {
 			return "archivo_grande";
 		}
 
@@ -164,13 +164,110 @@ class ControladorCursos
 		$nombreVideo = uniqid() . "_" . time() . "." . $extension;
 		$rutaCompleta = $directorioCompleto . "/" . $nombreVideo;
 
-		// Mover archivo
-		if (move_uploaded_file($video['tmp_name'], $rutaCompleta)) {
-			// Devolver ruta relativa para guardar en BD
-			return "storage/public/promoVideos/" . $nombreVideo;
+		// Mover archivo temporalmente para validaciones
+		if (!move_uploaded_file($video['tmp_name'], $rutaCompleta)) {
+			return null;
 		}
 
-		return null;
+		// Validar propiedades del video usando getID3 o métodos nativos
+		$validacionVideo = self::validarPropiedadesVideo($rutaCompleta);
+
+		if ($validacionVideo !== true) {
+			// Eliminar archivo temporal si no pasa validaciones
+			if (file_exists($rutaCompleta)) {
+				unlink($rutaCompleta);
+			}
+			return $validacionVideo;
+		}
+
+		// Si llegamos aquí, el video es válido
+		// Devolver ruta relativa para guardar en BD
+		return "storage/public/promoVideos/" . $nombreVideo;
+	}
+
+	/*=============================================
+	Validar propiedades del video (resolución y duración)
+	=============================================*/
+	private static function validarPropiedadesVideo($rutaArchivo)
+	{
+		// Verificar si ffprobe está disponible (recomendado para producción)
+		$ffprobeOutput = @shell_exec("ffprobe -v quiet -print_format json -show_format -show_streams \"$rutaArchivo\" 2>&1");
+
+		if ($ffprobeOutput && $videoInfo = json_decode($ffprobeOutput, true)) {
+			// Usar ffprobe para validaciones precisas
+			foreach ($videoInfo['streams'] as $stream) {
+				if ($stream['codec_type'] === 'video') {
+					$width = $stream['width'] ?? 0;
+					$height = $stream['height'] ?? 0;
+					$duration = floatval($videoInfo['format']['duration'] ?? 0);
+
+					// Validar resolución (HD: 1280x720, FHD: 1920x1080, y algunas variaciones comunes)
+					$resolucionValida = self::esResolucionValida($width, $height);
+					if (!$resolucionValida) {
+						return "resolucion_invalida";
+					}
+
+					// Validar duración (máximo 20 minutos = 1200 segundos)
+					if ($duration > 1200) {
+						return "duracion_excedida";
+					}
+
+					return true;
+				}
+			}
+		}
+
+		// Fallback usando getimagesize para información básica (limitado)
+		try {
+			$videoData = @getimagesize($rutaArchivo);
+			if ($videoData !== false && isset($videoData[0], $videoData[1])) {
+				$width = $videoData[0];
+				$height = $videoData[1];
+
+				if (!self::esResolucionValida($width, $height)) {
+					return "resolucion_invalida";
+				}
+
+				// Sin ffprobe no podemos validar duración exacta, asumir válida
+				return true;
+			}
+		} catch (Exception $e) {
+			// Error al leer el archivo
+			return "archivo_corrupto";
+		}
+
+		// Si no podemos validar, permitir pero advertir
+		return true;
+	}
+
+	/*=============================================
+	Verificar si la resolución es HD o FHD válida
+	=============================================*/
+	private static function esResolucionValida($width, $height)
+	{
+		// Resoluciones HD y FHD aceptadas
+		$resolucionesValidas = [
+			// HD (720p)
+			[1280, 720],   // HD estándar
+			[1366, 768],   // HD común en laptops
+			[1440, 900],   // HD+ widescreen
+
+			// FHD (1080p)
+			[1920, 1080],  // FHD estándar
+			[1920, 1200],  // FHD+ widescreen
+
+			// Orientaciones verticales (para contenido móvil)
+			[720, 1280],   // HD vertical
+			[1080, 1920],  // FHD vertical
+		];
+
+		foreach ($resolucionesValidas as $resolucion) {
+			if ($width == $resolucion[0] && $height == $resolucion[1]) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/*=============================================
@@ -222,6 +319,12 @@ class ControladorCursos
 				return "formato_invalido";
 			} elseif ($resultadoVideo === "archivo_grande") {
 				return "archivo_grande";
+			} elseif ($resultadoVideo === "resolucion_invalida") {
+				return "resolucion_invalida";
+			} elseif ($resultadoVideo === "duracion_excedida") {
+				return "duracion_excedida";
+			} elseif ($resultadoVideo === "archivo_corrupto") {
+				return "archivo_corrupto";
 			} elseif ($resultadoVideo) {
 				$datos['promo_video'] = $resultadoVideo;
 			}
@@ -266,6 +369,12 @@ class ControladorCursos
 				return "formato_invalido";
 			} elseif ($resultadoVideo === "archivo_grande") {
 				return "archivo_grande";
+			} elseif ($resultadoVideo === "resolucion_invalida") {
+				return "resolucion_invalida";
+			} elseif ($resultadoVideo === "duracion_excedida") {
+				return "duracion_excedida";
+			} elseif ($resultadoVideo === "archivo_corrupto") {
+				return "archivo_corrupto";
 			} elseif ($resultadoVideo) {
 				// Eliminar video anterior si existe
 				if (!empty($datos['promo_video_anterior'])) {
@@ -508,6 +617,31 @@ class ControladorCursos
 			return [
 				'error' => true,
 				'mensaje' => 'La imagen debe tener dimensiones exactas de 600x400 píxeles.'
+			];
+		} elseif ($respuesta === "formato_invalido") {
+			return [
+				'error' => true,
+				'mensaje' => 'Formato de video no válido. Formatos permitidos: MP4, AVI, MOV, WMV, WEBM.'
+			];
+		} elseif ($respuesta === "archivo_grande") {
+			return [
+				'error' => true,
+				'mensaje' => 'El video es muy grande. Tamaño máximo permitido: 500MB.'
+			];
+		} elseif ($respuesta === "resolucion_invalida") {
+			return [
+				'error' => true,
+				'mensaje' => 'Resolución de video no válida. Se requiere HD (1280x720) o FHD (1920x1080).'
+			];
+		} elseif ($respuesta === "duracion_excedida") {
+			return [
+				'error' => true,
+				'mensaje' => 'El video excede la duración máxima permitida de 20 minutos.'
+			];
+		} elseif ($respuesta === "archivo_corrupto") {
+			return [
+				'error' => true,
+				'mensaje' => 'El archivo de video parece estar corrupto o no es válido.'
 			];
 		} else {
 			return [
