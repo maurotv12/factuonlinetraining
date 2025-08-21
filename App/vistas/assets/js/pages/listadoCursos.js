@@ -147,9 +147,9 @@ function configurarPrevisualizacionImagenes() {
     document.querySelectorAll('.banner-mini').forEach(img => {
         // Manejar error de imagen no encontrada
         img.addEventListener('error', function () {
-            if (this.src !== 'vistas/img/cursos/default/defaultCurso.png') {
+            if (this.src !== 'storage/public/banners/default/defaultCurso.png') {
                 console.warn('Imagen no encontrada, usando imagen por defecto:', this.src);
-                this.src = 'vistas/img/cursos/default/defaultCurso.png';
+                this.src = 'storage/public/banners/default/defaultCurso.png';
                 this.alt = 'Imagen no disponible';
                 this.title = 'Imagen por defecto - Original no encontrada';
             }
@@ -189,7 +189,7 @@ function mostrarModalImagen(src, alt) {
                     </div>
                     <div class="modal-body text-center">
                         <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;"
-                             onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='vistas/img/cursos/default/defaultCurso.png';">
+                             onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='storage/public/banners/default/defaultCurso.png';">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="cerrarModalImagen()">Cerrar</button>
@@ -288,9 +288,9 @@ function verificarImagenesCursos() {
         };
         testImg.onerror = function () {
             // Imagen no existe, cambiar a imagen por defecto
-            if (img.src !== 'vistas/img/cursos/default/defaultCurso.png') {
+            if (img.src !== 'storage/public/banners/default/defaultCurso.png') {
                 console.warn('Imagen no encontrada, cambiando a imagen por defecto:', img.src);
-                img.src = 'vistas/img/cursos/default/defaultCurso.png';
+                img.src = 'storage/public/banners/default/defaultCurso.png';
                 img.alt = 'Imagen no disponible';
                 img.title = 'Imagen por defecto - Original no encontrada';
             }

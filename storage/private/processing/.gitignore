@@ -1,0 +1,20 @@
+# Archivos de procesamiento temporal
+# Ignorar todo el contenido de procesamiento
+*
+!.gitignore
+!.gitkeep
+!*/
+
+# Archivos de cola de procesamiento
+*.queue
+*.processing
+*.pending
+
+# Archivos temporales de conversión
+*.tmp
+*.temp
+*.part
+
+# Logs de procesamiento
+process_*.log
+conversion_*.log

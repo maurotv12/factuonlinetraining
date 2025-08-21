@@ -1,0 +1,31 @@
+# Storage - Ignorar todos los archivos pero mantener estructura
+*
+!.gitignore
+!.gitkeep
+
+# Permitir subdirectorios pero ignorar su contenido por defecto
+!*/
+
+# Archivos de configuración que sí deben versionarse
+!storage-structure.md
+!README.md
+
+# Excluir archivos temporales del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Excluir archivos de logs específicos
+*.log
+*.log.*
+
+# Excluir archivos de backup
+*.backup
+*.bak
+*.tmp
+*.temp
+
+# Excluir archivos de procesamiento de video
+*.processing
+*.queue
+*.lock

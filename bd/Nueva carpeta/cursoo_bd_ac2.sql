@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2025 a las 18:44:14
+-- Tiempo de generación: 20-08-2025 a las 22:14:52
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -113,36 +113,6 @@ CREATE TABLE `email_verificacion_tokens` (
   `token` varchar(255) NOT NULL,
   `fecha_envio` timestamp NOT NULL DEFAULT current_timestamp(),
   `usado` tinyint(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `gestion_pagos`
---
-
-CREATE TABLE `gestion_pagos` (
-  `id` int(11) NOT NULL,
-  `id_curso` int(11) NOT NULL,
-  `id_estudiante` int(11) NOT NULL,
-  `id_inscripcion` int(11) DEFAULT NULL,
-  `proveedor` enum('mercadopago') NOT NULL DEFAULT 'mercadopago',
-  `moneda` char(3) NOT NULL DEFAULT 'COP',
-  `monto_total` int(11) NOT NULL,
-  `external_payment_id` varchar(100) DEFAULT NULL,
-  `preference_id` varchar(100) DEFAULT NULL,
-  `init_point` varchar(500) DEFAULT NULL,
-  `status` enum('pendiente','aprobado','rechazado','cancelado','devuelto','en_proceso','expirado') NOT NULL DEFAULT 'pendiente',
-  `status_detail` varchar(100) DEFAULT NULL,
-  `payer_id` varchar(100) DEFAULT NULL,
-  `payer_email` varchar(150) DEFAULT NULL,
-  `payment_method_id` varchar(50) DEFAULT NULL,
-  `installments` int(11) DEFAULT NULL,
-  `card_last4` char(4) DEFAULT NULL,
-  `comprobante_url` varchar(500) DEFAULT NULL,
-  `payload_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`payload_json`)),
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -649,17 +619,6 @@ ALTER TABLE `email_verificacion_tokens`
   ADD KEY `id_persona` (`id_persona`);
 
 --
--- Indices de la tabla `gestion_pagos`
---
-ALTER TABLE `gestion_pagos`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_gpagos_external_payment` (`external_payment_id`),
-  ADD KEY `idx_gpagos_estudiante_estado` (`id_estudiante`,`status`),
-  ADD KEY `idx_gpagos_curso_estado` (`id_curso`,`status`),
-  ADD KEY `idx_gpagos_preference` (`preference_id`),
-  ADD KEY `fk_gpagos_inscripcion` (`id_inscripcion`);
-
---
 -- Indices de la tabla `inscripciones`
 --
 ALTER TABLE `inscripciones`
@@ -762,12 +721,6 @@ ALTER TABLE `email_verificacion_tokens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `gestion_pagos`
---
-ALTER TABLE `gestion_pagos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `inscripciones`
 --
 ALTER TABLE `inscripciones`
@@ -843,14 +796,6 @@ ALTER TABLE `curso_secciones`
 --
 ALTER TABLE `email_verificacion_tokens`
   ADD CONSTRAINT `email_verificacion_tokens_ibfk_1` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id`);
-
---
--- Filtros para la tabla `gestion_pagos`
---
-ALTER TABLE `gestion_pagos`
-  ADD CONSTRAINT `fk_gpagos_curso` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gpagos_estudiante` FOREIGN KEY (`id_estudiante`) REFERENCES `persona` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gpagos_inscripcion` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `inscripciones`

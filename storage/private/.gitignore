@@ -1,0 +1,23 @@
+# Private - Archivos privados y sensibles
+# Ignorar TODO el contenido por seguridad
+*
+!.gitignore
+!.gitkeep
+!*/
+
+# Archivos especialmente sensibles
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Datos de usuarios
+user_*
+profile_*
+personal_*
+
+# Archivos de configuración con datos sensibles
+config_*.json
+settings_*.json

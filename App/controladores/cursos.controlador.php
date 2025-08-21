@@ -86,6 +86,116 @@ class ControladorCursos
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
+	/*=============================================
+	Crear directorio storage si no existe
+	=============================================*/
+	private static function crearDirectorioStorage($subdirectorio)
+	{
+		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/" . $subdirectorio;
+
+		if (!file_exists($rutaCompleta)) {
+			mkdir($rutaCompleta, 0755, true);
+		}
+
+		return $rutaCompleta;
+	}
+
+	/*=============================================
+	Validar y procesar imagen del banner
+	=============================================*/
+	private static function procesarImagenBanner($imagen)
+	{
+		if (!isset($imagen) || $imagen['error'] != 0) {
+			return null;
+		}
+
+		// Validar dimensiones
+		$dimensiones = getimagesize($imagen['tmp_name']);
+		$ancho = $dimensiones[0];
+		$alto = $dimensiones[1];
+
+		if ($ancho != 600 || $alto != 400) {
+			return "error_dimensiones";
+		}
+
+		// Crear directorio de banners
+		$directorioCompleto = self::crearDirectorioStorage("banners");
+
+		// Generar nombre único para el archivo
+		$extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+		$nombreImg = uniqid() . "_" . time() . "." . $extension;
+		$rutaCompleta = $directorioCompleto . "/" . $nombreImg;
+
+		// Mover archivo
+		if (move_uploaded_file($imagen['tmp_name'], $rutaCompleta)) {
+			// Devolver ruta relativa para guardar en BD
+			return "storage/public/banners/" . $nombreImg;
+		}
+
+		return null;
+	}
+
+	/*=============================================
+	Validar y procesar video promocional
+	=============================================*/
+	private static function procesarVideoPromo($video)
+	{
+		if (!isset($video) || empty($video['name']) || $video['error'] != 0) {
+			return null;
+		}
+
+		// Validar extensión de video
+		$extension = strtolower(pathinfo($video['name'], PATHINFO_EXTENSION));
+		$extensionesPermitidas = ['mp4', 'avi', 'mov', 'wmv', 'webm'];
+
+		if (!in_array($extension, $extensionesPermitidas)) {
+			return "formato_invalido";
+		}
+
+		// Validar tamaño (máximo 50MB)
+		if ($video['size'] > 50 * 1024 * 1024) {
+			return "archivo_grande";
+		}
+
+		// Crear directorio de videos promocionales
+		$directorioCompleto = self::crearDirectorioStorage("promoVideos");
+
+		// Generar nombre único para el archivo
+		$nombreVideo = uniqid() . "_" . time() . "." . $extension;
+		$rutaCompleta = $directorioCompleto . "/" . $nombreVideo;
+
+		// Mover archivo
+		if (move_uploaded_file($video['tmp_name'], $rutaCompleta)) {
+			// Devolver ruta relativa para guardar en BD
+			return "storage/public/promoVideos/" . $nombreVideo;
+		}
+
+		return null;
+	}
+
+	/*=============================================
+	Eliminar archivo anterior cuando se actualiza
+	=============================================*/
+	private static function eliminarArchivoAnterior($rutaArchivo)
+	{
+		if (empty($rutaArchivo)) {
+			return false;
+		}
+
+		// Construir ruta completa
+		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/" . $rutaArchivo;
+
+		// Verificar que el archivo existe y eliminarlo
+		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
+			// No eliminar la imagen por defecto
+			if (strpos($rutaArchivo, 'default') === false) {
+				unlink($rutaCompleta);
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	public static function ctrCrearCurso($datos)
 	{
@@ -93,42 +203,85 @@ class ControladorCursos
 		$datos['banner'] = null;
 		$datos['promo_video'] = null;
 
-		// Procesar la imagen del curso si existe y con validación de tamaño
+		// Procesar la imagen del banner
 		if (isset($datos['imagen']) && $datos['imagen']['error'] == 0) {
-			$dimensiones = getimagesize($datos['imagen']['tmp_name']);
-			$ancho = $dimensiones[0];
-			$alto = $dimensiones[1];
+			$resultadoImagen = self::procesarImagenBanner($datos['imagen']);
 
-			if ($ancho == 600 && $alto == 400) {
-				$directorio = "vistas/img/cursos/";
-				if (!file_exists($directorio)) mkdir($directorio, 0777, true);
-				$nombreImg = uniqid() . "_" . $datos['imagen']['name'];
-				$rutaImg = $directorio . $nombreImg;
-
-				if (move_uploaded_file($datos['imagen']['tmp_name'], $rutaImg)) {
-					$datos['banner'] = $rutaImg;
-				}
-			} else {
-				// Si la imagen no cumple con las dimensiones requeridas
+			if ($resultadoImagen === "error_dimensiones") {
 				return "error_dimensiones";
+			} elseif ($resultadoImagen) {
+				$datos['banner'] = $resultadoImagen;
 			}
 		}
-		// Procesar el video promocional si existe
+
+		// Procesar el video promocional
 		if (isset($datos['video']) && !empty($datos['video']['name']) && $datos['video']['error'] == 0) {
-			$directorioVideo = "videosPromos/";
-			if (!file_exists($directorioVideo)) mkdir($directorioVideo, 0777, true);
-			$nombreVideo = uniqid() . "_" . $datos['video']['name'];
-			$rutaVideo = $directorioVideo . $nombreVideo;
-			if (move_uploaded_file($datos['video']['tmp_name'], $rutaVideo)) {
-				$datos['promo_video'] = $rutaVideo;
+			$resultadoVideo = self::procesarVideoPromo($datos['video']);
+
+			if ($resultadoVideo === "formato_invalido") {
+				return "formato_invalido";
+			} elseif ($resultadoVideo === "archivo_grande") {
+				return "archivo_grande";
+			} elseif ($resultadoVideo) {
+				$datos['promo_video'] = $resultadoVideo;
 			}
 		}
+
 		// Eliminar las variables imagen y video para no enviarlas al modelo
 		unset($datos['imagen']);
 		unset($datos['video']);
 
 		$tabla = "curso";
 		$respuesta = ModeloCursos::mdlCrearCurso($tabla, $datos);
+		return $respuesta;
+	}
+
+	/*=============================================
+	Actualizar curso con manejo de archivos
+	=============================================*/
+	public static function ctrActualizarCurso($datos)
+	{
+		$datosActualizacion = $datos;
+
+		// Procesar nueva imagen si se proporcionó
+		if (isset($datos['imagen']) && $datos['imagen']['error'] == 0) {
+			$resultadoImagen = self::procesarImagenBanner($datos['imagen']);
+
+			if ($resultadoImagen === "error_dimensiones") {
+				return "error_dimensiones";
+			} elseif ($resultadoImagen) {
+				// Eliminar imagen anterior si existe
+				if (!empty($datos['banner_anterior'])) {
+					self::eliminarArchivoAnterior($datos['banner_anterior']);
+				}
+				$datosActualizacion['banner'] = $resultadoImagen;
+			}
+		}
+
+		// Procesar nuevo video si se proporcionó
+		if (isset($datos['video']) && !empty($datos['video']['name']) && $datos['video']['error'] == 0) {
+			$resultadoVideo = self::procesarVideoPromo($datos['video']);
+
+			if ($resultadoVideo === "formato_invalido") {
+				return "formato_invalido";
+			} elseif ($resultadoVideo === "archivo_grande") {
+				return "archivo_grande";
+			} elseif ($resultadoVideo) {
+				// Eliminar video anterior si existe
+				if (!empty($datos['promo_video_anterior'])) {
+					self::eliminarArchivoAnterior($datos['promo_video_anterior']);
+				}
+				$datosActualizacion['promo_video'] = $resultadoVideo;
+			}
+		}
+
+		// Limpiar datos antes de enviar al modelo
+		unset($datosActualizacion['imagen']);
+		unset($datosActualizacion['video']);
+		unset($datosActualizacion['banner_anterior']);
+		unset($datosActualizacion['promo_video_anterior']);
+
+		$respuesta = ModeloCursos::mdlActualizarCurso($datosActualizacion);
 		return $respuesta;
 	}
 
@@ -287,22 +440,19 @@ class ControladorCursos
 			$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
 			$nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
 
-			// Directorio según el tipo - usar la estructura existente
+			// Directorio según el tipo - usar storage
 			if ($tipo == 'video') {
-				$directorio = 'subidas/videos/';
+				$directorioCompleto = self::crearDirectorioStorage("courses/videos");
+				$rutaRelativa = "storage/public/courses/videos/" . $nombreArchivo;
 			} else {
-				$directorio = 'subidas/documentos/';
+				$directorioCompleto = self::crearDirectorioStorage("courses/documents");
+				$rutaRelativa = "storage/public/courses/documents/" . $nombreArchivo;
 			}
 
-			// Crear directorio si no existe
-			if (!file_exists($directorio)) {
-				mkdir($directorio, 0777, true);
-			}
-
-			$rutaDestino = $directorio . $nombreArchivo;
+			$rutaDestino = $directorioCompleto . "/" . $nombreArchivo;
 
 			if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-				return $rutaDestino;
+				return $rutaRelativa;
 			}
 		}
 
@@ -688,24 +838,137 @@ class ControladorCursos
 	=============================================*/
 	public static function ctrValidarImagenCurso($rutaImagen)
 	{
-		// Si no hay imagen asignada, devolver imagen por defecto
+		// Si no hay imagen asignada, devolver imagen por defecto de storage
 		if (empty($rutaImagen) || $rutaImagen === null) {
-			return 'vistas/img/cursos/default/defaultCurso.png';
+			return '/cursosApp/storage/public/banners/default/defaultCurso.png';
 		}
 
 		// Construir la ruta completa del archivo
-		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $rutaImagen;
+		// Si la ruta ya incluye storage/, usar tal como está
+		if (strpos($rutaImagen, 'storage/') === 0) {
+			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $rutaImagen;
+			$rutaPublica = '/cursosApp/' . $rutaImagen;
+		} else {
+			// Para compatibilidad con rutas antiguas
+			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $rutaImagen;
+			$rutaPublica = '/cursosApp/App/' . $rutaImagen;
+		}
 
 		// Verificar si el archivo existe
 		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
 			// Verificar que sea una imagen válida
 			$infoImagen = @getimagesize($rutaCompleta);
 			if ($infoImagen !== false) {
-				return $rutaImagen; // La imagen existe y es válida
+				return $rutaPublica; // La imagen existe y es válida
 			}
 		}
 
 		// Si llegamos aquí, la imagen no existe o no es válida
-		return 'vistas/img/cursos/default/defaultCurso.png';
+		return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+	}
+
+	/*=============================================
+	Obtener URL pública para video promocional
+	=============================================*/
+	public static function ctrObtenerUrlVideoPromo($rutaVideo)
+	{
+		if (empty($rutaVideo)) {
+			return null;
+		}
+
+		// Si la ruta ya incluye storage/, usar tal como está
+		if (strpos($rutaVideo, 'storage/') === 0) {
+			return '/cursosApp/' . $rutaVideo;
+		} else {
+			// Para compatibilidad con rutas antiguas
+			return '/cursosApp/App/' . $rutaVideo;
+		}
+	}
+
+	/*=============================================
+	Migrar archivos existentes a nueva estructura storage
+	=============================================*/
+	public static function ctrMigrarArchivosAStorage()
+	{
+		$conn = Conexion::conectar();
+
+		// Obtener todos los cursos con banners y videos
+		$stmt = $conn->prepare("SELECT id, banner, promo_video FROM curso WHERE banner IS NOT NULL OR promo_video IS NOT NULL");
+		$stmt->execute();
+		$cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		$migrados = 0;
+		$errores = [];
+
+		foreach ($cursos as $curso) {
+			$actualizaciones = [];
+
+			// Migrar banner
+			if (!empty($curso['banner']) && strpos($curso['banner'], 'storage/') !== 0) {
+				$rutaAntigua = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $curso['banner'];
+
+				if (file_exists($rutaAntigua)) {
+					$nombreArchivo = basename($curso['banner']);
+					$directorioNuevo = self::crearDirectorioStorage("banners");
+					$rutaNueva = $directorioNuevo . '/' . $nombreArchivo;
+
+					if (copy($rutaAntigua, $rutaNueva)) {
+						$actualizaciones['banner'] = 'storage/public/banners/' . $nombreArchivo;
+					} else {
+						$errores[] = "No se pudo migrar banner del curso {$curso['id']}";
+					}
+				}
+			}
+
+			// Migrar video promocional
+			if (!empty($curso['promo_video']) && strpos($curso['promo_video'], 'storage/') !== 0) {
+				$rutaAntigua = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $curso['promo_video'];
+
+				if (file_exists($rutaAntigua)) {
+					$nombreArchivo = basename($curso['promo_video']);
+					$directorioNuevo = self::crearDirectorioStorage("promoVideos");
+					$rutaNueva = $directorioNuevo . '/' . $nombreArchivo;
+
+					if (copy($rutaAntigua, $rutaNueva)) {
+						$actualizaciones['promo_video'] = 'storage/public/promoVideos/' . $nombreArchivo;
+					} else {
+						$errores[] = "No se pudo migrar video del curso {$curso['id']}";
+					}
+				}
+			}
+
+			// Actualizar base de datos si hay cambios
+			if (!empty($actualizaciones)) {
+				$setClauses = [];
+				$parametros = [];
+
+				if (isset($actualizaciones['banner'])) {
+					$setClauses[] = "banner = ?";
+					$parametros[] = $actualizaciones['banner'];
+				}
+
+				if (isset($actualizaciones['promo_video'])) {
+					$setClauses[] = "promo_video = ?";
+					$parametros[] = $actualizaciones['promo_video'];
+				}
+
+				$parametros[] = $curso['id'];
+
+				$sql = "UPDATE curso SET " . implode(', ', $setClauses) . " WHERE id = ?";
+				$stmtUpdate = $conn->prepare($sql);
+
+				if ($stmtUpdate->execute($parametros)) {
+					$migrados++;
+				} else {
+					$errores[] = "No se pudo actualizar BD para curso {$curso['id']}";
+				}
+			}
+		}
+
+		return [
+			'total_cursos' => count($cursos),
+			'migrados' => $migrados,
+			'errores' => $errores
+		];
 	}
 }

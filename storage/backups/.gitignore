@@ -1,0 +1,22 @@
+# Backups - Ignorar todos los archivos de backup
+*.sql
+*.sql.gz
+*.dump
+*.backup
+*.bak
+*.tar
+*.tar.gz
+*.zip
+*.rar
+
+# Archivos de configuración de backup
+backup_*.json
+restore_*.json
+
+# Mantener estructura
+!.gitignore
+!.gitkeep
+
+# Permitir scripts de backup (sin datos)
+!backup-script.php
+!backup-config.json

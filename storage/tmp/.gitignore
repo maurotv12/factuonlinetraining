@@ -1,0 +1,24 @@
+# Archivos temporales - Limpieza automática
+# Ignorar TODO el contenido temporal
+*
+!.gitignore
+!.gitkeep
+
+# Archivos especialmente temporales
+*.tmp
+*.temp
+*.cache
+*.lock
+*.pid
+
+# Archivos de sesión
+session_*
+sess_*
+
+# Archivos de upload temporal
+upload_*
+chunk_*
+
+# Archivos de procesamiento temporal
+processing_*
+queue_*

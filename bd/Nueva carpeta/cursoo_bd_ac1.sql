@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2025 a las 18:44:14
+-- Tiempo de generación: 20-08-2025 a las 16:57:58
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -118,31 +118,16 @@ CREATE TABLE `email_verificacion_tokens` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `gestion_pagos`
+-- Estructura de tabla para la tabla `gestionpagos`
 --
 
-CREATE TABLE `gestion_pagos` (
+CREATE TABLE `gestionpagos` (
   `id` int(11) NOT NULL,
-  `id_curso` int(11) NOT NULL,
-  `id_estudiante` int(11) NOT NULL,
   `id_inscripcion` int(11) DEFAULT NULL,
-  `proveedor` enum('mercadopago') NOT NULL DEFAULT 'mercadopago',
-  `moneda` char(3) NOT NULL DEFAULT 'COP',
-  `monto_total` int(11) NOT NULL,
-  `external_payment_id` varchar(100) DEFAULT NULL,
-  `preference_id` varchar(100) DEFAULT NULL,
-  `init_point` varchar(500) DEFAULT NULL,
-  `status` enum('pendiente','aprobado','rechazado','cancelado','devuelto','en_proceso','expirado') NOT NULL DEFAULT 'pendiente',
-  `status_detail` varchar(100) DEFAULT NULL,
-  `payer_id` varchar(100) DEFAULT NULL,
-  `payer_email` varchar(150) DEFAULT NULL,
-  `payment_method_id` varchar(50) DEFAULT NULL,
-  `installments` int(11) DEFAULT NULL,
-  `card_last4` char(4) DEFAULT NULL,
-  `comprobante_url` varchar(500) DEFAULT NULL,
-  `payload_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`payload_json`)),
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `valor_pagado` int(11) NOT NULL,
+  `medio_pago` varchar(100) NOT NULL,
+  `fecha_pago` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -527,21 +512,6 @@ INSERT INTO `persona_roles` (`id_persona`, `id_rol`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `preinscripciones`
---
-
-CREATE TABLE `preinscripciones` (
-  `id` int(11) NOT NULL,
-  `id_curso` int(11) NOT NULL,
-  `id_estudiante` int(11) NOT NULL,
-  `estado` enum('preinscrito','cancelado','convertido','expirado') NOT NULL DEFAULT 'preinscrito',
-  `fecha_preinscripcion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_actualizacion` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `roles`
 --
 
@@ -649,15 +619,11 @@ ALTER TABLE `email_verificacion_tokens`
   ADD KEY `id_persona` (`id_persona`);
 
 --
--- Indices de la tabla `gestion_pagos`
+-- Indices de la tabla `gestionpagos`
 --
-ALTER TABLE `gestion_pagos`
+ALTER TABLE `gestionpagos`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_gpagos_external_payment` (`external_payment_id`),
-  ADD KEY `idx_gpagos_estudiante_estado` (`id_estudiante`,`status`),
-  ADD KEY `idx_gpagos_curso_estado` (`id_curso`,`status`),
-  ADD KEY `idx_gpagos_preference` (`preference_id`),
-  ADD KEY `fk_gpagos_inscripcion` (`id_inscripcion`);
+  ADD KEY `id_inscripcion` (`id_inscripcion`);
 
 --
 -- Indices de la tabla `inscripciones`
@@ -695,15 +661,6 @@ ALTER TABLE `persona`
 ALTER TABLE `persona_roles`
   ADD PRIMARY KEY (`id_persona`,`id_rol`),
   ADD KEY `idRol` (`id_rol`);
-
---
--- Indices de la tabla `preinscripciones`
---
-ALTER TABLE `preinscripciones`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_preinscripcion` (`id_curso`,`id_estudiante`),
-  ADD KEY `idx_preins_estudiante` (`id_estudiante`),
-  ADD KEY `idx_preins_curso` (`id_curso`);
 
 --
 -- Indices de la tabla `roles`
@@ -762,9 +719,9 @@ ALTER TABLE `email_verificacion_tokens`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `gestion_pagos`
+-- AUTO_INCREMENT de la tabla `gestionpagos`
 --
-ALTER TABLE `gestion_pagos`
+ALTER TABLE `gestionpagos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -790,12 +747,6 @@ ALTER TABLE `mensajes`
 --
 ALTER TABLE `persona`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT de la tabla `preinscripciones`
---
-ALTER TABLE `preinscripciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -845,12 +796,10 @@ ALTER TABLE `email_verificacion_tokens`
   ADD CONSTRAINT `email_verificacion_tokens_ibfk_1` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id`);
 
 --
--- Filtros para la tabla `gestion_pagos`
+-- Filtros para la tabla `gestionpagos`
 --
-ALTER TABLE `gestion_pagos`
-  ADD CONSTRAINT `fk_gpagos_curso` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gpagos_estudiante` FOREIGN KEY (`id_estudiante`) REFERENCES `persona` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_gpagos_inscripcion` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `gestionpagos`
+  ADD CONSTRAINT `gestionpagos_ibfk_1` FOREIGN KEY (`id_inscripcion`) REFERENCES `inscripciones` (`id`);
 
 --
 -- Filtros para la tabla `inscripciones`
@@ -878,13 +827,6 @@ ALTER TABLE `mensajes`
 ALTER TABLE `persona_roles`
   ADD CONSTRAINT `persona_roles_ibfk_1` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id`),
   ADD CONSTRAINT `persona_roles_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id`);
-
---
--- Filtros para la tabla `preinscripciones`
---
-ALTER TABLE `preinscripciones`
-  ADD CONSTRAINT `fk_preins_curso` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_preins_estudiante` FOREIGN KEY (`id_estudiante`) REFERENCES `persona` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `seccion_contenido`

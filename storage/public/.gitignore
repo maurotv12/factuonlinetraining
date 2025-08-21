@@ -1,0 +1,33 @@
+# Archivos públicos - Accesibles desde la web
+# Estas imágenes SÍ pueden versionarse si son necesarias
+
+# Ignorar archivos grandes de imagen
+*.psd
+*.ai
+*.sketch
+*.fig
+
+# Ignorar archivos temporales
+*.tmp
+*.temp
+
+# Ignorar archivos generados automáticamente
+*_resized.*
+*_thumb.*
+*_cache.*
+
+# Mantener estructura y archivos importantes
+!.gitignore
+!.gitkeep
+!*/
+
+# Permitir imágenes optimizadas
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif
+!*.webp
+!*.svg
+
+# Permitir archivos de configuración de imágenes
+!image-config.json

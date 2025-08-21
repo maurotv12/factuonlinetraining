@@ -1,0 +1,43 @@
+# Archivos de cursos públicos - Materiales descargables
+# Permitir documentos y materiales educativos
+
+# Ignorar archivos temporales
+*.tmp
+*.temp
+*_backup.*
+
+# Ignorar archivos de trabajo originales
+*.psd
+*.ai
+*.indd
+*.sketch
+
+# Ignorar archivos muy pesados sin comprimir
+*_uncompressed.*
+*_raw.*
+
+# Permitir documentos optimizados
+!*.pdf
+!*.doc
+!*.docx
+!*.ppt
+!*.pptx
+!*.xls
+!*.xlsx
+
+# Permitir archivos de código
+!*.zip
+!*.rar
+!*.tar.gz
+
+# Permitir imágenes de referencia
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif
+!*.svg
+
+# Mantener estructura
+!.gitignore
+!.gitkeep
+!*/

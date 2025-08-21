@@ -1,0 +1,21 @@
+# Archivos de pagos - ALTAMENTE SENSIBLE
+# Ignorar TODO por seguridad financiera
+*
+!.gitignore
+!.gitkeep
+
+# Archivos especialmente sensibles de pagos
+*.payment
+*.transaction
+*.receipt
+*.invoice
+
+# Tokens y claves de pago
+*_token_*
+*_key_*
+*_secret_*
+
+# Reportes financieros
+payment_*.pdf
+invoice_*.pdf
+report_*.pdf

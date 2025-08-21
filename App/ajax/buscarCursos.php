@@ -72,28 +72,25 @@ try {
             }
 
             if ($coincide) {
-                // Verificar y corregir la ruta de la imagen
-                $banner = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'; // Imagen por defecto
+                // Obtener banner usando el método del controlador que maneja ambas estructuras
+                $banner = ControladorCursos::ctrValidarImagenCurso($curso['banner']);
 
-                if ($curso['banner']) {
-                    // Si la ruta comienza con "vistas/", construir ruta completa desde App/
-                    if (strpos($curso['banner'], 'vistas/') === 0) {
-                        $imagePath = '/cursosApp/App/' . $curso['banner'];
-                    } else {
-                        $imagePath = $curso['banner'];
-                    }
+                // Si no se encontró imagen válida, usar la por defecto
+                if (!$banner) {
+                    $banner = '/cursosApp/storage/public/banners/default.jpg';
+                }
 
-                    // Verificar si la imagen física existe
-                    $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
-                    if (file_exists($fullPath)) {
-                        $banner = $imagePath;
-                    }
+                // Obtener URL del video promocional si existe
+                $videoPromo = null;
+                if (!empty($curso['promo_video'])) {
+                    $videoPromo = ControladorCursos::ctrObtenerUrlVideoPromo($curso['promo_video']);
                 }
 
                 $cursoFormateado = [
                     'id' => $curso['id'],
                     'nombre' => $curso['nombre'],
                     'banner' => $banner,
+                    'promo_video' => $videoPromo,
                     'valor' => $curso['valor'] ?? 0,
                     'profesor' => $curso['profesor'] ?? 'Instructor',
                     'categoria' => $curso['categoria'] ?? 'Sin categoría',

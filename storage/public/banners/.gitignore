@@ -1,0 +1,31 @@
+# Banners de cursos - Imágenes públicas
+# Permitir la mayoría de archivos de imagen
+
+# Ignorar archivos de diseño originales
+*.psd
+*.ai
+*.sketch
+*.fig
+*.xcf
+
+# Ignorar archivos temporales
+*.tmp
+*.temp
+*_backup.*
+
+# Ignorar versiones no optimizadas
+*_original.*
+*_uncompressed.*
+
+# Mantener archivos optimizados para web
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif
+!*.webp
+!*.svg
+
+# Mantener estructura
+!.gitignore
+!.gitkeep
+!*/

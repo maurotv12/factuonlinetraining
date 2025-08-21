@@ -1,0 +1,33 @@
+# Videos promocionales - Archivos públicos de marketing
+# Estos archivos pueden ser más pesados pero son importantes
+
+# Ignorar archivos de edición originales
+*.prproj
+*.aep
+*.fcp
+*.avb
+
+# Ignorar renders intermedios
+*_preview.*
+*_draft.*
+*_test.*
+
+# Ignorar archivos temporales
+*.tmp
+*.temp
+
+# Permitir videos finales optimizados
+!*.mp4
+!*.webm
+!*.mov
+
+# Permitir miniaturas
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif
+
+# Mantener estructura
+!.gitignore
+!.gitkeep
+!*/

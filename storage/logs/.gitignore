@@ -1,0 +1,20 @@
+# Logs - Ignorar todos los archivos de log
+*.log
+*.log.*
+error_*
+access_*
+debug_*
+system_*
+
+# Archivos de rotación de logs
+*.gz
+*.zip
+*.tar
+
+# Mantener estructura
+!.gitignore
+!.gitkeep
+
+# Permitir archivos de configuración de logging
+!log-config.json
+!logging.conf

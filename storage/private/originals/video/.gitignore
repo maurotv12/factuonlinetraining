@@ -1,0 +1,39 @@
+# Videos Originales - Carpeta específica para videos
+# Ignorar todos los archivos de video
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.mkv
+*.m4v
+*.3gp
+
+# Archivos de video procesados
+*.m3u8
+*.ts
+*.hls
+
+# Miniaturas de video
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Metadatos de video
+*.meta
+*.info
+*.json
+*.xml
+
+# Archivos temporales
+*.tmp
+*.temp
+*.part
+*.processing
+
+# Mantener estructura
+!.gitignore
+!.gitkeep
+!*/
