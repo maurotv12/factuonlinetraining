@@ -298,7 +298,7 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                             <div class="col-md-6 mb-4">
                                                 <div class="course-card">
                                                     <div class="course-image">
-                                                        <img src="<?php echo $curso['banner'] ?? 'vistas/img/cursos/default.jpg'; ?>"
+                                                        <img src="<?php echo ControladorCursos::ctrValidarImagenCurso($curso['banner']); ?>"
                                                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>">
                                                     </div>
                                                     <div class="course-content">

@@ -72,15 +72,10 @@ try {
             }
 
             if ($coincide) {
-                // Obtener banner usando el método del controlador que maneja ambas estructuras
+                // Obtener banner usando el método del controlador que maneja SOLO storage
                 $banner = ControladorCursos::ctrValidarImagenCurso($curso['banner']);
 
-                // Si no se encontró imagen válida, usar la por defecto
-                if (!$banner) {
-                    $banner = '/cursosApp/storage/public/banners/default.jpg';
-                }
-
-                // Obtener URL del video promocional si existe
+                // Obtener URL del video promocional si existe (solo storage)
                 $videoPromo = null;
                 if (!empty($curso['promo_video'])) {
                     $videoPromo = ControladorCursos::ctrObtenerUrlVideoPromo($curso['promo_video']);

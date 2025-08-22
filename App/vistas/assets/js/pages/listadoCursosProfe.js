@@ -148,7 +148,7 @@ function configurarPrevisualizacionImagenes() {
         img.addEventListener('error', function () {
             if (this.src.indexOf('defaultCurso.png') === -1) {
                 console.log('Error cargando imagen:', this.src);
-                this.src = 'vistas/img/cursos/default/defaultCurso.png';
+                this.src = '/cursosApp/storage/public/banners/default/defaultCurso.png';
                 this.alt = 'Imagen por defecto del curso';
             }
         });
@@ -174,7 +174,7 @@ function verificarImagenesCursos() {
             // La imagen ya se cargó pero falló
             if (img.src.indexOf('defaultCurso.png') === -1) {
                 console.log('Imagen no válida detectada:', img.src);
-                img.src = 'vistas/img/cursos/default/defaultCurso.png';
+                img.src = '/cursosApp/storage/public/banners/default/defaultCurso.png';
                 img.alt = 'Imagen por defecto del curso';
             }
         }
@@ -195,7 +195,7 @@ function mostrarModalImagen(src, alt) {
                     </div>
                     <div class="modal-body text-center">
                         <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;" 
-                             onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='vistas/img/cursos/default/defaultCurso.png';">
+                             onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='/cursosApp/storage/public/banners/default/defaultCurso.png';">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

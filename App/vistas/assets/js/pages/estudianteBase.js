@@ -169,8 +169,8 @@ function createCourseCard(course) {
             image = course.banner;
         }
     } else {
-        // Si no hay banner, usar imagen por defecto
-        image = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png';
+        // Si no hay banner, usar imagen por defecto de storage
+        image = '/cursosApp/storage/public/banners/default/defaultCurso.png';
     }
 
     return `
@@ -179,7 +179,7 @@ function createCourseCard(course) {
             ${course.esPopular ? '<div class="course-badge badge-popular">Popular</div>' : ''}
             
             <img src="${image}" alt="${course.nombre}" class="course-image" 
-                 onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
+                 onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
             
             <div class="course-content">
                 <h3 class="course-title">${course.nombre}</h3>

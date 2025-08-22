@@ -116,30 +116,12 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                         <?php endif; ?>
 
                         <img src="<?php
-                                    // Construir la ruta de la imagen
-                                    if ($curso['banner']) {
-                                        // Si la ruta comienza con "vistas/", construir ruta completa desde App/
-                                        if (strpos($curso['banner'], 'vistas/') === 0) {
-                                            $imagePath = '/cursosApp/App/' . $curso['banner'];
-                                        } else {
-                                            // Si ya tiene ruta completa, usarla tal como está
-                                            $imagePath = $curso['banner'];
-                                        }
-
-                                        // Verificar si la imagen física existe
-                                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
-                                        if (!file_exists($fullPath)) {
-                                            $imagePath = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png';
-                                        }
-                                    } else {
-                                        // Si no hay banner, usar imagen por defecto
-                                        $imagePath = '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png';
-                                    }
-                                    echo $imagePath;
+                                    // Usar el controlador para validar la imagen (solo storage)
+                                    echo ControladorCursos::ctrValidarImagenCurso($curso['banner']);
                                     ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
+                            onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">

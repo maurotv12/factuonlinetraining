@@ -57,7 +57,9 @@ class ControladorUsuarios
 				$nuevoAlto = 500;
 
 				// Crear directorio del usuario en nueva estructura storage
-				$directorioUsuario = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/usuarios/" . $idUsuario;
+				$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
+				$directorioUsuario = $documentRoot . "/cursosApp/storage/public/usuarios/" . $idUsuario;
+				$directorioUsuario = str_replace('/', DIRECTORY_SEPARATOR, $directorioUsuario);
 
 				if (!file_exists($directorioUsuario)) {
 					mkdir($directorioUsuario, 0755, true);
@@ -72,7 +74,7 @@ class ControladorUsuarios
 
 				if ($_FILES["nuevaImagen"]["type"] == "image/jpeg") {
 					$nombreArchivo = "perfil_" . $timestamp . "_" . $aleatorio . ".jpg";
-					$rutaCompleta = $directorioUsuario . "/" . $nombreArchivo;
+					$rutaCompleta = $directorioUsuario . DIRECTORY_SEPARATOR . $nombreArchivo;
 					$origen = imagecreatefromjpeg($_FILES["nuevaImagen"]["tmp_name"]);
 					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
@@ -83,7 +85,7 @@ class ControladorUsuarios
 					imagedestroy($destino);
 				} else if ($_FILES["nuevaImagen"]["type"] == "image/png") {
 					$nombreArchivo = "perfil_" . $timestamp . "_" . $aleatorio . ".png";
-					$rutaCompleta = $directorioUsuario . "/" . $nombreArchivo;
+					$rutaCompleta = $directorioUsuario . DIRECTORY_SEPARATOR . $nombreArchivo;
 					$origen = imagecreatefrompng($_FILES["nuevaImagen"]["tmp_name"]);
 					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 
@@ -135,7 +137,9 @@ class ControladorUsuarios
 			}
 
 			// Construir ruta completa del archivo actual
-			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/" . $fotoActual;
+			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
+			$rutaCompleta = $documentRoot . "/cursosApp/" . $fotoActual;
+			$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
 
 			// Eliminar archivo si existe
 			if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
@@ -283,15 +287,21 @@ class ControladorUsuarios
 		}
 
 		// Construir la ruta completa del archivo
+		// Determinar la ruta base del proyecto
+		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
+
 		// Si la ruta ya incluye storage/, usar tal como está
 		if (strpos($rutaFoto, 'storage/') === 0) {
-			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $rutaFoto;
+			$rutaCompleta = $documentRoot . '/cursosApp/' . $rutaFoto;
 			$rutaPublica = '/cursosApp/' . $rutaFoto;
 		} else {
 			// Para compatibilidad con rutas antiguas
-			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $rutaFoto;
+			$rutaCompleta = $documentRoot . '/cursosApp/App/' . $rutaFoto;
 			$rutaPublica = '/cursosApp/App/' . $rutaFoto;
 		}
+
+		// Convertir barras para Windows si es necesario
+		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
 
 		// Verificar si el archivo existe
 		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
@@ -328,11 +338,14 @@ class ControladorUsuarios
 		foreach ($usuarios as $usuario) {
 			// Solo migrar si tiene foto y no está ya en storage
 			if (!empty($usuario['foto']) && strpos($usuario['foto'], 'storage/') !== 0) {
-				$rutaAntigua = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $usuario['foto'];
+				$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
+				$rutaAntigua = $documentRoot . '/cursosApp/App/' . $usuario['foto'];
+				$rutaAntigua = str_replace('/', DIRECTORY_SEPARATOR, $rutaAntigua);
 
 				if (file_exists($rutaAntigua)) {
 					// Crear directorio del usuario
-					$directorioNuevo = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/storage/public/usuarios/' . $usuario['id'];
+					$directorioNuevo = $documentRoot . '/cursosApp/storage/public/usuarios/' . $usuario['id'];
+					$directorioNuevo = str_replace('/', DIRECTORY_SEPARATOR, $directorioNuevo);
 
 					if (!file_exists($directorioNuevo)) {
 						mkdir($directorioNuevo, 0755, true);
@@ -341,7 +354,7 @@ class ControladorUsuarios
 					// Generar nuevo nombre
 					$extension = pathinfo($usuario['foto'], PATHINFO_EXTENSION);
 					$nombreArchivo = 'perfil_migrado_' . time() . '.' . $extension;
-					$rutaNueva = $directorioNuevo . '/' . $nombreArchivo;
+					$rutaNueva = $directorioNuevo . DIRECTORY_SEPARATOR . $nombreArchivo;
 
 					if (copy($rutaAntigua, $rutaNueva)) {
 						// Actualizar ruta en base de datos

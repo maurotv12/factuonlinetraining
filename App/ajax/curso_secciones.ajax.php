@@ -278,6 +278,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             break;
 
+        case 'actualizar_curso':
+            try {
+                require_once "../controladores/usuarios.controlador.php";
+
+                // Validar que el nombre sea único
+                $nombreValido = ControladorCursos::ctrValidarNombreUnico($_POST['nombre'], $_POST['id']);
+                if (!$nombreValido) {
+                    $response['message'] = 'El nombre del curso ya está en uso';
+                    break;
+                }
+
+                $datos = [
+                    'id' => $_POST['id'],
+                    'nombre' => $_POST['nombre'],
+                    'descripcion' => $_POST['descripcion'],
+                    'lo_que_aprenderas' => $_POST['lo_que_aprenderas'],
+                    'requisitos' => $_POST['requisitos'],
+                    'para_quien' => $_POST['para_quien'],
+                    'valor' => $_POST['valor'],
+                    'id_categoria' => $_POST['id_categoria'],
+                    'id_persona' => $_POST['id_persona'],
+                    'estado' => $_POST['estado']
+                ];
+
+                // Manejar archivos si se subieron
+                if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                    $datos['banner'] = $_FILES['banner'];
+                }
+
+                if (isset($_FILES['promo_video']) && $_FILES['promo_video']['error'] === UPLOAD_ERR_OK) {
+                    $datos['promo_video'] = $_FILES['promo_video'];
+                }
+
+                $resultado = ControladorCursos::ctrActualizarDatosCurso($datos);
+
+                if (!$resultado['error']) {
+                    $response['success'] = true;
+                    $response['message'] = 'Curso actualizado correctamente';
+                } else {
+                    $response['message'] = $resultado['mensaje'];
+                }
+            } catch (Exception $e) {
+                $response['message'] = 'Error: ' . $e->getMessage();
+            }
+            break;
+
         default:
             $response['message'] = 'Acción no válida';
     }

@@ -97,10 +97,10 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                                         <i class="bi bi-eye"></i> Ver
                                                     </a>
                                                     <?php
-                                                    // Usar URL amigable si está disponible, sino usar ID para editar
+                                                    // Ahora tanto ver como editar van a la misma vista (verCurso)
                                                     $urlEditar = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/editarCurso/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/superAdmin/gestionCursos/editarCurso?id=" . $curso["id"];
+                                                        ? "/cursosApp/App/verCurso/" . $curso["url_amiga"]
+                                                        : "/cursosApp/App/superAdmin/gestionCursos/verCurso?id=" . $curso["id"];
                                                     ?>
                                                     <a href="<?= $urlEditar ?>" class="btn btn-sm btn-warning"
                                                         title="URL: <?= htmlspecialchars($urlEditar) ?>">

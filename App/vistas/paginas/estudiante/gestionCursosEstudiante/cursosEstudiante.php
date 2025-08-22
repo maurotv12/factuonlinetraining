@@ -172,10 +172,10 @@ $estadisticas = [
                             <?php echo $badgeText; ?>
                         </div>
 
-                        <img src="<?php echo $curso['banner'] ?: '/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'; ?>"
+                        <img src="<?php echo ControladorCursos::ctrValidarImagenCurso($curso['banner']); ?>"
                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                             class="course-image"
-                            onerror="this.onerror=null; this.src='/cursosApp/App/vistas/img/cursos/default/defaultCurso.png'">
+                            onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
