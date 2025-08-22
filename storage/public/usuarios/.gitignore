@@ -1,0 +1,11 @@
+# Ignorar todas las carpetas de usuarios específicos
+*/
+
+# Permitir la imagen por defecto
+!default.png
+
+# Permitir este archivo .gitignore
+!.gitignore
+
+# Nota: Las fotos de perfil son datos privados de usuarios
+# No deben estar en el control de versiones

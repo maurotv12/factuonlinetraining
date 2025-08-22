@@ -37,71 +37,112 @@ class ControladorUsuarios
 
 	/*=============================================
 	Cambiar foto perfil
-=============================================*/
+	=============================================*/
 	public function ctrCambiarFoto()
 	{
 		if (isset($_POST["idClienteImagen"])) {
-			$pagina = $_POST["pagina"]; // pagina de retorono
+			$pagina = $_POST["pagina"]; // pagina de retorno
+			$idUsuario = $_POST["idClienteImagen"];
+
 			if (isset($_FILES["nuevaImagen"]["tmp_name"]) && !empty($_FILES["nuevaImagen"]["tmp_name"])) {
-				list($ancho, $alto) = getimagesize($_FILES["nuevaImagen"]["tmp_name"]);
-				$nuevoAncho = 500;
-				$nuevoAlto = 500;
-				/*=============================================
-CREAMOS EL DIRECTORIO DONDE VAMOS A GUARDAR LA FOTO DEL USUARIO
-=============================================*/
-				$directorio = "vistas/img/usuarios/" . $_POST["idClienteImagen"];
-				/*=============================================
-PRIMERO PREGUNTAMOS SI EXISTE OTRA IMAGEN EN LA BD Y EL CARPETA
-=============================================*/
-				// if($ruta != ""){
-				// 	unlink($ruta);
-				// }else{
-				if (!file_exists($directorio)) {
-					mkdir($directorio, 0755);
-				}
-				//}
 
-
-				/*=============================================
-DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
-=============================================*/
-				if ($_FILES["nuevaImagen"]["type"] == "image/jpeg") {
-					$aleatorio = mt_rand(100, 999);
-					$ruta = $directorio . "/" . $aleatorio . ".jpg";
-					$origen = imagecreatefromjpeg($_FILES["nuevaImagen"]["tmp_name"]);
-					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
-					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
-					imagejpeg($destino, $ruta);
-				} else if ($_FILES["nuevaImagen"]["type"] == "image/png") {
-					$aleatorio = mt_rand(100, 999);
-					$ruta = $directorio . "/" . $aleatorio . ".png";
-					$origen = imagecreatefrompng($_FILES["nuevaImagen"]["tmp_name"]);
-					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
-					imagealphablending($destino, FALSE);
-					imagesavealpha($destino, TRUE);
-					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
-					imagepng($destino, $ruta);
-				} else {
+				// Validar que sea una imagen
+				if (!in_array($_FILES["nuevaImagen"]["type"], ["image/jpeg", "image/png"])) {
 					echo '<div class="alert alert-danger">¡Solo formatos de imagen JPG y/o PNG!</div>';
 					return;
 				}
-				// final condicion
-				$rutaApp = ControladorGeneral::ctrRutaApp();
+
+				list($ancho, $alto) = getimagesize($_FILES["nuevaImagen"]["tmp_name"]);
+				$nuevoAncho = 500;
+				$nuevoAlto = 500;
+
+				// Crear directorio del usuario en nueva estructura storage
+				$directorioUsuario = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/usuarios/" . $idUsuario;
+
+				if (!file_exists($directorioUsuario)) {
+					mkdir($directorioUsuario, 0755, true);
+				}
+
+				// Eliminar foto anterior si existe (excepto default.png)
+				$this->eliminarFotoAnterior($idUsuario);
+
+				// Generar nombre único para evitar conflictos de caché
+				$aleatorio = mt_rand(100, 999);
+				$timestamp = time();
+
+				if ($_FILES["nuevaImagen"]["type"] == "image/jpeg") {
+					$nombreArchivo = "perfil_" . $timestamp . "_" . $aleatorio . ".jpg";
+					$rutaCompleta = $directorioUsuario . "/" . $nombreArchivo;
+					$origen = imagecreatefromjpeg($_FILES["nuevaImagen"]["tmp_name"]);
+					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+					imagejpeg($destino, $rutaCompleta);
+
+					// Limpiar memoria
+					imagedestroy($origen);
+					imagedestroy($destino);
+				} else if ($_FILES["nuevaImagen"]["type"] == "image/png") {
+					$nombreArchivo = "perfil_" . $timestamp . "_" . $aleatorio . ".png";
+					$rutaCompleta = $directorioUsuario . "/" . $nombreArchivo;
+					$origen = imagecreatefrompng($_FILES["nuevaImagen"]["tmp_name"]);
+					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+
+					// Manejar transparencia para PNG
+					imagealphablending($destino, FALSE);
+					imagesavealpha($destino, TRUE);
+					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+					imagepng($destino, $rutaCompleta);
+
+					// Limpiar memoria
+					imagedestroy($origen);
+					imagedestroy($destino);
+				}
+
+				// Ruta relativa para guardar en BD (sin DOCUMENT_ROOT)
+				$rutaBD = "storage/public/usuarios/" . $idUsuario . "/" . $nombreArchivo;
+
+				// Actualizar en base de datos
 				$tabla = "persona";
-				$id = $_POST["idClienteImagen"];
 				$item = "foto";
-				$valor = $ruta;
-				$respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
+				$respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $idUsuario, $item, $rutaBD);
+
 				if ($respuesta == "ok") {
+					$rutaApp = ControladorGeneral::ctrRutaApp();
 					echo '<script>
 						window.location = "' . $rutaApp . '' . $pagina . '";
 					</script>';
+				} else {
+					echo '<div class="alert alert-danger">Error al actualizar la foto de perfil.</div>';
 				}
 			}
 		}
 	}
 
 	/*=============================================
+	Eliminar foto anterior del usuario
+	=============================================*/
+	private function eliminarFotoAnterior($idUsuario)
+	{
+		// Obtener datos actuales del usuario
+		$usuario = self::ctrMostrarUsuarios("id", $idUsuario);
+
+		if ($usuario && !empty($usuario['foto'])) {
+			$fotoActual = $usuario['foto'];
+
+			// No eliminar la foto por defecto
+			if (strpos($fotoActual, 'default.png') !== false) {
+				return;
+			}
+
+			// Construir ruta completa del archivo actual
+			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/" . $fotoActual;
+
+			// Eliminar archivo si existe
+			if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
+				unlink($rutaCompleta);
+			}
+		}
+	}	/*=============================================
 	Actualizar Usuario completar datos perfil
 =============================================*/
 	public function ctrActualizarPerfilUsuario()
@@ -228,6 +269,101 @@ DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
 			'cursosPorProfesor' => $cursosPorProfesor,
 			'roles' => $roles,
 			'rolesPorUsuario' => $rolesPorUsuario
+		];
+	}
+
+	/*=============================================
+	Validar y obtener URL de foto de usuario
+	=============================================*/
+	public static function ctrValidarFotoUsuario($rutaFoto)
+	{
+		// Si no hay foto asignada, devolver imagen por defecto de storage
+		if (empty($rutaFoto) || $rutaFoto === null) {
+			return '/cursosApp/storage/public/usuarios/default.png';
+		}
+
+		// Construir la ruta completa del archivo
+		// Si la ruta ya incluye storage/, usar tal como está
+		if (strpos($rutaFoto, 'storage/') === 0) {
+			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $rutaFoto;
+			$rutaPublica = '/cursosApp/' . $rutaFoto;
+		} else {
+			// Para compatibilidad con rutas antiguas
+			$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $rutaFoto;
+			$rutaPublica = '/cursosApp/App/' . $rutaFoto;
+		}
+
+		// Verificar si el archivo existe
+		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
+			// Verificar que sea una imagen válida
+			$infoImagen = @getimagesize($rutaCompleta);
+			if ($infoImagen !== false) {
+				return $rutaPublica; // La imagen existe y es válida
+			}
+		}
+
+		// Si llegamos aquí, la imagen no existe o no es válida
+		return '/cursosApp/storage/public/usuarios/default.png';
+	}
+
+	/*=============================================
+	Migrar fotos existentes a nueva estructura storage
+	=============================================*/
+	public static function ctrMigrarFotosUsuarios()
+	{
+		// Obtener todos los usuarios con fotos
+		$usuarios = self::ctrMostrarUsuarios(null, null);
+
+		if (!$usuarios) {
+			return [
+				'total_usuarios' => 0,
+				'migrados' => 0,
+				'errores' => []
+			];
+		}
+
+		$migrados = 0;
+		$errores = [];
+
+		foreach ($usuarios as $usuario) {
+			// Solo migrar si tiene foto y no está ya en storage
+			if (!empty($usuario['foto']) && strpos($usuario['foto'], 'storage/') !== 0) {
+				$rutaAntigua = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/App/' . $usuario['foto'];
+
+				if (file_exists($rutaAntigua)) {
+					// Crear directorio del usuario
+					$directorioNuevo = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/storage/public/usuarios/' . $usuario['id'];
+
+					if (!file_exists($directorioNuevo)) {
+						mkdir($directorioNuevo, 0755, true);
+					}
+
+					// Generar nuevo nombre
+					$extension = pathinfo($usuario['foto'], PATHINFO_EXTENSION);
+					$nombreArchivo = 'perfil_migrado_' . time() . '.' . $extension;
+					$rutaNueva = $directorioNuevo . '/' . $nombreArchivo;
+
+					if (copy($rutaAntigua, $rutaNueva)) {
+						// Actualizar ruta en base de datos
+						$rutaBD = 'storage/public/usuarios/' . $usuario['id'] . '/' . $nombreArchivo;
+						$respuesta = ModeloUsuarios::mdlActualizarUsuario('persona', $usuario['id'], 'foto', $rutaBD);
+
+						if ($respuesta === 'ok') {
+							$migrados++;
+						} else {
+							$errores[] = "No se pudo actualizar BD para usuario {$usuario['id']}";
+						}
+					} else {
+						$errores[] = "No se pudo copiar foto del usuario {$usuario['id']}";
+					}
+				}
+			}
+		}
+
+		return [
+			'total_usuarios' => count($usuarios),
+			'migrados' => $migrados,
+			'errores' => $errores
 		];
 	}
 }

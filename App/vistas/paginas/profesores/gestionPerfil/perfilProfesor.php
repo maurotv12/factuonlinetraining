@@ -69,7 +69,7 @@ if (file_exists("controladores/cursos.controlador.php")) {
                 <div class="card-body text-center">
                     <!-- Foto del Profesor -->
                     <div class="profile-photo-container">
-                        <img src="<?php echo !empty($profesor['foto']) ? $profesor['foto'] : 'vistas/img/usuarios/default.png'; ?>"
+                        <img src="<?php echo ControladorUsuarios::ctrValidarFotoUsuario($profesor['foto']); ?>"
                             alt="Foto del profesor"
                             class="profile-photo"
                             id="profilePhoto">

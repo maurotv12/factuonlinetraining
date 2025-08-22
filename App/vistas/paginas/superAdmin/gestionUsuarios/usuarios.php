@@ -59,7 +59,7 @@ $rolesPorUsuario = $datosUsuarios['rolesPorUsuario'];
                                     <?php foreach ($usuarios as $key => $value): ?>
                                         <tr>
                                             <td><?php echo ($key + 1); ?></td>
-                                            <td><img src="<?php echo $value["foto"] ?>" class="img-fluid avatar avatar-xl me-3" width="30px"></td>
+                                            <td><img src="<?php echo ControladorUsuarios::ctrValidarFotoUsuario($value["foto"]) ?>" class="img-fluid avatar avatar-xl me-3" width="30px"></td>
                                             <td><?php echo $value["usuario_link"] ?></td>
                                             <td><?php echo $value["nombre"] ?></td>
                                             <td><?php echo $value["email"] ?></td>

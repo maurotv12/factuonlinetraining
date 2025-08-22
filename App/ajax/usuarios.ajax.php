@@ -4,6 +4,32 @@ require_once "../controladores/general.controlador.php";
 require_once "../controladores/usuarios.controlador.php";
 require_once "../modelos/usuarios.modelo.php";
 
+/*=============================================
+Función auxiliar para eliminar foto anterior
+=============================================*/
+function eliminarFotoAnteriorAjax($idUsuario)
+{
+	// Obtener datos actuales del usuario
+	$usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
+
+	if ($usuario && !empty($usuario['foto'])) {
+		$fotoActual = $usuario['foto'];
+
+		// No eliminar la foto por defecto
+		if (strpos($fotoActual, 'default.png') !== false) {
+			return;
+		}
+
+		// Construir ruta completa del archivo actual
+		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/" . $fotoActual;
+
+		// Eliminar archivo si existe
+		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
+			unlink($rutaCompleta);
+		}
+	}
+}
+
 class AjaxUsuarios
 {
 
@@ -20,7 +46,7 @@ class AjaxUsuarios
 	}
 
 	/*=============================================
-	Validar email existente
+	Validar usuario existente
 	=============================================*/
 	public $validarUsuario;
 	public function ajaxValidarUsuario()
@@ -29,6 +55,27 @@ class AjaxUsuarios
 		$valor = $this->validarUsuario;
 		$respuesta = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 		echo json_encode($respuesta);
+	}
+
+	/*=============================================
+	Obtener foto de usuario validada
+	=============================================*/
+	public $idUsuario;
+	public function ajaxObtenerFotoUsuario()
+	{
+		$usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $this->idUsuario);
+		if ($usuario) {
+			$fotoValidada = ControladorUsuarios::ctrValidarFotoUsuario($usuario['foto']);
+			echo json_encode([
+				"success" => true,
+				"foto" => $fotoValidada
+			]);
+		} else {
+			echo json_encode([
+				"success" => false,
+				"foto" => "/cursosApp/storage/public/usuarios/default.png"
+			]);
+		}
 	}
 }
 
@@ -48,6 +95,15 @@ if (isset($_POST["validarUsuario"])) {
 	$valUsuario = new AjaxUsuarios();
 	$valUsuario->validarUsuario = $_POST["validarUsuario"];
 	$valUsuario->ajaxValidarUsuario();
+}
+
+/*=============================================
+Obtener foto de usuario validada
+=============================================*/
+if (isset($_POST["obtenerFotoUsuario"])) {
+	$obtenerFoto = new AjaxUsuarios();
+	$obtenerFoto->idUsuario = $_POST["obtenerFotoUsuario"];
+	$obtenerFoto->ajaxObtenerFotoUsuario();
 }
 
 /*=============================================
@@ -180,16 +236,22 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "actualizar_foto") {
 			exit;
 		}
 
-		// Crear directorio si no existe
-		$directorio = "vistas/img/usuarios/" . $idUsuario;
-		if (!file_exists($directorio)) {
-			mkdir($directorio, 0755, true);
+		// Crear directorio del usuario en nueva estructura storage
+		$directorioUsuario = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/usuarios/" . $idUsuario;
+
+		if (!file_exists($directorioUsuario)) {
+			mkdir($directorioUsuario, 0755, true);
 		}
 
-		// Generar nombre único para el archivo
-		$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-		$nombreArchivo = uniqid() . '.' . $extension;
-		$rutaCompleta = $directorio . "/" . $nombreArchivo;
+		// Eliminar foto anterior si existe (excepto default.png)
+		eliminarFotoAnteriorAjax($idUsuario);
+
+		// Generar nombre único para evitar conflictos de caché
+		$aleatorio = mt_rand(100, 999);
+		$timestamp = time();
+		$extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+		$nombreArchivo = "perfil_" . $timestamp . "_" . $aleatorio . "." . $extension;
+		$rutaCompleta = $directorioUsuario . "/" . $nombreArchivo;
 
 		// Procesar y redimensionar imagen
 		$imagen = null;
@@ -204,8 +266,8 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "actualizar_foto") {
 			$anchoOriginal = imagesx($imagen);
 			$altoOriginal = imagesy($imagen);
 
-			// Calcular nuevas dimensiones (cuadrado de 200x200)
-			$nuevoTamano = 200;
+			// Calcular nuevas dimensiones (cuadrado de 500x500 para consistencia)
+			$nuevoTamano = 500;
 			$imagenRedimensionada = imagecreatetruecolor($nuevoTamano, $nuevoTamano);
 
 			// Preservar transparencia para PNG
@@ -241,15 +303,18 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "actualizar_foto") {
 			imagedestroy($imagenRedimensionada);
 
 			if ($guardado) {
+				// Ruta relativa para guardar en BD (sin DOCUMENT_ROOT)
+				$rutaBD = "storage/public/usuarios/" . $idUsuario . "/" . $nombreArchivo;
+
 				// Actualizar ruta en base de datos
 				$tabla = "persona";
-				$respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $idUsuario, "foto", $rutaCompleta);
+				$respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $idUsuario, "foto", $rutaBD);
 
 				if ($respuesta == "ok") {
 					echo json_encode([
 						"success" => true,
 						"message" => "Foto actualizada correctamente",
-						"nueva_ruta" => $rutaCompleta
+						"nueva_ruta" => "/cursosApp/" . $rutaBD
 					]);
 				} else {
 					echo json_encode(["success" => false, "message" => "Error al actualizar la foto en base de datos"]);

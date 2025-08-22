@@ -115,11 +115,11 @@ extract($datosCurso);
             <div class="blog_right_sidebar">
                 <h3 class="widget_title">Profesor</h3>
                 <aside class="single_sidebar_widget author_widget">
-                    <?php if (!empty($profesor["foto"]) && $profesor["foto"] != 'vistas/img/usuarios/default/default.png'): ?>
-                        <img class="rounded-circle" src="App/vistas/img/usuarios/<?php echo basename($profesor["foto"]); ?>" alt="Foto del profesor" style="width: 80px; height: 80px; object-fit: cover;">
-                    <?php else: ?>
-                        <img class="rounded-circle" src="assets/img/taller-dm.png" alt="Foto por defecto" style="width: 80px; height: 80px; object-fit: cover;">
-                    <?php endif; ?>
+                    <?php
+                    require_once 'App/controladores/usuarios.controlador.php';
+                    $fotoValidada = ControladorUsuarios::ctrValidarFotoUsuario($profesor["foto"]);
+                    ?>
+                    <img class="rounded-circle" src="<?php echo $fotoValidada; ?>" alt="Foto del profesor" style="width: 80px; height: 80px; object-fit: cover;">
                     <h4><?php echo $profesor["nombre"]; ?></h4>
                     <?php if (!empty($profesor["profesion"])): ?>
                         <p><?php echo $profesor["profesion"]; ?></p>

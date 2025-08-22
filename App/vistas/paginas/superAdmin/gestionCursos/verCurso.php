@@ -222,7 +222,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                             <div class="content-section">
                                 <div class="profesor-info">
                                     <div class="profesor-avatar">
-                                        <img src="<?= $profesor['foto'] ?? '/cursosApp/App/vistas/assets/images/default-avatar.png' ?>"
+                                        <img src="<?= ControladorUsuarios::ctrValidarFotoUsuario($profesor['foto']) ?>"
                                             alt="Foto del profesor" class="avatar-img">
                                     </div>
                                     <div class="profesor-datos">

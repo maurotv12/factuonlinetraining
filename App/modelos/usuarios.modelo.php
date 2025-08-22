@@ -13,10 +13,10 @@ class ModeloUsuarios
 
 	/*=============================================
 	Registro de usuarios
-=============================================*/
+	=============================================*/
 	public static function mdlRegistroUsuario($tabla, $datos)
 	{
-		$foto = "vistas/img/usuarios/default/default.png";
+		$foto = "storage/public/usuarios/default.png"; // Nueva ruta por defecto
 		$estado = 'activo';
 		// Si las políticas están aceptadas, verificacion = 1, sino = 0
 		$verificacion = isset($datos["politicas"]) ? 1 : 0;
@@ -38,9 +38,7 @@ class ModeloUsuarios
 		}
 		$stmt->close();
 		$stmt = null;
-	}
-
-	/*================================================================
+	}	/*================================================================
 	Registro de log de login ingreso del cliente a la aplicacion
 =================================================================*/
 	public static function mdlRegistroIngresoUsuarios($idU, $navU, $ipU)

@@ -44,7 +44,7 @@ $actualizarPassword->ctrCambiarPassword();
           <!-- Foto del perfil -->
           <div class="profile-photo-container">
             <div class="avatar avatar-xl me-3">
-              <img src="<?php echo !empty($usuario["foto"]) ? $usuario["foto"] : 'vistas/img/usuarios/default.png'; ?>"
+              <img src="<?php echo ControladorUsuarios::ctrValidarFotoUsuario($usuario["foto"]); ?>"
                 alt="Foto de <?php echo htmlspecialchars($usuario["nombre"]); ?>"
                 class="profile-photo">
             </div>
