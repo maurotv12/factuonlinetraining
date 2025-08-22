@@ -596,14 +596,23 @@ class ControladorCursos
 			];
 		}
 
+		// Validar que el nombre del curso sea único
+		if (!self::ctrValidarNombreUnico($datos['nombre'])) {
+			return [
+				'error' => true,
+				'mensaje' => 'Ya existe un curso con este nombre. Por favor, elige un nombre diferente.',
+				'campo' => 'nombre'
+			];
+		}
+
 		// Validar campos de viñetas
 		$validacionViñetas = self::ctrValidarCamposViñetas($datos);
 		if ($validacionViñetas['error']) {
 			return $validacionViñetas;
 		}
 
-		// Generar URL amigable
-		$datos['url_amiga'] = self::generarUrlAmigable($datos['nombre']);
+		// Generar URL amigable única
+		$datos['url_amiga'] = self::generarUrlAmigableUnica($datos['nombre']);
 
 		// Usar el método existente para crear curso que ya maneja archivos
 		$respuesta = self::ctrCrearCurso($datos);
@@ -720,6 +729,64 @@ class ControladorCursos
 	}
 
 	/*=============================================
+	Validar que el nombre del curso sea único
+	=============================================*/
+	public static function ctrValidarNombreUnico($nombre, $idCursoExcluir = null)
+	{
+		$conn = Conexion::conectar();
+
+		// Si estamos editando un curso, excluir el curso actual de la validación
+		if ($idCursoExcluir) {
+			$stmt = $conn->prepare("SELECT COUNT(*) as total FROM curso WHERE nombre = ? AND id != ?");
+			$stmt->execute([$nombre, $idCursoExcluir]);
+		} else {
+			$stmt = $conn->prepare("SELECT COUNT(*) as total FROM curso WHERE nombre = ?");
+			$stmt->execute([$nombre]);
+		}
+
+		$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+		return $resultado['total'] == 0; // Retorna true si no existe, false si ya existe
+	}
+
+	/*=============================================
+	Validar que la URL amigable sea única
+	=============================================*/
+	public static function ctrValidarUrlAmigableUnica($urlAmiga, $idCursoExcluir = null)
+	{
+		$conn = Conexion::conectar();
+
+		// Si estamos editando un curso, excluir el curso actual de la validación
+		if ($idCursoExcluir) {
+			$stmt = $conn->prepare("SELECT COUNT(*) as total FROM curso WHERE url_amiga = ? AND id != ?");
+			$stmt->execute([$urlAmiga, $idCursoExcluir]);
+		} else {
+			$stmt = $conn->prepare("SELECT COUNT(*) as total FROM curso WHERE url_amiga = ?");
+			$stmt->execute([$urlAmiga]);
+		}
+
+		$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+		return $resultado['total'] == 0; // Retorna true si no existe, false si ya existe
+	}
+
+	/*=============================================
+	Generar URL amigable única (con sufijo si es necesario)
+	=============================================*/
+	private static function generarUrlAmigableUnica($nombre, $idCursoExcluir = null)
+	{
+		$urlBase = self::generarUrlAmigable($nombre);
+		$urlFinal = $urlBase;
+		$contador = 1;
+
+		// Verificar si la URL ya existe y generar una única
+		while (!self::ctrValidarUrlAmigableUnica($urlFinal, $idCursoExcluir)) {
+			$urlFinal = $urlBase . '-' . $contador;
+			$contador++;
+		}
+
+		return $urlFinal;
+	}
+
+	/*=============================================
 	Cargar página de editar curso con datos completos
 	=============================================*/
 	public static function ctrCargarEdicionCurso($identificador)
@@ -812,6 +879,20 @@ class ControladorCursos
 			];
 		}
 
+		// Si se está actualizando el nombre, validar que sea único
+		if (!empty($datos['nombre'])) {
+			if (!self::ctrValidarNombreUnico($datos['nombre'], $datos['id'])) {
+				return [
+					'error' => true,
+					'mensaje' => 'Ya existe otro curso con este nombre. Por favor, elige un nombre diferente.',
+					'campo' => 'nombre'
+				];
+			}
+
+			// Generar nueva URL amigable única si el nombre cambió
+			$datos['url_amiga'] = self::generarUrlAmigableUnica($datos['nombre'], $datos['id']);
+		}
+
 		$respuesta = ModeloCursos::mdlActualizarCurso($datos);
 
 		if ($respuesta == "ok") {
@@ -819,10 +900,46 @@ class ControladorCursos
 				'error' => false,
 				'mensaje' => 'Los datos del curso se han actualizado correctamente.'
 			];
+		} elseif ($respuesta === "error_dimensiones") {
+			return [
+				'error' => true,
+				'mensaje' => 'La imagen debe tener dimensiones exactas de 600x400 píxeles.',
+				'campo' => 'imagen'
+			];
+		} elseif ($respuesta === "formato_invalido") {
+			return [
+				'error' => true,
+				'mensaje' => 'Formato de video no válido. Formatos permitidos: MP4, AVI, MOV, WMV, WEBM.',
+				'campo' => 'video'
+			];
+		} elseif ($respuesta === "archivo_grande") {
+			return [
+				'error' => true,
+				'mensaje' => 'El video es muy grande. Tamaño máximo permitido: 500MB.',
+				'campo' => 'video'
+			];
+		} elseif ($respuesta === "resolucion_invalida") {
+			return [
+				'error' => true,
+				'mensaje' => 'Resolución de video no válida. Se requiere HD (1280x720) o FHD (1920x1080).',
+				'campo' => 'video'
+			];
+		} elseif ($respuesta === "duracion_excedida") {
+			return [
+				'error' => true,
+				'mensaje' => 'El video excede la duración máxima permitida de 20 minutos.',
+				'campo' => 'video'
+			];
+		} elseif ($respuesta === "archivo_corrupto") {
+			return [
+				'error' => true,
+				'mensaje' => 'El archivo de video parece estar corrupto o no es válido.',
+				'campo' => 'video'
+			];
 		} else {
 			return [
 				'error' => true,
-				'mensaje' => 'Error al actualizar el curso.'
+				'mensaje' => 'Error al actualizar el curso: ' . $respuesta
 			];
 		}
 	}

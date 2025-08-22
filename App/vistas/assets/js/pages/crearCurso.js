@@ -1,12 +1,163 @@
 // JavaScript para la página de crear curso
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Crear curso - JavaScript cargado');
-
     // Inicializar validaciones
     inicializarValidacionViñetas();
     inicializarValidacionFormulario();
+    inicializarValidacionNombre();
     configurarVistaPrevia();
 });
+
+/**
+ * Inicializar validación del nombre único del curso
+ */
+function inicializarValidacionNombre() {
+    const inputNombre = document.getElementById('nombre');
+    if (inputNombre) {
+        let timeoutId;
+
+        // Validar al salir del campo (blur)
+        inputNombre.addEventListener('blur', function () {
+            const nombre = this.value.trim();
+            if (nombre.length >= 3) {
+                clearTimeout(timeoutId);
+                validarNombreUnico(nombre);
+            }
+        });
+
+        // Validar mientras escribe con debounce
+        inputNombre.addEventListener('input', function () {
+            const nombre = this.value.trim();
+
+            // Limpiar mensajes previos inmediatamente
+            limpiarMensajeErrorNombre(this);
+
+            if (nombre.length >= 3) {
+                // Debounce para evitar múltiples peticiones
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => validarNombreUnico(nombre), 800);
+            } else if (nombre.length > 0) {
+                // Mostrar mensaje si es muy corto
+                mostrarErrorNombre(this, 'El nombre debe tener al menos 3 caracteres');
+                this.dataset.nombreValido = 'false';
+            }
+        });
+    }
+}
+
+/**
+ * Validar que el nombre del curso sea único
+ */
+function validarNombreUnico(nombre) {
+    const inputNombre = document.getElementById('nombre');
+    if (!inputNombre) return;
+
+    // Limpiar errores previos
+    limpiarMensajeErrorNombre(inputNombre);
+
+    // Mostrar indicador de carga
+    mostrarIndicadorCargaNombre(inputNombre, true);
+
+    // Hacer petición AJAX para validar
+    fetch('ajax/validaciones.ajax.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'accion=validar_nombre_curso&nombre=' + encodeURIComponent(nombre)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // Usar text() primero para debug
+        })
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                mostrarIndicadorCargaNombre(inputNombre, false);
+
+                if (data.error) {
+                    mostrarErrorNombre(inputNombre, data.mensaje);
+                    inputNombre.dataset.nombreValido = 'false';
+                } else {
+                    mostrarExitoNombre(inputNombre, data.mensaje || 'Nombre disponible');
+                    inputNombre.dataset.nombreValido = 'true';
+                }
+            } catch (parseError) {
+                mostrarIndicadorCargaNombre(inputNombre, false);
+                mostrarErrorNombre(inputNombre, 'Error de conexión. Intenta nuevamente.');
+                inputNombre.dataset.nombreValido = 'false';
+            }
+        })
+        .catch(error => {
+            mostrarIndicadorCargaNombre(inputNombre, false);
+            inputNombre.dataset.nombreValido = 'true'; // Asumir válido en caso de error de red
+        });
+}
+
+/**
+ * Mostrar indicador de carga para validación de nombre
+ */
+function mostrarIndicadorCargaNombre(input, mostrar) {
+    let indicador = input.parentNode.querySelector('.validacion-carga');
+
+    if (mostrar) {
+        if (!indicador) {
+            indicador = document.createElement('div');
+            indicador.className = 'validacion-carga text-info';
+            indicador.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+            indicador.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando nombre...';
+            input.parentNode.appendChild(indicador);
+        }
+    } else if (indicador) {
+        indicador.remove();
+    }
+}
+
+/**
+ * Mostrar error de validación de nombre
+ */
+function mostrarErrorNombre(input, mensaje) {
+    limpiarMensajeErrorNombre(input);
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-nombre text-danger';
+    errorDiv.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+
+    input.parentNode.appendChild(errorDiv);
+    input.classList.add('is-invalid');
+}
+
+/**
+ * Mostrar éxito de validación de nombre
+ */
+function mostrarExitoNombre(input, mensaje) {
+    limpiarMensajeErrorNombre(input);
+
+    const exitoDiv = document.createElement('div');
+    exitoDiv.className = 'exito-nombre text-success';
+    exitoDiv.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+    exitoDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${mensaje}`;
+
+    input.parentNode.appendChild(exitoDiv);
+    input.classList.remove('is-invalid');
+    input.classList.add('is-valid');
+}
+
+/**
+ * Limpiar mensaje de error del nombre
+ */
+function limpiarMensajeErrorNombre(input) {
+    const contenedor = input.parentNode;
+    const errorExistente = contenedor.querySelector('.error-nombre');
+    const exitoExistente = contenedor.querySelector('.exito-nombre');
+
+    if (errorExistente) errorExistente.remove();
+    if (exitoExistente) exitoExistente.remove();
+
+    input.classList.remove('is-invalid', 'is-valid');
+}
 
 /**
  * Configurar validación de campos de viñetas
@@ -182,6 +333,29 @@ function validarFormularioCompleto(e) {
     let formularioValido = true;
     let primerCampoConError = null;
 
+    // Validar nombre único - ser más flexible
+    const inputNombre = document.getElementById('nombre');
+    if (inputNombre) {
+        const nombre = inputNombre.value.trim();
+        const nombreValido = inputNombre.dataset.nombreValido;
+
+        if (nombre.length < 3) {
+            mostrarErrorNombre(inputNombre, 'El nombre debe tener al menos 3 caracteres');
+            formularioValido = false;
+            if (!primerCampoConError) primerCampoConError = inputNombre;
+        } else if (nombreValido === 'false') {
+            // Solo bloquear si explícitamente sabemos que es inválido
+            mostrarErrorNombre(inputNombre, 'Este nombre ya existe. Por favor, elige otro.');
+            formularioValido = false;
+            if (!primerCampoConError) primerCampoConError = inputNombre;
+        } else if (!nombreValido || nombreValido === '') {
+            // Si no se ha validado, hacer validación síncrona antes de enviar
+            e.preventDefault();
+            validarNombreAntesDEnviar(nombre);
+            return false;
+        }
+    }
+
     // Validar cada campo de viñetas
     camposViñetas.forEach(id => {
         const textarea = document.getElementById(id);
@@ -334,4 +508,94 @@ function mostrarVistaPreviaVideo(e) {
 
         contenedor.appendChild(infoDiv);
     }
+}
+
+/**
+ * Validar nombre antes de enviar el formulario
+ */
+function validarNombreAntesDEnviar(nombre) {
+    const inputNombre = document.getElementById('nombre');
+    const form = document.getElementById('form-crear-curso');
+
+    if (!inputNombre || !form) return;
+
+    console.log('Validando nombre antes de enviar:', nombre);
+
+    mostrarIndicadorCargaNombre(inputNombre, true);
+
+    fetch('ajax/validaciones.ajax.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'accion=validar_nombre_curso&nombre=' + encodeURIComponent(nombre)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                mostrarIndicadorCargaNombre(inputNombre, false);
+
+                if (data.error) {
+                    mostrarErrorNombre(inputNombre, data.mensaje);
+                    inputNombre.dataset.nombreValido = 'false';
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Nombre duplicado',
+                        text: data.mensaje,
+                        confirmButtonText: 'Entendido'
+                    });
+                } else {
+                    mostrarExitoNombre(inputNombre, data.mensaje || 'Nombre disponible');
+                    inputNombre.dataset.nombreValido = 'true';
+
+                    // Ahora sí enviar el formulario
+                    form.removeEventListener('submit', validarFormularioCompleto);
+                    form.submit();
+                }
+            } catch (parseError) {
+                console.error('Error parsing JSON:', parseError);
+                mostrarIndicadorCargaNombre(inputNombre, false);
+
+                // En caso de error, permitir envío con confirmación
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No se pudo validar el nombre',
+                    text: 'Hubo un problema de conexión. ¿Deseas continuar?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Continuar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.removeEventListener('submit', validarFormularioCompleto);
+                        form.submit();
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error al validar nombre antes de enviar:', error);
+            mostrarIndicadorCargaNombre(inputNombre, false);
+
+            // En caso de error de red, permitir envío
+            Swal.fire({
+                icon: 'warning',
+                title: 'No se pudo validar el nombre',
+                text: 'Hubo un problema de conexión. ¿Deseas continuar?',
+                showCancelButton: true,
+                confirmButtonText: 'Continuar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.removeEventListener('submit', validarFormularioCompleto);
+                    form.submit();
+                }
+            });
+        });
 }

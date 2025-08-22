@@ -20,6 +20,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializar listeners para formularios
     inicializarListeners();
+
+    // Inicializar validación de nombre único
+    inicializarValidacionNombreEdicion();
+
+    // Agregar validación al formulario antes del envío
+    const formCursoBasico = document.getElementById('formCursoBasico');
+    if (formCursoBasico) {
+        formCursoBasico.addEventListener('submit', function (e) {
+            const inputNombre = document.getElementById('nombre');
+            if (inputNombre && inputNombre.dataset.nombreValido === 'false') {
+                e.preventDefault();
+                Swal.fire('Error', 'Por favor, usa un nombre diferente para el curso. Este nombre ya está en uso.', 'error');
+                return false;
+            }
+        });
+    }
 });
 
 /**
@@ -117,7 +133,6 @@ function crearSeccion(titulo) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             Swal.fire('Error', 'Error de conexión: ' + error.message, 'error');
         });
 }
@@ -225,7 +240,6 @@ function guardarContenido() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             Swal.fire('Error', 'Error de conexión', 'error');
         });
 }
@@ -269,7 +283,6 @@ function editarContenido(idContenido) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             Swal.fire('Error', 'Error de conexión', 'error');
         });
 }
@@ -309,7 +322,6 @@ function eliminarContenido(idContenido) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     Swal.fire('Error', 'Error de conexión', 'error');
                 });
         }
@@ -351,7 +363,6 @@ function eliminarSeccion(idSeccion) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     Swal.fire('Error', 'Error de conexión', 'error');
                 });
         }
@@ -380,6 +391,167 @@ function actualizarTituloSeccion(idSeccion, nuevoTitulo) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            // Silenciar errores de actualización de título
         });
+}
+
+/**
+ * Inicializar validación del nombre único del curso para edición
+ */
+function inicializarValidacionNombreEdicion() {
+    const inputNombre = document.getElementById('nombre');
+    if (inputNombre) {
+        let timeoutId;
+        const nombreOriginal = inputNombre.value.trim(); // Guardar nombre original
+
+        // Validación en tiempo real mientras escribe (con debounce)
+        inputNombre.addEventListener('input', function () {
+            const nombreActual = this.value.trim();
+
+            // Limpiar mensajes de error previos cuando el usuario escriba
+            limpiarMensajeErrorNombre(this);
+
+            // Solo validar si el nombre cambió y tiene al menos 3 caracteres
+            if (nombreActual.length >= 3 && nombreActual !== nombreOriginal) {
+                // Debounce para evitar múltiples peticiones
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => validarNombreUnicoEdicion(nombreActual), 800);
+            } else if (nombreActual === nombreOriginal) {
+                // Si volvió al nombre original, limpiar validaciones
+                limpiarMensajeErrorNombre(this);
+                this.dataset.nombreValido = 'true';
+            } else if (nombreActual.length < 3 && nombreActual.length > 0) {
+                // Si tiene menos de 3 caracteres, no es válido pero no mostrar error aún
+                this.dataset.nombreValido = 'true';
+            }
+        });
+
+        // Validación al salir del campo
+        inputNombre.addEventListener('blur', function () {
+            const nombreActual = this.value.trim();
+
+            // Solo validar si el nombre cambió
+            if (nombreActual.length >= 3 && nombreActual !== nombreOriginal) {
+                // Cancelar timeout anterior y validar inmediatamente
+                clearTimeout(timeoutId);
+                validarNombreUnicoEdicion(nombreActual);
+            }
+        });
+    }
+}
+
+/**
+ * Validar que el nombre del curso sea único (versión para edición)
+ */
+function validarNombreUnicoEdicion(nombre) {
+    const inputNombre = document.getElementById('nombre');
+
+    if (!inputNombre || !idCurso) return;
+
+    // Limpiar errores previos
+    limpiarMensajeErrorNombre(inputNombre);
+
+    // Mostrar indicador de carga
+    mostrarIndicadorCargaNombre(inputNombre, true);
+
+    // Hacer petición AJAX para validar
+    fetch('ajax/validaciones.ajax.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'accion=validar_nombre_curso&nombre=' + encodeURIComponent(nombre) + '&id_curso=' + encodeURIComponent(idCurso)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // Usar text() primero para debug
+        })
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                mostrarIndicadorCargaNombre(inputNombre, false);
+
+                if (data.error) {
+                    mostrarErrorNombre(inputNombre, data.mensaje);
+                    inputNombre.dataset.nombreValido = 'false';
+                } else {
+                    mostrarExitoNombre(inputNombre, data.mensaje || 'Nombre disponible');
+                    inputNombre.dataset.nombreValido = 'true';
+                }
+            } catch (parseError) {
+                mostrarIndicadorCargaNombre(inputNombre, false);
+                mostrarErrorNombre(inputNombre, 'Error de conexión. Intenta nuevamente.');
+                inputNombre.dataset.nombreValido = 'false';
+            }
+        })
+        .catch(error => {
+            mostrarIndicadorCargaNombre(inputNombre, false);
+            inputNombre.dataset.nombreValido = 'true'; // Asumir válido en caso de error de red
+        });
+}
+
+/**
+ * Mostrar indicador de carga para validación de nombre
+ */
+function mostrarIndicadorCargaNombre(input, mostrar) {
+    let indicador = input.parentNode.querySelector('.validacion-carga');
+
+    if (mostrar) {
+        if (!indicador) {
+            indicador = document.createElement('div');
+            indicador.className = 'validacion-carga text-info';
+            indicador.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+            indicador.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando nombre...';
+            input.parentNode.appendChild(indicador);
+        }
+    } else if (indicador) {
+        indicador.remove();
+    }
+}
+
+/**
+ * Mostrar error de validación de nombre
+ */
+function mostrarErrorNombre(input, mensaje) {
+    limpiarMensajeErrorNombre(input);
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-nombre text-danger';
+    errorDiv.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+
+    input.parentNode.appendChild(errorDiv);
+    input.classList.add('is-invalid');
+}
+
+/**
+ * Mostrar éxito de validación de nombre
+ */
+function mostrarExitoNombre(input, mensaje) {
+    limpiarMensajeErrorNombre(input);
+
+    const exitoDiv = document.createElement('div');
+    exitoDiv.className = 'exito-nombre text-success';
+    exitoDiv.style.cssText = 'font-size: 0.8rem; margin-top: 0.25rem;';
+    exitoDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${mensaje}`;
+
+    input.parentNode.appendChild(exitoDiv);
+    input.classList.remove('is-invalid');
+    input.classList.add('is-valid');
+}
+
+/**
+ * Limpiar mensaje de error del nombre
+ */
+function limpiarMensajeErrorNombre(input) {
+    const contenedor = input.parentNode;
+    const errorExistente = contenedor.querySelector('.error-nombre');
+    const exitoExistente = contenedor.querySelector('.exito-nombre');
+
+    if (errorExistente) errorExistente.remove();
+    if (exitoExistente) exitoExistente.remove();
+
+    input.classList.remove('is-invalid', 'is-valid');
 }

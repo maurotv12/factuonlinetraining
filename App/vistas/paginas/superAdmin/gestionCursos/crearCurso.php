@@ -20,6 +20,45 @@ $categorias = $datosCreacion['categorias'];
 <div class="crear-curso-container">
     <div class="row">
         <div class="col-12">
+            <!-- Mostrar mensajes de resultado -->
+            <?php if ($resultado): ?>
+                <?php if ($resultado['error']): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> <?php echo $resultado['mensaje']; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <?php if (isset($resultado['campo'])): ?>
+                        <script>
+                            // Resaltar campo con error al cargar la página
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const campo = document.getElementById('<?php echo $resultado['campo']; ?>');
+                                if (campo) {
+                                    campo.classList.add('is-invalid');
+                                    campo.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                    campo.focus();
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>¡Éxito!</strong> <?php echo $resultado['mensaje']; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <script>
+                        // Limpiar formulario después de creación exitosa
+                        document.addEventListener('DOMContentLoaded', function() {
+                            document.getElementById('form-crear-curso').reset();
+                        });
+                    </script>
+                <?php endif; ?>
+            <?php endif; ?>
+
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">
