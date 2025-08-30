@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-08-2025 a las 22:02:53
+-- Tiempo de generación: 30-08-2025 a las 22:57:08
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -445,7 +445,11 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (262, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-26 16:00:57'),
 (263, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-28 10:51:18'),
 (264, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-28 10:52:28'),
-(265, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-29 11:59:17');
+(265, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-29 11:59:17'),
+(266, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-29 19:58:45'),
+(267, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:48:40'),
+(268, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:49:47'),
+(269, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:52:46');
 
 -- --------------------------------------------------------
 
@@ -612,6 +616,23 @@ CREATE TABLE `seccion_contenido_assets` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `seccion_contenido_progreso`
+--
+
+CREATE TABLE `seccion_contenido_progreso` (
+  `id` int(11) NOT NULL,
+  `id_contenido` int(11) NOT NULL,
+  `id_estudiante` int(11) NOT NULL,
+  `visto` tinyint(1) NOT NULL DEFAULT 0,
+  `progreso_segundos` int(11) DEFAULT NULL,
+  `porcentaje` tinyint(3) UNSIGNED DEFAULT NULL,
+  `primera_vista` datetime DEFAULT NULL,
+  `ultima_vista` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `solicitudes_instructores`
 --
 
@@ -742,6 +763,14 @@ ALTER TABLE `seccion_contenido_assets`
   ADD KEY `idx_assets_contenido_tipo` (`id_contenido`,`asset_tipo`);
 
 --
+-- Indices de la tabla `seccion_contenido_progreso`
+--
+ALTER TABLE `seccion_contenido_progreso`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_contenido_estudiante` (`id_contenido`,`id_estudiante`),
+  ADD KEY `idx_estudiante` (`id_estudiante`);
+
+--
 -- Indices de la tabla `solicitudes_instructores`
 --
 ALTER TABLE `solicitudes_instructores`
@@ -792,7 +821,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=266;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=270;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -828,6 +857,12 @@ ALTER TABLE `seccion_contenido`
 -- AUTO_INCREMENT de la tabla `seccion_contenido_assets`
 --
 ALTER TABLE `seccion_contenido_assets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `seccion_contenido_progreso`
+--
+ALTER TABLE `seccion_contenido_progreso`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -913,6 +948,13 @@ ALTER TABLE `seccion_contenido`
 --
 ALTER TABLE `seccion_contenido_assets`
   ADD CONSTRAINT `seccion_contenido_assets_ibfk_1` FOREIGN KEY (`id_contenido`) REFERENCES `seccion_contenido` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `seccion_contenido_progreso`
+--
+ALTER TABLE `seccion_contenido_progreso`
+  ADD CONSTRAINT `fk_prog_contenido` FOREIGN KEY (`id_contenido`) REFERENCES `seccion_contenido` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_prog_estudiante` FOREIGN KEY (`id_estudiante`) REFERENCES `persona` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `solicitudes_instructores`

@@ -1,0 +1,304 @@
+/* Estilos para la página de crear curso - Vista Profesor */
+.crear-curso-profesor-container {
+    padding: 2rem 1rem;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.crear-curso-profesor-container .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.crear-curso-profesor-container .card:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.crear-curso-profesor-container .card-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+    border: none;
+}
+
+.crear-curso-profesor-container .card-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.crear-curso-profesor-container .card-title i {
+    font-size: 1.5rem;
+}
+
+.crear-curso-profesor-container .card-body {
+    padding: 2rem;
+}
+
+/* Secciones del formulario */
+.section-header {
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.section-header:first-child {
+    margin-top: 0;
+}
+
+.section-header h5 {
+    color: #495057;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h5 i {
+    color: #28a745;
+    font-size: 1.2rem;
+}
+
+/* Campos del formulario */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Campos de texto largo (textareas) */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Estilos para contadores de caracteres */
+.contador-caracteres {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    text-align: right;
+}
+
+/* Mensajes de error */
+.error-viñeta,
+.error-imagen,
+.error-nombre {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.exito-nombre {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Vista previa de archivos */
+.vista-previa-imagen {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    object-fit: cover;
+}
+
+.info-video {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Botones */
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6169;
+    transform: translateY(-1px);
+}
+
+/* Input group para precio */
+.input-group .input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Campos requeridos */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Validación de campos */
+.validacion-carga {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #28a745;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Área de carga de archivos */
+.file-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover {
+    border-color: #28a745;
+    background-color: #f8f9fa;
+}
+
+.file-upload-area.dragover {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .crear-curso-profesor-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .crear-curso-profesor-container .card-body {
+        padding: 1.5rem;
+    }
+
+    .section-header h5 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Estilos específicos para profesores */
+.profesor-info-badge {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.curso-draft-indicator {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.help-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* Estado del formulario */
+.form-progress {
+    background-color: #e9ecef;
+    height: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.form-progress-bar {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Botón personalizado para profesores */
+.btn-crear-curso-profesor {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.btn-crear-curso-profesor:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+    color: white;
+}
+
+.btn-crear-curso-profesor:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
