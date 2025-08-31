@@ -302,3 +302,84 @@ textarea.form-control {
     transform: none;
     box-shadow: none;
 }
+
+/* Estilos para validaciones */
+.validacion-carga {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+
+.validacion-carga i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-nombre,
+.exito-nombre,
+.error-viñeta,
+.error-imagen {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-nombre {
+    color: #dc3545;
+}
+
+.exito-nombre {
+    color: #28a745;
+}
+
+.error-viñeta {
+    color: #dc3545;
+}
+
+.error-imagen {
+    color: #dc3545;
+}
+
+.contador-caracteres-viñetas {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    text-align: right;
+}
+
+/* Vista previa de imagen */
+.vista-previa-imagen {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    object-fit: cover;
+}
+
+/* Información de video */
+.info-video {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.info-video div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

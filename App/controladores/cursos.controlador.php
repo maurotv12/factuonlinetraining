@@ -630,6 +630,15 @@ class ControladorCursos
 		$respuesta = self::ctrCrearCurso($datos);
 
 		if ($respuesta === "ok") {
+			// **NUEVA FUNCIONALIDAD:** Organizar archivos en carpetas por curso
+			$conexion = Conexion::conectar();
+			$idCurso = $conexion->lastInsertId();
+
+			// Organizar archivos si existen
+			if (!empty($datos['banner']) || !empty($datos['promo_video'])) {
+				self::organizarArchivosPorCurso($idCurso, $datos['banner'] ?? '', $datos['promo_video'] ?? '');
+			}
+
 			return [
 				'error' => false,
 				'mensaje' => 'Curso creado exitosamente.'
@@ -705,7 +714,7 @@ class ControladorCursos
 	}
 
 	/*=============================================
-	Procesar formulario de creación desde POST
+	Procesar formulario de creación desde POST - UNIFICADO
 	=============================================*/
 	public static function ctrProcesarFormularioCreacion()
 	{
@@ -713,7 +722,7 @@ class ControladorCursos
 			return null;
 		}
 
-		// Recopilar datos del formulario
+		// Recopilar datos del formulario con mapeo de campos
 		$datos = [
 			"nombre" => $_POST['nombre'] ?? '',
 			"descripcion" => $_POST['descripcion'] ?? '',
@@ -721,14 +730,36 @@ class ControladorCursos
 			"requisitos" => $_POST['requisitos'] ?? '',
 			"para_quien" => $_POST['para_quien'] ?? '',
 			"imagen" => $_FILES['imagen'] ?? null,
-			"video" => $_FILES['video'] ?? null,
-			"valor" => $_POST['precio'] ?? 0,
-			"id_categoria" => $_POST['categoria'] ?? '',
-			"id_persona" => $_POST['profesor'] ?? $_SESSION['idU'] ?? '',
-			"estado" => "activo"
+			// Mapear tanto 'video' como 'video_promocional'
+			"video" => $_FILES['video'] ?? $_FILES['video_promocional'] ?? null,
+			// Mapear tanto 'precio' como 'valor'
+			"valor" => $_POST['precio'] ?? $_POST['valor'] ?? 0,
+			// Mapear tanto 'categoria' como 'id_categoria'  
+			"id_categoria" => $_POST['categoria'] ?? $_POST['id_categoria'] ?? '',
+			"estado" => $_POST['estado'] ?? "activo"
 		];
 
-		// Procesar la creación
+		// **DIFERENCIA CLAVE:** Determinar el profesor
+		if (isset($_POST['profesor']) && !empty($_POST['profesor'])) {
+			// Caso Admin/SuperAdmin: pueden elegir profesor del dropdown
+			$datos["id_persona"] = $_POST['profesor'];
+		} elseif (isset($_POST['id_profesor']) && !empty($_POST['id_profesor'])) {
+			// Caso Profesor: viene del campo hidden
+			$datos["id_persona"] = $_POST['id_profesor'];
+		} else {
+			// Fallback: usar ID de sesión
+			$datos["id_persona"] = $_SESSION['idU'] ?? $_SESSION['id'] ?? '';
+
+			// Validar que el usuario logueado tenga permisos
+			if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin', 'superadmin'])) {
+				return [
+					'error' => true,
+					'mensaje' => 'No tienes permisos para crear cursos.'
+				];
+			}
+		}
+
+		// Procesar la creación usando el método unificado
 		return self::ctrProcesarCreacionCurso($datos);
 	}
 
@@ -778,6 +809,67 @@ class ControladorCursos
 
 		$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $resultado['total'] == 0; // Retorna true si no existe, false si ya existe
+	}
+
+	/*=============================================
+	Organizar archivos por curso después de la creación
+	=============================================*/
+	private static function organizarArchivosPorCurso($idCurso, $rutaBanner, $rutaVideo = '')
+	{
+		$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? 'C:\\xampp\\htdocs';
+		$basePath = $documentRoot . "/cursosApp/storage/public/";
+
+		// Crear directorios específicos del curso
+		$directorioBanner = $basePath . "banners/" . $idCurso . "/";
+		$directorioVideo = $basePath . "promoVideos/" . $idCurso . "/";
+
+		if (!file_exists($directorioBanner)) {
+			mkdir($directorioBanner, 0755, true);
+		}
+		if (!file_exists($directorioVideo)) {
+			mkdir($directorioVideo, 0755, true);
+		}
+
+		$rutaBannerFinal = $rutaBanner;
+		$rutaVideoFinal = $rutaVideo;
+
+		// Mover banner si existe
+		if ($rutaBanner && file_exists($documentRoot . "/cursosApp/" . $rutaBanner)) {
+			$nombreArchivo = basename($rutaBanner);
+			$rutaOrigen = $documentRoot . "/cursosApp/" . $rutaBanner;
+			$rutaDestino = $directorioBanner . $nombreArchivo;
+
+			if (rename($rutaOrigen, $rutaDestino)) {
+				$rutaBannerFinal = "storage/public/banners/" . $idCurso . "/" . $nombreArchivo;
+			}
+		}
+
+		// Mover video si existe
+		if ($rutaVideo && file_exists($documentRoot . "/cursosApp/" . $rutaVideo)) {
+			$nombreArchivo = basename($rutaVideo);
+			$rutaOrigen = $documentRoot . "/cursosApp/" . $rutaVideo;
+			$rutaDestino = $directorioVideo . $nombreArchivo;
+
+			if (rename($rutaOrigen, $rutaDestino)) {
+				$rutaVideoFinal = "storage/public/promoVideos/" . $idCurso . "/" . $nombreArchivo;
+			}
+		}
+
+		// Actualizar rutas en la base de datos si cambió algo
+		if ($rutaBannerFinal !== $rutaBanner || $rutaVideoFinal !== $rutaVideo) {
+			$datosActualizar = [
+				'id' => $idCurso,
+				'banner' => $rutaBannerFinal
+			];
+
+			if ($rutaVideoFinal) {
+				$datosActualizar['promo_video'] = $rutaVideoFinal;
+			}
+
+			ModeloCursos::mdlActualizarRutasArchivos($datosActualizar);
+		}
+
+		return true;
 	}
 
 	/*=============================================

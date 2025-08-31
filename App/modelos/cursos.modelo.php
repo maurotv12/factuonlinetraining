@@ -258,4 +258,40 @@ class ModeloCursos
 
 		$stmt = null;
 	}
+
+	/*=============================================
+	Actualizar rutas de archivos después de organizar por carpetas
+	=============================================*/
+	public static function mdlActualizarRutasArchivos($datos)
+	{
+		$campos = [];
+		$parametros = [':id' => $datos['id']];
+
+		if (isset($datos['banner'])) {
+			$campos[] = 'banner = :banner';
+			$parametros[':banner'] = $datos['banner'];
+		}
+
+		if (isset($datos['promo_video'])) {
+			$campos[] = 'promo_video = :promo_video';
+			$parametros[':promo_video'] = $datos['promo_video'];
+		}
+
+		if (empty($campos)) {
+			return "ok"; // No hay nada que actualizar
+		}
+
+		$sql = "UPDATE curso SET " . implode(', ', $campos) . " WHERE id = :id";
+		$stmt = Conexion::conectar()->prepare($sql);
+
+		foreach ($parametros as $key => $value) {
+			$stmt->bindValue($key, $value);
+		}
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+	}
 }
