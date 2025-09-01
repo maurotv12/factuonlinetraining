@@ -197,7 +197,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" required>
                             <div class="form-text">
-                                Formatos permitidos: JPG, PNG, GIF, WebP. Resolución recomendada: 1200x675px (16:9)
+                                Formatos permitidos: JPG, PNG, WebP. Resolución admitida: 600x400px
                             </div>
                             <div id="vista-previa-imagen"></div>
                             <div id="error-imagen"></div>
@@ -209,7 +209,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <input class="form-control" type="file" id="video_promocional" name="video_promocional" accept="video/*">
                             <div class="form-text">
-                                Formatos permitidos: MP4, AVI, MOV. Duración máxima: 2 minutos. Tamaño máximo: 100MB
+                                Formatos permitidos: MP4, AVI, WEBM. Duración máxima: 5 minutos.
                             </div>
                             <div id="info-video"></div>
                             <div class="help-text">El video promocional ayuda a los estudiantes a conocer mejor tu curso.</div>
@@ -234,7 +234,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
 
                         <!-- Botones de acción -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <a href="listadoCursosProfesor" class="btn btn-secondary">
+                            <a href="listadoCursosProfe" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Volver al Listado
                             </a>
                             <button type="submit" class="btn-crear-curso-profesor" id="btn-crear-curso">
@@ -257,22 +257,35 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
 if ($resultado) {
     if (!$resultado['error']) {
         echo '<script>
-            Swal.fire({
-                icon: "success",
-                title: "¡Curso creado!",
-                text: "' . $resultado['mensaje'] . '",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location = "listadoCursosProfesor";
+            document.addEventListener("DOMContentLoaded", function() {
+                if (typeof Swal !== "undefined") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "¡Curso creado!",
+                        text: "' . $resultado['mensaje'] . '",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location = "listadoCursosProfe";
+                    });
+                } else {
+                    alert("' . $resultado['mensaje'] . '");
+                    window.location = "listadoCursosProfe";
+                }
             });
         </script>';
     } else {
         echo '<script>
-            Swal.fire({
-                icon: "error", 
-                title: "Error",
-                text: "' . $resultado['mensaje'] . '",
-                confirmButtonText: "Aceptar"
+            document.addEventListener("DOMContentLoaded", function() {
+                if (typeof Swal !== "undefined") {
+                    Swal.fire({
+                        icon: "error", 
+                        title: "Error",
+                        text: "' . addslashes($resultado['mensaje']) . '",
+                        confirmButtonText: "Aceptar"
+                    });
+                } else {
+                    alert("Error: ' . addslashes($resultado['mensaje']) . '");
+                }
             });
         </script>';
     }

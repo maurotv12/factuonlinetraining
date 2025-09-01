@@ -36,7 +36,7 @@ function inicializarDataTableProfe() {
                 "responsive": true,
                 "pageLength": 10,
                 "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
-                "order": [[7, "desc"]], // Ordenar por fecha por defecto
+                "order": [[]], // Ordenar lo que esté en backend
                 "columnDefs": [
                     { "orderable": false, "targets": 8 }, // Columna de acciones no ordenable
                     { "searchable": false, "targets": [0, 1, 8] }, // # e imagen no buscables

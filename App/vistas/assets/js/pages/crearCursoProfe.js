@@ -145,8 +145,22 @@ document.addEventListener('DOMContentLoaded', function () {
         // Información de video
         videoInput.addEventListener('change', function () {
             const archivo = this.files[0];
+
+            // Limpiar errores previos
+            limpiarErrorVideo();
+
             if (archivo) {
-                mostrarInfoVideo(archivo);
+                // Validar archivo inmediatamente
+                const validacion = validarArchivoVideo(archivo);
+
+                if (validacion.esValido) {
+                    mostrarInfoVideo(archivo);
+                } else {
+                    // Mostrar error y limpiar input
+                    mostrarErrorVideo(validacion.mensaje);
+                    this.classList.add('is-invalid');
+                    this.value = ''; // Limpiar input para evitar envío de archivo inválido
+                }
             }
             actualizarProgreso();
         });
@@ -416,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Validar imagen
      */
     function validarImagen(archivo) {
-        const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png'];
         const tamañoMaximo = 5 * 1024 * 1024; // 5MB
 
         // Limpiar errores previos
@@ -426,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (!tiposPermitidos.includes(archivo.type)) {
-            mostrarErrorImagen('Formato de imagen no válido. Use JPG, PNG, GIF o WebP.');
+            mostrarErrorImagen('Formato de imagen no válido. Use JPG o PNG.');
             imagenInput.classList.add('is-invalid');
             return false;
         }
@@ -487,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             imagenInput.classList.remove('is-invalid');
         } else if (archivo) {
-            mostrarErrorImagen('Tipo de archivo no válido. Use JPG, PNG, GIF o WebP.');
+            mostrarErrorImagen('Tipo de archivo no válido. Use JPG o PNG.');
             imagenInput.classList.add('is-invalid');
         }
     }
@@ -684,10 +698,23 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             const archivo = imagenInput.files[0];
             if (!validarTipoImagen(archivo)) {
-                mostrarErrorImagen('Tipo de archivo no válido. Use JPG, PNG, GIF o WebP.');
+                mostrarErrorImagen('Tipo de archivo no válido. Use JPG o PNG.');
                 imagenInput.classList.add('is-invalid');
                 esValido = false;
                 if (!primerCampoConError) primerCampoConError = imagenInput;
+            }
+        }
+
+        // Validar video promocional (opcional pero si se sube debe ser válido)
+        if (videoInput.files.length > 0) {
+            const archivoVideo = videoInput.files[0];
+            const validacionVideo = validarArchivoVideo(archivoVideo);
+
+            if (!validacionVideo.esValido) {
+                videoInput.classList.add('is-invalid');
+                mostrarErrorVideo(validacionVideo.mensaje);
+                esValido = false;
+                if (!primerCampoConError) primerCampoConError = videoInput;
             }
         }
 
@@ -704,8 +731,69 @@ document.addEventListener('DOMContentLoaded', function () {
      * Validar tipo de archivo de imagen
      */
     function validarTipoImagen(archivo) {
-        const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png'];
         return tiposPermitidos.includes(archivo.type);
+    }
+
+    /**
+     * Validar archivo de video promocional
+     */
+    function validarArchivoVideo(archivo) {
+        // Tipos de video permitidos
+        const tiposPermitidos = ['video/mp4'];
+
+        // Validar tipo
+        if (!tiposPermitidos.includes(archivo.type)) {
+            return {
+                esValido: false,
+                mensaje: 'Tipo de video no válido. Use MP4.'
+            };
+        }
+
+        // Validar tamaño (15MB = 15 * 1024 * 1024 bytes)
+        const maxTamaño = 15 * 1024 * 1024; // 15MB
+        if (archivo.size > maxTamaño) {
+            const tamañoMB = Math.round(archivo.size / 1024 / 1024);
+            return {
+                esValido: false,
+                mensaje: `El video es demasiado grande (${tamañoMB}MB). El límite es 15MB.`
+            };
+        }
+
+        return {
+            esValido: true,
+            mensaje: 'Video válido'
+        };
+    }
+
+    /**
+     * Mostrar error de video
+     */
+    function mostrarErrorVideo(mensaje) {
+        // Buscar o crear elemento de error para video
+        let errorVideo = document.getElementById('error-video');
+
+        if (!errorVideo) {
+            errorVideo = document.createElement('div');
+            errorVideo.id = 'error-video';
+            errorVideo.className = 'invalid-feedback d-block';
+            videoInput.parentNode.appendChild(errorVideo);
+        }
+
+        errorVideo.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+        errorVideo.style.display = 'block';
+    }
+
+    /**
+     * Limpiar error de video
+     */
+    function limpiarErrorVideo() {
+        const errorVideo = document.getElementById('error-video');
+        if (errorVideo) {
+            errorVideo.style.display = 'none';
+            errorVideo.innerHTML = '';
+        }
+        videoInput.classList.remove('is-invalid');
     }
 
     /**
@@ -715,6 +803,22 @@ document.addEventListener('DOMContentLoaded', function () {
         campo.addEventListener('input', function () {
             this.classList.remove('is-invalid');
         });
+    });
+
+    // Limpiar errores de archivos cuando cambian
+    imagenInput.addEventListener('change', function () {
+        this.classList.remove('is-invalid');
+        const errorImagen = document.getElementById('error-imagen');
+        if (errorImagen) {
+            errorImagen.style.display = 'none';
+        }
+    });
+
+    videoInput.addEventListener('change', function () {
+        // La validación se hace en el evento principal, aquí solo limpiamos si es necesario
+        if (this.files.length === 0) {
+            limpiarErrorVideo();
+        }
     });
 
     document.getElementById('id_categoria').addEventListener('change', function () {
@@ -767,6 +871,7 @@ function resetearFormulario() {
         // Limpiar mensajes
         document.querySelectorAll('[id^="error-"], [id^="mensaje-"]').forEach(elemento => {
             elemento.innerHTML = '';
+            elemento.style.display = 'none';
         });
     }
 }

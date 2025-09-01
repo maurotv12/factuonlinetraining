@@ -152,14 +152,14 @@ class ControladorCursos
 
 		// Validar extensión de video
 		$extension = strtolower(pathinfo($video['name'], PATHINFO_EXTENSION));
-		$extensionesPermitidas = ['mp4', 'avi', 'mov', 'wmv', 'webm'];
+		$extensionesPermitidas = ['mp4'];
 
 		if (!in_array($extension, $extensionesPermitidas)) {
 			return "formato_invalido";
 		}
 
-		// Validar tamaño (máximo 500MB para videos HD/FHD)
-		if ($video['size'] > 500 * 1024 * 1024) {
+		// Validar tamaño (máximo 15MB para videos HD/FHD)
+		if ($video['size'] > 15 * 1024 * 1024) {
 			return "archivo_grande";
 		}
 
@@ -207,14 +207,14 @@ class ControladorCursos
 					$height = $stream['height'] ?? 0;
 					$duration = floatval($videoInfo['format']['duration'] ?? 0);
 
-					// Validar resolución (HD: 1280x720, FHD: 1920x1080, y algunas variaciones comunes)
+					// Validar resolución (HD: 1280x720, y algunas variaciones comunes)
 					$resolucionValida = self::esResolucionValida($width, $height);
 					if (!$resolucionValida) {
 						return "resolucion_invalida";
 					}
 
-					// Validar duración (máximo 20 minutos = 1200 segundos)
-					if ($duration > 1200) {
+					// Validar duración (máximo 5 minutos = 300 segundos)
+					if ($duration > 300) {
 						return "duracion_excedida";
 					}
 
@@ -257,14 +257,8 @@ class ControladorCursos
 			[1280, 720],   // HD estándar
 			[1366, 768],   // HD común en laptops
 			[1440, 900],   // HD+ widescreen
-
-			// FHD (1080p)
-			[1920, 1080],  // FHD estándar
-			[1920, 1200],  // FHD+ widescreen
-
 			// Orientaciones verticales (para contenido móvil)
 			[720, 1280],   // HD vertical
-			[1080, 1920],  // FHD vertical
 		];
 
 		foreach ($resolucionesValidas as $resolucion) {
@@ -651,22 +645,22 @@ class ControladorCursos
 		} elseif ($respuesta === "formato_invalido") {
 			return [
 				'error' => true,
-				'mensaje' => 'Formato de video no válido. Formatos permitidos: MP4, AVI, MOV, WMV, WEBM.'
+				'mensaje' => 'Formato de video no válido. Formatos permitidos: MP4'
 			];
 		} elseif ($respuesta === "archivo_grande") {
 			return [
 				'error' => true,
-				'mensaje' => 'El video es muy grande. Tamaño máximo permitido: 500MB.'
+				'mensaje' => 'El video es muy grande. Tamaño máximo permitido: 10MB.'
 			];
 		} elseif ($respuesta === "resolucion_invalida") {
 			return [
 				'error' => true,
-				'mensaje' => 'Resolución de video no válida. Se requiere HD (1280x720) o FHD (1920x1080).'
+				'mensaje' => 'Resolución de video no válida. Se requiere HD (1280x720).'
 			];
 		} elseif ($respuesta === "duracion_excedida") {
 			return [
 				'error' => true,
-				'mensaje' => 'El video excede la duración máxima permitida de 20 minutos.'
+				'mensaje' => 'El video excede la duración máxima permitida de 5 minutos.'
 			];
 		} elseif ($respuesta === "archivo_corrupto") {
 			return [
@@ -720,6 +714,18 @@ class ControladorCursos
 	{
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			return null;
+		}
+
+		// DETECCIÓN DE LÍMITES PHP: Si POST y FILES están vacíos, probablemente excedió post_max_size
+		if (empty($_POST) && empty($_FILES) && $_SERVER['CONTENT_LENGTH'] > 0) {
+			$maxSize = ini_get('post_max_size');
+			$uploadedSize = round($_SERVER['CONTENT_LENGTH'] / 1024 / 1024, 2); // MB
+
+			return [
+				'error' => true,
+				'mensaje' => "El archivo excede el límite del servidor ({$maxSize}). Tamaño subido: {$uploadedSize}MB. Para videos promocionales, use archivos menores a 50MB.",
+				'tipo' => 'php_limit_exceeded'
+			]; //TODO
 		}
 
 		// Recopilar datos del formulario con mapeo de campos
@@ -1013,19 +1019,19 @@ class ControladorCursos
 		} elseif ($respuesta === "formato_invalido") {
 			return [
 				'error' => true,
-				'mensaje' => 'Formato de video no válido. Formatos permitidos: MP4, AVI, MOV, WMV, WEBM.',
+				'mensaje' => 'Formato de video no válido. Formatos permitidos: MP4',
 				'campo' => 'video'
 			];
 		} elseif ($respuesta === "archivo_grande") {
 			return [
 				'error' => true,
-				'mensaje' => 'El video es muy grande. Tamaño máximo permitido: 500MB.',
+				'mensaje' => 'El video es muy grande. Tamaño máximo permitido: 15MB.',
 				'campo' => 'video'
 			];
 		} elseif ($respuesta === "resolucion_invalida") {
 			return [
 				'error' => true,
-				'mensaje' => 'Resolución de video no válida. Se requiere HD (1280x720) o FHD (1920x1080).',
+				'mensaje' => 'Resolución de video no válida. Se requiere HD (1280x720).',
 				'campo' => 'video'
 			];
 		} elseif ($respuesta === "duracion_excedida") {
