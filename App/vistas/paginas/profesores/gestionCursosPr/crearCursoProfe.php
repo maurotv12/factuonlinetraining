@@ -171,12 +171,12 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 d-none">
                                 <div class="mb-3">
                                     <label for="estado" class="form-label">
                                         Estado del Curso <span class="text-danger">*</span>
                                     </label>
-                                    <select class="form-select" id="estado" name="estado" required>
+                                    <select class="form-select " id="estado" name="estado" required>
                                         <option value="borrador">Borrador (No publicado)</option>
                                         <option value="revision">En Revisión</option>
                                         <option value="activo">Activo (Publicado)</option>
