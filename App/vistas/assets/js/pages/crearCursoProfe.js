@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (!tiposPermitidos.includes(archivo.type)) {
-            mostrarErrorImagen('Formato de imagen no válido. Use JPG o PNG.');
+            mostrarErrorImagen('Formato de imagen no válido. Use JPG, JPEG o PNG.');
             imagenInput.classList.add('is-invalid');
             return false;
         }
@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             imagenInput.classList.remove('is-invalid');
         } else if (archivo) {
-            mostrarErrorImagen('Tipo de archivo no válido. Use JPG o PNG.');
+            mostrarErrorImagen('Tipo de archivo no válido. Use JPG, JPEG o PNG.');
             imagenInput.classList.add('is-invalid');
         }
     }
@@ -698,7 +698,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             const archivo = imagenInput.files[0];
             if (!validarTipoImagen(archivo)) {
-                mostrarErrorImagen('Tipo de archivo no válido. Use JPG o PNG.');
+                mostrarErrorImagen('Tipo de archivo no válido. Use JPG, JPEG o PNG.');
                 imagenInput.classList.add('is-invalid');
                 esValido = false;
                 if (!primerCampoConError) primerCampoConError = imagenInput;

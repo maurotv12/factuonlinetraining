@@ -197,7 +197,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*" required>
                             <div class="form-text">
-                                Formatos permitidos: JPG, PNG, WebP. Resolución admitida: 600x400px
+                                Formatos permitidos: JPG, PNG. Resolución admitida para banner: 600x400px
                             </div>
                             <div id="vista-previa-imagen"></div>
                             <div id="error-imagen"></div>
@@ -209,7 +209,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <input class="form-control" type="file" id="video_promocional" name="video_promocional" accept="video/*">
                             <div class="form-text">
-                                Formatos permitidos: MP4, AVI, WEBM. Duración máxima: 5 minutos.
+                                Formatos permitidos: MP4. Duración máxima para video promocional: 5 minutos.
                             </div>
                             <div id="info-video"></div>
                             <div class="help-text">El video promocional ayuda a los estudiantes a conocer mejor tu curso.</div>
