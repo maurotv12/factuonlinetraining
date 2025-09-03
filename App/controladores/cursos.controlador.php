@@ -1275,13 +1275,13 @@ class ControladorCursos
 				'videos_limpiados' => $videosLimpiados,
 				'message' => 'Rutas antiguas limpiadas correctamente'
 			];
-                } catch (Exception $e) {
-                        return [
-                                'success' => false,
-                                'error' => $e->getMessage()
-                        ];
-                }
-        }
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'error' => $e->getMessage()
+			];
+		}
+	}
 
 	/*=============================================
 	Cambiar estado del curso (activo/borrador/inactivo)

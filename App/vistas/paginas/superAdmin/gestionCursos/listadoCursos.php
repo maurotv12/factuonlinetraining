@@ -11,7 +11,7 @@ require_once "controladores/cursos.controlador.php";
 if (isset($_POST['guardarEstadoCurso'])) {
     $cambiarEstadoCurso = new ControladorCursos();
     $respuesta = $cambiarEstadoCurso->ctrCambiarEstadoCurso($_POST['idCurso'], $_POST['nuevoEstado']);
-    
+
     if ($respuesta['error'] === false) {
         echo '<script>
             Swal.fire({
@@ -178,7 +178,7 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
             <div class="modal-body">
                 <form id="formCambiarEstadoCurso" method="post">
                     <input type="hidden" name="idCurso" id="idCursoEstado">
-                    
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Curso:</label>
                         <p class="text-muted mb-3" id="nombreCursoModal">-</p>

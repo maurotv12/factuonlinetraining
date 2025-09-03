@@ -322,7 +322,7 @@ function refrescarTabla() {
 function configurarCambioEstadoCurso() {
     // Obtener todos los botones de cambiar estado
     const btnsCambiarEstado = document.querySelectorAll('.cambiar-estado-curso');
-    
+
     btnsCambiarEstado.forEach(btn => {
         btn.addEventListener('click', function () {
             // Obtener datos del botón clickeado
