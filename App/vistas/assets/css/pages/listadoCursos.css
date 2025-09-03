@@ -408,3 +408,151 @@
         max-height: 50vh !important;
     }
 }
+
+/* Estilos para dropdown de estado */
+.estado-dropdown {
+    min-width: 120px;
+    font-weight: 500;
+}
+
+.estado-dropdown i {
+    margin-right: 0.5rem;
+}
+
+.dropdown-menu {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    min-width: 160px;
+    background-color: #fff;
+    background-clip: padding-box;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transform: translateX(4px);
+}
+
+.dropdown-item i {
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.dropdown-item.cambiar-estado:hover {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+/* Estados específicos */
+.btn-success.estado-dropdown {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-color: #28a745;
+}
+
+.btn-warning.estado-dropdown {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-secondary.estado-dropdown {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    border-color: #6c757d;
+}
+
+/* Animación de loading */
+.estado-dropdown:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+/* Estilos para el modal de cambio de estado */
+.estado-options .form-check {
+    padding: 0.75rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.estado-options .form-check:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.estado-options .form-check-input:checked + .form-check-label {
+    color: #495057;
+    font-weight: 600;
+}
+
+.estado-options .form-check-label {
+    cursor: pointer;
+    padding-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.estado-options .form-check-label i {
+    font-size: 1.1rem;
+}
+
+#modalEstadoCurso .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+}
+
+#modalEstadoCurso .btn-close {
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+}
+
+#modalEstadoCurso .btn-close:hover {
+    color: white;
+    opacity: 1;
+}
+
+.cambiar-estado-curso {
+    min-width: 100px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.cambiar-estado-curso:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+

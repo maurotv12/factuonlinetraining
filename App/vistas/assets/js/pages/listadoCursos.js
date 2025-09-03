@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Configurar previsualización de imágenes
     configurarPrevisualizacionImagenes();
 
+    // Configurar cambio de estado de cursos
+    configurarCambioEstadoCurso();
+
     // Verificar imágenes después de un pequeño delay
     setTimeout(verificarImagenesCursos, 1000);
 });
@@ -311,6 +314,38 @@ function refrescarTabla() {
     } else {
         location.reload();
     }
+}
+
+/**
+ * Configurar eventos para cambiar estado del curso
+ */
+function configurarCambioEstadoCurso() {
+    // Obtener todos los botones de cambiar estado
+    const btnsCambiarEstado = document.querySelectorAll('.cambiar-estado-curso');
+    
+    btnsCambiarEstado.forEach(btn => {
+        btn.addEventListener('click', function () {
+            // Obtener datos del botón clickeado
+            const idCurso = this.getAttribute('data-id');
+            const nombreCurso = this.getAttribute('data-nombre');
+            const estadoActual = this.getAttribute('data-estado-actual');
+
+            // Actualizar el modal con datos del curso
+            document.getElementById('idCursoEstado').value = idCurso;
+            document.getElementById('nombreCursoModal').textContent = nombreCurso;
+
+            // Desmarcar todos los radio buttons
+            document.querySelectorAll('input[name="nuevoEstado"]').forEach(radio => {
+                radio.checked = false;
+            });
+
+            // Marcar el estado actual
+            const radioActual = document.getElementById('estado' + estadoActual.charAt(0).toUpperCase() + estadoActual.slice(1));
+            if (radioActual) {
+                radioActual.checked = true;
+            }
+        });
+    });
 }
 
 // Estilos dinámicos para animaciones

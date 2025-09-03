@@ -1275,10 +1275,58 @@ class ControladorCursos
 				'videos_limpiados' => $videosLimpiados,
 				'message' => 'Rutas antiguas limpiadas correctamente'
 			];
-		} catch (Exception $e) {
+                } catch (Exception $e) {
+                        return [
+                                'success' => false,
+                                'error' => $e->getMessage()
+                        ];
+                }
+        }
+
+	/*=============================================
+	Cambiar estado del curso (activo/borrador/inactivo)
+	=============================================*/
+	public static function ctrCambiarEstadoCurso($idCurso, $nuevoEstado)
+	{
+		// Validar parámetros
+		if (empty($idCurso) || empty($nuevoEstado)) {
 			return [
-				'success' => false,
-				'error' => $e->getMessage()
+				'error' => true,
+				'mensaje' => 'Parámetros inválidos.'
+			];
+		}
+
+		// Validar estados permitidos
+		$estadosPermitidos = ['activo', 'borrador', 'inactivo'];
+		if (!in_array($nuevoEstado, $estadosPermitidos)) {
+			return [
+				'error' => true,
+				'mensaje' => 'Estado no válido. Estados permitidos: ' . implode(', ', $estadosPermitidos)
+			];
+		}
+
+		// Verificar que el curso existe
+		$curso = self::ctrMostrarCursos('id', $idCurso);
+		if (!$curso) {
+			return [
+				'error' => true,
+				'mensaje' => 'El curso no existe.'
+			];
+		}
+
+		// Actualizar estado
+		$respuesta = ModeloCursos::mdlActualizarEstadoCurso($idCurso, $nuevoEstado);
+
+		if ($respuesta == "ok") {
+			return [
+				'error' => false,
+				'mensaje' => 'Estado del curso actualizado exitosamente.',
+				'nuevo_estado' => $nuevoEstado
+			];
+		} else {
+			return [
+				'error' => true,
+				'mensaje' => 'Error al actualizar el estado del curso.'
 			];
 		}
 	}

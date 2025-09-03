@@ -294,4 +294,21 @@ class ModeloCursos
 			return "error";
 		}
 	}
+
+	/*=============================================
+	Actualizar estado del curso
+	=============================================*/
+	public static function mdlActualizarEstadoCurso($idCurso, $nuevoEstado)
+	{
+		$stmt = Conexion::conectar()->prepare("UPDATE curso SET estado = :estado WHERE id = :id");
+
+		$stmt->bindParam(":id", $idCurso, PDO::PARAM_INT);
+		$stmt->bindParam(":estado", $nuevoEstado, PDO::PARAM_STR);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+	}
 }
