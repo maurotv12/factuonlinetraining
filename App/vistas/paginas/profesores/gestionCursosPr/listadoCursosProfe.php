@@ -1,6 +1,9 @@
 <?php
 // Verificar acceso (solo profesores)
 if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
+    $editarUrl = !empty($curso["url_amiga"])
+        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
+        : "/cursosApp/App/verCursoProfe?id=" . $curso["id"];
     echo '<div class="alert alert-danger">No tienes permisos para acceder a esta página.</div>';
     return;
 }
@@ -113,8 +116,8 @@ if (empty($cursos)) {
                                                     <?php
                                                     // Usar URL amigable si está disponible, sino usar ID
                                                     $urlEditar = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/editarCursoProfe/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/editarCursoProfe?id=" . $curso["id"];
+                                                        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
+                                                        : "/cursosApp/App/verCursoProfe?id=" . $curso["id"];
                                                     ?>
                                                     <a href="<?= $urlEditar ?>" class="btn btn-sm btn-warning" title="Editar curso">
                                                         <i class="bi bi-pencil"></i>
@@ -157,9 +160,9 @@ if (empty($cursos)) {
     // Función para gestionar contenido del curso
     function gestionarContenido(identificador, esUrlAmiga) {
         if (esUrlAmiga) {
-            window.location.href = `/cursosApp/App/editarCursoProfe/${identificador}`;
+            window.location.href = `/cursosApp/App/verCursoProfe/${identificador}`;
         } else {
-            window.location.href = `/cursosApp/App/editarCursoProfe?id=${identificador}`;
+            window.location.href = `/cursosApp/App/verCursoProfe?id=${identificador}`;
         }
     }
 </script>

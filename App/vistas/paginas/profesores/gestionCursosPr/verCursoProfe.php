@@ -42,6 +42,35 @@ if ($curso['id_persona'] != $_SESSION['idU']) {
     return;
 }
 
+// Procesar actualización del curso básico (migrado desde editarCursoProfe.php)
+if (isset($_POST['actualizarCurso'])) {
+    $datosActualizar = [
+        'id' => $curso['id'], // Usar el ID real del curso obtenido
+        'nombre' => $_POST['nombre'],
+        'descripcion' => $_POST['descripcion'],
+        'lo_que_aprenderas' => $_POST['lo_que_aprenderas'],
+        'requisitos' => $_POST['requisitos'],
+        'para_quien' => $_POST['para_quien'],
+        'valor' => $_POST['valor'],
+        'id_categoria' => $_POST['id_categoria'],
+        'id_persona' => $_SESSION['idU'], // Mantener el profesor actual
+        'estado' => $_POST['estado']
+    ];
+
+    $resultadoActualizacion = ControladorCursos::ctrActualizarDatosCurso($datosActualizar);
+
+    // Usar sesión para mostrar mensaje después de la redirección
+    if (!$resultadoActualizacion['error']) {
+        $_SESSION['mensaje_exito'] = 'Los datos del curso se han actualizado correctamente.';
+    } else {
+        $_SESSION['mensaje_error'] = $resultadoActualizacion['mensaje'];
+    }
+
+    // Redireccionar para evitar reenvío del formulario
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit;
+}
+
 // Obtener datos del profesor y categoría
 $profesor = null;
 $categoria = null;
@@ -62,10 +91,41 @@ foreach ($categorias as $cat) {
 
 // Incluir CSS para la página
 echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
+echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCursoProfe.css?v=' . time() . '">';
+echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+// Mostrar mensajes de la sesión si existen (migrado desde editarCursoProfe.php)
+if (isset($_SESSION['mensaje_exito'])) {
+    echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                icon: "success",
+                title: "¡Curso actualizado!",
+                text: "' . $_SESSION['mensaje_exito'] . '",
+                confirmButtonText: "Aceptar"
+            });
+        });
+    </script>';
+    unset($_SESSION['mensaje_exito']);
+}
+
+if (isset($_SESSION['mensaje_error'])) {
+    echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "' . $_SESSION['mensaje_error'] . '",
+                confirmButtonText: "Aceptar"
+            });
+        });
+    </script>';
+    unset($_SESSION['mensaje_error']);
+}
 ?>
 
 <!-- Vista del curso para profesores -->
-<div class="ver-curso-container">
+<div class="ver-curso-container" data-curso-id="<?= $curso['id'] ?>">
     <!-- Header del curso -->
     <div class="curso-header">
         <div class="row align-items-center">
@@ -75,16 +135,56 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                         <i class="bi bi-arrow-left"></i> Volver a mis cursos
                     </a>
                 </div>
-                <h1 class="curso-titulo"><?= htmlspecialchars($curso['nombre']) ?></h1>
+
+                <!-- Título editable -->
+                <div class="editable-field">
+                    <h1 class="curso-titulo"
+                        id="nombre-display"
+                        data-valor-original="<?= htmlspecialchars($curso['nombre']) ?>">
+                        <?= htmlspecialchars($curso['nombre']) ?>
+                    </h1>
+                    <button class="btn btn-sm btn-outline-primary edit-btn"
+                        id="btn-editar-nombre"
+                        title="Editar título">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </div>
+
                 <div class="curso-meta">
-                    <span class="badge badge-categoria"><?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?></span>
+                    <!-- Categoría editable -->
+                    <div class="editable-field d-inline-block me-2">
+                        <span class="badge badge-categoria"
+                            id="id_categoria-display"
+                            data-valor-original="<?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?>">
+                            <?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?>
+                        </span>
+                        <button class="btn btn-sm btn-outline-primary edit-btn"
+                            id="btn-editar-id_categoria"
+                            title="Cambiar categoría">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
+
                     <span class="badge badge-estado badge-<?= $curso['estado'] ?>"><?= htmlspecialchars($curso['estado']) ?></span>
-                    <span class="curso-precio">$<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?></span>
+
+                    <!-- Precio editable -->
+                    <div class="editable-field d-inline-block ms-2">
+                        <span class="curso-precio"
+                            id="valor-display"
+                            data-valor-original="$<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>">
+                            $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>
+                        </span>
+                        <button class="btn btn-sm btn-outline-primary edit-btn"
+                            id="btn-editar-valor"
+                            title="Editar precio">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4 text-end">
-                <a href="/cursosApp/App/editarCursoProfe/<?= $curso['url_amiga'] ?>" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Editar Curso
+                <a href="/cursosApp/App/verCursoProfe/<?= $curso['url_amiga'] ?>" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Editor Avanzado
                 </a>
             </div>
         </div>
@@ -93,6 +193,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
     <div class="row">
         <!-- Video principal y contenido -->
         <div class="col-lg-8">
+            <!-- Video/Imagen principal -->
             <div class="video-container">
                 <?php if (!empty($curso['promo_video'])): ?>
                     <div class="video-wrapper">
@@ -102,6 +203,9 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                         </video>
                         <div class="video-overlay">
                             <div class="video-title">Video promocional</div>
+                            <button class="btn btn-sm btn-outline-light edit-video-btn">
+                                <i class="bi bi-camera-video"></i> Cambiar video
+                            </button>
                         </div>
                     </div>
                 <?php elseif (!empty($curso['banner'])): ?>
@@ -109,13 +213,24 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                         <img src="<?= $curso['banner'] ?>" alt="Banner del curso" class="main-image">
                         <div class="image-overlay">
                             <div class="image-title">Vista previa del curso</div>
+                            <button class="btn btn-sm btn-outline-light edit-image-btn">
+                                <i class="bi bi-image"></i> Cambiar imagen
+                            </button>
                         </div>
                     </div>
                 <?php else: ?>
                     <div class="placeholder-wrapper">
                         <div class="placeholder-content">
-                            <i class="bi bi-play-circle"></i>
-                            <p>Sin contenido multimedia</p>
+                            <i class="bi bi-plus-circle"></i>
+                            <p>Agregar contenido multimedia</p>
+                            <div class="upload-buttons">
+                                <button class="btn btn-primary me-2 add-video-btn">
+                                    <i class="bi bi-camera-video"></i> Agregar Video
+                                </button>
+                                <button class="btn btn-secondary add-image-btn">
+                                    <i class="bi bi-image"></i> Agregar Imagen
+                                </button>
+                            </div>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -144,96 +259,86 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="estadisticas-tab" data-bs-toggle="tab"
-                                data-bs-target="#estadisticas" type="button" role="tab">
-                                Estadísticas
+                            <button class="nav-link" id="para-quien-tab" data-bs-toggle="tab"
+                                data-bs-target="#para-quien" type="button" role="tab">
+                                Para quién
                             </button>
                         </li>
                     </ul>
                     <div class="tab-content" id="cursoTabsContent">
+                        <!-- Descripción editable -->
                         <div class="tab-pane fade show active" id="descripcion" role="tabpanel">
                             <div class="content-section">
-                                <h5>Acerca de este curso</h5>
-                                <p><?= nl2br(htmlspecialchars($curso['descripcion'])) ?></p>
-
-                                <?php if (!empty($curso['para_quien'])): ?>
-                                    <h6>¿Para quién es este curso?</h6>
-                                    <ul class="lista-puntos">
-                                        <?php foreach (explode("\n", $curso['para_quien']) as $punto): ?>
-                                            <?php if (trim($punto)): ?>
-                                                <li><?= htmlspecialchars(trim($punto)) ?></li>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                <?php endif; ?>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>Acerca de este curso</h5>
+                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-descripcion">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                </div>
+                                <div id="descripcion-display"
+                                    data-valor-original="<?= htmlspecialchars($curso['descripcion']) ?>">
+                                    <?= nl2br(htmlspecialchars($curso['descripcion'])) ?>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Lo que aprenderás editable -->
                         <div class="tab-pane fade" id="aprendizaje" role="tabpanel">
                             <div class="content-section">
-                                <h5>Al finalizar este curso serás capaz de:</h5>
-                                <?php if (!empty($curso['lo_que_aprenderas'])): ?>
-                                    <ul class="lista-aprendizaje">
-                                        <?php foreach (explode("\n", $curso['lo_que_aprenderas']) as $punto): ?>
-                                            <?php if (trim($punto)): ?>
-                                                <li>
-                                                    <i class="bi bi-check-circle"></i>
-                                                    <?= htmlspecialchars(trim($punto)) ?>
-                                                </li>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                <?php else: ?>
-                                    <p class="text-muted">No se han definido objetivos de aprendizaje.</p>
-                                <?php endif; ?>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>Al finalizar este curso serás capaz de:</h5>
+                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-lo_que_aprenderas">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                </div>
+                                <div id="lo_que_aprenderas-display"
+                                    data-valor-original="<?= htmlspecialchars($curso['lo_que_aprenderas']) ?>">
+                                    <?php if (!empty($curso['lo_que_aprenderas'])): ?>
+                                        <?= nl2br(htmlspecialchars($curso['lo_que_aprenderas'])) ?>
+                                    <?php else: ?>
+                                        <p class="text-muted">No se han definido objetivos de aprendizaje.</p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Requisitos editable -->
                         <div class="tab-pane fade" id="requisitos" role="tabpanel">
                             <div class="content-section">
-                                <h5>Requisitos y conocimientos previos</h5>
-                                <?php if (!empty($curso['requisitos'])): ?>
-                                    <ul class="lista-requisitos">
-                                        <?php foreach (explode("\n", $curso['requisitos']) as $requisito): ?>
-                                            <?php if (trim($requisito)): ?>
-                                                <li>
-                                                    <i class="bi bi-arrow-right"></i>
-                                                    <?= htmlspecialchars(trim($requisito)) ?>
-                                                </li>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                <?php else: ?>
-                                    <p class="text-muted">Este curso no requiere conocimientos previos específicos.</p>
-                                <?php endif; ?>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>Requisitos y conocimientos previos</h5>
+                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-requisitos">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                </div>
+                                <div id="requisitos-display"
+                                    data-valor-original="<?= htmlspecialchars($curso['requisitos']) ?>">
+                                    <?php if (!empty($curso['requisitos'])): ?>
+                                        <?= nl2br(htmlspecialchars($curso['requisitos'])) ?>
+                                    <?php else: ?>
+                                        <p class="text-muted">Este curso no requiere conocimientos previos específicos.</p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="estadisticas" role="tabpanel">
+
+                        <!-- Para quién editable -->
+                        <div class="tab-pane fade" id="para-quien" role="tabpanel">
                             <div class="content-section">
-                                <h5>Estadísticas del curso</h5>
-                                <div class="stats-grid">
-                                    <div class="stat-card">
-                                        <i class="bi bi-people"></i>
-                                        <div class="stat-number">0</div>
-                                        <div class="stat-label">Estudiantes inscritos</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <i class="bi bi-star"></i>
-                                        <div class="stat-number">0</div>
-                                        <div class="stat-label">Calificación promedio</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <i class="bi bi-clock"></i>
-                                        <div class="stat-number"><?= count($secciones) ?></div>
-                                        <div class="stat-label">Secciones</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <i class="bi bi-calendar"></i>
-                                        <div class="stat-number"><?= date('d/m/Y', strtotime($curso['fecha_registro'])) ?></div>
-                                        <div class="stat-label">Fecha de creación</div>
-                                    </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>¿Para quién es este curso?</h5>
+                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-para_quien">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
                                 </div>
-                                <p class="text-muted mt-3">
-                                    <small>Las estadísticas se actualizan diariamente.</small>
-                                </p>
+                                <div id="para_quien-display"
+                                    data-valor-original="<?= htmlspecialchars($curso['para_quien']) ?>">
+                                    <?php if (!empty($curso['para_quien'])): ?>
+                                        <?= nl2br(htmlspecialchars($curso['para_quien'])) ?>
+                                    <?php else: ?>
+                                        <p class="text-muted">Información no disponible.</p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -245,7 +350,12 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
         <div class="col-lg-4">
             <div class="curso-sidebar">
                 <div class="sidebar-header-content">
-                    <h4>Contenido del curso</h4>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>Contenido del curso</h4>
+                        <button class="btn btn-sm btn-primary" id="btn-agregar-seccion">
+                            <i class="bi bi-plus"></i> Nueva Sección
+                        </button>
+                    </div>
                     <div class="curso-stats">
                         <span class="stat-item">
                             <i class="bi bi-collection"></i>
@@ -262,59 +372,86 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                     <?php if (!empty($secciones)): ?>
                         <div class="accordion" id="seccionesAccordion">
                             <?php foreach ($secciones as $index => $seccion): ?>
-                                <div class="accordion-item">
+                                <div class="accordion-item seccion-item" data-seccion-id="<?= $seccion['id'] ?>">
                                     <h2 class="accordion-header" id="heading<?= $seccion['id'] ?>">
-                                        <button class="accordion-button <?= $index === 0 ? '' : 'collapsed' ?>"
-                                            type="button" data-bs-toggle="collapse"
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse"
                                             data-bs-target="#collapse<?= $seccion['id'] ?>"
-                                            aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>">
-                                            <div class="seccion-header">
-                                                <span class="seccion-titulo"><?= htmlspecialchars($seccion['titulo']) ?></span>
-                                                <span class="seccion-count">
-                                                    <?= count($contenidoSecciones[$seccion['id']] ?? []) ?> elementos
-                                                </span>
+                                            aria-expanded="false">
+                                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                                <span><?= htmlspecialchars($seccion['titulo']) ?></span>
+                                                <div class="seccion-actions" onclick="event.stopPropagation();">
+                                                    <button class="btn btn-sm btn-outline-primary btn-editar-seccion me-1"
+                                                        title="Editar sección">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger btn-eliminar-seccion"
+                                                        title="Eliminar sección">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </button>
                                     </h2>
                                     <div id="collapse<?= $seccion['id'] ?>"
-                                        class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>"
+                                        class="accordion-collapse collapse"
                                         data-bs-parent="#seccionesAccordion">
                                         <div class="accordion-body">
                                             <?php if (!empty($seccion['descripcion'])): ?>
-                                                <p class="seccion-descripcion"><?= htmlspecialchars($seccion['descripcion']) ?></p>
+                                                <p class="text-muted mb-3"><?= htmlspecialchars($seccion['descripcion']) ?></p>
                                             <?php endif; ?>
 
-                                            <?php if (isset($contenidoSecciones[$seccion['id']]) && !empty($contenidoSecciones[$seccion['id']])): ?>
-                                                <div class="contenido-items">
-                                                    <?php foreach ($contenidoSecciones[$seccion['id']] as $contenido): ?>
-                                                        <div class="contenido-item" data-tipo="<?= $contenido['tipo'] ?>"
-                                                            data-url="<?= $contenido['archivo_url'] ?>">
-                                                            <div class="item-icon">
-                                                                <?php if ($contenido['tipo'] === 'video'): ?>
-                                                                    <i class="bi bi-play-circle"></i>
-                                                                <?php elseif ($contenido['tipo'] === 'documento'): ?>
-                                                                    <i class="bi bi-file-earmark-text"></i>
-                                                                <?php else: ?>
-                                                                    <i class="bi bi-file"></i>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                            <div class="item-info">
-                                                                <span class="item-titulo"><?= htmlspecialchars($contenido['titulo']) ?></span>
+                                            <!-- Contenido de la sección -->
+                                            <div class="seccion-contenido" id="contenido-seccion-<?= $seccion['id'] ?>">
+                                                <?php
+                                                $contenidoSeccion = $contenidoSecciones[$seccion['id']] ?? [];
+                                                if (!empty($contenidoSeccion)):
+                                                ?>
+                                                    <div class="contenido-lista">
+                                                        <?php foreach ($contenidoSeccion as $contenido): ?>
+                                                            <div class="contenido-item">
+                                                                <i class="bi bi-<?= $contenido['tipo'] === 'video' ? 'camera-video' : 'file-pdf' ?>"></i>
+                                                                <span><?= htmlspecialchars($contenido['titulo']) ?></span>
                                                                 <?php if ($contenido['duracion']): ?>
-                                                                    <span class="item-duracion"><?= htmlspecialchars($contenido['duracion']) ?></span>
+                                                                    <small class="text-muted">(<?= $contenido['duracion'] ?>)</small>
                                                                 <?php endif; ?>
                                                             </div>
-                                                            <div class="item-action">
-                                                                <button class="btn-preview" onclick="reproducirContenido('<?= $contenido['archivo_url'] ?>', '<?= $contenido['tipo'] ?>', '<?= htmlspecialchars($contenido['titulo']) ?>')">
-                                                                    <i class="bi bi-eye"></i>
-                                                                </button>
-                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <!-- Área de subida de archivos -->
+                                            <div class="upload-area mt-3">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="drop-area"
+                                                            data-tipo="video"
+                                                            data-seccion-id="<?= $seccion['id'] ?>">
+                                                            <i class="bi bi-camera-video"></i>
+                                                            <p>Subir Videos</p>
+                                                            <small>MP4, máx 10min, HD</small>
+                                                            <input type="file"
+                                                                class="file-input"
+                                                                accept="video/mp4,video/avi,video/mov"
+                                                                multiple>
                                                         </div>
-                                                    <?php endforeach; ?>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="drop-area"
+                                                            data-tipo="pdf"
+                                                            data-seccion-id="<?= $seccion['id'] ?>">
+                                                            <i class="bi bi-file-pdf"></i>
+                                                            <p>Subir PDFs</p>
+                                                            <small>Máx 10MB</small>
+                                                            <input type="file"
+                                                                class="file-input"
+                                                                accept=".pdf"
+                                                                multiple>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            <?php else: ?>
-                                                <p class="text-muted">Esta sección aún no tiene contenido.</p>
-                                            <?php endif; ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -324,10 +461,10 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
                         <div class="empty-content">
                             <i class="bi bi-collection"></i>
                             <h6>Sin contenido disponible</h6>
-                            <p>Este curso aún no tiene secciones de contenido configuradas.</p>
-                            <a href="/cursosApp/App/editarCursoProfe/<?= $curso['url_amiga'] ?>" class="btn btn-primary btn-sm mt-2">
-                                <i class="bi bi-plus"></i> Agregar contenido
-                            </a>
+                            <p>Comienza creando tu primera sección de contenido.</p>
+                            <button class="btn btn-primary btn-sm mt-2" id="btn-crear-primera-seccion">
+                                <i class="bi bi-plus"></i> Crear Primera Sección
+                            </button>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -336,45 +473,16 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCur
     </div>
 </div>
 
-<!-- CSS adicional para estadísticas -->
-<style>
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-    }
 
-    .stat-card {
-        background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
-        color: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        text-align: center;
-        transition: transform 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .stat-card i {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        color: var(--accent-color);
-    }
-
-    .stat-number {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-        font-size: 0.85rem;
-        opacity: 0.9;
-    }
-</style>
+<!-- Scripts necesarios -->
+<script>
+    // Pasar datos del curso a JavaScript
+    window.cursoData = {
+        id: <?= $curso['id'] ?>,
+        nombre: <?= json_encode($curso['nombre']) ?>,
+        estado: <?= json_encode($curso['estado']) ?>
+    };
+</script>
 
 <!-- Incluir JavaScript para la página -->
-<script src="/cursosApp/App/vistas/assets/js/pages/verCurso.js?v=<?= time() ?>"></script>
+<script src="/cursosApp/App/vistas/assets/js/pages/verCursoProfe.js?v=<?= time() ?>"></script>
