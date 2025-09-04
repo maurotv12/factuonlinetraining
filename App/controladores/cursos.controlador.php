@@ -6,8 +6,12 @@
 Controlador de cursos registro
  */
 
-// Incluir modelo de cursos
-require_once "modelos/cursos.modelo.php";
+// Incluir modelo de cursos - Ruta adaptativa para AJAX
+if (file_exists("modelos/cursos.modelo.php")) {
+	require_once "modelos/cursos.modelo.php";
+} else {
+	require_once "../modelos/cursos.modelo.php";
+}
 
 class ControladorCursos
 {

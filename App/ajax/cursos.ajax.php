@@ -14,10 +14,11 @@ if (!isset($_SESSION['idU'])) {
     exit;
 }
 
-// Incluir controladores necesarios
-require_once "../controladores/cursos.controlador.php";
-require_once "../controladores/general.controlador.php";
-require_once "../modelos/conexion.php";
+// Incluir controladores necesarios con rutas absolutas
+$baseDir = dirname(dirname(__FILE__));
+require_once $baseDir . "/controladores/cursos.controlador.php";
+require_once $baseDir . "/controladores/general.controlador.php";
+require_once $baseDir . "/modelos/conexion.php";
 
 // Verificar que el usuario sea profesor
 if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
@@ -30,6 +31,10 @@ try {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
+    // Log para depuración
+    error_log("CURSOS AJAX - Input recibido: " . $input);
+    error_log("CURSOS AJAX - Data decodificado: " . print_r($data, true));
+
     if (!$data) {
         echo json_encode(['success' => false, 'mensaje' => 'Datos inválidos']);
         exit;
@@ -39,13 +44,17 @@ try {
     $idCurso = $data['idCurso'] ?? null;
     $idUsuario = $_SESSION['idU'];
 
+    error_log("CURSOS AJAX - Acción: $accion, ID Curso: $idCurso, ID Usuario: $idUsuario");
+
     // Verificar que el curso pertenece al usuario (para acciones que lo requieran)
-    if ($idCurso) {
+    if ($idCurso && $accion !== 'obtenerCategorias') {
         $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
         if (!$curso || $curso[0]['id_persona'] != $idUsuario) {
+            error_log("CURSOS AJAX - Error de permisos para curso $idCurso y usuario $idUsuario");
             echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para editar este curso']);
             exit;
         }
+        error_log("CURSOS AJAX - Permisos verificados correctamente");
     }
 
     switch ($accion) {
@@ -53,58 +62,14 @@ try {
             $campo = $data['campo'] ?? '';
             $valor = $data['valor'] ?? '';
 
+            error_log("CURSOS AJAX - Actualizando campo: $campo con valor: $valor");
+
             if (!$campo) {
                 echo json_encode(['success' => false, 'mensaje' => 'Campo no especificado']);
                 exit;
             }
 
-            // Validaciones específicas por campo
-            switch ($campo) {
-                case 'nombre':
-                    if (strlen($valor) < 10) {
-                        echo json_encode(['success' => false, 'mensaje' => 'El nombre debe tener al menos 10 caracteres']);
-                        exit;
-                    }
-                    // Verificar que el nombre sea único
-                    require_once "../modelos/cursos.modelo.php";
-                    if (!ModeloCursos::mdlValidarNombreUnico($valor, $idCurso)) {
-                        echo json_encode(['success' => false, 'mensaje' => 'Ya existe un curso con este nombre']);
-                        exit;
-                    }
-                    break;
-
-                case 'valor':
-                    if (!is_numeric($valor) || $valor < 0) {
-                        echo json_encode(['success' => false, 'mensaje' => 'El valor debe ser un número válido']);
-                        exit;
-                    }
-                    break;
-
-                case 'id_categoria':
-                    if (!is_numeric($valor)) {
-                        echo json_encode(['success' => false, 'mensaje' => 'Categoría inválida']);
-                        exit;
-                    }
-                    break;
-            }
-
-            // Actualizar el campo
-            require_once "../modelos/cursos.modelo.php";
-            $resultado = ModeloCursos::mdlActualizarCampoCurso($idCurso, $campo, $valor);
-
-            if ($resultado === "ok") {
-                $valorFormateado = $valor;
-                if ($campo === 'valor') {
-                    $valorFormateado = '$' . number_format($valor, 0, ',', '.');
-                }
-                echo json_encode([
-                    'success' => true,
-                    'mensaje' => 'Campo actualizado correctamente',
-                    'valorFormateado' => $valorFormateado
-                ]);
-            } else {
-                echo json_encode(['success' => false, 'mensaje' => 'Error al actualizar el campo']);
-            }
+            actualizarCampo($idCurso, $campo, $valor, $idUsuario);
             break;
 
         case 'validarNombre':
@@ -120,8 +85,7 @@ try {
             break;
 
         case 'obtenerCategorias':
-            $categorias = ControladorCursos::ctrObtenerCategorias();
-            echo json_encode(['success' => true, 'categorias' => $categorias]);
+            obtenerCategorias();
             break;
 
         default:
@@ -129,257 +93,221 @@ try {
             break;
     }
 } catch (Exception $e) {
+    error_log("CURSOS AJAX - Error: " . $e->getMessage());
     echo json_encode(['success' => false, 'mensaje' => 'Error del servidor: ' . $e->getMessage()]);
 }
 
-?>
-if (!$curso || $curso['id_persona'] != $idUsuario) {
-echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para editar este curso']);
-exit;
-}
-
-switch ($accion) {
-case 'actualizarCampo':
-actualizarCampo($idCurso, $campo, $valor);
-break;
-
-case 'obtenerCategorias':
-obtenerCategorias();
-break;
-
-default:
-echo json_encode(['success' => false, 'mensaje' => 'Acción no válida']);
-break;
-}
-} catch (Exception $e) {
-echo json_encode([
-'success' => false,
-'mensaje' => 'Error interno del servidor',
-'error' => $e->getMessage()
-]);
-}
-
 /**
-* Actualizar campo específico del curso
-*/
-function actualizarCampo($idCurso, $campo, $valor)
+ * Actualizar campo específico del curso
+ */
+function actualizarCampo($idCurso, $campo, $valor, $idUsuario)
 {
-// Campos permitidos para edición
-$camposPermitidos = [
-'nombre',
-'descripcion',
-'lo_que_aprenderas',
-'requisitos',
-'para_quien',
-'valor',
-'id_categoria'
-];
+    error_log("ACTUALIZANDO CAMPO - Curso: $idCurso, Campo: $campo, Valor: $valor");
 
-if (!in_array($campo, $camposPermitidos)) {
-echo json_encode(['success' => false, 'mensaje' => 'Campo no permitido para edición']);
-return;
-}
+    // Campos permitidos para edición
+    $camposPermitidos = [
+        'nombre',
+        'descripcion',
+        'lo_que_aprenderas',
+        'requisitos',
+        'para_quien',
+        'valor',
+        'id_categoria'
+    ];
 
-// Validaciones específicas por campo
-$validacion = validarCampo($campo, $valor);
-if (!$validacion['valido']) {
-echo json_encode(['success' => false, 'mensaje' => $validacion['mensaje']]);
-return;
-}
-
-// Preparar datos para actualización
-$conexion = Conexion::conectar();
-
-try {
-// Construir consulta dinámica
-$sql = "UPDATE curso SET {$campo} = :valor WHERE id = :id";
-$stmt = $conexion->prepare($sql);
-
-// Bindear parámetros según el tipo de campo
-if ($campo === 'valor') {
-$stmt->bindParam(':valor', $valor, PDO::PARAM_INT);
-} elseif ($campo === 'id_categoria') {
-$stmt->bindParam(':valor', $valor, PDO::PARAM_INT);
-} else {
-$stmt->bindParam(':valor', $valor, PDO::PARAM_STR);
-}
-
-$stmt->bindParam(':id', $idCurso, PDO::PARAM_INT);
-
-if ($stmt->execute()) {
-// Generar nueva URL amigable si se cambió el nombre
-if ($campo === 'nombre') {
-actualizarUrlAmigable($idCurso, $valor);
-}
-
-// Formatear valor para la respuesta
-$valorFormateado = formatearValorParaVista($campo, $valor);
-
-echo json_encode([
-'success' => true,
-'mensaje' => 'Campo actualizado correctamente',
-'valorFormateado' => $valorFormateado
-]);
-} else {
-echo json_encode(['success' => false, 'mensaje' => 'Error al actualizar el campo']);
-}
-} catch (Exception $e) {
-echo json_encode(['success' => false, 'mensaje' => 'Error en la base de datos: ' . $e->getMessage()]);
-}
-}
-
-/**
-* Validar campo específico
-*/
-function validarCampo($campo, $valor)
-{
-switch ($campo) {
-case 'nombre':
-if (strlen(trim($valor)) < 10) {
-    return ['valido'=> false, 'mensaje' => 'El nombre debe tener al menos 10 caracteres'];
+    if (!in_array($campo, $camposPermitidos)) {
+        echo json_encode(['success' => false, 'mensaje' => 'Campo no permitido para edición']);
+        return;
     }
-    if (strlen(trim($valor)) > 255) {
-    return ['valido' => false, 'mensaje' => 'El nombre no puede superar los 255 caracteres'];
-    }
-    // Verificar nombre único (excluyendo el curso actual)
-    if (!ControladorCursos::ctrValidarNombreUnico($valor, $_POST['idCurso'] ?? null)) {
-    return ['valido' => false, 'mensaje' => 'Ya existe un curso con este nombre'];
-    }
-    break;
 
-    case 'descripcion':
-    if (strlen(trim($valor)) < 50) {
-        return ['valido'=> false, 'mensaje' => 'La descripción debe tener al menos 50 caracteres'];
+    // Validaciones específicas por campo
+    $validacion = validarCampo($campo, $valor, $idCurso);
+    if (!$validacion['valido']) {
+        echo json_encode(['success' => false, 'mensaje' => $validacion['mensaje']]);
+        return;
+    }
+
+    // Actualizar usando el modelo
+    require_once "../modelos/cursos.modelo.php";
+    $resultado = ModeloCursos::mdlActualizarCampoCurso($idCurso, $campo, $valor);
+
+    error_log("ACTUALIZANDO CAMPO - Resultado: $resultado");
+
+    if ($resultado === "ok") {
+        // Generar nueva URL amigable si se cambió el nombre
+        if ($campo === 'nombre') {
+            actualizarUrlAmigable($idCurso, $valor);
         }
-        break;
 
-        case 'valor':
-        if (!is_numeric($valor) || $valor < 0) {
-            return ['valido'=> false, 'mensaje' => 'El valor debe ser un número positivo'];
+        // Formatear valor para la respuesta
+        $valorFormateado = formatearValorParaVista($campo, $valor);
+
+        echo json_encode([
+            'success' => true,
+            'mensaje' => 'Campo actualizado correctamente',
+            'valorFormateado' => $valorFormateado
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'mensaje' => 'Error al actualizar el campo']);
+    }
+}
+
+/**
+ * Validar campo específico
+ */
+function validarCampo($campo, $valor, $idCurso = null)
+{
+    switch ($campo) {
+        case 'nombre':
+            if (strlen(trim($valor)) < 10) {
+                return ['valido' => false, 'mensaje' => 'El nombre debe tener al menos 10 caracteres'];
+            }
+            if (strlen(trim($valor)) > 255) {
+                return ['valido' => false, 'mensaje' => 'El nombre no puede superar los 255 caracteres'];
+            }
+            // Verificar nombre único (excluyendo el curso actual)
+            require_once "../modelos/cursos.modelo.php";
+            if (!ModeloCursos::mdlValidarNombreUnico($valor, $idCurso)) {
+                return ['valido' => false, 'mensaje' => 'Ya existe un curso con este nombre'];
             }
             break;
 
-            case 'id_categoria':
+        case 'descripcion':
+        case 'lo_que_aprenderas':
+        case 'requisitos':
+        case 'para_quien':
+            if (strlen(trim($valor)) < 10) {
+                return ['valido' => false, 'mensaje' => 'Este campo debe tener al menos 10 caracteres'];
+            }
+            break;
+
+        case 'valor':
+            if (!is_numeric($valor) || $valor < 0) {
+                return ['valido' => false, 'mensaje' => 'El valor debe ser un número positivo'];
+            }
+            break;
+
+        case 'id_categoria':
             if (!is_numeric($valor) || $valor <= 0) {
-                return ['valido'=> false, 'mensaje' => 'Categoría inválida'];
-                }
-                // Verificar que la categoría existe
-                $categorias = ControladorCursos::ctrObtenerCategorias();
-                $categoriaValida = false;
-                foreach ($categorias as $cat) {
+                return ['valido' => false, 'mensaje' => 'Categoría inválida'];
+            }
+            // Verificar que la categoría existe
+            $categorias = ControladorCursos::ctrObtenerCategorias();
+            $categoriaValida = false;
+            foreach ($categorias as $cat) {
                 if ($cat['id'] == $valor) {
-                $categoriaValida = true;
-                break;
+                    $categoriaValida = true;
+                    break;
                 }
-                }
-                if (!$categoriaValida) {
+            }
+            if (!$categoriaValida) {
                 return ['valido' => false, 'mensaje' => 'La categoría seleccionada no existe'];
-                }
-                break;
-                }
+            }
+            break;
+    }
 
-                return ['valido' => true];
-                }
+    return ['valido' => true];
+}
 
-                /**
-                * Actualizar URL amigable cuando cambia el nombre
-                */
-                function actualizarUrlAmigable($idCurso, $nuevoNombre)
-                {
-                $conexion = Conexion::conectar();
+/**
+ * Actualizar URL amigable cuando cambia el nombre
+ */
+function actualizarUrlAmigable($idCurso, $nuevoNombre)
+{
+    $conexion = Conexion::conectar();
 
-                // Generar nueva URL amigable
-                $urlAmiga = generarUrlAmigable($nuevoNombre);
+    // Generar nueva URL amigable
+    $urlAmiga = generarUrlAmigable($nuevoNombre);
 
-                // Verificar que sea única
-                $contador = 1;
-                $urlAmigaOriginal = $urlAmiga;
+    // Verificar que sea única
+    $contador = 1;
+    $urlAmigaOriginal = $urlAmiga;
 
-                while (true) {
-                $stmt = $conexion->prepare("SELECT id FROM curso WHERE url_amiga = :url_amiga AND id != :id");
-                $stmt->bindParam(':url_amiga', $urlAmiga, PDO::PARAM_STR);
-                $stmt->bindParam(':id', $idCurso, PDO::PARAM_INT);
-                $stmt->execute();
+    while (true) {
+        $stmt = $conexion->prepare("SELECT id FROM curso WHERE url_amiga = :url_amiga AND id != :id");
+        $stmt->bindParam(':url_amiga', $urlAmiga, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $idCurso, PDO::PARAM_INT);
+        $stmt->execute();
 
-                if ($stmt->rowCount() === 0) {
-                break; // URL única encontrada
-                }
+        if ($stmt->rowCount() === 0) {
+            break; // URL única encontrada
+        }
 
-                $contador++;
-                $urlAmiga = $urlAmigaOriginal . '-' . $contador;
-                }
+        $contador++;
+        $urlAmiga = $urlAmigaOriginal . '-' . $contador;
+    }
 
-                // Actualizar URL amigable
-                $stmt = $conexion->prepare("UPDATE curso SET url_amiga = :url_amiga WHERE id = :id");
-                $stmt->bindParam(':url_amiga', $urlAmiga, PDO::PARAM_STR);
-                $stmt->bindParam(':id', $idCurso, PDO::PARAM_INT);
-                $stmt->execute();
-                }
+    // Actualizar URL amigable
+    $stmt = $conexion->prepare("UPDATE curso SET url_amiga = :url_amiga WHERE id = :id");
+    $stmt->bindParam(':url_amiga', $urlAmiga, PDO::PARAM_STR);
+    $stmt->bindParam(':id', $idCurso, PDO::PARAM_INT);
+    $stmt->execute();
+}
 
-                /**
-                * Generar URL amigable
-                */
-                function generarUrlAmigable($texto)
-                {
-                // Convertir a minúsculas
-                $texto = strtolower($texto);
+/**
+ * Generar URL amigable
+ */
+function generarUrlAmigable($texto)
+{
+    // Convertir a minúsculas
+    $texto = strtolower($texto);
 
-                // Reemplazar caracteres especiales
-                $buscar = ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'ç', 'à', 'è', 'ì', 'ò', 'ù'];
-                $reemplazar = ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'c', 'a', 'e', 'i', 'o', 'u'];
-                $texto = str_replace($buscar, $reemplazar, $texto);
+    // Reemplazar caracteres especiales
+    $buscar = ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'ç', 'à', 'è', 'ì', 'ò', 'ù'];
+    $reemplazar = ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'c', 'a', 'e', 'i', 'o', 'u'];
+    $texto = str_replace($buscar, $reemplazar, $texto);
 
-                // Reemplazar espacios y caracteres especiales por guiones
-                $texto = preg_replace('/[^a-z0-9]/', '-', $texto);
+    // Reemplazar espacios y caracteres especiales por guiones
+    $texto = preg_replace('/[^a-z0-9]/', '-', $texto);
 
-                // Eliminar guiones duplicados
-                $texto = preg_replace('/-+/', '-', $texto);
+    // Eliminar guiones duplicados
+    $texto = preg_replace('/-+/', '-', $texto);
 
-                // Eliminar guiones al inicio y final
-                $texto = trim($texto, '-');
+    // Eliminar guiones al inicio y final
+    $texto = trim($texto, '-');
 
-                return $texto;
-                }
+    return $texto;
+}
 
-                /**
-                * Formatear valor para la vista
-                */
-                function formatearValorParaVista($campo, $valor)
-                {
-                switch ($campo) {
-                case 'valor':
-                return '$' . number_format($valor, 0, ',', '.');
+/**
+ * Formatear valor para la vista
+ */
+function formatearValorParaVista($campo, $valor)
+{
+    switch ($campo) {
+        case 'valor':
+            return '$' . number_format($valor, 0, ',', '.');
 
-                case 'id_categoria':
-                // Obtener nombre de la categoría
-                $categorias = ControladorCursos::ctrObtenerCategorias();
-                foreach ($categorias as $cat) {
+        case 'id_categoria':
+            // Obtener nombre de la categoría
+            $categorias = ControladorCursos::ctrObtenerCategorias();
+            foreach ($categorias as $cat) {
                 if ($cat['id'] == $valor) {
-                return htmlspecialchars($cat['nombre']);
+                    return htmlspecialchars($cat['nombre']);
                 }
-                }
-                return 'Sin categoría';
+            }
+            return 'Sin categoría';
 
-                default:
-                return nl2br(htmlspecialchars($valor));
-                }
-                }
+        default:
+            return nl2br(htmlspecialchars($valor));
+    }
+}
 
-                /**
-                * Obtener categorías disponibles
-                */
-                function obtenerCategorias()
-                {
-                try {
-                $categorias = ControladorCursos::ctrObtenerCategorias();
-                echo json_encode([
-                'success' => true,
-                'categorias' => $categorias
-                ]);
-                } catch (Exception $e) {
-                echo json_encode([
-                'success' => false,
-                'mensaje' => 'Error al obtener categorías'
-                ]);
-                }
-                }
+/**
+ * Obtener categorías disponibles
+ */
+function obtenerCategorias()
+{
+    try {
+        $categorias = ControladorCursos::ctrObtenerCategorias();
+        echo json_encode([
+            'success' => true,
+            'categorias' => $categorias
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'mensaje' => 'Error al obtener categorías'
+        ]);
+    }
+}

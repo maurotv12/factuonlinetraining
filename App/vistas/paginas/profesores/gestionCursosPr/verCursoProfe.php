@@ -155,7 +155,8 @@ if (isset($_SESSION['mensaje_error'])) {
                     <div class="editable-field d-inline-block me-2">
                         <span class="badge badge-categoria"
                             id="id_categoria-display"
-                            data-valor-original="<?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?>">
+                            data-valor-original="<?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?>"
+                            data-categoria-id="<?= $curso['id_categoria'] ?>">
                             <?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?>
                         </span>
                         <button class="btn btn-sm btn-outline-primary edit-btn"
@@ -195,22 +196,28 @@ if (isset($_SESSION['mensaje_error'])) {
         <div class="col-lg-8">
             <!-- Video/Imagen principal -->
             <div class="video-container">
-                <?php if (!empty($curso['promo_video'])): ?>
+                <?php
+                $videoUrl = null;
+                if (!empty($curso['promo_video'])) {
+                    $videoUrl = ControladorCursos::ctrObtenerUrlVideoPromo($curso['promo_video']);
+                }
+                ?>
+                <?php if ($videoUrl): ?>
                     <div class="video-wrapper">
                         <video id="videoPlayer" controls class="main-video">
-                            <source src="<?= $curso['promo_video'] ?>" type="video/mp4">
+                            <source src="<?= $videoUrl ?>" type="video/mp4">
                             Tu navegador no soporta videos.
                         </video>
                         <div class="video-overlay">
                             <div class="video-title">Video promocional</div>
-                            <button class="btn btn-sm btn-outline-light edit-video-btn">
+                            <button class="btn btn-sm btn-outline-light edit-video-btn" id="btn-subir-promo">
                                 <i class="bi bi-camera-video"></i> Cambiar video
                             </button>
                         </div>
                     </div>
                 <?php elseif (!empty($curso['banner'])): ?>
                     <div class="image-wrapper">
-                        <img src="<?= $curso['banner'] ?>" alt="Banner del curso" class="main-image">
+                        <img src="<?= ControladorCursos::ctrValidarImagenCurso($curso['banner']) ?>" alt="Banner del curso" class="main-image">
                         <div class="image-overlay">
                             <div class="image-title">Vista previa del curso</div>
                             <button class="btn btn-sm btn-outline-light edit-image-btn">
@@ -224,7 +231,7 @@ if (isset($_SESSION['mensaje_error'])) {
                             <i class="bi bi-plus-circle"></i>
                             <p>Agregar contenido multimedia</p>
                             <div class="upload-buttons">
-                                <button class="btn btn-primary me-2 add-video-btn">
+                                <button class="btn btn-primary me-2 add-video-btn" id="btn-subir-promo">
                                     <i class="bi bi-camera-video"></i> Agregar Video
                                 </button>
                                 <button class="btn btn-secondary add-image-btn">

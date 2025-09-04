@@ -37,7 +37,11 @@ class ControladorGeneral
 			$rolesUsuario = $_SESSION['rolesU'];
 		} else {
 			// Si no están en sesión, obtenerlos de la base de datos
-			require_once "modelos/usuarios.modelo.php";
+			if (file_exists("modelos/usuarios.modelo.php")) {
+				require_once "modelos/usuarios.modelo.php";
+			} else {
+				require_once "../modelos/usuarios.modelo.php";
+			}
 			$rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($idUsuario);
 			$_SESSION['rolesU'] = $rolesUsuario; // Guardar en sesión
 		}
@@ -132,7 +136,11 @@ class ControladorGeneral
 	=============================================*/
 	public static function ctrVerificarRolUsuario($idUsuario, $rolesPermitidos)
 	{
-		require_once "modelos/usuarios.modelo.php";
+		if (file_exists("modelos/usuarios.modelo.php")) {
+			require_once "modelos/usuarios.modelo.php";
+		} else {
+			require_once "../modelos/usuarios.modelo.php";
+		}
 
 		// Obtener roles del usuario
 		$rolesUsuario = ModeloUsuarios::mdlObtenerRolesPorUsuario($idUsuario);
@@ -177,7 +185,11 @@ class ControladorGeneral
 				$urlAmiga = $matches[1];
 
 				// Buscar el curso por URL amigable y obtener su ID
-				require_once "modelos/cursos.modelo.php";
+				if (file_exists("modelos/cursos.modelo.php")) {
+					require_once "modelos/cursos.modelo.php";
+				} else {
+					require_once "../modelos/cursos.modelo.php";
+				}
 				$curso = ModeloCursos::mdlMostrarCursos("curso", "url_amiga", $urlAmiga);
 
 				if ($curso) {

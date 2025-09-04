@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Elementos principales
     const cursoId = document.querySelector('[data-curso-id]')?.dataset.cursoId;
 
+    console.log('Curso ID detectado:', cursoId);
+
+    if (!cursoId) {
+        console.error('No se pudo obtener el ID del curso');
+        mostrarNotificacion('Error: No se pudo obtener el ID del curso', 'error');
+        return;
+    }
+
     // Inicializar todas las funcionalidades
     inicializarEdicionCampos();
     inicializarReproductorVideo();
@@ -80,10 +88,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             case 'id_categoria':
                 // Obtener categorías y crear select
+                // Para la categoría, necesitamos obtener el ID actual del dataset
+                const categoriaActualId = display.dataset.categoriaId;
                 obtenerCategorias().then(categorias => {
                     let options = '';
                     categorias.forEach(cat => {
-                        const selected = cat.id == valor ? 'selected' : '';
+                        const selected = cat.id == categoriaActualId ? 'selected' : '';
                         options += `<option value="${cat.id}" ${selected}>${cat.nombre}</option>`;
                     });
 
@@ -117,6 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const input = document.getElementById(`${campo}-input`);
         const valor = input.value.trim();
 
+        console.log('Guardando campo:', campo, 'Valor:', valor, 'Curso ID:', cursoId);
+
         if (!valor && campo !== 'valor') {
             mostrarNotificacion('El campo no puede estar vacío', 'error');
             return;
@@ -134,6 +146,16 @@ document.addEventListener('DOMContentLoaded', function () {
         btnGuardar.innerHTML = '<i class="spinner-border spinner-border-sm"></i>';
         btnGuardar.disabled = true;
 
+        // Datos a enviar
+        const datosEnviar = {
+            accion: 'actualizarCampo',
+            idCurso: cursoId,
+            campo: campo,
+            valor: valor
+        };
+
+        console.log('Datos a enviar:', datosEnviar);
+
         // Enviar datos al servidor
         fetch('/cursosApp/App/ajax/cursos.ajax.php', {
             method: 'POST',
@@ -141,25 +163,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({
-                accion: 'actualizarCampo',
-                idCurso: cursoId,
-                campo: campo,
-                valor: valor
-            })
+            body: JSON.stringify(datosEnviar)
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    actualizarVisualizacionCampo(campo, valor, data.valorFormateado);
-                    mostrarNotificacion(data.mensaje, 'success');
-                } else {
-                    mostrarNotificacion(data.mensaje, 'error');
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                return response.text();
+            })
+            .then(text => {
+                console.log('Response text:', text);
+                try {
+                    const data = JSON.parse(text);
+                    console.log('Parsed data:', data);
+
+                    if (data.success) {
+                        actualizarVisualizacionCampo(campo, valor, data.valorFormateado);
+                        mostrarNotificacion(data.mensaje, 'success');
+                    } else {
+                        mostrarNotificacion(data.mensaje, 'error');
+                        cancelarEdicion(campo);
+                    }
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                    console.error('Response text was:', text);
+                    mostrarNotificacion('Error: Respuesta inválida del servidor', 'error');
                     cancelarEdicion(campo);
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fetch error:', error);
                 mostrarNotificacion('Error de conexión', 'error');
                 cancelarEdicion(campo);
             })
@@ -183,8 +215,15 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function actualizarVisualizacionCampo(campo, valor, valorFormateado) {
         const display = document.getElementById(`${campo}-display`);
-        display.dataset.valorOriginal = valorFormateado || valor;
+
+        // Actualizar el contenido
         display.innerHTML = valorFormateado || valor;
+        display.dataset.valorOriginal = valorFormateado || valor;
+
+        // Para categoría, también actualizar el data-categoria-id
+        if (campo === 'id_categoria') {
+            display.dataset.categoriaId = valor;
+        }
     }
 
     /**
@@ -348,9 +387,9 @@ document.addEventListener('DOMContentLoaded', function () {
         inicializarDragDrop();
 
         // Botones de subida de video promocional
-        const btnSubirPromo = document.getElementById('btn-subir-promo');
-        if (btnSubirPromo) {
-            btnSubirPromo.addEventListener('click', () => {
+        const botonesSubirPromo = document.querySelectorAll('#btn-subir-promo, .edit-video-btn');
+        botonesSubirPromo.forEach(btn => {
+            btn.addEventListener('click', () => {
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = 'video/mp4';
@@ -362,10 +401,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
                 input.click();
             });
-        }
+        });
 
         // Botones de agregar multimedia
-        const btnAgregarVideo = document.querySelector('.add-video-btn');
+        const btnAgregarVideo = document.querySelector('.add-video-btn:not(#btn-subir-promo)');
         const btnAgregarImagen = document.querySelector('.add-image-btn');
 
         if (btnAgregarVideo) {
