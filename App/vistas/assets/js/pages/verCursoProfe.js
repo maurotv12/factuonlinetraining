@@ -23,11 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
         ];
 
         camposEditables.forEach(campo => {
-            const elemento = document.getElementById(`${campo}-display`);
-            const btnEditar = document.getElementById(`btn-editar-${campo}`);
-
-            if (elemento && btnEditar) {
-                btnEditar.addEventListener('click', () => habilitarEdicion(campo));
+            const botonEditar = document.getElementById(`btn-editar-${campo}`);
+            if (botonEditar) {
+                botonEditar.addEventListener('click', () => habilitarEdicion(campo));
             }
         });
 
@@ -42,17 +40,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const display = document.getElementById(`${campo}-display`);
         const valor = display.textContent.trim();
 
+        // Guardar el valor original para cancelación
+        display.dataset.valorOriginal = display.innerHTML;
+
         let inputHtml = '';
 
         switch (campo) {
             case 'nombre':
+            case 'valor':
                 inputHtml = `
                     <div class="input-group">
-                        <input type="text" class="form-control" id="${campo}-input" value="${valor}" maxlength="255">
-                        <button class="btn btn-success" onclick="guardarCampo('${campo}')">
+                        <input type="text" class="form-control" id="${campo}-input" value="${valor}">
+                        <button class="btn btn-success btn-sm" onclick="guardarCampo('${campo}')">
                             <i class="bi bi-check"></i>
                         </button>
-                        <button class="btn btn-secondary" onclick="cancelarEdicion('${campo}')">
+                        <button class="btn btn-secondary btn-sm" onclick="cancelarEdicion('${campo}')">
                             <i class="bi bi-x"></i>
                         </button>
                     </div>`;
@@ -64,56 +66,42 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'para_quien':
                 inputHtml = `
                     <div>
-                        <textarea class="form-control" id="${campo}-input" rows="5">${valor}</textarea>
-                        <div class="mt-2">
-                            <button class="btn btn-success" onclick="guardarCampo('${campo}')">
+                        <textarea class="form-control mb-2" id="${campo}-input" rows="4">${valor}</textarea>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success btn-sm" onclick="guardarCampo('${campo}')">
                                 <i class="bi bi-check"></i> Guardar
                             </button>
-                            <button class="btn btn-secondary" onclick="cancelarEdicion('${campo}')">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelarEdicion('${campo}')">
                                 <i class="bi bi-x"></i> Cancelar
                             </button>
                         </div>
                     </div>`;
                 break;
 
-            case 'valor':
-                const valorNumerico = valor.replace(/[^\d]/g, '');
-                inputHtml = `
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" class="form-control" id="${campo}-input" value="${valorNumerico}" min="0">
-                        <button class="btn btn-success" onclick="guardarCampo('${campo}')">
-                            <i class="bi bi-check"></i>
-                        </button>
-                        <button class="btn btn-secondary" onclick="cancelarEdicion('${campo}')">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>`;
-                break;
-
             case 'id_categoria':
-                // Obtener categorías disponibles
+                // Obtener categorías y crear select
                 obtenerCategorias().then(categorias => {
-                    const categoriaActual = display.textContent.trim();
-                    let optionsHtml = '';
-
+                    let options = '';
                     categorias.forEach(cat => {
-                        const selected = cat.nombre === categoriaActual ? 'selected' : '';
-                        optionsHtml += `<option value="${cat.id}" ${selected}>${cat.nombre}</option>`;
+                        const selected = cat.id == valor ? 'selected' : '';
+                        options += `<option value="${cat.id}" ${selected}>${cat.nombre}</option>`;
                     });
 
-                    display.innerHTML = `
+                    inputHtml = `
                         <div class="input-group">
                             <select class="form-control" id="${campo}-input">
-                                ${optionsHtml}
+                                ${options}
                             </select>
-                            <button class="btn btn-success" onclick="guardarCampo('${campo}')">
+                            <button class="btn btn-success btn-sm" onclick="guardarCampo('${campo}')">
                                 <i class="bi bi-check"></i>
                             </button>
-                            <button class="btn btn-secondary" onclick="cancelarEdicion('${campo}')">
+                            <button class="btn btn-secondary btn-sm" onclick="cancelarEdicion('${campo}')">
                                 <i class="bi bi-x"></i>
                             </button>
                         </div>`;
+
+                    display.innerHTML = inputHtml;
+                    document.getElementById(`${campo}-input`).focus();
                 });
                 return;
         }
@@ -130,18 +118,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const valor = input.value.trim();
 
         if (!valor && campo !== 'valor') {
-            mostrarNotificacion('El campo no puede estar vacío', 'warning');
+            mostrarNotificacion('El campo no puede estar vacío', 'error');
             return;
         }
 
         // Validaciones específicas
         if (campo === 'nombre' && valor.length < 10) {
-            mostrarNotificacion('El nombre debe tener al menos 10 caracteres', 'warning');
+            mostrarNotificacion('El nombre debe tener al menos 10 caracteres', 'error');
             return;
         }
 
         // Mostrar loading
         const btnGuardar = event.target;
+        const iconoOriginal = btnGuardar.innerHTML;
         btnGuardar.innerHTML = '<i class="spinner-border spinner-border-sm"></i>';
         btnGuardar.disabled = true;
 
@@ -162,18 +151,20 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    mostrarNotificacion('Campo actualizado correctamente', 'success');
                     actualizarVisualizacionCampo(campo, valor, data.valorFormateado);
+                    mostrarNotificacion(data.mensaje, 'success');
                 } else {
-                    mostrarNotificacion(data.mensaje || 'Error al actualizar', 'error');
+                    mostrarNotificacion(data.mensaje, 'error');
+                    cancelarEdicion(campo);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                mostrarNotificacion('Error al actualizar el campo', 'error');
+                mostrarNotificacion('Error de conexión', 'error');
+                cancelarEdicion(campo);
             })
             .finally(() => {
-                btnGuardar.innerHTML = '<i class="bi bi-check"></i>';
+                btnGuardar.innerHTML = iconoOriginal;
                 btnGuardar.disabled = false;
             });
     };
@@ -205,15 +196,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Configurar controles personalizados si es necesario
         video.addEventListener('loadedmetadata', function () {
-            console.log('Video cargado:', {
-                duración: this.duration,
-                resolución: `${this.videoWidth}x${this.videoHeight}`
-            });
+            console.log('Video cargado:', this.duration + ' segundos');
         });
 
         video.addEventListener('error', function () {
-            console.error('Error al cargar el video');
-            mostrarNotificacion('Error al cargar el video promocional', 'error');
+            mostrarNotificacion('Error al cargar el video', 'error');
         });
     }
 
@@ -227,26 +214,23 @@ document.addEventListener('DOMContentLoaded', function () {
             btnAgregarSeccion.addEventListener('click', mostrarModalNuevaSeccion);
         }
 
+        // Botón crear primera sección
+        const btnCrearPrimera = document.getElementById('btn-crear-primera-seccion');
+        if (btnCrearPrimera) {
+            btnCrearPrimera.addEventListener('click', mostrarModalNuevaSeccion);
+        }
+
         // Event listeners para secciones existentes
         document.querySelectorAll('.seccion-item').forEach(seccion => {
-            const id = seccion.dataset.seccionId;
-
-            // Botón editar sección
             const btnEditar = seccion.querySelector('.btn-editar-seccion');
-            if (btnEditar) {
-                btnEditar.addEventListener('click', () => editarSeccion(id));
-            }
-
-            // Botón eliminar sección
             const btnEliminar = seccion.querySelector('.btn-eliminar-seccion');
-            if (btnEliminar) {
-                btnEliminar.addEventListener('click', () => eliminarSeccion(id));
+
+            if (btnEditar) {
+                btnEditar.addEventListener('click', () => editarSeccion(seccion.dataset.seccionId));
             }
 
-            // Botón agregar contenido
-            const btnAgregarContenido = seccion.querySelector('.btn-agregar-contenido');
-            if (btnAgregarContenido) {
-                btnAgregarContenido.addEventListener('click', () => mostrarModalNuevoContenido(id));
+            if (btnEliminar) {
+                btnEliminar.addEventListener('click', () => eliminarSeccion(seccion.dataset.seccionId));
             }
         });
     }
@@ -317,47 +301,42 @@ document.addEventListener('DOMContentLoaded', function () {
         const descripcion = document.getElementById('seccion-descripcion').value.trim();
 
         if (!titulo) {
-            mostrarNotificacion('El título es obligatorio', 'warning');
+            mostrarNotificacion('El título es obligatorio', 'error');
             return;
         }
 
-        const btnGuardar = document.getElementById('btn-guardar-seccion');
-        btnGuardar.innerHTML = '<i class="spinner-border spinner-border-sm"></i> Guardando...';
-        btnGuardar.disabled = true;
+        const datos = {
+            accion: id ? 'actualizarSeccion' : 'crearSeccion',
+            idCurso: cursoId,
+            titulo: titulo,
+            descripcion: descripcion
+        };
 
-        const accion = id ? 'actualizarSeccion' : 'crearSeccion';
+        if (id) {
+            datos.idSeccion = id;
+        }
 
         fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                accion: accion,
-                id: id,
-                idCurso: cursoId,
-                titulo: titulo,
-                descripcion: descripcion
-            })
+            body: JSON.stringify(datos)
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    mostrarNotificacion(`Sección ${id ? 'actualizada' : 'creada'} correctamente`, 'success');
+                    mostrarNotificacion(data.mensaje, 'success');
                     bootstrap.Modal.getInstance(document.getElementById('modalSeccion')).hide();
-                    location.reload(); // Recargar para mostrar cambios
+                    // Recargar la página o actualizar la lista de secciones
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    mostrarNotificacion(data.mensaje || 'Error al guardar', 'error');
+                    mostrarNotificacion(data.mensaje, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                mostrarNotificacion('Error al guardar la sección', 'error');
-            })
-            .finally(() => {
-                btnGuardar.innerHTML = 'Guardar';
-                btnGuardar.disabled = false;
+                mostrarNotificacion('Error de conexión', 'error');
             });
     }
 
@@ -365,22 +344,43 @@ document.addEventListener('DOMContentLoaded', function () {
      * Inicializar subida de archivos
      */
     function inicializarSubidaArchivos() {
-        // Event listeners para inputs de archivos
-        document.querySelectorAll('.file-input').forEach(input => {
-            input.addEventListener('change', function (e) {
-                const files = e.target.files;
-                const dropArea = this.closest('.drop-area');
-                const tipo = dropArea.dataset.tipo;
-                const seccionId = dropArea.dataset.seccionId;
+        // Funcionalidad drag & drop
+        inicializarDragDrop();
 
-                handleFiles(files, tipo, seccionId);
+        // Botones de subida de video promocional
+        const btnSubirPromo = document.getElementById('btn-subir-promo');
+        if (btnSubirPromo) {
+            btnSubirPromo.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/mp4';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file && validarVideo(file)) {
+                        subirVideoPromocional(file);
+                    }
+                };
+                input.click();
             });
-        });
+        }
 
-        // Event listeners para botones de crear primera sección
-        const btnCrearPrimera = document.getElementById('btn-crear-primera-seccion');
-        if (btnCrearPrimera) {
-            btnCrearPrimera.addEventListener('click', mostrarModalNuevaSeccion);
+        // Botones de agregar multimedia
+        const btnAgregarVideo = document.querySelector('.add-video-btn');
+        const btnAgregarImagen = document.querySelector('.add-image-btn');
+
+        if (btnAgregarVideo) {
+            btnAgregarVideo.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/mp4';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file && validarVideo(file)) {
+                        subirVideoPromocional(file);
+                    }
+                };
+                input.click();
+            });
         }
     }
 
@@ -388,274 +388,79 @@ document.addEventListener('DOMContentLoaded', function () {
      * Editar sección existente
      */
     window.editarSeccion = function (id) {
-        // Obtener datos de la sección
-        const seccionElement = document.querySelector(`[data-seccion-id="${id}"]`);
-        const titulo = seccionElement.querySelector('.accordion-button span').textContent;
-        const descripcion = seccionElement.querySelector('.text-muted')?.textContent || '';
+        // Obtener datos de la sección y mostrar modal
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerSecciones',
+                idCurso: cursoId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const seccion = data.secciones.find(s => s.seccion_id == id);
+                    if (seccion) {
+                        const modal = document.getElementById('modalSeccion') || crearModalSeccion();
+                        document.getElementById('seccion-id').value = seccion.seccion_id;
+                        document.getElementById('seccion-titulo').value = seccion.seccion_titulo;
+                        document.getElementById('seccion-descripcion').value = seccion.seccion_descripcion || '';
 
-        const modal = document.getElementById('modalSeccion') || crearModalSeccion();
-
-        // Llenar formulario con datos existentes
-        document.getElementById('seccion-id').value = id;
-        document.getElementById('seccion-titulo').value = titulo;
-        document.getElementById('seccion-descripcion').value = descripcion;
-        document.querySelector('#modalSeccion .modal-title').textContent = 'Editar Sección';
-
-        // Mostrar modal
-        const bsModal = new bootstrap.Modal(modal);
-        bsModal.show();
+                        const bsModal = new bootstrap.Modal(modal);
+                        bsModal.show();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion('Error al obtener datos de la sección', 'error');
+            });
     };
 
     /**
      * Eliminar sección
      */
     window.eliminarSeccion = function (id) {
-        if (!confirm('¿Estás seguro de eliminar esta sección? Se eliminará todo su contenido.')) {
-            return;
-        }
-
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                accion: 'eliminarSeccion',
-                id: id
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    mostrarNotificacion('Sección eliminada correctamente', 'success');
-                    // Eliminar elemento del DOM
-                    document.querySelector(`[data-seccion-id="${id}"]`).remove();
-
-                    // Si no quedan secciones, mostrar mensaje vacío
-                    if (document.querySelectorAll('.seccion-item').length === 0) {
-                        location.reload();
-                    }
-                } else {
-                    mostrarNotificacion(data.mensaje || 'Error al eliminar', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mostrarNotificacion('Error al eliminar la sección', 'error');
-            });
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará la sección y todo su contenido',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        accion: 'eliminarSeccion',
+                        idSeccion: id
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            mostrarNotificacion(data.mensaje, 'success');
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            mostrarNotificacion(data.mensaje, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        mostrarNotificacion('Error de conexión', 'error');
+                    });
+            }
+        });
     };
-
-    /**
-     * Mostrar modal para nuevo contenido
-     */
-    function mostrarModalNuevoContenido(seccionId) {
-        const modal = document.getElementById('modalContenido') || crearModalContenido();
-
-        // Limpiar formulario
-        document.getElementById('contenido-seccion-id').value = seccionId;
-        document.getElementById('contenido-titulo').value = '';
-        document.getElementById('contenido-descripcion').value = '';
-
-        // Mostrar modal
-        const bsModal = new bootstrap.Modal(modal);
-        bsModal.show();
-    }
-
-    /**
-     * Crear modal para contenido
-     */
-    function crearModalContenido() {
-        const modalHtml = `
-            <div class="modal fade" id="modalContenido" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Agregar Contenido</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="form-contenido">
-                                <input type="hidden" id="contenido-seccion-id">
-                                <div class="mb-3">
-                                    <label for="contenido-titulo" class="form-label">Título *</label>
-                                    <input type="text" class="form-control" id="contenido-titulo" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="contenido-descripcion" class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="contenido-descripcion" rows="2"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Tipo de contenido</label>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <label class="upload-option">
-                                                <input type="radio" name="tipo-contenido" value="video" checked>
-                                                <div class="upload-card">
-                                                    <i class="bi bi-camera-video"></i>
-                                                    <span>Video HD</span>
-                                                    <small>MP4, máx 10min</small>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="upload-option">
-                                                <input type="radio" name="tipo-contenido" value="pdf">
-                                                <div class="upload-card">
-                                                    <i class="bi bi-file-pdf"></i>
-                                                    <span>Documento PDF</span>
-                                                    <small>Máx 10MB</small>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="archivo-contenido" class="form-label">Archivo *</label>
-                                    <input type="file" class="form-control" id="archivo-contenido" required>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="btn-subir-contenido">
-                                <i class="bi bi-upload"></i> Subir Contenido
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        // Event listeners
-        document.getElementById('btn-subir-contenido').addEventListener('click', subirContenido);
-
-        // Cambiar input file según tipo seleccionado
-        document.querySelectorAll('input[name="tipo-contenido"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                const fileInput = document.getElementById('archivo-contenido');
-                if (this.value === 'video') {
-                    fileInput.accept = 'video/mp4,video/avi,video/mov';
-                } else if (this.value === 'pdf') {
-                    fileInput.accept = '.pdf';
-                }
-            });
-        });
-
-        return document.getElementById('modalContenido');
-    }
-
-    /**
-     * Subir contenido desde modal
-     */
-    function subirContenido() {
-        const seccionId = document.getElementById('contenido-seccion-id').value;
-        const titulo = document.getElementById('contenido-titulo').value.trim();
-        const descripcion = document.getElementById('contenido-descripcion').value.trim();
-        const tipo = document.querySelector('input[name="tipo-contenido"]:checked').value;
-        const archivo = document.getElementById('archivo-contenido').files[0];
-
-        if (!titulo || !archivo) {
-            mostrarNotificacion('Por favor completa todos los campos requeridos', 'warning');
-            return;
-        }
-
-        // Validar archivo
-        if (tipo === 'video') {
-            if (!validarVideo(archivo)) return;
-        } else if (tipo === 'pdf') {
-            if (!validarPDF(archivo)) return;
-        }
-
-        const btnSubir = document.getElementById('btn-subir-contenido');
-        btnSubir.innerHTML = '<i class="spinner-border spinner-border-sm"></i> Subiendo...';
-        btnSubir.disabled = true;
-
-        // Crear FormData
-        const formData = new FormData();
-        formData.append(tipo, archivo);
-        formData.append('accion', tipo === 'video' ? 'subirVideo' : 'subirPDF');
-        formData.append('seccionId', seccionId);
-        formData.append('cursoId', cursoId);
-        formData.append('titulo', titulo);
-        formData.append('descripcion', descripcion);
-
-        fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    mostrarNotificacion('Contenido subido correctamente', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('modalContenido')).hide();
-                    actualizarListaContenido(seccionId);
-                } else {
-                    mostrarNotificacion(data.mensaje || 'Error al subir contenido', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mostrarNotificacion('Error al subir el contenido', 'error');
-            })
-            .finally(() => {
-                btnSubir.innerHTML = '<i class="bi bi-upload"></i> Subir Contenido';
-                btnSubir.disabled = false;
-            });
-    }
-
-    /**
-     * Actualizar lista de contenido de una sección
-     */
-    function actualizarListaContenido(seccionId) {
-        fetch('/cursosApp/App/ajax/obtener_contenido_seccion.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                seccionId: seccionId
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const contenedorContenido = document.getElementById(`contenido-seccion-${seccionId}`);
-                    if (contenedorContenido) {
-                        contenedorContenido.innerHTML = generarHTMLContenido(data.contenido);
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error al actualizar contenido:', error);
-            });
-    }
-
-    /**
-     * Generar HTML para lista de contenido
-     */
-    function generarHTMLContenido(contenido) {
-        if (!contenido || contenido.length === 0) {
-            return '';
-        }
-
-        let html = '<div class="contenido-lista">';
-        contenido.forEach(item => {
-            const icono = item.tipo === 'video' ? 'camera-video' : 'file-pdf';
-            const duracion = item.duracion ? ` (${item.duracion})` : '';
-
-            html += `
-                <div class="contenido-item">
-                    <i class="bi bi-${icono}"></i>
-                    <span>${item.titulo}</span>
-                    ${duracion ? `<small class="text-muted">${duracion}</small>` : ''}
-                </div>`;
-        });
-        html += '</div>';
-
-        return html;
-    }
 
     /**
      * Inicializar drag & drop
@@ -666,7 +471,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dropAreas.forEach(area => {
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 area.addEventListener(eventName, preventDefaults, false);
-                document.body.addEventListener(eventName, preventDefaults, false);
             });
 
             ['dragenter', 'dragover'].forEach(eventName => {
@@ -678,6 +482,24 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             area.addEventListener('drop', handleDrop, false);
+
+            // Click para seleccionar archivos
+            area.addEventListener('click', function () {
+                const input = this.querySelector('.file-input');
+                if (input) {
+                    input.click();
+                }
+            });
+
+            // Evento change para inputs de archivo
+            const fileInput = area.querySelector('.file-input');
+            if (fileInput) {
+                fileInput.addEventListener('change', function (e) {
+                    const files = e.target.files;
+                    const seccionId = area.dataset.seccionId;
+                    handleFiles(files, 'auto', seccionId);
+                });
+            }
         });
 
         function preventDefaults(e) {
@@ -686,21 +508,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function highlight(e) {
-            e.target.closest('.drop-area').classList.add('drag-over');
+            e.currentTarget.classList.add('drag-over');
         }
 
         function unhighlight(e) {
-            e.target.closest('.drop-area').classList.remove('drag-over');
+            e.currentTarget.classList.remove('drag-over');
         }
 
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
-            const dropArea = e.target.closest('.drop-area');
-            const tipo = dropArea.dataset.tipo;
-            const seccionId = dropArea.dataset.seccionId;
+            const seccionId = e.currentTarget.dataset.seccionId;
 
-            handleFiles(files, tipo, seccionId);
+            handleFiles(files, 'auto', seccionId);
         }
     }
 
@@ -708,14 +528,19 @@ document.addEventListener('DOMContentLoaded', function () {
      * Manejar archivos subidos
      */
     function handleFiles(files, tipo, seccionId) {
-        ([...files]).forEach(file => {
-            if (tipo === 'video') {
-                if (validarVideo(file)) {
-                    subirVideo(file, seccionId);
-                }
-            } else if (tipo === 'pdf') {
-                if (validarPDF(file)) {
-                    subirPDF(file, seccionId);
+        Array.from(files).forEach(file => {
+            if (tipo === 'auto') {
+                // Detectar tipo automáticamente
+                if (file.type === 'video/mp4') {
+                    if (validarVideo(file)) {
+                        subirVideo(file, seccionId);
+                    }
+                } else if (file.type === 'application/pdf') {
+                    if (validarPDF(file)) {
+                        subirPDF(file, seccionId);
+                    }
+                } else {
+                    mostrarNotificacion('Tipo de archivo no soportado. Solo MP4 y PDF', 'error');
                 }
             }
         });
@@ -725,19 +550,10 @@ document.addEventListener('DOMContentLoaded', function () {
      * Validar archivo de video
      */
     function validarVideo(file) {
-        const tiposPermitidos = ['video/mp4', 'video/avi', 'video/mov'];
-        const tamañoMaximo = 100 * 1024 * 1024; // 100MB
-
-        if (!tiposPermitidos.includes(file.type)) {
-            mostrarNotificacion('Solo se permiten videos MP4, AVI o MOV', 'warning');
+        if (file.size > 100 * 1024 * 1024) {
+            mostrarNotificacion('El video es demasiado grande (máximo 100MB)', 'error');
             return false;
         }
-
-        if (file.size > tamañoMaximo) {
-            mostrarNotificacion('El video no puede superar los 100MB', 'warning');
-            return false;
-        }
-
         return true;
     }
 
@@ -745,19 +561,10 @@ document.addEventListener('DOMContentLoaded', function () {
      * Validar archivo PDF
      */
     function validarPDF(file) {
-        const tiposPermitidos = ['application/pdf'];
-        const tamañoMaximo = 10 * 1024 * 1024; // 10MB
-
-        if (!tiposPermitidos.includes(file.type)) {
-            mostrarNotificacion('Solo se permiten archivos PDF', 'warning');
+        if (file.size > 10 * 1024 * 1024) {
+            mostrarNotificacion('El PDF es demasiado grande (máximo 10MB)', 'error');
             return false;
         }
-
-        if (file.size > tamañoMaximo) {
-            mostrarNotificacion('El PDF no puede superar los 10MB', 'warning');
-            return false;
-        }
-
         return true;
     }
 
@@ -765,14 +572,17 @@ document.addEventListener('DOMContentLoaded', function () {
      * Subir video
      */
     function subirVideo(file, seccionId) {
+        const titulo = prompt('Título del video:');
+        if (!titulo) return;
+
         const formData = new FormData();
         formData.append('video', file);
         formData.append('accion', 'subirVideo');
-        formData.append('seccionId', seccionId);
-        formData.append('cursoId', cursoId);
+        formData.append('idSeccion', seccionId);
+        formData.append('titulo', titulo);
+        formData.append('descripcion', '');
 
-        // Crear barra de progreso
-        const progressContainer = crearBarraProgreso(file.name, 'video');
+        const progressBar = crearBarraProgreso(file.name, 'video');
 
         fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
             method: 'POST',
@@ -780,19 +590,18 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
+                progressBar.remove();
                 if (data.success) {
-                    mostrarNotificacion('Video subido correctamente', 'success');
-                    actualizarListaContenido(seccionId);
+                    mostrarNotificacion(data.mensaje, 'success');
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    mostrarNotificacion(data.mensaje || 'Error al subir video', 'error');
+                    mostrarNotificacion(data.mensaje, 'error');
                 }
             })
             .catch(error => {
+                progressBar.remove();
                 console.error('Error:', error);
                 mostrarNotificacion('Error al subir el video', 'error');
-            })
-            .finally(() => {
-                progressContainer.remove();
             });
     }
 
@@ -800,13 +609,17 @@ document.addEventListener('DOMContentLoaded', function () {
      * Subir PDF
      */
     function subirPDF(file, seccionId) {
+        const titulo = prompt('Título del documento:');
+        if (!titulo) return;
+
         const formData = new FormData();
         formData.append('pdf', file);
         formData.append('accion', 'subirPDF');
-        formData.append('seccionId', seccionId);
-        formData.append('cursoId', cursoId);
+        formData.append('idSeccion', seccionId);
+        formData.append('titulo', titulo);
+        formData.append('descripcion', '');
 
-        const progressContainer = crearBarraProgreso(file.name, 'pdf');
+        const progressBar = crearBarraProgreso(file.name, 'pdf');
 
         fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
             method: 'POST',
@@ -814,19 +627,51 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
+                progressBar.remove();
                 if (data.success) {
-                    mostrarNotificacion('PDF subido correctamente', 'success');
-                    actualizarListaContenido(seccionId);
+                    mostrarNotificacion(data.mensaje, 'success');
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    mostrarNotificacion(data.mensaje || 'Error al subir PDF', 'error');
+                    mostrarNotificacion(data.mensaje, 'error');
                 }
             })
             .catch(error => {
+                progressBar.remove();
                 console.error('Error:', error);
                 mostrarNotificacion('Error al subir el PDF', 'error');
+            });
+    }
+
+    /**
+     * Subir video promocional
+     */
+    function subirVideoPromocional(file) {
+        const formData = new FormData();
+        formData.append('video', file);
+        formData.append('accion', 'subirVideoPromocional');
+        formData.append('idCurso', cursoId);
+
+        const progressBar = crearBarraProgreso(file.name, 'video');
+
+        fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                progressBar.remove();
+                if (data.success) {
+                    mostrarNotificacion(data.mensaje, 'success');
+                    // Actualizar el video promocional en la página
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    mostrarNotificacion(data.mensaje, 'error');
+                }
             })
-            .finally(() => {
-                progressContainer.remove();
+            .catch(error => {
+                progressBar.remove();
+                console.error('Error:', error);
+                mostrarNotificacion('Error al subir el video promocional', 'error');
             });
     }
 
@@ -834,18 +679,26 @@ document.addEventListener('DOMContentLoaded', function () {
      * Crear barra de progreso
      */
     function crearBarraProgreso(nombreArchivo, tipo) {
-        const container = document.createElement('div');
-        container.className = 'upload-progress mb-2';
-        container.innerHTML = `
-            <div class="d-flex align-items-center">
-                <i class="bi bi-${tipo === 'video' ? 'camera-video' : 'file-pdf'} me-2"></i>
-                <span class="filename flex-grow-1">${nombreArchivo}</span>
-                <div class="spinner-border spinner-border-sm ms-2" role="status"></div>
-            </div>
-        `;
+        const icono = tipo === 'video' ? 'bi-camera-video' : 'bi-file-earmark-pdf';
+        const progressHtml = `
+            <div class="upload-progress position-fixed" style="top: 20px; right: 20px; z-index: 1050; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 300px;">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi ${icono} me-2 text-primary"></i>
+                    <span class="filename fw-bold">${nombreArchivo}</span>
+                </div>
+                <div class="progress mb-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 100%"></div>
+                </div>
+                <small class="text-muted">Subiendo archivo...</small>
+            </div>`;
 
-        document.body.appendChild(container);
-        return container;
+        const div = document.createElement('div');
+        div.innerHTML = progressHtml;
+        const element = div.firstElementChild;
+        document.body.appendChild(element);
+
+        return element;
     }
 
     /**
@@ -853,9 +706,18 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function obtenerCategorias() {
         try {
-            const response = await fetch('/cursosApp/App/ajax/obtenerCategorias.php');
+            const response = await fetch('/cursosApp/App/ajax/cursos.ajax.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accion: 'obtenerCategorias'
+                })
+            });
+
             const data = await response.json();
-            return data.categorias || [];
+            return data.success ? data.categorias : [];
         } catch (error) {
             console.error('Error al obtener categorías:', error);
             return [];
@@ -866,22 +728,47 @@ document.addEventListener('DOMContentLoaded', function () {
      * Mostrar notificación
      */
     function mostrarNotificacion(mensaje, tipo = 'info') {
-        // Crear elemento de notificación
-        const notification = document.createElement('div');
-        notification.className = `alert alert-${tipo === 'error' ? 'danger' : tipo} alert-dismissible fade show position-fixed`;
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
-        notification.innerHTML = `
-            ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        const iconos = {
+            'success': 'success',
+            'error': 'error',
+            'warning': 'warning',
+            'info': 'info'
+        };
 
-        document.body.appendChild(notification);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: iconos[tipo],
+                title: tipo === 'success' ? '¡Éxito!' : tipo === 'error' ? 'Error' : 'Información',
+                text: mensaje,
+                confirmButtonText: 'Aceptar',
+                timer: tipo === 'success' ? 3000 : undefined
+            });
+        } else {
+            // Fallback si SweetAlert no está disponible
+            const tipoClass = tipo === 'success' ? 'alert-success' :
+                tipo === 'error' ? 'alert-danger' :
+                    tipo === 'warning' ? 'alert-warning' : 'alert-info';
 
-        // Auto-remover después de 5 segundos
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
+            const alertHtml = `
+                <div class="alert ${tipoClass} alert-dismissible fade show position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 1050; min-width: 300px;" role="alert">
+                    ${mensaje}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>`;
+
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+
+            if (tipo === 'success') {
+                setTimeout(() => {
+                    const alert = document.querySelector('.alert:last-child');
+                    if (alert) alert.remove();
+                }, 3000);
             }
-        }, 5000);
+        }
     }
+
+    /**
+     * Funciones globales para compatibilidad
+     */
+    window.habilitarEdicion = habilitarEdicion;
 });
