@@ -1,10 +1,4 @@
 <?php
-
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-12/06/2022 Plataforma Calibelula mostrar Cursos
-Modelo de cursos, gestion
- */
 require_once "conexion.php";
 
 class ModeloCursos
@@ -128,6 +122,11 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlCrearSeccion($datos)
 	{
+		// Validar que el orden sea >= 1
+		if (!isset($datos['orden']) || $datos['orden'] < 1) {
+			$datos['orden'] = 1;
+		}
+
 		$conn = Conexion::conectar();
 		$stmt = $conn->prepare("INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden, estado) 
 			VALUES (:id_curso, :titulo, :descripcion, :orden, :estado)");
@@ -149,6 +148,10 @@ class ModeloCursos
 
 	public static function mdlActualizarSeccion($datos)
 	{
+		// Validar que el orden sea >= 1
+		if (!isset($datos['orden']) || $datos['orden'] < 1) {
+			$datos['orden'] = 1;
+		}
 		$stmt = Conexion::conectar()->prepare("UPDATE curso_secciones SET 
 			titulo = :titulo,
 			descripcion = :descripcion,
@@ -196,7 +199,7 @@ class ModeloCursos
 		}
 
 		// Validar tipo
-		$tiposValidos = ['video', 'pdf', 'texto', 'enlace'];
+		$tiposValidos = ['video', 'pdf'];
 		if (!in_array($datos['tipo'], $tiposValidos)) {
 			return false;
 		}
@@ -229,7 +232,7 @@ class ModeloCursos
 		}
 
 		// Validar tipo
-		$tiposValidos = ['video', 'pdf', 'texto', 'enlace'];
+		$tiposValidos = ['video', 'pdf'];
 		if (!in_array($datos['tipo'], $tiposValidos)) {
 			return false;
 		}
@@ -341,6 +344,29 @@ class ModeloCursos
 
 		if ($stmt->execute()) {
 			return Conexion::conectar()->lastInsertId();
+		} else {
+			return false;
+		}
+	}
+	public static function mdlActualizarContenidoAsset($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido_assets SET
+											asset_tipo = :asset_tipo,
+											storage_path = :storage_path,
+											public_url = :public_url,
+											tamano_bytes = :tamano_bytes,
+											duracion_segundos = :duracion_segundos
+											WHERE id = :id");
+
+		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":asset_tipo", $datos["asset_tipo"], PDO::PARAM_STR);
+		$stmt->bindParam(":storage_path", $datos["storage_path"], PDO::PARAM_STR);
+		$stmt->bindParam(":public_url", $datos["public_url"], PDO::PARAM_STR);
+		$stmt->bindParam(":tamano_bytes", $datos["tamano_bytes"], PDO::PARAM_INT);
+		$stmt->bindParam(":duracion_segundos", $datos["duracion_segundos"], PDO::PARAM_INT);
+
+		if ($stmt->execute()) {
+			return "ok";
 		} else {
 			return false;
 		}

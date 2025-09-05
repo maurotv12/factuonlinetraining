@@ -183,11 +183,7 @@ if (isset($_SESSION['mensaje_error'])) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 text-end">
-                <a href="/cursosApp/App/verCursoProfe/<?= $curso['url_amiga'] ?>" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Editor Avanzado
-                </a>
-            </div>
+
         </div>
     </div>
 
@@ -440,7 +436,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                             <small>MP4, máx 10min, HD</small>
                                                             <input type="file"
                                                                 class="file-input"
-                                                                accept="video/mp4,video/avi,video/mov"
+                                                                accept="video/mp4"
                                                                 multiple>
                                                         </div>
                                                     </div>
