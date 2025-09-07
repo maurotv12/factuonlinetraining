@@ -127,6 +127,39 @@ switch ($accion) {
         } else {
             echo json_encode(['success' => false, 'mensaje' => 'ID de sección requerido']);
         }
+        break;
+
+    case 'obtenerVideoContenido':
+        $idContenido = $datos['idContenido'] ?? null;
+        if ($idContenido) {
+            // Obtener información específica del video
+            $conexion = Conexion::conectar();
+            $stmt = $conexion->prepare("
+                SELECT sc.titulo, sca.public_url, sca.duracion_segundos, sca.tamano_bytes
+                FROM seccion_contenido sc
+                JOIN seccion_contenido_assets sca ON sc.id = sca.id_contenido
+                WHERE sc.id = :id_contenido AND sca.asset_tipo = 'video'
+                LIMIT 1
+            ");
+            $stmt->bindParam(':id_contenido', $idContenido, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $video = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($video) {
+                echo json_encode([
+                    'success' => true,
+                    'video' => $video
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'Video no encontrado'
+                ]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de contenido requerido']);
+        }
         break;    // ========== GESTIÓN DE ASSETS DE CONTENIDO ==========
 
     case 'obtenerAssetsContenido':
@@ -222,21 +255,7 @@ switch ($accion) {
         $idCurso = intval($_POST['idCurso']);
         $idSeccion = intval($_POST['idSeccion']);
 
-        // Validar que el contenido no tenga ya un video
-        $assetsExistentes = ControladorCursos::ctrObtenerAssetsContenido($idContenido);
-        if ($assetsExistentes['success']) {
-            foreach ($assetsExistentes['assets'] as $asset) {
-                if ($asset['asset_tipo'] === 'video') {
-                    echo json_encode([
-                        'success' => false,
-                        'mensaje' => 'Este contenido ya tiene un video. Solo se permite un video por contenido.'
-                    ]);
-                    break 2; // Salir del foreach y del case
-                }
-            }
-        }
-
-        // Procesar subida del video
+        // Procesar subida del video (reemplaza automáticamente si existe uno anterior)
         $respuesta = ControladorCursos::ctrProcesarSubidaAsset($archivo, $idContenido, 'video', $idCurso, $idSeccion);
         echo json_encode($respuesta);
         break;
@@ -315,6 +334,105 @@ switch ($accion) {
         echo json_encode($respuesta);
         break;
 
+    // ========== GESTIÓN DE VIDEO PROMOCIONAL ==========
+    case 'subirVideoPromocional':
+        // Validar que se recibieron todos los datos necesarios
+        if (!isset($_FILES['video']) || !isset($_POST['idCurso'])) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Faltan datos: video e idCurso son requeridos'
+            ]);
+            break;
+        }
+
+        $archivo = $_FILES['video'];
+        $idCurso = intval($_POST['idCurso']);
+
+        // Verificar que el curso pertenece al usuario
+        $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
+        if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'No tienes permisos para editar este curso'
+            ]);
+            break;
+        }
+
+        // Procesar subida del video promocional
+        $respuesta = procesarVideoPromocional($archivo, $idCurso);
+        echo json_encode($respuesta);
+        break;
+
+    // ========== REEMPLAZAR ASSET EXISTENTE ==========
+    case 'reemplazarAsset':
+        // Validar que se recibieron todos los datos necesarios
+        if (!isset($_FILES['archivo']) || !isset($_POST['idAsset']) || !isset($_POST['assetTipo'])) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Faltan datos requeridos: archivo, idAsset, assetTipo'
+            ]);
+            break;
+        }
+
+        $archivo = $_FILES['archivo'];
+        $idAsset = intval($_POST['idAsset']);
+        $assetTipo = $_POST['assetTipo'];
+
+        // Obtener información del asset actual
+        $assetActual = ModeloCursos::mdlObtenerAssetPorId($idAsset);
+        if (!$assetActual) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Asset no encontrado'
+            ]);
+            break;
+        }
+
+        // Validar archivo según tipo
+        if ($assetTipo === 'video') {
+            $validacion = ControladorCursos::ctrValidarVideoMP4($archivo);
+        } else if ($assetTipo === 'pdf') {
+            $validacion = ControladorCursos::ctrValidarPDF($archivo);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Tipo de asset no válido'
+            ]);
+            break;
+        }
+
+        if (!$validacion['success']) {
+            echo json_encode($validacion);
+            break;
+        }
+
+        // Generar nueva ruta para el archivo
+        $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+        $nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
+        $directorioAnterior = dirname($assetActual['storage_path']);
+        $nuevaRuta = $directorioAnterior . '/' . $nombreArchivo;
+
+        // Mover el nuevo archivo
+        if (move_uploaded_file($archivo['tmp_name'], $nuevaRuta)) {
+            // Actualizar datos en la base de datos (esto elimina el archivo anterior automáticamente)
+            $datosActualizar = [
+                'id' => $idAsset,
+                'asset_tipo' => $assetTipo,
+                'storage_path' => $nuevaRuta,
+                'tamano_bytes' => $archivo['size'],
+                'duracion_segundos' => $validacion['duracion_segundos'] ?? null
+            ];
+
+            $respuesta = ControladorCursos::ctrActualizarContenidoAsset($datosActualizar);
+            echo json_encode($respuesta);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Error al subir el nuevo archivo'
+            ]);
+        }
+        break;
+
     default:
         // Manejar caso de acción no válida
         $accionesValidas = [
@@ -342,7 +460,11 @@ switch ($accion) {
             // Gestión avanzada
             'crearEstructuraDirectorios',
             'guardarAsset',
-            'actualizarAsset'
+            'actualizarAsset',
+            // Video promocional
+            'subirVideoPromocional',
+            // Reemplazar assets
+            'reemplazarAsset'
         ];
 
         echo json_encode([
@@ -351,6 +473,83 @@ switch ($accion) {
             'accion_recibida' => $accion ?? 'undefined'
         ]);
         break;
+}
+
+/**
+ * Procesar subida de video promocional
+ */
+function procesarVideoPromocional($archivo, $idCurso)
+{
+    // Validar archivo
+    if (!isset($archivo) || $archivo['error'] !== UPLOAD_ERR_OK) {
+        return [
+            'success' => false,
+            'mensaje' => 'Error al subir el archivo'
+        ];
+    }
+
+    // Validar tipo de archivo
+    $tiposPermitidos = ['video/mp4'];
+    if (!in_array($archivo['type'], $tiposPermitidos)) {
+        return [
+            'success' => false,
+            'mensaje' => 'Solo se permiten archivos MP4'
+        ];
+    }
+
+    // Validar tamaño (100MB máximo)
+    $tamanosMaximo = 100 * 1024 * 1024; // 100MB en bytes
+    if ($archivo['size'] > $tamanosMaximo) {
+        return [
+            'success' => false,
+            'mensaje' => 'El archivo no puede superar los 100MB'
+        ];
+    }
+
+    try {
+        // Crear directorio si no existe
+        $directorioDestino = "../../storage/public/promoVideos/";
+        if (!file_exists($directorioDestino)) {
+            mkdir($directorioDestino, 0755, true);
+        }
+
+        // Generar nombre único para el archivo
+        $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+        $nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
+        $rutaCompleta = $directorioDestino . $nombreArchivo;
+        $rutaStorage = "storage/public/promoVideos/" . $nombreArchivo;
+
+        // Mover archivo
+        if (move_uploaded_file($archivo['tmp_name'], $rutaCompleta)) {
+            // Actualizar base de datos usando el controlador que maneja la eliminación del anterior
+            $resultado = ControladorCursos::ctrActualizarVideoPromocional($idCurso, $rutaStorage);
+
+            if ($resultado['success']) {
+                return [
+                    'success' => true,
+                    'mensaje' => 'Video promocional subido exitosamente',
+                    'ruta' => $rutaStorage
+                ];
+            } else {
+                // Eliminar archivo si no se pudo guardar en BD
+                unlink($rutaCompleta);
+                return [
+                    'success' => false,
+                    'mensaje' => $resultado['mensaje']
+                ];
+            }
+        } else {
+            return [
+                'success' => false,
+                'mensaje' => 'Error al mover el archivo'
+            ];
+        }
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'mensaje' => 'Error del servidor: ' . $e->getMessage()
+        ];
+    }
 }
 
 /**

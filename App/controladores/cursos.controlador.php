@@ -9,8 +9,12 @@ Controlador de cursos registro
 // Incluir modelo de cursos - Ruta adaptativa para AJAX
 if (file_exists("modelos/cursos.modelo.php")) {
 	require_once "modelos/cursos.modelo.php";
-} else {
+} elseif (file_exists("../modelos/cursos.modelo.php")) {
 	require_once "../modelos/cursos.modelo.php";
+} elseif (file_exists("App/modelos/cursos.modelo.php")) {
+	require_once "App/modelos/cursos.modelo.php";
+} else {
+	require_once __DIR__ . "/../modelos/cursos.modelo.php";
 }
 
 class ControladorCursos
@@ -304,6 +308,101 @@ class ControladorCursos
 		return false;
 	}
 
+	/*=============================================
+	Eliminar archivo físico del storage
+	=============================================*/
+	private static function eliminarArchivoFisico($rutaArchivo)
+	{
+		if (empty($rutaArchivo)) {
+			error_log("eliminarArchivoFisico: Ruta vacía");
+			return false;
+		}
+
+		// Log inicial para debug
+		error_log("eliminarArchivoFisico: Intentando eliminar - " . $rutaArchivo);
+
+		// Si la ruta ya es absoluta (contiene el path completo), usarla directamente
+		if (
+			strpos($rutaArchivo, $_SERVER['DOCUMENT_ROOT']) !== false ||
+			(PHP_OS_FAMILY === 'Windows' && preg_match('/^[A-Z]:\\\/', $rutaArchivo))
+		) {
+			$rutaCompleta = $rutaArchivo;
+		} else {
+			// Si es relativa, construir ruta completa
+			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
+			$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+		}
+
+		// Convertir barras para Windows si es necesario
+		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
+
+		error_log("eliminarArchivoFisico: Ruta completa construida - " . $rutaCompleta);
+
+		// Verificar que el archivo existe y eliminarlo
+		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
+			// No eliminar archivos por defecto o del sistema
+			if (strpos($rutaArchivo, 'default') === false && strpos($rutaArchivo, 'system') === false) {
+				$resultado = unlink($rutaCompleta);
+				error_log("eliminarArchivoFisico: Resultado unlink - " . ($resultado ? 'SUCCESS' : 'FAILED'));
+				return $resultado;
+			} else {
+				error_log("eliminarArchivoFisico: Archivo protegido, no se elimina - " . $rutaArchivo);
+				return false;
+			}
+		} else {
+			error_log("eliminarArchivoFisico: Archivo no encontrado - " . $rutaCompleta);
+			return false;
+		}
+	}
+
+	/*=============================================
+	Limpiar directorios vacíos después de eliminar archivos
+	=============================================*/
+	private static function limpiarDirectoriosVacios($rutaArchivo)
+	{
+		if (empty($rutaArchivo)) {
+			return false;
+		}
+
+		// Obtener el directorio del archivo
+		$directorio = dirname($rutaArchivo);
+
+		// Solo proceder si es un directorio dentro de storage
+		if (strpos($directorio, 'storage') === false) {
+			return false;
+		}
+
+		// Verificar si el directorio está vacío
+		if (is_dir($directorio) && count(scandir($directorio)) <= 2) { // Solo . y ..
+			// Intentar eliminar el directorio vacío
+			rmdir($directorio);
+
+			// Recursivamente limpiar directorios padre si también están vacíos
+			self::limpiarDirectoriosVacios($directorio);
+		}
+
+		return true;
+	}
+
+	/*=============================================
+	Eliminar archivo físico del storage y limpiar directorios vacíos
+	=============================================*/
+	private static function eliminarArchivoFisicoCompleto($rutaArchivo)
+	{
+		$resultado = self::eliminarArchivoFisico($rutaArchivo);
+
+		if ($resultado) {
+			// Limpiar directorios vacíos después de eliminar el archivo
+			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
+			$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+			$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
+
+			self::limpiarDirectoriosVacios($rutaCompleta);
+		}
+
+		return $resultado;
+	}
+
 	public static function ctrCrearCurso($datos)
 	{
 		// Inicializar valores predeterminados para banner y video
@@ -525,8 +624,44 @@ class ControladorCursos
 
 	public static function ctrEliminarSeccion($id)
 	{
+		error_log("ctrEliminarSeccion: Iniciando eliminación de sección ID: " . $id);
+
+		// Primero obtener todos los assets de la sección para eliminar archivos
+		$assets = ModeloCursos::mdlObtenerAssetsSeccion($id);
+
+		error_log("ctrEliminarSeccion: Assets encontrados: " . (is_array($assets) ? count($assets) : 'NULL/FALSE'));
+
+		// Eliminar archivos físicos del storage
+		if ($assets && is_array($assets)) {
+			error_log("ctrEliminarSeccion: Eliminando " . count($assets) . " archivos físicos");
+
+			foreach ($assets as $index => $asset) {
+				error_log("ctrEliminarSeccion: Eliminando asset #{$index} - " . $asset['storage_path']);
+				$resultadoEliminacion = self::eliminarArchivoFisicoCompleto($asset['storage_path']);
+				error_log("ctrEliminarSeccion: Resultado eliminación asset #{$index}: " . ($resultadoEliminacion ? 'SUCCESS' : 'FAILED'));
+			}
+		} else {
+			error_log("ctrEliminarSeccion: No hay assets para eliminar");
+		}
+
+		// Eliminar de la base de datos
+		error_log("ctrEliminarSeccion: Eliminando registros de base de datos");
 		$respuesta = ModeloCursos::mdlEliminarSeccion($id);
-		return $respuesta;
+		error_log("ctrEliminarSeccion: Resultado BD: " . $respuesta);
+
+		if ($respuesta === "ok") {
+			error_log("ctrEliminarSeccion: SUCCESS - Sección eliminada correctamente");
+			return [
+				'success' => true,
+				'mensaje' => 'Sección eliminada correctamente'
+			];
+		} else {
+			error_log("ctrEliminarSeccion: FAILED - Error al eliminar sección");
+			return [
+				'success' => false,
+				'mensaje' => 'Error al eliminar la sección'
+			];
+		}
 	}
 
 	public static function ctrObtenerSecciones($idCurso)
@@ -552,8 +687,30 @@ class ControladorCursos
 
 	public static function ctrEliminarContenido($id)
 	{
+		// Primero obtener todos los assets del contenido para eliminar archivos
+		$assets = ModeloCursos::mdlObtenerAssetsContenido($id);
+
+		// Eliminar archivos físicos del storage
+		if ($assets && $assets['success'] && isset($assets['assets'])) {
+			foreach ($assets['assets'] as $asset) {
+				self::eliminarArchivoFisicoCompleto($asset['storage_path']);
+			}
+		}
+
+		// Eliminar de la base de datos
 		$respuesta = ModeloCursos::mdlEliminarContenido($id);
-		return $respuesta;
+
+		if ($respuesta === "ok") {
+			return [
+				'success' => true,
+				'mensaje' => 'Contenido eliminado correctamente'
+			];
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al eliminar el contenido'
+			];
+		}
 	}
 
 	/*--==========================================
@@ -583,8 +740,6 @@ class ControladorCursos
 					$contenidoOrganizado[$contenidoId] = [
 						'id' => $row['id'],
 						'titulo' => $row['titulo'],
-						'descripcion' => $row['descripcion'],
-						'tipo' => $row['tipo'],
 						'duracion' => $row['duracion'],
 						'orden' => $row['orden'],
 						'estado' => $row['estado'],
@@ -598,8 +753,6 @@ class ControladorCursos
 					$contenidoOrganizado[$contenidoId]['assets'][] = [
 						'id' => $row['asset_id'],
 						'asset_tipo' => $row['asset_tipo'],
-						'nombre_original' => $row['nombre_original'],
-						'nombre_archivo' => $row['nombre_archivo'],
 						'storage_path' => $row['storage_path'],
 						'public_url' => $row['public_url'],
 						'tamano_bytes' => $row['tamano_bytes'],
@@ -641,8 +794,34 @@ class ControladorCursos
 	 */
 	public static function ctrActualizarContenidoAsset($datos)
 	{
+		// Si se está actualizando la ruta del archivo, eliminar el archivo anterior
+		if (isset($datos['storage_path'])) {
+			// Obtener información del asset actual para eliminar archivo anterior
+			$assetAnterior = ModeloCursos::mdlObtenerAssetPorId($datos['id']);
+
+			// Eliminar archivo anterior si existe y es diferente al nuevo
+			if (
+				$assetAnterior && isset($assetAnterior['storage_path']) &&
+				$assetAnterior['storage_path'] !== $datos['storage_path']
+			) {
+				self::eliminarArchivoFisicoCompleto($assetAnterior['storage_path']);
+			}
+		}
+
+		// Actualizar en la base de datos
 		$respuesta = ModeloCursos::mdlActualizarContenidoAsset($datos);
-		return $respuesta;
+
+		if ($respuesta === "ok") {
+			return [
+				'success' => true,
+				'mensaje' => 'Asset actualizado correctamente'
+			];
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al actualizar el asset'
+			];
+		}
 	}
 
 	/**
@@ -650,8 +829,60 @@ class ControladorCursos
 	 */
 	public static function ctrEliminarContenidoAsset($id)
 	{
+		// Primero obtener información del asset para eliminar archivo físico
+		$asset = ModeloCursos::mdlObtenerAssetPorId($id);
+
+		// Eliminar archivo físico del storage
+		if ($asset && isset($asset['storage_path'])) {
+			self::eliminarArchivoFisicoCompleto($asset['storage_path']);
+		}
+
+		// Eliminar de la base de datos
 		$respuesta = ModeloCursos::mdlEliminarContenidoAsset($id);
-		return $respuesta;
+
+		if ($respuesta === "ok") {
+			return [
+				'success' => true,
+				'mensaje' => 'Asset eliminado correctamente'
+			];
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al eliminar el asset'
+			];
+		}
+	}
+
+	/**
+	 * Actualizar video promocional eliminando el anterior
+	 */
+	public static function ctrActualizarVideoPromocional($idCurso, $rutaVideoNuevo)
+	{
+		// Obtener video promocional anterior
+		$cursoActual = self::ctrMostrarCursos('id', $idCurso);
+		if ($cursoActual && isset($cursoActual[0]['promo_video'])) {
+			$videoAnterior = $cursoActual[0]['promo_video'];
+
+			// Eliminar archivo anterior si existe y no es el default
+			if (!empty($videoAnterior)) {
+				self::eliminarArchivoFisicoCompleto($videoAnterior);
+			}
+		}
+
+		// Actualizar con el nuevo video
+		$respuesta = ModeloCursos::mdlActualizarVideoPromocional($idCurso, $rutaVideoNuevo);
+
+		if ($respuesta === "ok") {
+			return [
+				'success' => true,
+				'mensaje' => 'Video promocional actualizado correctamente'
+			];
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al actualizar el video promocional'
+			];
+		}
 	}
 
 	/**
@@ -926,6 +1157,22 @@ class ControladorCursos
 	 */
 	public static function ctrProcesarSubidaAsset($archivo, $idContenido, $assetTipo, $idCurso, $idSeccion)
 	{
+		// Si es un video, eliminar video anterior (solo se permite uno por contenido)
+		if ($assetTipo === 'video') {
+			$assetsExistentes = ModeloCursos::mdlObtenerAssetsContenido($idContenido);
+			if ($assetsExistentes['success'] && isset($assetsExistentes['assets'])) {
+				foreach ($assetsExistentes['assets'] as $asset) {
+					if ($asset['asset_tipo'] === 'video') {
+						// Eliminar archivo físico anterior
+						self::eliminarArchivoFisicoCompleto($asset['storage_path']);
+						// Eliminar registro de BD
+						ModeloCursos::mdlEliminarContenidoAsset($asset['id']);
+						break; // Solo debe haber un video
+					}
+				}
+			}
+		}
+
 		// Validar archivo según tipo
 		if ($assetTipo === 'video') {
 			$validacion = self::ctrValidarVideoMP4($archivo);

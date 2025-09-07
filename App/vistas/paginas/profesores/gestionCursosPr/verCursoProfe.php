@@ -189,53 +189,9 @@ if (isset($_SESSION['mensaje_error'])) {
     <div class="row">
         <!-- Video principal y contenido -->
         <div class="col-lg-8">
-            <!-- Video/Imagen principal -->
-            <div class="video-container">
-                <?php
-                $videoUrl = null;
-                if (!empty($curso['promo_video'])) {
-                    $videoUrl = ControladorCursos::ctrObtenerUrlVideoPromo($curso['promo_video']);
-                }
-                ?>
-                <?php if ($videoUrl): ?>
-                    <div class="video-wrapper">
-                        <video id="videoPlayer" controls class="main-video">
-                            <source src="<?= $videoUrl ?>" type="video/mp4">
-                            Tu navegador no soporta videos.
-                        </video>
-                        <div class="video-overlay">
-                            <div class="video-title">Video promocional</div>
-                            <button class="btn btn-sm btn-outline-light edit-video-btn" id="btn-subir-promo">
-                                <i class="bi bi-camera-video"></i> Cambiar video
-                            </button>
-                        </div>
-                    </div>
-                <?php elseif (!empty($curso['banner'])): ?>
-                    <div class="image-wrapper">
-                        <img src="<?= ControladorCursos::ctrValidarImagenCurso($curso['banner']) ?>" alt="Banner del curso" class="main-image">
-                        <div class="image-overlay">
-                            <div class="image-title">Vista previa del curso</div>
-                            <button class="btn btn-sm btn-outline-light edit-image-btn">
-                                <i class="bi bi-image"></i> Cambiar imagen
-                            </button>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <div class="placeholder-wrapper">
-                        <div class="placeholder-content">
-                            <i class="bi bi-plus-circle"></i>
-                            <p>Agregar contenido multimedia</p>
-                            <div class="upload-buttons">
-                                <button class="btn btn-primary me-2 add-video-btn" id="btn-subir-promo">
-                                    <i class="bi bi-camera-video"></i> Agregar Video
-                                </button>
-                                <button class="btn btn-secondary add-image-btn">
-                                    <i class="bi bi-image"></i> Agregar Imagen
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
+            <!-- Video/Imagen principal - Contenedor dinámico manejado por JavaScript -->
+            <div id="video-container" class="video-container" data-promo-video="<?= !empty($curso['promo_video']) ? ControladorCursos::ctrObtenerUrlVideoPromo($curso['promo_video']) : '' ?>" data-banner="<?= !empty($curso['banner']) ? ControladorCursos::ctrValidarImagenCurso($curso['banner']) : '' ?>">
+                <!-- El contenido se renderiza dinámicamente con JavaScript -->
             </div>
 
             <!-- Información del curso -->
@@ -423,9 +379,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                                             <div class="contenido-info">
                                                                 <h6 class="mb-1"><?= htmlspecialchars($contenido['titulo']) ?></h6>
-                                                                <?php if (!empty($contenido['descripcion'])): ?>
-                                                                    <small class="text-muted"><?= htmlspecialchars($contenido['descripcion']) ?></small>
-                                                                <?php endif; ?>
+                                                                <small class="text-muted">Duración: <?= $contenido['duracion'] ?? '00:00:00' ?></small>
                                                             </div>
                                                             <div class="contenido-actions">
                                                                 <button class="btn btn-sm btn-outline-primary"
@@ -446,15 +400,28 @@ if (isset($_SESSION['mensaje_error'])) {
                                                             <!-- Videos -->
                                                             <?php if ($tieneVideo): ?>
                                                                 <div class="asset-group mb-2">
-                                                                    <div class="d-flex align-items-center">
-                                                                        <i class="bi bi-camera-video text-primary me-2"></i>
-                                                                        <span class="fw-bold">Video:</span>
-                                                                        <?php foreach ($videos as $video): ?>
-                                                                            <span class="ms-2"><?= htmlspecialchars($video['nombre_original']) ?></span>
-                                                                            <?php if ($video['duracion_segundos']): ?>
-                                                                                <small class="text-muted ms-1">(<?= gmdate("H:i:s", $video['duracion_segundos']) ?>)</small>
-                                                                            <?php endif; ?>
-                                                                        <?php endforeach; ?>
+                                                                    <div class="d-flex align-items-center justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="bi bi-camera-video text-primary me-2"></i>
+                                                                            <span class="fw-bold">Video:</span>
+                                                                            <?php foreach ($videos as $video): ?>
+                                                                                <span class="ms-2">archivo_video.mp4</span>
+                                                                                <?php if ($video['duracion_segundos']): ?>
+                                                                                    <small class="text-muted ms-1">(<?= gmdate("H:i:s", $video['duracion_segundos']) ?>)</small>
+                                                                                <?php endif; ?>
+                                                                            <?php endforeach; ?>
+                                                                        </div>
+                                                                        <div class="video-actions">
+                                                                            <?php foreach ($videos as $video): ?>
+                                                                                <button class="btn btn-sm btn-primary reproducir-video ms-2"
+                                                                                    data-video-url="<?= $video['public_url'] ?>"
+                                                                                    data-titulo="<?= htmlspecialchars($contenido['titulo']) ?>"
+                                                                                    data-contenido-id="<?= $contenido['id'] ?>"
+                                                                                    title="Reproducir video">
+                                                                                    <i class="bi bi-play-fill"></i> Reproducir
+                                                                                </button>
+                                                                            <?php endforeach; ?>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             <?php endif; ?>
@@ -479,10 +446,12 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                                 <div class="pdf-item d-flex justify-content-between align-items-center py-1">
                                                                                     <span>
                                                                                         <i class="bi bi-file-pdf-fill text-danger me-1"></i>
-                                                                                        <?= htmlspecialchars($pdf['nombre_original']) ?>
+                                                                                        archivo_<?= $pdf['id'] ?>.pdf
                                                                                     </span>
                                                                                     <small class="text-muted">
-                                                                                        (<?= number_format($pdf['tamano_bytes'] / (1024 * 1024), 2) ?> MB)
+                                                                                        <?php if ($pdf['tamano_bytes']): ?>
+                                                                                            (<?= number_format($pdf['tamano_bytes'] / (1024 * 1024), 2) ?> MB)
+                                                                                        <?php endif; ?>
                                                                                     </small>
                                                                                 </div>
                                                                             <?php endforeach; ?>

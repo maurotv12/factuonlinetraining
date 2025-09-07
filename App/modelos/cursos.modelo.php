@@ -222,12 +222,38 @@ class ModeloCursos
 
 	public static function mdlEliminarSeccion($id)
 	{
-		$stmt = Conexion::conectar()->prepare("DELETE FROM curso_secciones WHERE id = :id");
-		$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+		$conn = Conexion::conectar();
 
-		if ($stmt->execute()) {
+		try {
+			// Iniciar transacción
+			$conn->beginTransaction();
+
+			// Primero eliminar todos los assets relacionados
+			$stmt1 = $conn->prepare("
+				DELETE sca FROM seccion_contenido_assets sca
+				INNER JOIN seccion_contenido sc ON sca.id_contenido = sc.id
+				WHERE sc.id_seccion = :id_seccion
+			");
+			$stmt1->bindParam(":id_seccion", $id, PDO::PARAM_INT);
+			$stmt1->execute();
+
+			// Luego eliminar todo el contenido de la sección
+			$stmt2 = $conn->prepare("DELETE FROM seccion_contenido WHERE id_seccion = :id_seccion");
+			$stmt2->bindParam(":id_seccion", $id, PDO::PARAM_INT);
+			$stmt2->execute();
+
+			// Finalmente eliminar la sección
+			$stmt3 = $conn->prepare("DELETE FROM curso_secciones WHERE id = :id");
+			$stmt3->bindParam(":id", $id, PDO::PARAM_INT);
+			$stmt3->execute();
+
+			// Confirmar transacción
+			$conn->commit();
+
 			return "ok";
-		} else {
+		} catch (Exception $e) {
+			// Rollback en caso de error
+			$conn->rollback();
 			return "error";
 		}
 	}
@@ -629,6 +655,48 @@ class ModeloCursos
 	}
 
 	/*=============================================
+	Obtener un asset específico por ID
+	=============================================*/
+	public static function mdlObtenerAssetPorId($id)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("
+				SELECT id, storage_path, asset_tipo, public_url, id_contenido
+				FROM seccion_contenido_assets
+				WHERE id = :id
+			");
+			$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+			$stmt->execute();
+
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch (Exception $e) {
+			return null;
+		}
+	}
+
+	/*=============================================
+	Obtener todos los assets de una sección
+	=============================================*/
+	public static function mdlObtenerAssetsSeccion($idSeccion)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("
+				SELECT sca.id, sca.storage_path, sca.asset_tipo, sca.public_url
+				FROM seccion_contenido_assets sca
+				INNER JOIN seccion_contenido sc ON sca.id_contenido = sc.id
+				WHERE sc.id_seccion = :id_seccion
+			");
+			$stmt->bindParam(":id_seccion", $idSeccion, PDO::PARAM_INT);
+			$stmt->execute();
+
+			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			return $resultados;
+		} catch (Exception $e) {
+			return [];
+		}
+	}
+
+	/*=============================================
 	Calcular duración total de assets de un contenido
 	=============================================*/
 	public static function mdlCalcularDuracionTotalContenido($idContenido)
@@ -775,7 +843,6 @@ class ModeloCursos
 			$stmt = Conexion::conectar()->prepare("SELECT 
 				id,
 				titulo,
-				descripcion,
 				orden,
 				estado,
 				fecha_creacion,
@@ -815,11 +882,10 @@ class ModeloCursos
 			cs.estado as seccion_estado,
 			sc.id as contenido_id,
 			sc.titulo as contenido_titulo,
-			sc.descripcion as contenido_descripcion,
-			sc.tipo as contenido_tipo,
 			sc.duracion as contenido_duracion,
 			sc.orden as contenido_orden,
 			sc.estado as contenido_estado,
+			sca.asset_tipo,
 			sca.storage_path,
 			sca.public_url,
 			sca.tamano_bytes,
@@ -846,20 +912,17 @@ class ModeloCursos
 			SELECT 
 				sc.id,
 				sc.titulo,
-				sc.tipo,
 				sc.duracion,
 				sc.orden,
 				sc.estado,
 				sc.id_seccion,
 				sca.id as asset_id,
 				sca.asset_tipo,
-				sca.nombre_original,
-				sca.nombre_archivo,
 				sca.storage_path,
 				sca.public_url,
 				sca.tamano_bytes,
 				sca.duracion_segundos,
-				sca.fecha_subida
+				sca.created_at as fecha_subida
 			FROM seccion_contenido sc
 			LEFT JOIN seccion_contenido_assets sca ON sc.id = sca.id_contenido
 			WHERE sc.id_seccion = :id_seccion AND sc.estado = 'activo'

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializar todas las funcionalidades
     inicializarEdicionCampos();
-    inicializarReproductorVideo();
+    inicializarVideoContainer();
     inicializarGestionSecciones();
     inicializarSubidaArchivos();
 
@@ -227,9 +227,164 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Inicializar reproductor de video
+     * Inicializar video container dinámico
      */
-    function inicializarReproductorVideo() {
+    function inicializarVideoContainer() {
+        const videoContainer = document.getElementById('video-container');
+        if (!videoContainer) {
+            console.error('No se encontró el video-container');
+            return;
+        }
+
+        // Obtener datos del contenedor
+        const promoVideo = videoContainer.dataset.promoVideo;
+        const banner = videoContainer.dataset.banner;
+
+        console.log('Datos del video container:', { promoVideo, banner });
+
+        // Renderizar contenido inicial (video promo o banner)
+        if (promoVideo) {
+            const urlFormateada = formatearUrlVideo(promoVideo);
+            console.log('URL video promocional formateada:', urlFormateada);
+            renderizarVideoPromo(urlFormateada || promoVideo);
+        } else if (banner) {
+            renderizarBanner(banner);
+        } else {
+            renderizarPlaceholder();
+        }
+
+        // Agregar event listeners para videos de secciones
+        inicializarEventosVideosSecciones();
+    }
+
+    /**
+     * Renderizar video promocional
+     */
+    function renderizarVideoPromo(videoUrl) {
+        const videoContainer = document.getElementById('video-container');
+        videoContainer.innerHTML = `
+            <div class="video-wrapper">
+                <video id="videoPlayer" controls class="main-video">
+                    <source src="${videoUrl}" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>
+                <div class="video-overlay">
+                    <div class="video-title">Video promocional</div>
+                    <button class="btn btn-sm btn-outline-light edit-video-btn" id="btn-subir-promo">
+                        <i class="bi bi-camera-video"></i> Cambiar video
+                    </button>
+                </div>
+            </div>`;
+
+        // Configurar eventos del video
+        configurarEventosVideo();
+
+        // Agregar event listener para el botón de cambiar video promocional
+        const btnSubirPromo = document.getElementById('btn-subir-promo');
+        if (btnSubirPromo) {
+            btnSubirPromo.addEventListener('click', function () {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/mp4';
+                input.onchange = function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        subirVideoPromocional(file);
+                    }
+                };
+                input.click();
+            });
+        }
+    }
+
+    /**
+     * Renderizar video de sección
+     */
+    function renderizarVideoSeccion(videoUrl, titulo, contenidoId) {
+        const videoContainer = document.getElementById('video-container');
+        videoContainer.innerHTML = `
+            <div class="video-wrapper">
+                <video id="videoPlayer" controls class="main-video">
+                    <source src="${videoUrl}" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>
+                <div class="video-overlay">
+                    <div class="video-title">${titulo}</div>
+                    <div class="video-actions">
+                        <button class="btn btn-sm btn-outline-light" onclick="reproducirVideoPromo()">
+                            <i class="bi bi-house"></i> Video promo
+                        </button>
+                        <button class="btn btn-sm btn-outline-light" onclick="editarContenido(${contenidoId})">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+        // Configurar eventos del video
+        configurarEventosVideo();
+    }
+
+    /**
+     * Renderizar banner
+     */
+    function renderizarBanner(bannerUrl) {
+        const videoContainer = document.getElementById('video-container');
+        videoContainer.innerHTML = `
+            <div class="image-wrapper">
+                <img src="${bannerUrl}" alt="Banner del curso" class="main-image">
+                <div class="image-overlay">
+                    <div class="image-title">Vista previa del curso</div>
+                    <button class="btn btn-sm btn-outline-light edit-image-btn">
+                        <i class="bi bi-image"></i> Cambiar imagen
+                    </button>
+                </div>
+            </div>`;
+    }
+
+    /**
+     * Renderizar placeholder
+     */
+    function renderizarPlaceholder() {
+        const videoContainer = document.getElementById('video-container');
+        videoContainer.innerHTML = `
+            <div class="placeholder-wrapper">
+                <div class="placeholder-content">
+                    <i class="bi bi-plus-circle"></i>
+                    <p>Agregar contenido multimedia</p>
+                    <div class="upload-buttons">
+                        <button class="btn btn-primary me-2 add-video-btn" id="btn-subir-promo">
+                            <i class="bi bi-camera-video"></i> Agregar Video
+                        </button>
+                        <button class="btn btn-secondary add-image-btn">
+                            <i class="bi bi-image"></i> Agregar Imagen
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+        // Agregar event listener para el botón de subir video del placeholder
+        const btnSubirPromo = document.getElementById('btn-subir-promo');
+        if (btnSubirPromo) {
+            btnSubirPromo.addEventListener('click', function () {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/mp4';
+                input.onchange = function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        subirVideoPromocional(file);
+                    }
+                };
+                input.click();
+            });
+        }
+    }
+
+    /**
+     * Configurar eventos del video player
+     */
+    function configurarEventosVideo() {
         const video = document.getElementById('videoPlayer');
         if (!video) return;
 
@@ -241,6 +396,100 @@ document.addEventListener('DOMContentLoaded', function () {
         video.addEventListener('error', function () {
             mostrarNotificacion('Error al cargar el video', 'error');
         });
+
+        // Agregar evento para pantalla completa
+        video.addEventListener('dblclick', function () {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            }
+        });
+    }
+
+    /**
+     * Inicializar eventos para videos de secciones
+     */
+    function inicializarEventosVideosSecciones() {
+        // Agregar event listeners a todos los videos existentes de las secciones
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('reproducir-video') || e.target.closest('.reproducir-video')) {
+                e.preventDefault();
+                const button = e.target.classList.contains('reproducir-video') ? e.target : e.target.closest('.reproducir-video');
+                const videoUrl = button.dataset.videoUrl;
+                const titulo = button.dataset.titulo;
+                const contenidoId = button.dataset.contenidoId;
+
+                console.log('Video a reproducir:', { videoUrl, titulo, contenidoId });
+
+                if (videoUrl) {
+                    // Formatear la URL antes de reproducir
+                    const urlFormateada = formatearUrlVideo(videoUrl);
+                    console.log('URL formateada:', urlFormateada);
+                    reproducirVideoSeccion(urlFormateada, titulo, contenidoId);
+                } else {
+                    console.error('No se encontró URL del video');
+                    mostrarNotificacion('Error: No se encontró la URL del video', 'error');
+                }
+            }
+        });
+    }
+
+    /**
+     * Reproducir video de sección
+     */
+    function reproducirVideoSeccion(videoUrl, titulo, contenidoId) {
+        console.log('Reproduciendo video de sección:', { videoUrl, titulo, contenidoId });
+        renderizarVideoSeccion(videoUrl, titulo, contenidoId);
+
+        // Scroll al video container
+        document.getElementById('video-container').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+        // Reproducir automáticamente
+        setTimeout(() => {
+            const video = document.getElementById('videoPlayer');
+            if (video) {
+                video.play().catch(error => {
+                    console.log('Autoplay bloqueado por el navegador');
+                });
+            }
+        }, 100);
+    }
+
+    /**
+     * Volver al video promocional
+     */
+    window.reproducirVideoPromo = function () {
+        const videoContainer = document.getElementById('video-container');
+        const promoVideo = videoContainer.dataset.promoVideo;
+        const banner = videoContainer.dataset.banner;
+
+        console.log('Volviendo al video promocional:', { promoVideo, banner });
+
+        if (promoVideo) {
+            const urlFormateada = formatearUrlVideo(promoVideo);
+            console.log('URL video promocional formateada:', urlFormateada);
+            renderizarVideoPromo(urlFormateada || promoVideo);
+        } else if (banner) {
+            renderizarBanner(banner);
+        } else {
+            renderizarPlaceholder();
+        }
+
+        // Scroll al video container
+        videoContainer.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    };
+
+    /**
+     * Función heredada - mantener compatibilidad
+     */
+    function inicializarReproductorVideo() {
+        // Esta función se mantiene por compatibilidad pero ahora es manejada por inicializarVideoContainer
+        inicializarVideoContainer();
     }
 
     /**
@@ -632,7 +881,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const progressBar = crearBarraProgreso(file.name, 'video');
 
-        fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         })
@@ -1109,13 +1358,218 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Cerrar modal y recargar página
+     * Cerrar modal y recargar contenido dinámicamente
      */
     function cerrarModalYRecargar() {
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalContenido'));
         if (modal) modal.hide();
 
-        setTimeout(() => location.reload(), 1000);
+        // En lugar de recargar toda la página, recargar solo el contenido de las secciones
+        setTimeout(() => {
+            recargarContenidoSecciones();
+        }, 500);
+    }
+
+    /**
+     * Recargar contenido de las secciones dinámicamente
+     */
+    function recargarContenidoSecciones() {
+        // Obtener todas las secciones y recargar su contenido
+        const secciones = document.querySelectorAll('[id^="seccion-content-"]');
+
+        secciones.forEach(seccion => {
+            const seccionId = seccion.id.replace('seccion-content-', '');
+            recargarContenidoSeccion(seccionId);
+        });
+    }
+
+    /**
+     * Recargar contenido de una sección específica
+     */
+    function recargarContenidoSeccion(seccionId) {
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerContenidoSeccion',
+                idSeccion: seccionId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    actualizarVistaContenidoSeccion(seccionId, data.contenido);
+                }
+            })
+            .catch(error => {
+                console.error('Error al recargar contenido de sección:', error);
+            });
+    }
+
+    /**
+     * Actualizar vista del contenido de una sección
+     */
+    function actualizarVistaContenidoSeccion(seccionId, contenido) {
+        const contenidoContainer = document.getElementById(`contenido-items-${seccionId}`);
+        if (!contenidoContainer) return;
+
+        if (!contenido || contenido.length === 0) {
+            contenidoContainer.innerHTML = `
+                <div class="text-center text-muted py-3">
+                    <i class="bi bi-folder-x"></i>
+                    <p class="mb-0">No hay contenido en esta sección</p>
+                </div>`;
+            return;
+        }
+
+        // Agrupar contenido por ID
+        const contenidoAgrupado = {};
+        contenido.forEach(item => {
+            if (!contenidoAgrupado[item.id]) {
+                contenidoAgrupado[item.id] = {
+                    ...item,
+                    assets: []
+                };
+            }
+            if (item.asset_id) {
+                contenidoAgrupado[item.id].assets.push({
+                    id: item.asset_id,
+                    asset_tipo: item.asset_tipo,
+                    public_url: item.public_url,
+                    tamano_bytes: item.tamano_bytes,
+                    duracion_segundos: item.duracion_segundos
+                });
+            }
+        });
+
+        // Generar HTML
+        let html = '';
+        Object.values(contenidoAgrupado).forEach(contenidoItem => {
+            const videos = contenidoItem.assets.filter(asset => asset.asset_tipo === 'video');
+            const pdfs = contenidoItem.assets.filter(asset => asset.asset_tipo === 'pdf');
+
+            html += `
+                <div class="contenido-item-completo mb-3 p-3" style="border: 1px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
+                    <!-- Header del contenido -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="contenido-info">
+                            <h6 class="mb-1">${contenidoItem.titulo}</h6>
+                            <small class="text-muted">Duración: ${contenidoItem.duracion || '00:00:00'}</small>
+                        </div>
+                        <div class="contenido-actions">
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="editarContenido(${contenidoItem.id})"
+                                title="Editar contenido">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger"
+                                onclick="eliminarContenido(${contenidoItem.id})"
+                                title="Eliminar contenido">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Assets del contenido -->
+                    <div class="contenido-assets">`;
+
+            // Videos
+            if (videos.length > 0) {
+                html += `
+                        <div class="asset-group mb-2">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-camera-video text-primary me-2"></i>
+                                    <span class="fw-bold">Video:</span>`;
+
+                videos.forEach(video => {
+                    html += `<span class="ms-2">archivo_video.mp4</span>`;
+                    if (video.duracion_segundos) {
+                        const duracion = new Date(video.duracion_segundos * 1000).toISOString().substr(11, 8);
+                        html += `<small class="text-muted ms-1">(${duracion})</small>`;
+                    }
+                });
+
+                html += `
+                                </div>
+                                <div class="video-actions">`;
+
+                videos.forEach(video => {
+                    const urlFormateada = formatearUrlVideo(video.public_url);
+                    html += `
+                                    <button class="btn btn-sm btn-primary reproducir-video ms-2"
+                                        data-video-url="${urlFormateada}"
+                                        data-titulo="${contenidoItem.titulo}"
+                                        data-contenido-id="${contenidoItem.id}"
+                                        title="Reproducir video">
+                                        <i class="bi bi-play-fill"></i> Reproducir
+                                    </button>`;
+                });
+
+                html += `
+                                </div>
+                            </div>
+                        </div>`;
+            }
+
+            // PDFs
+            if (pdfs.length > 0) {
+                html += `
+                        <div class="asset-group">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-file-pdf text-danger me-2"></i>
+                                <span class="fw-bold">PDFs:</span>
+                                <button class="btn btn-sm btn-outline-secondary ms-2"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#pdfs-${contenidoItem.id}"
+                                    aria-expanded="false">
+                                    <i class="bi bi-list"></i> Ver archivos (${pdfs.length})
+                                </button>
+                            </div>
+                            <div class="collapse mt-2" id="pdfs-${contenidoItem.id}">
+                                <div class="pdf-list ps-3">`;
+
+                pdfs.forEach(pdf => {
+                    const tamanoMB = pdf.tamano_bytes ? (pdf.tamano_bytes / (1024 * 1024)).toFixed(2) : '';
+                    html += `
+                                    <div class="pdf-item d-flex justify-content-between align-items-center py-1">
+                                        <span>
+                                            <i class="bi bi-file-pdf-fill text-danger me-1"></i>
+                                            archivo_${pdf.id}.pdf
+                                        </span>`;
+                    if (tamanoMB) {
+                        html += `<small class="text-muted">(${tamanoMB} MB)</small>`;
+                    }
+                    html += `</div>`;
+                });
+
+                html += `
+                                </div>
+                            </div>
+                        </div>`;
+            }
+
+            // Si no hay assets
+            if (videos.length === 0 && pdfs.length === 0) {
+                html += `
+                        <div class="text-muted text-center py-2">
+                            <i class="bi bi-info-circle"></i>
+                            Sin archivos adjuntos
+                        </div>`;
+            }
+
+            html += `
+                    </div>
+                </div>`;
+        });
+
+        contenidoContainer.innerHTML = html;
+
+        // Reinicializar eventos de videos
+        inicializarEventosVideosSecciones();
     }
 
     /**
@@ -1286,4 +1740,137 @@ document.addEventListener('DOMContentLoaded', function () {
      * Funciones globales para compatibilidad
      */
     window.habilitarEdicion = habilitarEdicion;
+
+    /**
+     * FUNCIONES DE UTILIDAD PARA VIDEO CONTAINER
+     */
+
+    /**
+     * Obtener URL de video formateada
+     */
+    function formatearUrlVideo(url) {
+        if (!url) return null;
+
+        // Si la URL ya es absoluta, devolverla tal como está
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            return url;
+        }
+
+        // Si es una ruta relativa, construir la URL completa
+        if (url.startsWith('storage/')) {
+            return `/cursosApp/${url}`;
+        }
+
+        // Si no empieza con /, agregarlo
+        if (!url.startsWith('/')) {
+            return `/cursosApp/${url}`;
+        }
+
+        return url;
+    }
+
+    /**
+     * Validar si un archivo de video es válido
+     */
+    function validarVideo(file) {
+        // Validar tipo de archivo
+        if (!file.type.startsWith('video/mp4')) {
+            mostrarNotificacion('Solo se permiten archivos MP4', 'error');
+            return false;
+        }
+
+        // Validar tamaño (100MB máximo)
+        const tamanosMaximo = 100 * 1024 * 1024; // 100MB en bytes
+        if (file.size > tamanosMaximo) {
+            mostrarNotificacion('El archivo no puede superar los 100MB', 'error');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validar si un archivo PDF es válido
+     */
+    function validarPDF(file) {
+        // Validar tipo de archivo
+        if (file.type !== 'application/pdf') {
+            mostrarNotificacion('Solo se permiten archivos PDF', 'error');
+            return false;
+        }
+
+        // Validar tamaño (10MB máximo)
+        const tamanosMaximo = 10 * 1024 * 1024; // 10MB en bytes
+        if (file.size > tamanosMaximo) {
+            mostrarNotificacion('El archivo PDF no puede superar los 10MB', 'error');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Formatear duración de video
+     */
+    function formatearDuracion(segundos) {
+        if (!segundos || segundos === 0) return '00:00:00';
+
+        const horas = Math.floor(segundos / 3600);
+        const minutos = Math.floor((segundos % 3600) / 60);
+        const segs = Math.floor(segundos % 60);
+
+        return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segs.toString().padStart(2, '0')}`;
+    }
+
+    /**
+     * Obtener información del video actualmente reproduciendo
+     */
+    window.obtenerVideoActual = function () {
+        const video = document.getElementById('videoPlayer');
+        if (!video) return null;
+
+        return {
+            src: video.src,
+            currentTime: video.currentTime,
+            duration: video.duration,
+            paused: video.paused,
+            volume: video.volume
+        };
+    };
+
+    /**
+     * Cambiar a pantalla completa
+     */
+    window.toggleFullscreen = function () {
+        const video = document.getElementById('videoPlayer');
+        if (!video) return;
+
+        if (!document.fullscreenElement) {
+            video.requestFullscreen().catch(err => {
+                console.log('Error al entrar en pantalla completa:', err);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
+    /**
+     * Control de volumen del video
+     */
+    window.cambiarVolumen = function (volumen) {
+        const video = document.getElementById('videoPlayer');
+        if (!video) return;
+
+        video.volume = Math.max(0, Math.min(1, volumen));
+    };
+
+    // Exportar funciones principales para uso externo
+    window.VideoContainer = {
+        reproducirVideoPromo,
+        reproducirVideoSeccion,
+        recargarContenidoSecciones,
+        formatearUrlVideo,
+        validarVideo,
+        formatearDuracion
+    };
 });
