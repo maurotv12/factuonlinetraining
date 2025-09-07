@@ -76,8 +76,6 @@ class ModeloCursos
 		} else {
 			return "error";
 		}
-
-		$stmt = null;
 	}
 
 	/*=============================================
@@ -113,8 +111,6 @@ class ModeloCursos
 		} else {
 			return "error";
 		}
-
-		$stmt = null;
 	}
 
 	/*=============================================
@@ -122,33 +118,85 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlCrearSeccion($datos)
 	{
+		// Convertir objeto a array si es necesario
+		if (is_object($datos)) {
+			$datos = (array) $datos;
+		}
+
+		// Validar que tenemos los datos mínimos requeridos
+		if (!isset($datos['idCurso']) || !isset($datos['titulo'])) {
+			return [
+				'success' => false,
+				'mensaje' => 'Faltan datos requeridos: idCurso y titulo'
+			];
+		}
+
 		// Validar que el orden sea >= 1
 		if (!isset($datos['orden']) || $datos['orden'] < 1) {
 			$datos['orden'] = 1;
 		}
 
 		$conn = Conexion::conectar();
-		$stmt = $conn->prepare("INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden, estado) 
-			VALUES (:id_curso, :titulo, :descripcion, :orden, :estado)");
 
-		$stmt->bindParam(":id_curso", $datos["id_curso"], PDO::PARAM_INT);
-		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
-		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
-		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+		try {
+			// Obtener el último orden para este curso
+			$stmtLastOrden = $conn->prepare("SELECT COALESCE(MAX(orden), 0) AS ultimo FROM curso_secciones WHERE id_curso = :id_curso");
+			$stmtLastOrden->bindParam(":id_curso", $datos["idCurso"], PDO::PARAM_INT);
+			$stmtLastOrden->execute();
 
-		if ($stmt->execute()) {
-			return $conn->lastInsertId();
-		} else {
-			return "error";
+			$resultado = $stmtLastOrden->fetch(PDO::FETCH_ASSOC);
+			$nuevoOrden = $resultado['ultimo'] + 1;
+
+			// Insertar la nueva sección
+			$stmt = $conn->prepare("INSERT INTO curso_secciones 
+								(id_curso, titulo, descripcion, orden, estado) 
+								VALUES (:id_curso, :titulo, :descripcion, :orden, :estado)");
+
+			$stmt->bindParam(":id_curso", $datos["idCurso"], PDO::PARAM_INT);
+			$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+
+			$descripcion = $datos["descripcion"] ?? '';
+			$stmt->bindParam(":descripcion", $descripcion, PDO::PARAM_STR);
+			$stmt->bindParam(":orden", $nuevoOrden, PDO::PARAM_INT);
+
+			$estado = $datos["estado"] ?? "activo";
+			$stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'id' => $conn->lastInsertId(),
+					'orden' => $nuevoOrden,
+					'mensaje' => 'Sección creada exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al ejecutar la consulta SQL'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
-
-		$stmt = null;
 	}
 
 	public static function mdlActualizarSeccion($datos)
 	{
-		// Validar que el orden sea >= 1
+		// Convertir objeto a array si es necesario
+		if (is_object($datos)) {
+			$datos = (array) $datos;
+		}
+
+		// Validar que tenemos los datos mínimos requeridos
+		if (!isset($datos['idCurso']) || !isset($datos['titulo'])) {
+			return [
+				'success' => false,
+				'mensaje' => 'Faltan datos requeridos: idCurso y titulo'
+			];
+		} // Validar que el orden sea >= 1
 		if (!isset($datos['orden']) || $datos['orden'] < 1) {
 			$datos['orden'] = 1;
 		}
@@ -170,8 +218,6 @@ class ModeloCursos
 		} else {
 			return "error";
 		}
-
-		$stmt = null;
 	}
 
 	public static function mdlEliminarSeccion($id)
@@ -184,12 +230,10 @@ class ModeloCursos
 		} else {
 			return "error";
 		}
-
-		$stmt = null;
 	}
 
 	/*=============================================
-	Métodos para gestión de contenido de secciones
+	Métodos para gestión de contenido de secciones 
 	=============================================*/
 	public static function mdlCrearContenido($datos)
 	{
@@ -206,13 +250,12 @@ class ModeloCursos
 
 		$conn = Conexion::conectar();
 		$stmt = $conn->prepare("INSERT INTO seccion_contenido 
-								(id_seccion, titulo, descripcion, tipo, duracion, orden, estado) 
-								VALUES (:id_seccion, :titulo, :descripcion, :tipo, :duracion, :orden, :estado)");
+								(id_seccion, titulo, descripcion, duracion, orden, estado) 
+								VALUES (:id_seccion, :titulo, :descripcion, :duracion, :orden, :estado)");
 
 		$stmt->bindParam(":id_seccion", $datos["id_seccion"], PDO::PARAM_INT);
 		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
 		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-		$stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_STR);
 		$stmt->bindParam(":duracion", $datos["duracion"], PDO::PARAM_STR);
 		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
 		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
@@ -239,8 +282,7 @@ class ModeloCursos
 
 		$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido SET 
 												titulo = :titulo, 
-												descripcion = :descripcion, 
-												tipo = :tipo, 
+												descripcion = :descripcion,  
 												duracion = :duracion, 
 												orden = :orden, 
 												estado = :estado 
@@ -249,7 +291,6 @@ class ModeloCursos
 		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
 		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
 		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-		$stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_STR);
 		$stmt->bindParam(":duracion", $datos["duracion"], PDO::PARAM_STR);
 		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
 		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
@@ -440,6 +481,42 @@ class ModeloCursos
 		$resultado = $stmt->fetch();
 
 		return $resultado['total'] == 0;
+	}
+
+	/*=============================================
+	Obtener secciones de un curso
+	=============================================*/
+	public static function mdlObtenerSecciones($idCurso)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("SELECT 
+				id,
+				titulo,
+				descripcion,
+				orden,
+				estado,
+				fecha_creacion,
+				fecha_actualizacion
+				FROM curso_secciones 
+				WHERE id_curso = :id_curso
+				ORDER BY orden ASC");
+
+			$stmt->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
+			$stmt->execute();
+			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			return array(
+				"success" => true,
+				"mensaje" => "Secciones obtenidas correctamente",
+				"secciones" => $resultados
+			);
+		} catch (Exception $e) {
+			error_log("Error en mdlObtenerSecciones: " . $e->getMessage());
+			return array(
+				"success" => false,
+				"mensaje" => "Error al obtener las secciones: " . $e->getMessage()
+			);
+		}
 	}
 
 	/*=============================================

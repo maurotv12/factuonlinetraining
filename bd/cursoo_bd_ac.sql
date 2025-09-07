@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-08-2025 a las 22:57:08
+-- Tiempo de generación: 07-09-2025 a las 03:45:48
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -81,10 +81,12 @@ INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `lo_que_aprende
 (8, 'tecnologia-en-logica', 'Tecnologia en logica', 'dasdasd', NULL, NULL, NULL, 'storage/public/banners/687e564c4c2bd_depositphotos_234542254-stock-illustration-man-profile-smiling-cartoon-vector.jpg', NULL, 23, 1, 2, 'activo', '2025-07-21 15:01:32'),
 (9, 'tecnologia-en-perritos', 'Tecnologia en perritos', 'La tecnología ha transformado la forma en que cuidamos a nuestros perros, ofreciendo herramientas para mejorar su salud, seguridad y bienestar. Desde dispositivos portátiles que monitorean su actividad y signos vitales, hasta sistemas de ubicación GPS para evitar pérdidas, la innovación tecnológica ha llegado para quedarse en el mundo canino.\r\nWearables:\r\nDispositivos como collares inteligentes con GPS y sensores de salud, que permiten a los dueños monitorear la actividad física, la frecuencia cardíaca y respiratoria, e incluso detectar problemas de salud antes de que se manifiesten síntomas visibles. \r\nComederos y bebederos automáticos:\r\nProgramables para asegurar que tu perro reciba la cantidad adecuada de alimento y agua, incluso cuando no estás en casa. \r\nCámaras de vigilancia:\r\nPermiten observar a tu mascota a distancia, interactuar con ella a través de audio y video, y asegurarte de que está bien. ', NULL, NULL, NULL, 'storage/public/banners/687e68537ff02_287133.jpg', NULL, 80, 1, 1, 'activo', '2025-07-21 16:18:27'),
 (10, 'tecnologia-en-tarott', 'Tecnologia en tarott', 'maksdklajd', NULL, NULL, NULL, 'storage/public/banners/687e871a23717_2871333.jpg', NULL, 34, 1, 2, 'activo', '2025-07-21 18:29:46'),
-(11, 'metodolog-a-de-la-programaci-n-pseint-dfd-c-', 'Metodología de la Programación | PSeInt, DFD, C++', 'Dirigido para principiantes que quieren aprender a crear algoritmos en PSeInt para migrar su contenido a diagramas de flujo y después a un lenguaje de programación conociendo sus fundamentos previos y entender el manejo de los programas.\r\n\r\nConocerás la metodología para resolver problemas usando la programación en un ambiente institucional educativo y laboral \r\n\r\nConceptos básicos de la programación\r\n\r\nDiseñaras tus primeros algoritmos en PSeInt\r\n\r\nConoce el software que crea diagramas de flujo funcionales como lo es DFD\r\n\r\nTemario Principal\r\n\r\nBienvenidos\r\n\r\nMetas\r\n\r\nUniversidad\r\n\r\nVentajas de estudiar programación\r\n\r\nLenguajes de programación\r\n\r\n¿Qué es un algoritmo?\r\n\r\nCaracteristicas de los algoritmos\r\n\r\n¿Qué es un diagrama de flujo?\r\n\r\nSímbolos utilizados en los diagramas de flujo\r\n\r\n¿Qué es un pseudocódigo?\r\n\r\n¿Qué es PSeInt?\r\n\r\nDefiniciones\r\n\r\nUna variable es un espacio de la memoria donde guardar información\r\n\r\nLa información que se guarda en la variable puede ser de diversos tipos y puede ir cambiando a lo largo del programa\r\n\r\nCada variable tiene un tipo de dato asociado, por lo que siempre guardará el mismo tipo de dato\r\n\r\nUna variable que guarde un número no podrá guardar después otro tipo que no sea un número\r\n\r\nLas expresiones son combinaciones de constantes, variables y operadores que nos permiten trabajar con los datos\r\n\r\nDependiendo de los operadores utilizados en ellas, pueden ser de varios tipos: aritméticas, relacionales, lógicas, alfanuméricas y de asignación', NULL, NULL, NULL, 'storage/public/banners/687fbedfc3004_2871333a.jpg', NULL, 90000, 2, 1, 'activo', '2025-07-22 16:39:59'),
+(11, 'metodolog-a-de-la-programaci-n-pseint-dfd-c-', 'Metodología de la Programación | PSeInt, DFD, C++', 'Dirigido para principiantes que quieren aprender a crear algoritmos en PSeInt para migrar su contenido a diagramas de flujo y después a un lenguaje de programación conociendo sus fundamentos previos y entender el manejo de los programas.\n\nConocerás la metodología para resolver problemas usando la programación en un ambiente institucional educativo y laboral \n\nConceptos básicos de la programación\n\nDiseñaras tus primeros algoritmos en PSeInt\n\nConoce el software que crea diagramas de flujo funcionales como lo es DFD\n\nTemario Principal\n\nBienvenidos\n\nMetas\n\nUniversidad\n\nVentajas de estudiar programación\n\nLenguajes de programación\n\n¿Qué es un algoritmo?\n\nCaracteristicas de los algoritmos\n\n¿Qué es un diagrama de flujo?\n\nSímbolos utilizados en los diagramas de flujo\n\n¿Qué es un pseudocódigo?\n\n¿Qué es PSeInt?\n\nDefiniciones\n\nUna variable es un espacio de la memoria donde guardar información\n\nLa información que se guarda en la variable puede ser de diversos tipos y puede ir cambiando a lo largo del programa\n\nCada variable tiene un tipo de dato asociado, por lo que siempre guardará el mismo tipo de dato\n\nUna variable que guarde un número no podrá guardar después otro tipo que no sea un número\n\nLas expresiones son combinaciones de constantes, variables y operadores que nos permiten trabajar con los datos\n\nDependiendo de los operadores utilizados en ellas, pueden ser de varios tipos: aritméticas, relacionales, lógicas, alfanuméricas y de asignación...................', NULL, NULL, NULL, 'storage/public/banners/687fbedfc3004_2871333a.jpg', NULL, 90000, 2, 1, 'activo', '2025-07-22 16:39:59'),
 (12, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'describiendo', 'muchisimo', 'no experiencia', 'Para nadie', 'storage/public/banners/687fc17e343f8_2871333aa.jpg', NULL, 234324, 1, 2, 'activo', '2025-07-22 16:51:10'),
 (14, 'analitica-de-leche-de-vaca', 'Analitica de leche de vaca', 'asdasdas', 'dasdsadasd', 'asdasdsadasd', 'asdasdasd', 'storage/public/banners/68a77db350d47_1755807155.jpg', NULL, 40000, 3, 2, 'activo', '2025-08-21 20:12:35'),
-(15, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'dsadada', 'asdasdsa', 'asdasdas', 'dsadasdsad', 'storage/public/banners/68a87ff700a33_1755873271.jpg', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 90000, 1, 2, 'activo', '2025-08-22 14:34:31');
+(15, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'dsadada', 'asdasdsa', 'asdasdas', 'dsadasdsad', 'storage/public/banners/68a87ff700a33_1755873271.jpg', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 90000, 1, 2, 'borrador', '2025-08-22 14:34:31'),
+(16, 'curso-de-generalidades', 'Curso de Generalidades', 'Estoy viendo que en verCursoProfe.php el if de // Procesar actualización del curso básico (migrado desde editarCursoProfe.php) no está procesando las secciones, el contenido de secciones, el progreso para poder conectarse con la base de datos y almacenas o actualizar o eliminar las secciones   y las secciones se van a manejar de la siguiente manera:\n1. Para Insertar/actualizar sección (curso_secciones):\ncrea una función PHP (PDO) que inserte una sección en `curso_secciones`\n// Parámetros: $idCurso, $titulo, $descripcion, $orden (int)\n// Retorna: id de la sección creada\n// Usa SQL INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden) VALUES (....);\n// No Manejes timestamps por defecto.\n// Valida que $orden sea >= 1. \n// Si existe, crea también una función actualizarSeccion($idSeccion, $titulo, $descripcion, $orden)\n2. Insertar contenido de tipo video/pdf en seccion_contenido\ncrea una función PHP (PDO) crearContenido($idSeccion, $titulo, $descripcion, $tipo, $duracion, $orden)\n// `tipo` ∈ {\'video\',\'pdf\'}. Para video, `duracion` = \'MM:SS\' o \'HH:MM:SS\'; para PDF puede ser NULL.\n// SQL: INSERT INTO seccion_contenido (id_seccion, titulo, descripcion, tipo, duracion, orden) VALUES (…);\n// Retorna: id del contenido\n// Valida que $orden >= 1 y tipo válido.\n3. Subir archivo y crear asset en seccion_contenido_assets\nescribe una función GuardarContenidoAsset($idContenido, $assetTipo, $rutaDestinoAbsoluta, $urlPublica = null, $tamanoBytes = null, $duracionSegundos = null)\n// Inserta en seccion_contenido_assets (id_contenido, asset_tipo, storage_path, public_url, tamano_bytes, duracion_segundos)\n// asset_tipo: \'attachment\' para MP4 directo, \'pdf\' para PDF, no generas miniatura\n4. Validaciones de subida MP4 ≤10min / hasta 1280×720 y PDF\nen el controller de subida, valida MIME:\n// - video/mp4 (max 10 min, 1280x720) -> rechaza si excede\n// - application/pdf\n// Calcula duración del video (si ffprobe está disponible) y pásala a crearContenido/guardarContenidoAsset\n// Construye rutas tipo que cree las carpetas si no existen \npara video usa storage/public/section_assets/{curso}/{seccion}/{contenido}/video/archivo.mp4 \npara pdf usa storage/public/section_assets/{curso}/{seccion}/{contenido}/pdf/archivo.pdf \n// Asegura permisos de carpeta (Windows + XAMPP), mueve el archivo y crea el asset\n\n5. Marcar progreso al consumir el contenido\nfunción upsertProgreso($idContenido, $idEstudiante, $visto, $progresoSegundos, $porcentaje)\n// Si existe fila (contenido+estudiante), haz UPDATE; si no, INSERT.\n// Si $porcentaje >= 90, fuerza $visto = 1 y porcentaje = 100.\n// Actualiza `ultima_vista` automáticamente (columna con ON UPDATE).', 'Aprenderas a asadasdasdsCrear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'Los requisitos son Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabadasdasdasdasdasd\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'Es para Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilidaasdasdasdasd', 'storage/public/banners/68b48d809a2f9_1756663168.png', 'storage/public/promoVideos/68b48d809a6ca_1756663168.mp4', 500000, 1, 1, 'activo', '2025-08-31 17:59:28'),
+(17, 'curso-prueba-secciones-test', 'Curso de Prueba Secciones - TEST DIRECTO', 'Descripción de prueba directa', 'Test directo', 'Test directo', 'Test directo', '', '', 88000, 1, 10, 'activo', '2025-09-05 02:10:03');
 
 -- --------------------------------------------------------
 
@@ -102,6 +104,29 @@ CREATE TABLE `curso_secciones` (
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `curso_secciones`
+--
+
+INSERT INTO `curso_secciones` (`id`, `id_curso`, `titulo`, `descripcion`, `orden`, `estado`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(5, 1, 'Sección de Prueba', 'Esta es una sección de prueba', 1, 'activo', '2025-09-06 23:46:53', '2025-09-06 23:46:53'),
+(6, 16, 'Introduccion', '\'\'\'', 5, 'activo', '2025-09-06 23:47:43', '2025-09-06 23:47:43'),
+(8, 16, '3 seccion', 'asdasd', 7, 'activo', '2025-09-06 23:53:17', '2025-09-06 23:53:17'),
+(9, 16, '4 sección', 'cuarta', 8, 'activo', '2025-09-07 00:09:45', '2025-09-07 00:09:45'),
+(10, 16, '5sección', 'asdasdas', 9, 'activo', '2025-09-07 00:13:11', '2025-09-07 00:13:11'),
+(11, 16, '6sección', 'asdasd', 10, 'activo', '2025-09-07 00:13:20', '2025-09-07 00:13:20'),
+(12, 16, 'sección67', '', 11, 'activo', '2025-09-07 00:13:26', '2025-09-07 00:13:26'),
+(13, 16, '8', '', 12, 'activo', '2025-09-07 00:13:30', '2025-09-07 00:13:30'),
+(14, 16, '9', '', 13, 'activo', '2025-09-07 00:13:34', '2025-09-07 00:13:34'),
+(15, 16, '10', '', 14, 'activo', '2025-09-07 00:13:38', '2025-09-07 00:13:38'),
+(16, 16, '112', '', 15, 'activo', '2025-09-07 00:13:42', '2025-09-07 00:13:42'),
+(17, 16, '11', '', 16, 'activo', '2025-09-07 00:13:48', '2025-09-07 00:13:48'),
+(18, 16, '12', '', 17, 'activo', '2025-09-07 00:13:52', '2025-09-07 00:13:52'),
+(19, 16, '123', '', 18, 'activo', '2025-09-07 00:13:58', '2025-09-07 00:13:58'),
+(20, 16, '9', '', 19, 'activo', '2025-09-07 00:14:03', '2025-09-07 00:14:03'),
+(21, 16, '85', '', 20, 'activo', '2025-09-07 00:14:08', '2025-09-07 00:14:08'),
+(22, 16, '324', '', 21, 'activo', '2025-09-07 00:14:11', '2025-09-07 00:14:11');
 
 -- --------------------------------------------------------
 
@@ -449,7 +474,21 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (266, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-29 19:58:45'),
 (267, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:48:40'),
 (268, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:49:47'),
-(269, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:52:46');
+(269, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 14:52:46'),
+(270, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-30 19:25:44'),
+(272, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-31 11:04:24'),
+(273, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-31 11:04:38'),
+(274, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-08-31 11:04:54'),
+(275, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-01 21:25:53'),
+(276, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-03 20:42:03'),
+(277, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-03 20:43:08'),
+(278, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 12:53:51'),
+(279, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 18:22:37'),
+(280, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 21:34:05'),
+(281, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 21:52:16'),
+(282, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 21:59:27'),
+(283, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 22:06:30'),
+(284, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-06 17:43:48');
 
 -- --------------------------------------------------------
 
@@ -508,7 +547,9 @@ INSERT INTO `persona` (`id`, `usuario_link`, `nombre`, `email`, `password`, `ver
 (6, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozhez12@gmail.com', '$2y$10$94VTVOeFRnB3oJOHsh5SS.3e5aDOs.m0ThuyUIenG9VGR58pRaOLm', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:50:00'),
 (7, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciozsanchez12@gmail.com', '$2y$10$W7HQnUVY3VuBc9.8/EUWt.JyFzofGiDafxWjlFq7XqwVhVX7c.6Jm', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:50:43'),
 (8, 'clienteRegistro', 'Carlitos', 'maurinchez12@gmail.com', '$2y$10$halO6g.l5OXIoWVuMhQ80.oefbRxyiMVCyHovqxaRDomE/2e.zR5i', 1, 'vistas/img/usuarios/default/default.png', 'Ingeniero', NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:55:02'),
-(9, 'clienteRegistro', 'fgdfgdfg', 'mauricisanchez12@gmail.com', '$2y$10$iUjo10ZEIA39.toMBRbQveKk.SOlDrXXCn8wklKOagJtGDXl8erVS', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-06 19:22:28');
+(9, 'clienteRegistro', 'fgdfgdfg', 'mauricisanchez12@gmail.com', '$2y$10$iUjo10ZEIA39.toMBRbQveKk.SOlDrXXCn8wklKOagJtGDXl8erVS', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-06 19:22:28'),
+(10, 'profesor-prueba', 'Profesor Prueba', 'profesor@test.com', '$2y$10$OqwueFd4hsseEvQumx6ZfOlF8ymUuvK3JDCWIQG.e3b9FQxLQ8t3i', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-09-05 02:10:03'),
+(11, 'estudiante-prueba', 'Estudiante Prueba', 'estudiante@test.com', '$2y$10$vK0SLpm9LkjSfd9S8lZjjug7JA2WSPRiOPWvbswxDBPGaxi4ZByYq', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-09-05 02:10:03');
 
 -- --------------------------------------------------------
 
@@ -587,8 +628,6 @@ CREATE TABLE `seccion_contenido` (
   `id` int(11) NOT NULL,
   `id_seccion` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
-  `descripcion` text DEFAULT NULL,
-  `tipo` enum('video','pdf','texto','enlace') NOT NULL,
   `duracion` varchar(10) DEFAULT NULL,
   `orden` int(11) NOT NULL DEFAULT 1,
   `estado` enum('activo','inactivo') DEFAULT 'activo',
@@ -605,7 +644,7 @@ CREATE TABLE `seccion_contenido` (
 CREATE TABLE `seccion_contenido_assets` (
   `id` int(11) NOT NULL,
   `id_contenido` int(11) NOT NULL,
-  `asset_tipo` enum('hls_master','hls_variant','hls_segment','thumbnail','pdf','attachment','subtitle') NOT NULL,
+  `asset_tipo` enum('video','pdf') NOT NULL,
   `storage_path` varchar(500) NOT NULL,
   `public_url` varchar(500) DEFAULT NULL,
   `tamano_bytes` bigint(20) DEFAULT NULL,
@@ -791,13 +830,13 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `curso_secciones`
 --
 ALTER TABLE `curso_secciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `email_verificacion_tokens`
@@ -821,7 +860,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=270;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -833,7 +872,7 @@ ALTER TABLE `mensajes`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `preinscripciones`

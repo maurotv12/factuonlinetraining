@@ -26,27 +26,45 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
     exit;
 }
 
+$datos = json_decode(file_get_contents('php://input'), true); // ← Agregar true para array asociativo
+$accion = $datos['accion'] ?? '';
+
 switch ($accion) {
     case 'crearSeccion':
-        $datos = json_decode(file_get_contents('php://input'));
-
         // Acceder a los datos que identificaste
-        $idCurso = $datos->idCurso;
-        $titulo = $datos->titulo;
-        $descripcion = $datos->descripcion;
-        // Código para crear una nueva sección
+        $idCurso = $datos['idCurso'];
+        $titulo = $datos['titulo'];
+        $descripcion = $datos['descripcion'];
+
+        $respuesta = ControladorCursos::ctrCrearSeccion($datos);
+
+        // Devolver la respuesta como JSON
+        echo json_encode($respuesta);
         break;
 
     case 'actualizarSeccion':
-        // Código para actualizar una sección existente
+        $respuesta = ControladorCursos::ctrActualizarSeccion($datos);
+        echo json_encode($respuesta);
         break;
 
     case 'obtenerSecciones':
-        // Código para obtener las secciones del curso
+        $idCurso = $datos['idCurso'] ?? null;
+        if ($idCurso) {
+            $respuesta = ControladorCursos::ctrObtenerSecciones($idCurso);
+            echo json_encode($respuesta);
+        } else {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de curso requerido']);
+        }
         break;
 
     case 'eliminarSeccion':
-        // Código para eliminar una sección
+        $idSeccion = $datos['idSeccion'] ?? null;
+        if ($idSeccion) {
+            $respuesta = ControladorCursos::ctrEliminarSeccion($idSeccion);
+            echo json_encode($respuesta);
+        } else {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de sección requerido']);
+        }
         break;
 
     default:

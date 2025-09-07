@@ -529,6 +529,12 @@ class ControladorCursos
 		return $respuesta;
 	}
 
+	public static function ctrObtenerSecciones($idCurso)
+	{
+		$respuesta = ModeloCursos::mdlObtenerSecciones($idCurso);
+		return $respuesta;
+	}
+
 	/*--==========================================
 	Gestión de contenido de secciones
 	============================================--*/

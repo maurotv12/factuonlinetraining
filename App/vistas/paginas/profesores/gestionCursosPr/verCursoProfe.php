@@ -91,7 +91,6 @@ foreach ($categorias as $cat) {
 
 // Incluir CSS para la página
 echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
-echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCursoProfe.css?v=' . time() . '">';
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
 // Mostrar mensajes de la sesión si existen (migrado desde editarCursoProfe.php)
@@ -373,85 +372,74 @@ if (isset($_SESSION['mensaje_error'])) {
 
                 <div class="contenido-lista">
                     <?php if (!empty($secciones)): ?>
-                        <div class="accordion" id="seccionesAccordion">
+                        <div id="secciones-container">
                             <?php foreach ($secciones as $index => $seccion): ?>
-                                <div class="accordion-item seccion-item" data-seccion-id="<?= $seccion['id'] ?>">
-                                    <h2 class="accordion-header" id="heading<?= $seccion['id'] ?>">
-                                        <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#collapse<?= $seccion['id'] ?>"
-                                            aria-expanded="false">
-                                            <div class="w-100 d-flex justify-content-between align-items-center">
-                                                <span><?= htmlspecialchars($seccion['titulo']) ?></span>
-                                                <div class="seccion-actions" onclick="event.stopPropagation();">
-                                                    <button class="btn btn-sm btn-outline-primary btn-editar-seccion me-1"
-                                                        title="Editar sección">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger btn-eliminar-seccion"
-                                                        title="Eliminar sección">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                                <div class="seccion-container" data-seccion-id="<?= $seccion['id'] ?>">
+                                    <div class="seccion-header" onclick="toggleSeccion(<?= $seccion['id'] ?>)">
+                                        <h6 class="seccion-title"><?= htmlspecialchars($seccion['titulo']) ?></h6>
+                                        <div class="seccion-actions" onclick="event.stopPropagation();">
+                                            <button class="btn btn-sm btn-outline-light"
+                                                onclick="editarSeccion(<?= $seccion['id'] ?>)"
+                                                title="Editar sección">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-light"
+                                                onclick="eliminarSeccion(<?= $seccion['id'] ?>)"
+                                                title="Eliminar sección">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="seccion-content" id="seccion-content-<?= $seccion['id'] ?>">
+                                        <?php if (!empty($seccion['descripcion'])): ?>
+                                            <p class="seccion-description"><?= htmlspecialchars($seccion['descripcion']) ?></p>
+                                        <?php endif; ?>
+
+                                        <!-- Contenido existente de la sección -->
+                                        <div class="contenido-items">
+                                            <?php
+                                            $contenidoSeccion = $contenidoSecciones[$seccion['id']] ?? [];
+                                            if (!empty($contenidoSeccion)):
+                                                foreach ($contenidoSeccion as $contenido): ?>
+                                                    <div class="contenido-item">
+                                                        <i class="bi bi-<?= $contenido['tipo'] === 'video' ? 'camera-video' : 'file-pdf' ?>"></i>
+                                                        <span><?= htmlspecialchars($contenido['titulo']) ?></span>
+                                                        <?php if ($contenido['duracion']): ?>
+                                                            <small class="text-muted">(<?= $contenido['duracion'] ?>)</small>
+                                                        <?php endif; ?>
+                                                    </div>
+                                            <?php endforeach;
+                                            endif; ?>
+                                        </div>
+
+                                        <!-- Área de subida de archivos -->
+                                        <div class="upload-area">
+                                            <div class="upload-row">
+                                                <div class="upload-col">
+                                                    <div class="drop-area"
+                                                        data-tipo="video"
+                                                        data-seccion-id="<?= $seccion['id'] ?>">
+                                                        <i class="bi bi-camera-video"></i>
+                                                        <p>Subir Videos</p>
+                                                        <small>MP4, máx 10min, HD</small>
+                                                        <input type="file"
+                                                            class="file-input"
+                                                            accept="video/mp4"
+                                                            multiple>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </button>
-                                    </h2>
-                                    <div id="collapse<?= $seccion['id'] ?>"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#seccionesAccordion">
-                                        <div class="accordion-body">
-                                            <?php if (!empty($seccion['descripcion'])): ?>
-                                                <p class="text-muted mb-3"><?= htmlspecialchars($seccion['descripcion']) ?></p>
-                                            <?php endif; ?>
-
-                                            <!-- Contenido de la sección -->
-                                            <div class="seccion-contenido" id="contenido-seccion-<?= $seccion['id'] ?>">
-                                                <?php
-                                                $contenidoSeccion = $contenidoSecciones[$seccion['id']] ?? [];
-                                                if (!empty($contenidoSeccion)):
-                                                ?>
-                                                    <div class="contenido-lista">
-                                                        <?php foreach ($contenidoSeccion as $contenido): ?>
-                                                            <div class="contenido-item">
-                                                                <i class="bi bi-<?= $contenido['tipo'] === 'video' ? 'camera-video' : 'file-pdf' ?>"></i>
-                                                                <span><?= htmlspecialchars($contenido['titulo']) ?></span>
-                                                                <?php if ($contenido['duracion']): ?>
-                                                                    <small class="text-muted">(<?= $contenido['duracion'] ?>)</small>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                        <?php endforeach; ?>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-
-                                            <!-- Área de subida de archivos -->
-                                            <div class="upload-area mt-3">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <div class="drop-area"
-                                                            data-tipo="video"
-                                                            data-seccion-id="<?= $seccion['id'] ?>">
-                                                            <i class="bi bi-camera-video"></i>
-                                                            <p>Subir Videos</p>
-                                                            <small>MP4, máx 10min, HD</small>
-                                                            <input type="file"
-                                                                class="file-input"
-                                                                accept="video/mp4"
-                                                                multiple>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="drop-area"
-                                                            data-tipo="pdf"
-                                                            data-seccion-id="<?= $seccion['id'] ?>">
-                                                            <i class="bi bi-file-pdf"></i>
-                                                            <p>Subir PDFs</p>
-                                                            <small>Máx 10MB</small>
-                                                            <input type="file"
-                                                                class="file-input"
-                                                                accept=".pdf"
-                                                                multiple>
-                                                        </div>
+                                                <div class="upload-col">
+                                                    <div class="drop-area"
+                                                        data-tipo="pdf"
+                                                        data-seccion-id="<?= $seccion['id'] ?>">
+                                                        <i class="bi bi-file-pdf"></i>
+                                                        <p>Subir PDFs</p>
+                                                        <small>Máx 10MB</small>
+                                                        <input type="file"
+                                                            class="file-input"
+                                                            accept=".pdf"
+                                                            multiple>
                                                     </div>
                                                 </div>
                                             </div>

@@ -319,14 +319,15 @@
     margin: 0;
 }
 
-/* Sidebar del curso */
+/* Sidebar del curso - Estructura simple */
 .curso-sidebar {
     background: var(--white);
     border-radius: 15px;
     box-shadow: var(--shadow);
-    overflow: hidden;
-    position: sticky;
-    top: 2rem;
+    overflow: visible;
+    position: relative;
+    width: 100%;
+    height: auto;
 }
 
 .sidebar-header-content {
@@ -355,72 +356,135 @@
     opacity: 0.9;
 }
 
-/* Lista de contenido */
+/* Lista de contenido - Estructura simple con scroll */
 .contenido-lista {
-    padding: 1rem;
+    padding: 1.5rem;
+    background: transparent;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-.accordion-item {
-    border: none;
-    margin-bottom: 0.5rem;
+/* Personalizar scrollbar */
+.contenido-lista::-webkit-scrollbar {
+    width: 8px;
+}
+
+.contenido-lista::-webkit-scrollbar-track {
+    background: #f1f1f1;
     border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(4, 12, 44, 0.05);
 }
 
-.accordion-header {
-    margin-bottom: 0;
-}
-
-.accordion-button {
-    background-color: var(--white);
-    border: none;
-    color: var(--dark-color);
-    font-weight: 600;
-    padding: 1rem;
+.contenido-lista::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
     border-radius: 10px;
-    box-shadow: none;
 }
 
-.accordion-button:not(.collapsed) {
-    background: linear-gradient(135deg, var(--primary-color));
-    color: var(--white);
-    box-shadow: none;
+.contenido-lista::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-color);
 }
 
-.accordion-button::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-}
-
-.accordion-button:not(.collapsed)::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+/* Secciones - Estructura simple y limpia */
+.seccion-container {
+    margin-bottom: 1rem;
 }
 
 .seccion-header {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    transition: background-color 0.3s ease;
 }
 
-.seccion-titulo {
+.seccion-header:hover {
+    background: var(--dark-color);
+}
+
+.seccion-title {
     font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
 }
 
-.seccion-count {
-    font-size: 0.85rem;
-    opacity: 0.8;
+.seccion-actions {
+    display: flex;
+    gap: 0.5rem;
 }
 
-.accordion-body {
+.seccion-content {
+    background: #f8f9fa;
+    border-radius: 0 0 10px 10px;
     padding: 1rem;
-    background-color: #f8f9fa;
+    display: none;
 }
 
-.seccion-descripcion {
+.seccion-content.show {
+    display: block;
+}
+
+.seccion-description {
     margin-bottom: 1rem;
     color: var(--gray-color);
     font-style: italic;
+}
+
+/* Área de subida de archivos */
+.upload-area {
+    margin-top: 1rem;
+}
+
+.upload-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.upload-col {
+    flex: 1;
+}
+
+.drop-area {
+    border: 2px dashed var(--gray-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    background: var(--white);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.drop-area:hover {
+    border-color: var(--primary-color);
+    background: #f8f9fa;
+}
+
+.drop-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(54, 130, 196, 0.1);
+}
+
+.drop-area i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.drop-area p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.drop-area small {
+    color: var(--gray-color);
+}
+
+.file-input {
+    display: none;
 }
 
 /* Items de contenido */
@@ -428,6 +492,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .contenido-item {
@@ -575,6 +640,16 @@
         white-space: normal;
         overflow: visible;
         text-overflow: initial;
+    }
+
+    .curso-sidebar {
+        margin-top: 2rem;
+        position: relative;
+    }
+
+    .contenido-lista {
+        max-height: 400px;
+        padding: 1rem;
     }
 }
 

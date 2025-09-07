@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Inicializar gestión de secciones
+     * Inicializar gestión de secciones - Estructura simple
      */
     function inicializarGestionSecciones() {
         // Botón para agregar nueva sección
@@ -259,19 +259,67 @@ document.addEventListener('DOMContentLoaded', function () {
             btnCrearPrimera.addEventListener('click', mostrarModalNuevaSeccion);
         }
 
-        // Event listeners para secciones existentes
-        document.querySelectorAll('.seccion-item').forEach(seccion => {
-            const btnEditar = seccion.querySelector('.btn-editar-seccion');
-            const btnEliminar = seccion.querySelector('.btn-eliminar-seccion');
+        // Inicializar drag & drop para todas las áreas de subida
+        inicializarDropAreas();
+    }
 
-            if (btnEditar) {
-                btnEditar.addEventListener('click', () => editarSeccion(seccion.dataset.seccionId));
-            }
+    /**
+     * Toggle para mostrar/ocultar contenido de sección
+     */
+    window.toggleSeccion = function (seccionId) {
+        const content = document.getElementById(`seccion-content-${seccionId}`);
+        if (content) {
+            content.classList.toggle('show');
+        }
+    };
 
-            if (btnEliminar) {
-                btnEliminar.addEventListener('click', () => eliminarSeccion(seccion.dataset.seccionId));
-            }
+    /**
+     * Inicializar áreas de drag & drop
+     */
+    function inicializarDropAreas() {
+        const dropAreas = document.querySelectorAll('.drop-area');
+
+        dropAreas.forEach(area => {
+            const fileInput = area.querySelector('.file-input');
+
+            // Click para seleccionar archivos
+            area.addEventListener('click', () => fileInput.click());
+
+            // Drag & drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                area.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                area.addEventListener(eventName, () => area.classList.add('dragover'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                area.addEventListener(eventName, () => area.classList.remove('dragover'), false);
+            });
+
+            area.addEventListener('drop', handleDrop, false);
+
+            // File input change
+            fileInput.addEventListener('change', function () {
+                const files = this.files;
+                const tipo = area.dataset.tipo;
+                const seccionId = area.dataset.seccionId;
+                handleFiles(files, tipo, seccionId);
+            });
         });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            const tipo = e.currentTarget.dataset.tipo;
+            const seccionId = e.currentTarget.dataset.seccionId;
+            handleFiles(files, tipo, seccionId);
+        }
     }
 
     /**
