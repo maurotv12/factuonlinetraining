@@ -391,58 +391,122 @@ if (isset($_SESSION['mensaje_error'])) {
                                         </div>
                                     </div>
 
-                                    <div class="seccion-content" id="seccion-content-<?= $seccion['id'] ?>">
+                                    <div class="seccion-content<?= $index == 0 ? ' show' : '' ?>" id="seccion-content-<?= $seccion['id'] ?>">
                                         <?php if (!empty($seccion['descripcion'])): ?>
                                             <p class="seccion-description"><?= htmlspecialchars($seccion['descripcion']) ?></p>
                                         <?php endif; ?>
 
                                         <!-- Contenido existente de la sección -->
-                                        <div class="contenido-items">
+                                        <div class="contenido-items" id="contenido-items-<?= $seccion['id'] ?>">
                                             <?php
-                                            $contenidoSeccion = $contenidoSecciones[$seccion['id']] ?? [];
-                                            if (!empty($contenidoSeccion)):
-                                                foreach ($contenidoSeccion as $contenido): ?>
-                                                    <div class="contenido-item">
-                                                        <i class="bi bi-<?= $contenido['tipo'] === 'video' ? 'camera-video' : 'file-pdf' ?>"></i>
-                                                        <span><?= htmlspecialchars($contenido['titulo']) ?></span>
-                                                        <?php if ($contenido['duracion']): ?>
-                                                            <small class="text-muted">(<?= $contenido['duracion'] ?>)</small>
-                                                        <?php endif; ?>
-                                                    </div>
-                                            <?php endforeach;
-                                            endif; ?>
-                                        </div>
+                                            // Obtener contenido de la sección con assets
+                                            $contenidoCompleto = ControladorCursos::ctrObtenerContenidoSeccionConAssets($seccion['id']);
 
-                                        <!-- Área de subida de archivos -->
-                                        <div class="upload-area">
-                                            <div class="upload-row">
-                                                <div class="upload-col">
-                                                    <div class="drop-area"
-                                                        data-tipo="video"
-                                                        data-seccion-id="<?= $seccion['id'] ?>">
-                                                        <i class="bi bi-camera-video"></i>
-                                                        <p>Subir Videos</p>
-                                                        <small>MP4, máx 10min, HD</small>
-                                                        <input type="file"
-                                                            class="file-input"
-                                                            accept="video/mp4"
-                                                            multiple>
+                                            // Debug temporal - eliminar después
+                                            echo "<!-- DEBUG SECCION " . $seccion['id'] . ": " . json_encode($contenidoCompleto) . " -->";
+
+                                            if ($contenidoCompleto['success'] && !empty($contenidoCompleto['contenido'])):
+                                                foreach ($contenidoCompleto['contenido'] as $contenido):
+                                                    // Organizar assets por tipo
+                                                    $videos = array_filter($contenido['assets'], function ($asset) {
+                                                        return $asset['asset_tipo'] === 'video';
+                                                    });
+                                                    $pdfs = array_filter($contenido['assets'], function ($asset) {
+                                                        return $asset['asset_tipo'] === 'pdf';
+                                                    });
+
+                                                    $tieneVideo = !empty($videos);
+                                                    $tienePDFs = !empty($pdfs);
+                                            ?>
+                                                    <div class="contenido-item-completo mb-3 p-3" style="border: 1px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
+                                                        <!-- Header del contenido -->
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <div class="contenido-info">
+                                                                <h6 class="mb-1"><?= htmlspecialchars($contenido['titulo']) ?></h6>
+                                                                <?php if (!empty($contenido['descripcion'])): ?>
+                                                                    <small class="text-muted"><?= htmlspecialchars($contenido['descripcion']) ?></small>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                            <div class="contenido-actions">
+                                                                <button class="btn btn-sm btn-outline-primary"
+                                                                    onclick="editarContenido(<?= $contenido['id'] ?>)"
+                                                                    title="Editar contenido">
+                                                                    <i class="bi bi-pencil"></i>
+                                                                </button>
+                                                                <button class="btn btn-sm btn-outline-danger"
+                                                                    onclick="eliminarContenido(<?= $contenido['id'] ?>)"
+                                                                    title="Eliminar contenido">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Assets del contenido -->
+                                                        <div class="contenido-assets">
+                                                            <!-- Videos -->
+                                                            <?php if ($tieneVideo): ?>
+                                                                <div class="asset-group mb-2">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <i class="bi bi-camera-video text-primary me-2"></i>
+                                                                        <span class="fw-bold">Video:</span>
+                                                                        <?php foreach ($videos as $video): ?>
+                                                                            <span class="ms-2"><?= htmlspecialchars($video['nombre_original']) ?></span>
+                                                                            <?php if ($video['duracion_segundos']): ?>
+                                                                                <small class="text-muted ms-1">(<?= gmdate("H:i:s", $video['duracion_segundos']) ?>)</small>
+                                                                            <?php endif; ?>
+                                                                        <?php endforeach; ?>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endif; ?>
+
+                                                            <!-- PDFs -->
+                                                            <?php if ($tienePDFs): ?>
+                                                                <div class="asset-group">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <i class="bi bi-file-pdf text-danger me-2"></i>
+                                                                        <span class="fw-bold">PDFs:</span>
+                                                                        <button class="btn btn-sm btn-outline-secondary ms-2"
+                                                                            type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#pdfs-<?= $contenido['id'] ?>"
+                                                                            aria-expanded="false">
+                                                                            <i class="bi bi-list"></i> Ver archivos (<?= count($pdfs) ?>)
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="collapse mt-2" id="pdfs-<?= $contenido['id'] ?>">
+                                                                        <div class="pdf-list ps-3">
+                                                                            <?php foreach ($pdfs as $pdf): ?>
+                                                                                <div class="pdf-item d-flex justify-content-between align-items-center py-1">
+                                                                                    <span>
+                                                                                        <i class="bi bi-file-pdf-fill text-danger me-1"></i>
+                                                                                        <?= htmlspecialchars($pdf['nombre_original']) ?>
+                                                                                    </span>
+                                                                                    <small class="text-muted">
+                                                                                        (<?= number_format($pdf['tamano_bytes'] / (1024 * 1024), 2) ?> MB)
+                                                                                    </small>
+                                                                                </div>
+                                                                            <?php endforeach; ?>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endif; ?>
+
+                                                            <!-- Si no hay assets -->
+                                                            <?php if (!$tieneVideo && !$tienePDFs): ?>
+                                                                <div class="text-muted text-center py-2">
+                                                                    <i class="bi bi-info-circle"></i>
+                                                                    Sin archivos adjuntos
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
                                                     </div>
+                                                <?php endforeach;
+                                            else: ?>
+                                                <div class="text-center text-muted py-3">
+                                                    <i class="bi bi-folder-x"></i>
+                                                    <p class="mb-0">No hay contenido en esta sección</p>
                                                 </div>
-                                                <div class="upload-col">
-                                                    <div class="drop-area"
-                                                        data-tipo="pdf"
-                                                        data-seccion-id="<?= $seccion['id'] ?>">
-                                                        <i class="bi bi-file-pdf"></i>
-                                                        <p>Subir PDFs</p>
-                                                        <small>Máx 10MB</small>
-                                                        <input type="file"
-                                                            class="file-input"
-                                                            accept=".pdf"
-                                                            multiple>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

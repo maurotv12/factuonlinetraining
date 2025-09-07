@@ -737,3 +737,184 @@
         transform: rotate(360deg);
     }
 }
+
+/* ========================================
+   ESTILOS PARA GESTIÓN DE CONTENIDO
+======================================== */
+
+/* Contenedor de contenido completo */
+.contenido-item-completo {
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    background: #f8f9fa !important;
+}
+
+.contenido-item-completo:hover {
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.15);
+    border-color: var(--primary-color) !important;
+}
+
+/* Header del contenido */
+.contenido-info h6 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.contenido-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contenido-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Assets del contenido */
+.contenido-assets {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 0.75rem;
+}
+
+.asset-group {
+    padding: 0.5rem 0;
+}
+
+.asset-group:not(:last-child) {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.asset-group .fw-bold {
+    font-size: 0.9rem;
+    color: var(--dark-color);
+}
+
+/* Lista de PDFs colapsable */
+.pdf-list {
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.pdf-item {
+    font-size: 0.875rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.pdf-item:last-child {
+    border-bottom: none;
+}
+
+/* Botón crear contenido */
+.btn-crear-contenido {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: var(--white);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-crear-contenido:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Modal de contenido */
+#modalContenido .modal-dialog {
+    max-width: 800px;
+}
+
+#modalContenido .form-text {
+    font-size: 0.8rem;
+    color: var(--gray-color);
+}
+
+/* Info de archivos seleccionados */
+#video-file-info .alert,
+#pdf-files-info .alert {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+#pdf-files-info ul {
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+#pdf-files-info li {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Loading state del botón */
+.btn-loading .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Estados responsive del contenido */
+@media (max-width: 768px) {
+    .contenido-info {
+        margin-bottom: 1rem;
+    }
+
+    .contenido-actions {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .asset-group .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+    }
+
+    #modalContenido .modal-dialog {
+        margin: 0.5rem;
+        max-width: none;
+    }
+
+    #modalContenido .row .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Efectos hover para botones de asset */
+.contenido-actions .btn:hover {
+    transform: scale(1.05);
+}
+
+/* Animaciones para aparición de contenido */
+.contenido-item-completo {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para empty state mejorado */
+.text-center.text-muted.py-3 {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.text-center.text-muted.py-3 i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.6;
+}

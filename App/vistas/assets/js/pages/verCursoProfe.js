@@ -259,6 +259,9 @@ document.addEventListener('DOMContentLoaded', function () {
             btnCrearPrimera.addEventListener('click', mostrarModalNuevaSeccion);
         }
 
+        // Inicializar botones de crear contenido
+        inicializarBotonesCrearContenido();
+
         // Inicializar drag & drop para todas las áreas de subida
         inicializarDropAreas();
     }
@@ -270,6 +273,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const content = document.getElementById(`seccion-content-${seccionId}`);
         if (content) {
             content.classList.toggle('show');
+
+            // Si la sección se está mostrando, agregar el botón de crear contenido
+            if (content.classList.contains('show')) {
+                agregarBotonCrearContenido(seccionId);
+            }
         }
     };
 
@@ -607,126 +615,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const files = dt.files;
             const seccionId = e.currentTarget.dataset.seccionId;
 
-            handleFiles(files, 'auto', seccionId);
+            // Eliminar funcionalidad de drag & drop automática
+            // Solo mostrar mensaje informativo
+            mostrarNotificacion('Usa el botón "Crear Contenido" para subir archivos', 'info');
         }
-    }
-
-    /**
-     * Manejar archivos subidos
-     */
-    function handleFiles(files, tipo, seccionId) {
-        Array.from(files).forEach(file => {
-            if (tipo === 'auto') {
-                // Detectar tipo automáticamente
-                if (file.type === 'video/mp4') {
-                    if (validarVideo(file)) {
-                        subirVideo(file, seccionId);
-                    }
-                } else if (file.type === 'application/pdf') {
-                    if (validarPDF(file)) {
-                        subirPDF(file, seccionId);
-                    }
-                } else {
-                    mostrarNotificacion('Tipo de archivo no soportado. Solo MP4 y PDF', 'error');
-                }
-            }
-        });
-    }
-
-    /**
-     * Validar archivo de video
-     */
-    function validarVideo(file) {
-        if (file.size > 100 * 1024 * 1024) {
-            mostrarNotificacion('El video es demasiado grande (máximo 100MB)', 'error');
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Validar archivo PDF
-     */
-    function validarPDF(file) {
-        if (file.size > 10 * 1024 * 1024) {
-            mostrarNotificacion('El PDF es demasiado grande (máximo 10MB)', 'error');
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Subir video
-     */
-    function subirVideo(file, seccionId) {
-        const titulo = prompt('Título del video:');
-        if (!titulo) return;
-
-        const formData = new FormData();
-        formData.append('video', file);
-        formData.append('accion', 'subirVideo');
-        formData.append('idSeccion', seccionId);
-        formData.append('titulo', titulo);
-        formData.append('descripcion', '');
-
-        const progressBar = crearBarraProgreso(file.name, 'video');
-
-        fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                progressBar.remove();
-                if (data.success) {
-                    mostrarNotificacion(data.mensaje, 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    mostrarNotificacion(data.mensaje, 'error');
-                }
-            })
-            .catch(error => {
-                progressBar.remove();
-                console.error('Error:', error);
-                mostrarNotificacion('Error al subir el video', 'error');
-            });
-    }
-
-    /**
-     * Subir PDF
-     */
-    function subirPDF(file, seccionId) {
-        const titulo = prompt('Título del documento:');
-        if (!titulo) return;
-
-        const formData = new FormData();
-        formData.append('pdf', file);
-        formData.append('accion', 'subirPDF');
-        formData.append('idSeccion', seccionId);
-        formData.append('titulo', titulo);
-        formData.append('descripcion', '');
-
-        const progressBar = crearBarraProgreso(file.name, 'pdf');
-
-        fetch('/cursosApp/App/ajax/subir_contenido.ajax.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                progressBar.remove();
-                if (data.success) {
-                    mostrarNotificacion(data.mensaje, 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    mostrarNotificacion(data.mensaje, 'error');
-                }
-            })
-            .catch(error => {
-                progressBar.remove();
-                console.error('Error:', error);
-                mostrarNotificacion('Error al subir el PDF', 'error');
-            });
     }
 
     /**
@@ -853,6 +745,542 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+
+    // ========================================
+    // GESTIÓN DE CONTENIDO Y ASSETS
+    // ========================================
+
+    /**
+     * Inicializar botones de crear contenido en cada sección
+     */
+    function inicializarBotonesCrearContenido() {
+        // Agregar botones de crear contenido a cada sección visible
+        const secciones = document.querySelectorAll('.seccion-container');
+        secciones.forEach(seccion => {
+            const seccionId = seccion.dataset.seccionId;
+            const seccionContent = document.getElementById(`seccion-content-${seccionId}`);
+
+            // Solo agregar botón si la sección está visible
+            if (seccionContent && seccionContent.classList.contains('show')) {
+                agregarBotonCrearContenido(seccionId);
+            }
+        });
+    }
+
+    /**
+     * Agregar botón "Crear Contenido" a una sección
+     */
+    function agregarBotonCrearContenido(seccionId) {
+        console.log('Agregando botón a sección:', seccionId);
+
+        const seccionContent = document.getElementById(`seccion-content-${seccionId}`);
+        if (!seccionContent) {
+            console.log('No se encontró seccion-content para:', seccionId);
+            return;
+        }
+
+        // Verificar si ya existe el botón
+        if (seccionContent.querySelector('.btn-crear-contenido')) {
+            console.log('Botón ya existe para sección:', seccionId);
+            return;
+        }
+
+        // Crear el botón
+        const btnCrearContenido = document.createElement('button');
+        btnCrearContenido.className = 'btn btn-sm btn-success btn-crear-contenido mb-3';
+        btnCrearContenido.innerHTML = '<i class="bi bi-plus-circle"></i> Crear Contenido';
+        btnCrearContenido.onclick = () => mostrarModalCrearContenido(seccionId);
+
+        // Insertar el botón después de la descripción pero antes del contenido existente
+        const descripcion = seccionContent.querySelector('.seccion-description');
+        const contenidoItems = seccionContent.querySelector('.contenido-items');
+
+        if (descripcion) {
+            descripcion.insertAdjacentElement('afterend', btnCrearContenido);
+        } else if (contenidoItems) {
+            contenidoItems.insertAdjacentElement('beforebegin', btnCrearContenido);
+        } else {
+            seccionContent.insertBefore(btnCrearContenido, seccionContent.firstChild);
+        }
+
+        console.log('Botón creado exitosamente para sección:', seccionId);
+    }
+
+    /**
+     * Mostrar modal para crear contenido
+     */
+    function mostrarModalCrearContenido(seccionId) {
+        const modal = document.getElementById('modalContenido') || crearModalContenido();
+
+        // Limpiar formulario
+        document.getElementById('contenido-id').value = '';
+        document.getElementById('contenido-seccion-id').value = seccionId;
+        document.getElementById('contenido-titulo').value = '';
+
+        // Limpiar áreas de archivos
+        document.getElementById('video-file-info').innerHTML = '';
+        document.getElementById('pdf-files-info').innerHTML = '';
+
+        // Resetear inputs de archivos
+        document.getElementById('contenido-video').value = '';
+        document.getElementById('contenido-pdfs').value = '';
+
+        // Actualizar título del modal
+        document.querySelector('#modalContenido .modal-title').textContent = 'Crear Nuevo Contenido';
+
+        // Mostrar modal
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+    }
+
+    /**
+     * Crear modal para contenido
+     */
+    function crearModalContenido() {
+        const modalHtml = `
+            <div class="modal fade" id="modalContenido" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Gestionar Contenido</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form-contenido">
+                                <input type="hidden" id="contenido-id">
+                                <input type="hidden" id="contenido-seccion-id">
+                                
+                                <!-- Información básica -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="contenido-titulo" class="form-label">Título del contenido *</label>
+                                            <input type="text" class="form-control" id="contenido-titulo" required maxlength="255">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Subida de archivos -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="contenido-video" class="form-label">Video (MP4 - Opcional)</label>
+                                            <input type="file" class="form-control" id="contenido-video" accept="video/mp4">
+                                            <div class="form-text">Máximo 1 video por contenido. Límite: 10 minutos, HD 1280x720, 100MB</div>
+                                            <div id="video-file-info" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="contenido-pdfs" class="form-label">Archivos PDF (Opcional)</label>
+                                            <input type="file" class="form-control" id="contenido-pdfs" accept=".pdf" multiple>
+                                            <div class="form-text">Múltiples PDFs permitidos. Máximo 10MB cada uno</div>
+                                            <div id="pdf-files-info" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="btn-guardar-contenido">
+                                <span class="btn-text">Crear Contenido</span>
+                                <span class="btn-loading d-none">
+                                    <span class="spinner-border spinner-border-sm me-1"></span>
+                                    Procesando...
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Agregar event listeners
+        const btnGuardarContenido = document.getElementById('btn-guardar-contenido');
+        btnGuardarContenido.addEventListener('click', guardarContenido);
+
+        // Event listeners para mostrar info de archivos seleccionados
+        document.getElementById('contenido-video').addEventListener('change', mostrarInfoVideo);
+        document.getElementById('contenido-pdfs').addEventListener('change', mostrarInfoPDFs);
+
+        return document.getElementById('modalContenido');
+    }
+
+    /**
+     * Mostrar información del video seleccionado
+     */
+    function mostrarInfoVideo() {
+        const fileInput = document.getElementById('contenido-video');
+        const infoDiv = document.getElementById('video-file-info');
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+
+            // Validar video
+            if (!validarVideo(file)) {
+                fileInput.value = '';
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            infoDiv.innerHTML = `
+                <div class="alert alert-info py-2">
+                    <i class="bi bi-camera-video"></i> 
+                    <strong>${file.name}</strong> 
+                    <small>(${(file.size / (1024 * 1024)).toFixed(2)} MB)</small>
+                </div>`;
+        } else {
+            infoDiv.innerHTML = '';
+        }
+    }
+
+    /**
+     * Mostrar información de los PDFs seleccionados
+     */
+    function mostrarInfoPDFs() {
+        const fileInput = document.getElementById('contenido-pdfs');
+        const infoDiv = document.getElementById('pdf-files-info');
+
+        if (fileInput.files.length > 0) {
+            let html = '<div class="alert alert-info py-2"><i class="bi bi-file-pdf"></i> <strong>Archivos seleccionados:</strong><ul class="mb-0 mt-1">';
+
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+
+                // Validar PDF
+                if (!validarPDF(file)) {
+                    fileInput.value = '';
+                    infoDiv.innerHTML = '';
+                    return;
+                }
+
+                html += `<li>${file.name} <small>(${(file.size / (1024 * 1024)).toFixed(2)} MB)</small></li>`;
+            }
+
+            html += '</ul></div>';
+            infoDiv.innerHTML = html;
+        } else {
+            infoDiv.innerHTML = '';
+        }
+    }
+
+    /**
+     * Guardar contenido con assets
+     */
+    function guardarContenido() {
+        const id = document.getElementById('contenido-id').value;
+        const seccionId = document.getElementById('contenido-seccion-id').value;
+        const titulo = document.getElementById('contenido-titulo').value.trim();
+        const videoFile = document.getElementById('contenido-video').files[0];
+        const pdfFiles = document.getElementById('contenido-pdfs').files;
+
+        // Validaciones
+        if (!titulo) {
+            mostrarNotificacion('El título es obligatorio', 'error');
+            return;
+        }
+
+        if (!seccionId) {
+            mostrarNotificacion('Error: ID de sección no válido', 'error');
+            return;
+        }
+
+        // Mostrar loading
+        const btnGuardar = document.getElementById('btn-guardar-contenido');
+        const btnText = btnGuardar.querySelector('.btn-text');
+        const btnLoading = btnGuardar.querySelector('.btn-loading');
+
+        btnText.classList.add('d-none');
+        btnLoading.classList.remove('d-none');
+        btnGuardar.disabled = true;
+
+        // Crear contenido primero
+        const datosContenido = {
+            accion: id ? 'actualizarContenido' : 'crearContenido',
+            idSeccion: seccionId,
+            titulo: titulo
+        };
+
+        if (id) {
+            datosContenido.id = id;
+        }
+
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosContenido)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const contenidoId = data.id || id;
+
+                    // Si hay archivos, subirlos
+                    if (videoFile || pdfFiles.length > 0) {
+                        return subirAssetsContenido(contenidoId, seccionId, videoFile, pdfFiles);
+                    } else {
+                        mostrarNotificacion(data.mensaje, 'success');
+                        cerrarModalYRecargar();
+                    }
+                } else {
+                    throw new Error(data.mensaje);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion(error.message || 'Error al guardar contenido', 'error');
+            })
+            .finally(() => {
+                // Restaurar botón
+                btnText.classList.remove('d-none');
+                btnLoading.classList.add('d-none');
+                btnGuardar.disabled = false;
+            });
+    }
+
+    /**
+     * Subir assets del contenido
+     */
+    function subirAssetsContenido(contenidoId, seccionId, videoFile, pdfFiles) {
+        const promesas = [];
+
+        // Subir video si existe
+        if (videoFile) {
+            const formDataVideo = new FormData();
+            formDataVideo.append('accion', 'subirVideoContenido');
+            formDataVideo.append('video', videoFile);
+            formDataVideo.append('idContenido', contenidoId);
+            formDataVideo.append('idCurso', cursoId);
+            formDataVideo.append('idSeccion', seccionId);
+
+            const promesaVideo = fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                method: 'POST',
+                body: formDataVideo
+            }).then(response => response.json());
+
+            promesas.push(promesaVideo);
+        }
+
+        // Subir PDFs si existen
+        if (pdfFiles.length > 0) {
+            for (let i = 0; i < pdfFiles.length; i++) {
+                const formDataPDF = new FormData();
+                formDataPDF.append('accion', 'subirPDFContenido');
+                formDataPDF.append('pdf', pdfFiles[i]);
+                formDataPDF.append('idContenido', contenidoId);
+                formDataPDF.append('idCurso', cursoId);
+                formDataPDF.append('idSeccion', seccionId);
+
+                const promesaPDF = fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                    method: 'POST',
+                    body: formDataPDF
+                }).then(response => response.json());
+
+                promesas.push(promesaPDF);
+            }
+        }
+
+        return Promise.all(promesas)
+            .then(resultados => {
+                console.log('Resultados de subida de assets:', resultados);
+                let todoExitoso = true;
+                let mensajes = [];
+
+                resultados.forEach(resultado => {
+                    if (resultado.success) {
+                        mensajes.push(resultado.mensaje);
+                    } else {
+                        todoExitoso = false;
+                        mensajes.push(resultado.mensaje);
+                    }
+                });
+
+                if (todoExitoso) {
+                    mostrarNotificacion('Contenido y archivos guardados exitosamente', 'success');
+                    cerrarModalYRecargar();
+                } else {
+                    mostrarNotificacion('Contenido guardado, pero algunos archivos no se pudieron subir: ' + mensajes.join(', '), 'warning');
+                }
+            });
+    }
+
+    /**
+     * Cerrar modal y recargar página
+     */
+    function cerrarModalYRecargar() {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalContenido'));
+        if (modal) modal.hide();
+
+        setTimeout(() => location.reload(), 1000);
+    }
+
+    /**
+     * Editar contenido existente
+     */
+    window.editarContenido = function (contenidoId) {
+        // Obtener datos del contenido
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerAssetsContenido',
+                idContenido: contenidoId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.contenido) {
+                    const contenido = data.contenido;
+                    const modal = document.getElementById('modalContenido') || crearModalContenido();
+
+                    // Llenar formulario
+                    document.getElementById('contenido-id').value = contenido.id;
+                    document.getElementById('contenido-seccion-id').value = contenido.id_seccion;
+                    document.getElementById('contenido-titulo').value = contenido.titulo;
+
+                    // Mostrar assets existentes
+                    mostrarAssetsExistentes(data.assets);
+
+                    // Actualizar título del modal
+                    document.querySelector('#modalContenido .modal-title').textContent = 'Editar Contenido';
+                    document.getElementById('btn-guardar-contenido').querySelector('.btn-text').textContent = 'Actualizar Contenido';
+
+                    // Mostrar modal
+                    const bsModal = new bootstrap.Modal(modal);
+                    bsModal.show();
+                } else {
+                    mostrarNotificacion('Error al cargar datos del contenido', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion('Error de conexión', 'error');
+            });
+    };
+
+    /**
+     * Mostrar assets existentes en el modal de edición
+     */
+    function mostrarAssetsExistentes(assets) {
+        const videoInfo = document.getElementById('video-file-info');
+        const pdfInfo = document.getElementById('pdf-files-info');
+
+        // Limpiar info
+        videoInfo.innerHTML = '';
+        pdfInfo.innerHTML = '';
+
+        if (!assets || assets.length === 0) return;
+
+        // Separar assets por tipo
+        const videos = assets.filter(asset => asset.asset_tipo === 'video');
+        const pdfs = assets.filter(asset => asset.asset_tipo === 'pdf');
+
+        // Mostrar videos existentes
+        if (videos.length > 0) {
+            let videoHtml = '<div class="alert alert-success py-2"><strong>Video actual:</strong><ul class="mb-0 mt-1">';
+            videos.forEach(video => {
+                videoHtml += `
+                    <li class="d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-camera-video"></i> ${video.nombre_original}</span>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarAsset(${video.id}, ${video.id_contenido})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </li>`;
+            });
+            videoHtml += '</ul></div>';
+            videoInfo.innerHTML = videoHtml;
+        }
+
+        // Mostrar PDFs existentes
+        if (pdfs.length > 0) {
+            let pdfHtml = '<div class="alert alert-success py-2"><strong>PDFs actuales:</strong><ul class="mb-0 mt-1">';
+            pdfs.forEach(pdf => {
+                pdfHtml += `
+                    <li class="d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-file-pdf"></i> ${pdf.nombre_original}</span>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarAsset(${pdf.id}, ${pdf.id_contenido})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </li>`;
+            });
+            pdfHtml += '</ul></div>';
+            pdfInfo.innerHTML = pdfHtml;
+        }
+    }
+
+    /**
+     * Eliminar asset
+     */
+    window.eliminarAsset = function (assetId, contenidoId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar este archivo?')) {
+            return;
+        }
+
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'eliminarAsset',
+                idAsset: assetId,
+                idContenido: contenidoId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarNotificacion(data.mensaje, 'success');
+                    // Recargar assets en el modal
+                    editarContenido(contenidoId);
+                } else {
+                    mostrarNotificacion(data.mensaje, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion('Error de conexión', 'error');
+            });
+    };
+
+    /**
+     * Eliminar contenido completo
+     */
+    window.eliminarContenido = function (contenidoId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar este contenido y todos sus archivos asociados?')) {
+            return;
+        }
+
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'eliminarContenido',
+                id: contenidoId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarNotificacion(data.mensaje, 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    mostrarNotificacion(data.mensaje, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion('Error de conexión', 'error');
+            });
+    };
 
     /**
      * Funciones globales para compatibilidad
