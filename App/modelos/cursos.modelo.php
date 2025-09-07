@@ -636,7 +636,7 @@ class ModeloCursos
 		try {
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM seccion_contenido_assets 
 												WHERE id_contenido = :id_contenido 
-												ORDER BY fecha_creacion ASC");
+												ORDER BY created_at ASC");
 			$stmt->bindParam(":id_contenido", $idContenido, PDO::PARAM_INT);
 			$stmt->execute();
 			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);

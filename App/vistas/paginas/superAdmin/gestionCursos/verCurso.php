@@ -148,7 +148,7 @@ echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/editar
                             Tu navegador no soporta videos.
                         </video>
                         <div class="video-overlay">
-                            <div class="video-title">Video promocional</div>
+                            <div class="video-title">Video promocioaaaaaaaaaanal</div>
                         </div>
                     </div>
                 <?php elseif (!empty($curso['banner'])): ?>

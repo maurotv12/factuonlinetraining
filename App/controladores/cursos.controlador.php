@@ -687,25 +687,39 @@ class ControladorCursos
 
 	public static function ctrEliminarContenido($id)
 	{
+		error_log("ctrEliminarContenido: Iniciando eliminación de contenido ID: " . $id);
+
 		// Primero obtener todos los assets del contenido para eliminar archivos
 		$assets = ModeloCursos::mdlObtenerAssetsContenido($id);
 
+		error_log("ctrEliminarContenido: Assets encontrados: " . (is_array($assets) && $assets['success'] ? count($assets['assets']) : 'NULL/FALSE'));
+
 		// Eliminar archivos físicos del storage
 		if ($assets && $assets['success'] && isset($assets['assets'])) {
-			foreach ($assets['assets'] as $asset) {
-				self::eliminarArchivoFisicoCompleto($asset['storage_path']);
+			error_log("ctrEliminarContenido: Eliminando " . count($assets['assets']) . " archivos físicos");
+
+			foreach ($assets['assets'] as $index => $asset) {
+				error_log("ctrEliminarContenido: Eliminando asset #{$index} - " . $asset['storage_path']);
+				$resultadoEliminacion = self::eliminarArchivoFisicoCompleto($asset['storage_path']);
+				error_log("ctrEliminarContenido: Resultado eliminación asset #{$index}: " . ($resultadoEliminacion ? 'SUCCESS' : 'FAILED'));
 			}
+		} else {
+			error_log("ctrEliminarContenido: No hay assets para eliminar");
 		}
 
 		// Eliminar de la base de datos
+		error_log("ctrEliminarContenido: Eliminando registros de base de datos");
 		$respuesta = ModeloCursos::mdlEliminarContenido($id);
+		error_log("ctrEliminarContenido: Resultado BD: " . json_encode($respuesta));
 
-		if ($respuesta === "ok") {
+		if ($respuesta && isset($respuesta['success']) && $respuesta['success'] === true) {
+			error_log("ctrEliminarContenido: SUCCESS - Contenido eliminado correctamente");
 			return [
 				'success' => true,
 				'mensaje' => 'Contenido eliminado correctamente'
 			];
 		} else {
+			error_log("ctrEliminarContenido: FAILED - Error al eliminar contenido");
 			return [
 				'success' => false,
 				'mensaje' => 'Error al eliminar el contenido'
