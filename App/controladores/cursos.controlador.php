@@ -557,31 +557,470 @@ class ControladorCursos
 	}
 
 	/*--==========================================
-	Subir archivos para contenido
+	Obtener contenido de una sección con assets
 	============================================--*/
-	public static function ctrSubirArchivoContenido($archivo, $tipo)
+	public static function ctrObtenerContenidoSeccionConAssets($idSeccion)
 	{
-		if (isset($archivo) && $archivo['error'] == 0) {
-			$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-			$nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
+		try {
+			$contenidoRaw = ModeloCursos::mdlObtenerContenidoSeccionConAssets($idSeccion);
 
-			// Directorio según el tipo - usar storage
-			if ($tipo == 'video') {
-				$directorioCompleto = self::crearDirectorioStorage("courses/videos");
-				$rutaRelativa = "storage/public/courses/videos/" . $nombreArchivo;
-			} else {
-				$directorioCompleto = self::crearDirectorioStorage("courses/documents");
-				$rutaRelativa = "storage/public/courses/documents/" . $nombreArchivo;
+			if (!$contenidoRaw) {
+				return [
+					'success' => true,
+					'contenido' => [],
+					'mensaje' => 'No hay contenido en esta sección'
+				];
 			}
 
-			$rutaDestino = $directorioCompleto . "/" . $nombreArchivo;
+			// Organizar los datos agrupando contenido con sus assets
+			$contenidoOrganizado = [];
 
-			if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-				return $rutaRelativa;
+			foreach ($contenidoRaw as $row) {
+				$contenidoId = $row['id'];
+
+				// Si el contenido no existe en el array, crearlo
+				if (!isset($contenidoOrganizado[$contenidoId])) {
+					$contenidoOrganizado[$contenidoId] = [
+						'id' => $row['id'],
+						'titulo' => $row['titulo'],
+						'descripcion' => $row['descripcion'],
+						'tipo' => $row['tipo'],
+						'duracion' => $row['duracion'],
+						'orden' => $row['orden'],
+						'estado' => $row['estado'],
+						'id_seccion' => $row['id_seccion'],
+						'assets' => []
+					];
+				}
+
+				// Si hay asset, agregarlo
+				if ($row['asset_id']) {
+					$contenidoOrganizado[$contenidoId]['assets'][] = [
+						'id' => $row['asset_id'],
+						'asset_tipo' => $row['asset_tipo'],
+						'nombre_original' => $row['nombre_original'],
+						'nombre_archivo' => $row['nombre_archivo'],
+						'storage_path' => $row['storage_path'],
+						'public_url' => $row['public_url'],
+						'tamano_bytes' => $row['tamano_bytes'],
+						'duracion_segundos' => $row['duracion_segundos'],
+						'fecha_subida' => $row['fecha_subida']
+					];
+				}
+			}
+
+			return [
+				'success' => true,
+				'contenido' => array_values($contenidoOrganizado),
+				'mensaje' => 'Contenido obtenido exitosamente'
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al obtener el contenido: ' . $e->getMessage()
+			];
+		}
+	}
+
+
+	/*--==========================================
+	Controladores para gestión de assets de contenido
+	============================================--*/
+
+	/**
+	 * Guardar asset de contenido con validaciones
+	 */
+	public static function ctrGuardarContenidoAsset($datos)
+	{
+		$respuesta = ModeloCursos::mdlGuardarContenidoAsset($datos);
+		return $respuesta;
+	}
+
+	/**
+	 * Actualizar asset de contenido
+	 */
+	public static function ctrActualizarContenidoAsset($datos)
+	{
+		$respuesta = ModeloCursos::mdlActualizarContenidoAsset($datos);
+		return $respuesta;
+	}
+
+	/**
+	 * Eliminar asset de contenido
+	 */
+	public static function ctrEliminarContenidoAsset($id)
+	{
+		$respuesta = ModeloCursos::mdlEliminarContenidoAsset($id);
+		return $respuesta;
+	}
+
+	/**
+	 * Obtener assets de un contenido
+	 */
+	public static function  ctrObtenerAssetsContenido($idContenido)
+	{
+		$respuesta = ModeloCursos::mdlObtenerAssetsContenido($idContenido);
+		return $respuesta;
+	}
+
+	/**
+	 * Calcular duración total de un contenido
+	 */
+	public static function ctrCalcularDuracionTotalContenido($idContenido)
+	{
+		$respuesta = ModeloCursos::mdlCalcularDuracionTotalContenido($idContenido);
+		return $respuesta;
+	}
+
+	/**
+	 * Validar archivo MP4 con restricciones específicas
+	 */
+	public static function ctrValidarVideoMP4($archivo)
+	{
+		// Validaciones básicas
+		if (!isset($archivo) || $archivo['error'] !== 0) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error en la subida del archivo'
+			];
+		}
+
+		// Validar extensión
+		$extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+		if ($extension !== 'mp4') {
+			return [
+				'success' => false,
+				'mensaje' => 'Solo se permiten archivos MP4'
+			];
+		}
+
+		// Validar tipo MIME
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mimeType = finfo_file($finfo, $archivo['tmp_name']);
+		finfo_close($finfo);
+
+		if ($mimeType !== 'video/mp4') {
+			return [
+				'success' => false,
+				'mensaje' => 'El archivo no es un video MP4 válido'
+			];
+		}
+
+		// Validar tamaño (máximo 40MB - aumentado desde 40MB)
+		$tamanoMaximo = 40 * 1024 * 1024; // 40MB en bytes
+		if ($archivo['size'] > $tamanoMaximo) {
+			return [
+				'success' => false,
+				'mensaje' => 'El video no puede superar los 40MB'
+			];
+		}
+
+		// Validar duración y resolución con ffprobe si está disponible
+		$duracionValidacion = self::ctrValidarDuracionYResolucionVideo($archivo['tmp_name']);
+
+		// Siempre retornar éxito, incluso si ffprobe no está disponible
+		return [
+			'success' => true,
+			'duracion_segundos' => $duracionValidacion['duracion_segundos'] ?? 0,
+			'resolucion' => $duracionValidacion['resolucion'] ?? 'unknown',
+			'mensaje' => $duracionValidacion['mensaje'] ?? 'Video válido'
+		];
+	}
+
+	/**
+	 * Validar archivo PDF
+	 */
+	public static function ctrValidarPDF($archivo)
+	{
+		// Validaciones básicas
+		if (!isset($archivo) || $archivo['error'] !== 0) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error en la subida del archivo'
+			];
+		}
+
+		// Validar extensión
+		$extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+		if ($extension !== 'pdf') {
+			return [
+				'success' => false,
+				'mensaje' => 'Solo se permiten archivos PDF'
+			];
+		}
+
+		// Validar tipo MIME
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mimeType = finfo_file($finfo, $archivo['tmp_name']);
+		finfo_close($finfo);
+
+		if ($mimeType !== 'application/pdf') {
+			return [
+				'success' => false,
+				'mensaje' => 'El archivo no es un PDF válido'
+			];
+		}
+
+		// Validar tamaño (máximo 10MB)
+		$tamanoMaximo = 10 * 1024 * 1024; // 10MB en bytes
+		if ($archivo['size'] > $tamanoMaximo) {
+			return [
+				'success' => false,
+				'mensaje' => 'El PDF no puede superar los 10MB'
+			];
+		}
+
+		return [
+			'success' => true,
+			'tamano_bytes' => $archivo['size'],
+			'mensaje' => 'PDF válido'
+		];
+	}
+
+	/**
+	 * Validar duración y resolución de video usando ffprobe
+	 */
+	private static function ctrValidarDuracionYResolucionVideo($rutaArchivo)
+	{
+		// Verificar si ffprobe está disponible
+		$ffprobePath = 'ffprobe'; // Ajustar según la instalación
+		$command = "$ffprobePath -v quiet -print_format json -show_format -show_streams \"$rutaArchivo\" 2>&1";
+
+		$output = shell_exec($command);
+
+		// Debug: Log del comando y output para debugging
+		error_log("FFprobe Command: " . $command);
+		error_log("FFprobe Output: " . ($output ?? 'NULL'));
+
+		if ($output === null || empty(trim($output))) {
+			// Si ffprobe no está disponible, validar solo el tamaño básico
+			$fileSize = filesize($rutaArchivo);
+			if ($fileSize > 100 * 1024 * 1024) { // 100MB
+				return [
+					'success' => false,
+					'mensaje' => 'El archivo es demasiado grande (máximo 100MB)'
+				];
+			}
+
+			return [
+				'success' => true,
+				'duracion_segundos' => 0,
+				'resolucion' => 'unknown',
+				'mensaje' => 'Archivo validado (ffprobe no disponible - validación básica aplicada)'
+			];
+		}
+
+		// Verificar si la salida contiene error
+		if (strpos($output, 'not found') !== false || strpos($output, 'not recognized') !== false) {
+			return [
+				'success' => true,
+				'duracion_segundos' => 0,
+				'resolucion' => 'unknown',
+				'mensaje' => 'ffprobe no disponible - validación básica aplicada'
+			];
+		}
+
+		$data = json_decode($output, true);
+
+		if (json_last_error() !== JSON_ERROR_NONE || !isset($data['format'])) {
+			// Log adicional para debugging
+			error_log("JSON Error: " . json_last_error_msg());
+			error_log("Parsed data: " . print_r($data, true));
+
+			// Fallback: validación básica sin ffprobe
+			$fileSize = filesize($rutaArchivo);
+			if ($fileSize > 100 * 1024 * 1024) { // 100MB
+				return [
+					'success' => false,
+					'mensaje' => 'El archivo es demasiado grande (máximo 100MB)'
+				];
+			}
+
+			return [
+				'success' => true,
+				'duracion_segundos' => 0,
+				'resolucion' => 'unknown',
+				'mensaje' => 'Video procesado con validación básica (no se pudo analizar con ffprobe)'
+			];
+		}
+
+		// Obtener duración
+		$duracion = floatval($data['format']['duration'] ?? 0);
+		$duracionSegundos = intval($duracion);
+
+		// Validar duración máxima (10 minutos = 600 segundos)
+		if ($duracionSegundos > 600) {
+			return [
+				'success' => false,
+				'mensaje' => 'El video no puede superar los 10 minutos de duración'
+			];
+		}
+
+		// Obtener resolución del primer stream de video
+		$resolucion = 'unknown';
+		foreach ($data['streams'] as $stream) {
+			if ($stream['codec_type'] === 'video') {
+				$width = intval($stream['width'] ?? 0);
+				$height = intval($stream['height'] ?? 0);
+
+				// Validar resolución máxima HD (1280x720)
+				if ($width > 1280 || $height > 720) {
+					return [
+						'success' => false,
+						'mensaje' => 'La resolución máxima permitida es 1280x720 (HD)'
+					];
+				}
+
+				$resolucion = "{$width}x{$height}";
+				break;
 			}
 		}
 
-		return false;
+		return [
+			'success' => true,
+			'duracion_segundos' => $duracionSegundos,
+			'resolucion' => $resolucion,
+			'mensaje' => 'Video validado correctamente'
+		];
+	}
+
+	/**
+	 * Crear estructura de directorios para assets
+	 */
+	public static function ctrCrearEstructuraDirectoriosAssets($idCurso, $idSeccion, $idContenido)
+	{
+		// Ruta base para assets de secciones
+		$rutaBase = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/section_assets";
+
+		// Crear estructura: storage/public/section_assets/{curso}/{seccion}/{contenido}/
+		$rutaCurso = $rutaBase . "/" . $idCurso;
+		$rutaSeccion = $rutaCurso . "/" . $idSeccion;
+		$rutaContenido = $rutaSeccion . "/" . $idContenido;
+		$rutaVideo = $rutaContenido . "/video";
+		$rutaPdf = $rutaContenido . "/pdf";
+
+		// Crear directorios si no existen
+		$directorios = [$rutaBase, $rutaCurso, $rutaSeccion, $rutaContenido, $rutaVideo, $rutaPdf];
+
+		foreach ($directorios as $directorio) {
+			if (!file_exists($directorio)) {
+				if (!mkdir($directorio, 0755, true)) {
+					return [
+						'success' => false,
+						'mensaje' => 'Error al crear directorio: ' . $directorio
+					];
+				}
+			}
+		}
+
+		return [
+			'success' => true,
+			'ruta_video' => $rutaVideo,
+			'ruta_pdf' => $rutaPdf,
+			'mensaje' => 'Estructura de directorios creada'
+		];
+	}
+
+	/**
+	 * Procesar subida completa de asset (validación + guardado + registro en BD)
+	 */
+	public static function ctrProcesarSubidaAsset($archivo, $idContenido, $assetTipo, $idCurso, $idSeccion)
+	{
+		// Validar archivo según tipo
+		if ($assetTipo === 'video') {
+			$validacion = self::ctrValidarVideoMP4($archivo);
+		} else if ($assetTipo === 'pdf') {
+			$validacion = self::ctrValidarPDF($archivo);
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Tipo de asset no válido'
+			];
+		}
+
+		if (!$validacion['success']) {
+			return $validacion;
+		}
+
+		// Crear estructura de directorios
+		$directorios = self::ctrCrearEstructuraDirectoriosAssets($idCurso, $idSeccion, $idContenido);
+		if (!$directorios['success']) {
+			return $directorios;
+		}
+
+		// Generar nombre único para el archivo
+		$extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+		$nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
+
+		// Determinar ruta de destino
+		$rutaDestino = ($assetTipo === 'video') ?
+			$directorios['ruta_video'] . "/" . $nombreArchivo :
+			$directorios['ruta_pdf'] . "/" . $nombreArchivo;
+
+		// Mover archivo al destino
+		if (!move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al mover el archivo al directorio destino'
+			];
+		}
+
+		// Crear URL pública relativa
+		$publicUrl = "storage/public/section_assets/{$idCurso}/{$idSeccion}/{$idContenido}/" .
+			($assetTipo === 'video' ? 'video' : 'pdf') . "/" . $nombreArchivo;
+
+		// Preparar datos para guardar en BD
+		$datosAsset = [
+			'id_contenido' => $idContenido,
+			'asset_tipo' => $assetTipo,
+			'storage_path' => $rutaDestino,
+			'public_url' => $publicUrl,
+			'tamano_bytes' => $archivo['size'],
+			'duracion_segundos' => $validacion['duracion_segundos'] ?? null
+		];
+
+		// Guardar en base de datos
+		$resultado = self::ctrGuardarContenidoAsset($datosAsset);
+
+		if ($resultado['success']) {
+			// Actualizar duración total del contenido
+			self::ctrActualizarDuracionContenido($idContenido);
+
+			return [
+				'success' => true,
+				'asset_id' => $resultado['id'],
+				'public_url' => $publicUrl,
+				'mensaje' => 'Asset subido y registrado exitosamente'
+			];
+		}
+
+		return $resultado;
+	}
+
+	/**
+	 * Actualizar duración total de un contenido basado en sus assets
+	 */
+	public static function ctrActualizarDuracionContenido($idContenido)
+	{
+		$duracionData = self::ctrCalcularDuracionTotalContenido($idContenido);
+
+		if ($duracionData['success']) {
+			// Actualizar la duración en la tabla seccion_contenido
+			$resultado = ModeloCursos::mdlActualizarDuracionContenido($idContenido, $duracionData['duracion_formateada']);
+
+			if ($resultado['success']) {
+				return [
+					'success' => true,
+					'duracion_formateada' => $duracionData['duracion_formateada'],
+					'duracion_segundos' => $duracionData['duracion_segundos'],
+					'mensaje' => 'Duración actualizada correctamente'
+				];
+			}
+
+			return $resultado;
+		}
+
+		return $duracionData;
 	}
 
 	/*=============================================

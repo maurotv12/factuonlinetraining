@@ -237,80 +237,159 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlCrearContenido($datos)
 	{
-		// Validar que el orden sea >= 1
+		// Convertir objeto a array si es necesario
+		if (is_object($datos)) {
+			$datos = (array) $datos;
+		}
+
+		// Validaciones
+		if (!isset($datos['idSeccion']) || !isset($datos['titulo'])) {
+			return [
+				'success' => false,
+				'mensaje' => 'Faltan datos requeridos: id_seccion y titulo'
+			];
+		}
+
+		// Validar que el orden sea >= 1, si no existe obtener el siguiente
 		if (!isset($datos['orden']) || $datos['orden'] < 1) {
-			$datos['orden'] = 1;
+			$conn = Conexion::conectar();
+			$stmtOrden = $conn->prepare("SELECT COALESCE(MAX(orden), 0) + 1 AS siguiente_orden 
+										FROM seccion_contenido WHERE id_seccion = :id_seccion");
+			$stmtOrden->bindParam(":id_seccion", $datos["id_seccion"], PDO::PARAM_INT);
+			$stmtOrden->execute();
+			$resultado = $stmtOrden->fetch(PDO::FETCH_ASSOC);
+			$datos['orden'] = $resultado['siguiente_orden'];
 		}
 
-		// Validar tipo
-		$tiposValidos = ['video', 'pdf'];
-		if (!in_array($datos['tipo'], $tiposValidos)) {
-			return false;
-		}
+		// Establecer valores por defecto
+		$duracion = $datos["duracion"] ?? '00:00:00';
+		$estado = $datos["estado"] ?? 'activo';
 
-		$conn = Conexion::conectar();
-		$stmt = $conn->prepare("INSERT INTO seccion_contenido 
-								(id_seccion, titulo, descripcion, duracion, orden, estado) 
-								VALUES (:id_seccion, :titulo, :descripcion, :duracion, :orden, :estado)");
+		try {
+			$conn = Conexion::conectar();
+			$stmt = $conn->prepare("INSERT INTO seccion_contenido 
+									(id_seccion, titulo, duracion, orden, estado) 
+									VALUES (:id_seccion, :titulo, :duracion, :orden, :estado)");
 
-		$stmt->bindParam(":id_seccion", $datos["id_seccion"], PDO::PARAM_INT);
-		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
-		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-		$stmt->bindParam(":duracion", $datos["duracion"], PDO::PARAM_STR);
-		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
-		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+			$stmt->bindParam(":id_seccion", $datos["idSeccion"], PDO::PARAM_INT);
+			$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+			$stmt->bindParam(":duracion", $duracion, PDO::PARAM_STR);
+			$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+			$stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
 
-		if ($stmt->execute()) {
-			return $conn->lastInsertId();
-		} else {
-			return false;
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'id' => $conn->lastInsertId(),
+					'orden' => $datos["orden"],
+					'mensaje' => 'Contenido creado exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al ejecutar la consulta SQL'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 
 	public static function mdlActualizarContenido($datos)
 	{
+		// Convertir objeto a array si es necesario
+		if (is_object($datos)) {
+			$datos = (array) $datos;
+		}
+
+		// Validaciones
+		if (!isset($datos['id']) || !isset($datos['titulo'])) {
+			return [
+				'success' => false,
+				'mensaje' => 'Faltan datos requeridos: id y titulo'
+			];
+		}
+
 		// Validar que el orden sea >= 1
 		if (!isset($datos['orden']) || $datos['orden'] < 1) {
 			$datos['orden'] = 1;
 		}
 
-		// Validar tipo
-		$tiposValidos = ['video', 'pdf'];
-		if (!in_array($datos['tipo'], $tiposValidos)) {
-			return false;
-		}
+		// Establecer valores por defecto
+		$duracion = $datos["duracion"] ?? '00:00:00';
+		$estado = $datos["estado"] ?? 'activo';
 
-		$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido SET 
-												titulo = :titulo, 
-												descripcion = :descripcion,  
-												duracion = :duracion, 
-												orden = :orden, 
-												estado = :estado 
-												WHERE id = :id");
+		try {
+			$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido SET 
+													titulo = :titulo, 
+													duracion = :duracion, 
+													orden = :orden, 
+													estado = :estado 
+													WHERE id = :id");
 
-		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
-		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
-		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-		$stmt->bindParam(":duracion", $datos["duracion"], PDO::PARAM_STR);
-		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
-		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+			$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+			$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+			$stmt->bindParam(":duracion", $duracion, PDO::PARAM_STR);
+			$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+			$stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
 
-		if ($stmt->execute()) {
-			return "ok";
-		} else {
-			return "error";
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'mensaje' => 'Contenido actualizado exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al ejecutar la consulta SQL'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 
 	public static function mdlEliminarContenido($id)
 	{
-		$stmt = Conexion::conectar()->prepare("DELETE FROM seccion_contenido WHERE id = :id");
-		$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+		try {
+			$conn = Conexion::conectar();
 
-		if ($stmt->execute()) {
-			return "ok";
-		} else {
-			return "error";
+			// Primero eliminar los assets asociados
+			$stmtAssets = $conn->prepare("DELETE FROM seccion_contenido_assets WHERE id_contenido = :id");
+			$stmtAssets->bindParam(":id", $id, PDO::PARAM_INT);
+			$stmtAssets->execute();
+
+			// Luego eliminar el progreso asociado
+			$stmtProgreso = $conn->prepare("DELETE FROM seccion_contenido_progreso WHERE id_contenido = :id");
+			$stmtProgreso->bindParam(":id", $id, PDO::PARAM_INT);
+			$stmtProgreso->execute();
+
+			// Finalmente eliminar el contenido
+			$stmt = $conn->prepare("DELETE FROM seccion_contenido WHERE id = :id");
+			$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'mensaje' => 'Contenido eliminado exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al eliminar el contenido'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 
@@ -372,44 +451,216 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlGuardarContenidoAsset($datos)
 	{
-		$stmt = Conexion::conectar()->prepare("INSERT INTO seccion_contenido_assets 
-											(id_contenido, asset_tipo, storage_path, public_url, tamano_bytes, duracion_segundos) 
-											VALUES (:id_contenido, :asset_tipo, :storage_path, :public_url, :tamano_bytes, :duracion_segundos)");
+		// Convertir objeto a array si es necesario
+		if (is_object($datos)) {
+			$datos = (array) $datos;
+		}
 
-		$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
-		$stmt->bindParam(":asset_tipo", $datos["asset_tipo"], PDO::PARAM_STR);
-		$stmt->bindParam(":storage_path", $datos["storage_path"], PDO::PARAM_STR);
-		$stmt->bindParam(":public_url", $datos["public_url"], PDO::PARAM_STR);
-		$stmt->bindParam(":tamano_bytes", $datos["tamano_bytes"], PDO::PARAM_INT);
-		$stmt->bindParam(":duracion_segundos", $datos["duracion_segundos"], PDO::PARAM_INT);
+		// Validaciones
+		if (!isset($datos['id_contenido']) || !isset($datos['asset_tipo']) || !isset($datos['storage_path'])) {
+			return [
+				'success' => false,
+				'mensaje' => 'Faltan datos requeridos: id_contenido, asset_tipo y storage_path'
+			];
+		}
 
-		if ($stmt->execute()) {
-			return Conexion::conectar()->lastInsertId();
-		} else {
-			return false;
+		// Validar tipos de asset permitidos
+		$tiposPermitidos = ['video', 'pdf', 'attachment'];
+		if (!in_array($datos['asset_tipo'], $tiposPermitidos)) {
+			return [
+				'success' => false,
+				'mensaje' => 'Tipo de asset no válido. Permitidos: ' . implode(', ', $tiposPermitidos)
+			];
+		}
+
+		// Establecer valores por defecto
+		$publicUrl = $datos["public_url"] ?? null;
+		$tamanoBytes = $datos["tamano_bytes"] ?? null;
+		$duracionSegundos = $datos["duracion_segundos"] ?? null;
+
+		try {
+			$conn = Conexion::conectar();
+			$stmt = $conn->prepare("INSERT INTO seccion_contenido_assets 
+												(id_contenido, asset_tipo, storage_path, public_url, tamano_bytes, duracion_segundos) 
+												VALUES (:id_contenido, :asset_tipo, :storage_path, :public_url, :tamano_bytes, :duracion_segundos)");
+
+			$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
+			$stmt->bindParam(":asset_tipo", $datos["asset_tipo"], PDO::PARAM_STR);
+			$stmt->bindParam(":storage_path", $datos["storage_path"], PDO::PARAM_STR);
+			$stmt->bindParam(":public_url", $publicUrl, PDO::PARAM_STR);
+			$stmt->bindParam(":tamano_bytes", $tamanoBytes, PDO::PARAM_INT);
+			$stmt->bindParam(":duracion_segundos", $duracionSegundos, PDO::PARAM_INT);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'id' => $conn->lastInsertId(),
+					'mensaje' => 'Asset guardado exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al ejecutar la consulta SQL'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 	public static function mdlActualizarContenidoAsset($datos)
 	{
-		$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido_assets SET
-											asset_tipo = :asset_tipo,
-											storage_path = :storage_path,
-											public_url = :public_url,
-											tamano_bytes = :tamano_bytes,
-											duracion_segundos = :duracion_segundos
-											WHERE id = :id");
+		// Convertir objeto a array si es necesario
+		if (is_object($datos)) {
+			$datos = (array) $datos;
+		}
 
-		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
-		$stmt->bindParam(":asset_tipo", $datos["asset_tipo"], PDO::PARAM_STR);
-		$stmt->bindParam(":storage_path", $datos["storage_path"], PDO::PARAM_STR);
-		$stmt->bindParam(":public_url", $datos["public_url"], PDO::PARAM_STR);
-		$stmt->bindParam(":tamano_bytes", $datos["tamano_bytes"], PDO::PARAM_INT);
-		$stmt->bindParam(":duracion_segundos", $datos["duracion_segundos"], PDO::PARAM_INT);
+		// Validaciones
+		if (!isset($datos['id']) || !isset($datos['asset_tipo']) || !isset($datos['storage_path'])) {
+			return [
+				'success' => false,
+				'mensaje' => 'Faltan datos requeridos: id, asset_tipo y storage_path'
+			];
+		}
 
-		if ($stmt->execute()) {
-			return "ok";
-		} else {
-			return false;
+		// Validar tipos de asset permitidos
+		$tiposPermitidos = ['video', 'pdf', 'attachment'];
+		if (!in_array($datos['asset_tipo'], $tiposPermitidos)) {
+			return [
+				'success' => false,
+				'mensaje' => 'Tipo de asset no válido. Permitidos: ' . implode(', ', $tiposPermitidos)
+			];
+		}
+
+		// Establecer valores por defecto
+		$publicUrl = $datos["public_url"] ?? null;
+		$tamanoBytes = $datos["tamano_bytes"] ?? null;
+		$duracionSegundos = $datos["duracion_segundos"] ?? null;
+
+		try {
+			$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido_assets SET
+												asset_tipo = :asset_tipo,
+												storage_path = :storage_path,
+												public_url = :public_url,
+												tamano_bytes = :tamano_bytes,
+												duracion_segundos = :duracion_segundos
+												WHERE id = :id");
+
+			$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+			$stmt->bindParam(":asset_tipo", $datos["asset_tipo"], PDO::PARAM_STR);
+			$stmt->bindParam(":storage_path", $datos["storage_path"], PDO::PARAM_STR);
+			$stmt->bindParam(":public_url", $publicUrl, PDO::PARAM_STR);
+			$stmt->bindParam(":tamano_bytes", $tamanoBytes, PDO::PARAM_INT);
+			$stmt->bindParam(":duracion_segundos", $duracionSegundos, PDO::PARAM_INT);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'mensaje' => 'Asset actualizado exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al ejecutar la consulta SQL'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/*=============================================
+	Eliminar asset de contenido
+	=============================================*/
+	public static function mdlEliminarContenidoAsset($id)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("DELETE FROM seccion_contenido_assets WHERE id = :id");
+			$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'mensaje' => 'Asset eliminado exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al eliminar el asset'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/*=============================================
+	Obtener assets de un contenido
+	=============================================*/
+	public static function mdlObtenerAssetsContenido($idContenido)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM seccion_contenido_assets 
+												WHERE id_contenido = :id_contenido 
+												ORDER BY fecha_creacion ASC");
+			$stmt->bindParam(":id_contenido", $idContenido, PDO::PARAM_INT);
+			$stmt->execute();
+			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			return [
+				'success' => true,
+				'assets' => $resultados,
+				'mensaje' => 'Assets obtenidos correctamente'
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/*=============================================
+	Calcular duración total de assets de un contenido
+	=============================================*/
+	public static function mdlCalcularDuracionTotalContenido($idContenido)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("SELECT SUM(duracion_segundos) as duracion_total 
+												FROM seccion_contenido_assets 
+												WHERE id_contenido = :id_contenido");
+			$stmt->bindParam(":id_contenido", $idContenido, PDO::PARAM_INT);
+			$stmt->execute();
+			$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			$duracionSegundos = $resultado['duracion_total'] ?? 0;
+
+			// Convertir segundos a formato HH:MM:SS
+			$horas = floor($duracionSegundos / 3600);
+			$minutos = floor(($duracionSegundos % 3600) / 60);
+			$segundos = $duracionSegundos % 60;
+
+			$duracionFormateada = sprintf('%02d:%02d:%02d', $horas, $minutos, $segundos);
+
+			return [
+				'success' => true,
+				'duracion_segundos' => $duracionSegundos,
+				'duracion_formateada' => $duracionFormateada,
+				'mensaje' => 'Duración calculada correctamente'
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 
@@ -457,6 +708,38 @@ class ModeloCursos
 			return "ok";
 		} else {
 			return "error";
+		}
+	}
+
+	/*=============================================
+	Actualizar solo la duración de un contenido
+	=============================================*/
+	public static function mdlActualizarDuracionContenido($idContenido, $duracion)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido SET 
+													duracion = :duracion 
+													WHERE id = :id");
+
+			$stmt->bindParam(":id", $idContenido, PDO::PARAM_INT);
+			$stmt->bindParam(":duracion", $duracion, PDO::PARAM_STR);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'mensaje' => 'Duración actualizada exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al actualizar la duración'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 
@@ -552,6 +835,40 @@ class ModeloCursos
 		$resultados = $stmt->fetchAll();
 
 		return $resultados;
+	}
+
+	/*=============================================
+	Obtener contenido de una sección con sus assets
+	=============================================*/
+	public static function mdlObtenerContenidoSeccionConAssets($idSeccion)
+	{
+		$stmt = Conexion::conectar()->prepare("
+			SELECT 
+				sc.id,
+				sc.titulo,
+				sc.tipo,
+				sc.duracion,
+				sc.orden,
+				sc.estado,
+				sc.id_seccion,
+				sca.id as asset_id,
+				sca.asset_tipo,
+				sca.nombre_original,
+				sca.nombre_archivo,
+				sca.storage_path,
+				sca.public_url,
+				sca.tamano_bytes,
+				sca.duracion_segundos,
+				sca.fecha_subida
+			FROM seccion_contenido sc
+			LEFT JOIN seccion_contenido_assets sca ON sc.id = sca.id_contenido
+			WHERE sc.id_seccion = :id_seccion AND sc.estado = 'activo'
+			ORDER BY sc.orden ASC, sca.asset_tipo ASC
+		");
+
+		$stmt->bindParam(":id_seccion", $idSeccion, PDO::PARAM_INT);
+		$stmt->execute();
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	/*=============================================
