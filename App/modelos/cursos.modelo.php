@@ -661,7 +661,15 @@ class ModeloCursos
 	{
 		try {
 			$stmt = Conexion::conectar()->prepare("
-				SELECT id, storage_path, asset_tipo, public_url, id_contenido
+				SELECT 
+					id, 
+					storage_path, 
+					asset_tipo, 
+					public_url, 
+					id_contenido,
+					tamano_bytes,
+					duracion_segundos,
+					created_at
 				FROM seccion_contenido_assets
 				WHERE id = :id
 			");

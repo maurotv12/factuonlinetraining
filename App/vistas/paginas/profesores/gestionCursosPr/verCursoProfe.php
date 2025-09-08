@@ -445,8 +445,15 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                             <?php foreach ($pdfs as $pdf): ?>
                                                                                 <div class="pdf-item d-flex justify-content-between align-items-center py-1">
                                                                                     <span>
-                                                                                        <i class="bi bi-file-pdf-fill text-danger me-1"></i>
-                                                                                        archivo_<?= $pdf['id'] ?>.pdf
+                                                                                        <button class="btn btn-link text-decoration-none p-0 text-start btn-descargar-pdf"
+                                                                                            data-asset-id="<?= $pdf['id'] ?>"
+                                                                                            data-curso-id="<?= $curso['id'] ?>"
+                                                                                            data-nombre="<?= htmlspecialchars(basename($pdf['storage_path'])) ?>"
+                                                                                            title="Descargar archivo PDF">
+                                                                                            <i class="bi bi-file-pdf-fill text-danger me-1"></i>
+                                                                                            <?= htmlspecialchars(basename($pdf['storage_path'])) ?>
+                                                                                            <i class="bi bi-download ms-1 text-primary"></i>
+                                                                                        </button>
                                                                                     </span>
                                                                                     <small class="text-muted">
                                                                                         <?php if ($pdf['tamano_bytes']): ?>

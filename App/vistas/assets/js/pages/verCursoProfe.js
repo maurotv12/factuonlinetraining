@@ -20,6 +20,90 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarVideoContainer();
     inicializarGestionSecciones();
     inicializarSubidaArchivos();
+    inicializarDescargaPDFs();
+
+    /**
+     * Inicializar funcionalidad de descarga de PDFs
+     */
+    function inicializarDescargaPDFs() {
+        // Usar delegación de eventos para manejar botones dinámicos
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.btn-descargar-pdf')) {
+                e.preventDefault();
+                const boton = e.target.closest('.btn-descargar-pdf');
+
+                // Agregar opción de diagnóstico con Ctrl+Click
+                if (e.ctrlKey) {
+                    diagnosticarPDF(boton);
+                } else {
+                    descargarPDF(boton);
+                }
+            }
+        });
+    }
+
+    /**
+     * Función de diagnóstico para PDFs (usar Ctrl+Click)
+     */
+    function diagnosticarPDF(boton) {
+        const assetId = boton.dataset.assetId;
+        const cursoId = boton.dataset.cursoId;
+
+        const urlDiagnostico = `/cursosApp/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}&diagnostico=1`;
+        window.open(urlDiagnostico, '_blank');
+    }
+
+    /**
+     * Descargar PDF - Método simple y directo
+     */
+    function descargarPDF(boton) {
+        const assetId = boton.dataset.assetId;
+        const cursoId = boton.dataset.cursoId;
+        const nombreArchivo = boton.dataset.nombre;
+
+        if (!assetId || !cursoId) {
+            mostrarNotificacion('Error: Datos del archivo incompletos', 'error');
+            return;
+        }
+
+        // Mostrar indicador de descarga
+        const iconoOriginal = boton.innerHTML;
+        boton.innerHTML = '<i class="bi bi-file-pdf-fill text-danger me-1"></i>' +
+            nombreArchivo +
+            ' <i class="spinner-border spinner-border-sm ms-1"></i>';
+        boton.disabled = true;
+
+        // URL de descarga directa
+        const urlDescarga = `/cursosApp/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}`;
+
+        try {
+            // Crear enlace temporal para descarga
+            const enlaceDescarga = document.createElement('a');
+            enlaceDescarga.href = urlDescarga;
+            enlaceDescarga.download = nombreArchivo || `documento_${assetId}.pdf`;
+            enlaceDescarga.style.display = 'none';
+            enlaceDescarga.target = '_blank'; // Abrir en nueva pestaña para evitar problemas
+
+            document.body.appendChild(enlaceDescarga);
+            enlaceDescarga.click();
+            document.body.removeChild(enlaceDescarga);
+
+            // Mostrar mensaje de éxito
+            setTimeout(() => {
+                mostrarNotificacion(`Descarga iniciada: ${nombreArchivo}`, 'success');
+            }, 500);
+
+        } catch (error) {
+            console.error('Error al iniciar descarga:', error);
+            mostrarNotificacion('Error al iniciar la descarga', 'error');
+        } finally {
+            // Restaurar botón después de un delay
+            setTimeout(() => {
+                boton.innerHTML = iconoOriginal;
+                boton.disabled = false;
+            }, 1500);
+        }
+    }
 
     /**
      * Inicializar edición de campos del curso

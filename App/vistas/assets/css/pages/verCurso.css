@@ -1072,3 +1072,109 @@
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
+
+/* Estilos para botones de descarga de PDFs */
+.btn-descargar-pdf {
+    color: var(--dark-color) !important;
+    text-align: left !important;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: inherit !important;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-descargar-pdf:hover {
+    color: var(--primary-color) !important;
+    text-decoration: none !important;
+    transform: translateX(2px);
+}
+
+.btn-descargar-pdf:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* ===== ESTILOS PARA DESCARGA DE PDFs ===== */
+.btn-descargar-pdf {
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border: none !important;
+    background: none !important;
+}
+
+.btn-descargar-pdf:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-descargar-pdf:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+.pdf-item {
+    border-radius: 4px;
+    padding: 4px 8px;
+    transition: all 0.3s ease;
+    margin: 0.25rem 0;
+}
+
+.pdf-item:hover {
+    background-color: rgba(54, 130, 196, 0.05);
+    transform: translateX(4px);
+    border-radius: 8px;
+}
+
+.spinner-border-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+
+
+/* Notificaciones de descarga */
+.toast-download {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+}
+
+.toast-download .toast-header {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Mejoras para archivos PDF */
+.pdf-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.pdf-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pdf-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.pdf-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.pdf-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
