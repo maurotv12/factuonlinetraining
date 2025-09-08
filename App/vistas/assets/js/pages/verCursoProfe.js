@@ -255,6 +255,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Agregar event listeners para videos de secciones
         inicializarEventosVideosSecciones();
+
+        // Agregar event listeners para botones de contenido (editar/eliminar)
+        inicializarEventosContenido();
     }
 
     /**
@@ -409,28 +412,130 @@ document.addEventListener('DOMContentLoaded', function () {
      * Inicializar eventos para videos de secciones
      */
     function inicializarEventosVideosSecciones() {
-        // Agregar event listeners a todos los videos existentes de las secciones
+        // Verificar si ya se inicializó para evitar duplicados
+        if (window.eventosVideosSeccionesInicializados) {
+            console.log('Eventos de videos ya inicializados, saltando...');
+            return;
+        }
+
+        console.log('Inicializando eventos de videos de secciones...');
+
+        // Agregar event listeners usando delegación de eventos (funciona para elementos dinámicos)
         document.addEventListener('click', function (e) {
+            // Verificar si el click fue en un botón de reproducir video o dentro de uno
             if (e.target.classList.contains('reproducir-video') || e.target.closest('.reproducir-video')) {
                 e.preventDefault();
+                e.stopPropagation();
+
                 const button = e.target.classList.contains('reproducir-video') ? e.target : e.target.closest('.reproducir-video');
+
+                // Obtener datos del botón
                 const videoUrl = button.dataset.videoUrl;
                 const titulo = button.dataset.titulo;
                 const contenidoId = button.dataset.contenidoId;
 
-                console.log('Video a reproducir:', { videoUrl, titulo, contenidoId });
+                console.log('🎬 Click en video detectado:', { videoUrl, titulo, contenidoId, button });
 
                 if (videoUrl) {
                     // Formatear la URL antes de reproducir
                     const urlFormateada = formatearUrlVideo(videoUrl);
-                    console.log('URL formateada:', urlFormateada);
+                    console.log('🔗 URL formateada:', urlFormateada);
                     reproducirVideoSeccion(urlFormateada, titulo, contenidoId);
                 } else {
-                    console.error('No se encontró URL del video');
+                    console.error('❌ No se encontró URL del video en el botón:', button);
                     mostrarNotificacion('Error: No se encontró la URL del video', 'error');
                 }
             }
         });
+
+        // Marcar como inicializado
+        window.eventosVideosSeccionesInicializados = true;
+        console.log('✅ Eventos de videos inicializados correctamente');
+    }
+
+    /**
+     * Inicializar eventos para botones de contenido (editar/eliminar)
+     * Solo se ejecuta UNA VEZ - usa delegación de eventos para manejar elementos dinámicos
+     */
+    function inicializarEventosContenido() {
+        // Verificar si ya se inicializó para evitar duplicados
+        if (window.eventosContenidoInicializados) {
+            console.log('Eventos de contenido ya inicializados, saltando...');
+            return;
+        }
+
+        console.log('Inicializando eventos de botones de contenido...');
+
+        // Event listener delegado para botones de contenido
+        document.addEventListener('click', function (e) {
+            // Botón editar contenido (tanto para elementos estáticos como dinámicos)
+            if (e.target.classList.contains('btn-editar-contenido') || e.target.closest('.btn-editar-contenido') ||
+                e.target.matches('[onclick*="editarContenido"]') || e.target.closest('[onclick*="editarContenido"]')) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                let contenidoId = null;
+
+                // Intentar obtener el ID desde data-attribute (elementos dinámicos)
+                const btnDataAttribute = e.target.classList.contains('btn-editar-contenido') ? e.target : e.target.closest('.btn-editar-contenido');
+                if (btnDataAttribute && btnDataAttribute.dataset.contenidoId) {
+                    contenidoId = parseInt(btnDataAttribute.dataset.contenidoId);
+                } else {
+                    // Fallback para elementos estáticos con onclick
+                    const btnOnclick = e.target.matches('[onclick*="editarContenido"]') ? e.target : e.target.closest('[onclick*="editarContenido"]');
+                    if (btnOnclick) {
+                        const onclickAttr = btnOnclick.getAttribute('onclick');
+                        const contenidoIdMatch = onclickAttr.match(/editarContenido\((\d+)\)/);
+                        if (contenidoIdMatch) {
+                            contenidoId = parseInt(contenidoIdMatch[1]);
+                        }
+                    }
+                }
+
+                if (contenidoId) {
+                    console.log('🖊️ Editando contenido ID:', contenidoId);
+                    editarContenido(contenidoId);
+                }
+            }
+
+            // Botón eliminar contenido (tanto para elementos estáticos como dinámicos)
+            if (e.target.classList.contains('btn-eliminar-contenido') || e.target.closest('.btn-eliminar-contenido') ||
+                e.target.matches('[onclick*="eliminarContenido"]') || e.target.closest('[onclick*="eliminarContenido"]')) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                let contenidoId = null;
+
+                // Intentar obtener el ID desde data-attribute (elementos dinámicos)
+                const btnDataAttribute = e.target.classList.contains('btn-eliminar-contenido') ? e.target : e.target.closest('.btn-eliminar-contenido');
+                if (btnDataAttribute && btnDataAttribute.dataset.contenidoId) {
+                    contenidoId = parseInt(btnDataAttribute.dataset.contenidoId);
+                } else {
+                    // Fallback para elementos estáticos con onclick
+                    const btnOnclick = e.target.matches('[onclick*="eliminarContenido"]') ? e.target : e.target.closest('[onclick*="eliminarContenido"]');
+                    if (btnOnclick) {
+                        const onclickAttr = btnOnclick.getAttribute('onclick');
+                        const contenidoIdMatch = onclickAttr.match(/eliminarContenido\((\d+)\)/);
+                        if (contenidoIdMatch) {
+                            contenidoId = parseInt(contenidoIdMatch[1]);
+                        }
+                    }
+                }
+
+                if (contenidoId) {
+                    console.log('🗑️ Eliminando contenido ID:', contenidoId);
+                    // Solo para elementos con data-attribute (dinámicos) llamar directamente
+                    // Los elementos estáticos se manejan por su onclick original
+                    if (btnDataAttribute && btnDataAttribute.dataset.contenidoId) {
+                        eliminarContenido(contenidoId);
+                    }
+                }
+            }
+        });
+
+        // Marcar como inicializado
+        window.eventosContenidoInicializados = true;
+        console.log('✅ Eventos de contenido inicializados correctamente');
     }
 
     /**
@@ -1358,15 +1463,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Cerrar modal y recargar contenido dinámicamente
+     * Cerrar modal y recargar página completa
      */
     function cerrarModalYRecargar() {
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalContenido'));
         if (modal) modal.hide();
 
-        // En lugar de recargar toda la página, recargar solo el contenido de las secciones
+        // Recargar la página completa después de cerrar el modal
         setTimeout(() => {
-            recargarContenidoSecciones();
+            location.reload();
         }, 500);
     }
 
@@ -1400,7 +1505,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    actualizarVistaContenidoSeccion(seccionId, data.contenido);
+                    console.log('Recargando contenido de sección:', seccionId);
+                    console.log('Contenido de sección actualizado:', data);
+                    // En lugar de actualizarVistaContenidoSeccion, simplemente recargamos la página
+                    location.reload();
                 }
             })
             .catch(error => {
@@ -1408,169 +1516,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    /**
-     * Actualizar vista del contenido de una sección
-     */
-    function actualizarVistaContenidoSeccion(seccionId, contenido) {
-        const contenidoContainer = document.getElementById(`contenido-items-${seccionId}`);
-        if (!contenidoContainer) return;
-
-        if (!contenido || contenido.length === 0) {
-            contenidoContainer.innerHTML = `
-                <div class="text-center text-muted py-3">
-                    <i class="bi bi-folder-x"></i>
-                    <p class="mb-0">No hay contenido en esta sección</p>
-                </div>`;
-            return;
-        }
-
-        // Agrupar contenido por ID
-        const contenidoAgrupado = {};
-        contenido.forEach(item => {
-            if (!contenidoAgrupado[item.id]) {
-                contenidoAgrupado[item.id] = {
-                    ...item,
-                    assets: []
-                };
-            }
-            if (item.asset_id) {
-                contenidoAgrupado[item.id].assets.push({
-                    id: item.asset_id,
-                    asset_tipo: item.asset_tipo,
-                    public_url: item.public_url,
-                    tamano_bytes: item.tamano_bytes,
-                    duracion_segundos: item.duracion_segundos
-                });
-            }
-        });
-
-        // Generar HTML
-        let html = '';
-        Object.values(contenidoAgrupado).forEach(contenidoItem => {
-            const videos = contenidoItem.assets.filter(asset => asset.asset_tipo === 'video');
-            const pdfs = contenidoItem.assets.filter(asset => asset.asset_tipo === 'pdf');
-
-            html += `
-                <div class="contenido-item-completo mb-3 p-3" style="border: 1px solid #e0e0e0; border-radius: 8px; background: #f8f9fa;">
-                    <!-- Header del contenido -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="contenido-info">
-                            <h6 class="mb-1">${contenidoItem.titulo}</h6>
-                            <small class="text-muted">Duración: ${contenidoItem.duracion || '00:00:00'}</small>
-                        </div>
-                        <div class="contenido-actions">
-                            <button class="btn btn-sm btn-outline-primary"
-                                onclick="editarContenido(${contenidoItem.id})"
-                                title="Editar contenido">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger"
-                                onclick="eliminarContenido(${contenidoItem.id})"
-                                title="Eliminar contenido">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Assets del contenido -->
-                    <div class="contenido-assets">`;
-
-            // Videos
-            if (videos.length > 0) {
-                html += `
-                        <div class="asset-group mb-2">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-camera-video text-primary me-2"></i>
-                                    <span class="fw-bold">Video:</span>`;
-
-                videos.forEach(video => {
-                    html += `<span class="ms-2">archivo_video.mp4</span>`;
-                    if (video.duracion_segundos) {
-                        const duracion = new Date(video.duracion_segundos * 1000).toISOString().substr(11, 8);
-                        html += `<small class="text-muted ms-1">(${duracion})</small>`;
-                    }
-                });
-
-                html += `
-                                </div>
-                                <div class="video-actions">`;
-
-                videos.forEach(video => {
-                    const urlFormateada = formatearUrlVideo(video.public_url);
-                    html += `
-                                    <button class="btn btn-sm btn-primary reproducir-video ms-2"
-                                        data-video-url="${urlFormateada}"
-                                        data-titulo="${contenidoItem.titulo}"
-                                        data-contenido-id="${contenidoItem.id}"
-                                        title="Reproducir video">
-                                        <i class="bi bi-play-fill"></i> Reproducir
-                                    </button>`;
-                });
-
-                html += `
-                                </div>
-                            </div>
-                        </div>`;
-            }
-
-            // PDFs
-            if (pdfs.length > 0) {
-                html += `
-                        <div class="asset-group">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-file-pdf text-danger me-2"></i>
-                                <span class="fw-bold">PDFs:</span>
-                                <button class="btn btn-sm btn-outline-secondary ms-2"
-                                    type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#pdfs-${contenidoItem.id}"
-                                    aria-expanded="false">
-                                    <i class="bi bi-list"></i> Ver archivos (${pdfs.length})
-                                </button>
-                            </div>
-                            <div class="collapse mt-2" id="pdfs-${contenidoItem.id}">
-                                <div class="pdf-list ps-3">`;
-
-                pdfs.forEach(pdf => {
-                    const tamanoMB = pdf.tamano_bytes ? (pdf.tamano_bytes / (1024 * 1024)).toFixed(2) : '';
-                    html += `
-                                    <div class="pdf-item d-flex justify-content-between align-items-center py-1">
-                                        <span>
-                                            <i class="bi bi-file-pdf-fill text-danger me-1"></i>
-                                            archivo_${pdf.id}.pdf
-                                        </span>`;
-                    if (tamanoMB) {
-                        html += `<small class="text-muted">(${tamanoMB} MB)</small>`;
-                    }
-                    html += `</div>`;
-                });
-
-                html += `
-                                </div>
-                            </div>
-                        </div>`;
-            }
-
-            // Si no hay assets
-            if (videos.length === 0 && pdfs.length === 0) {
-                html += `
-                        <div class="text-muted text-center py-2">
-                            <i class="bi bi-info-circle"></i>
-                            Sin archivos adjuntos
-                        </div>`;
-            }
-
-            html += `
-                    </div>
-                </div>`;
-        });
-
-        contenidoContainer.innerHTML = html;
-
-        // Reinicializar eventos de videos
-        inicializarEventosVideosSecciones();
-    }
+    // FUNCIÓN DE ACTUALIZACIÓN DINÁMICA ELIMINADA - AHORA SE USA RECARGA DE PÁGINA
+    // Anteriormente: actualizarVistaContenidoSeccion() causaba problemas con event listeners
+    // Ahora se usa location.reload() para mayor estabilidad y simplicidad
 
     /**
      * Editar contenido existente
@@ -1691,8 +1639,12 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.success) {
                     mostrarNotificacion(data.mensaje, 'success');
-                    // Recargar assets en el modal
-                    editarContenido(contenidoId);
+                    // Cerrar modal y recargar página
+                    setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalContenido'));
+                        if (modal) modal.hide();
+                        location.reload();
+                    }, 1000);
                 } else {
                     mostrarNotificacion(data.mensaje, 'error');
                 }
@@ -1707,33 +1659,42 @@ document.addEventListener('DOMContentLoaded', function () {
      * Eliminar contenido completo
      */
     window.eliminarContenido = function (contenidoId) {
-        if (!confirm('¿Estás seguro de que quieres eliminar este contenido y todos sus archivos asociados?')) {
-            return;
-        }
-
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                accion: 'eliminarContenido',
-                id: contenidoId
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    mostrarNotificacion(data.mensaje, 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    mostrarNotificacion(data.mensaje, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mostrarNotificacion('Error de conexión', 'error');
-            });
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Estás seguro de que quieres eliminar este contenido y todos sus archivos asociados?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        accion: 'eliminarContenido',
+                        id: contenidoId
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            mostrarNotificacion(data.mensaje, 'success');
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            mostrarNotificacion(data.mensaje, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        mostrarNotificacion('Error de conexión', 'error');
+                    });
+            }
+        });
     };
 
     /**

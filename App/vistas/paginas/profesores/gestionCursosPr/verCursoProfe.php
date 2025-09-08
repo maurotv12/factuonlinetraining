@@ -399,26 +399,26 @@ if (isset($_SESSION['mensaje_error'])) {
                                                         <div class="contenido-assets">
                                                             <!-- Videos -->
                                                             <?php if ($tieneVideo): ?>
-                                                                <div class="asset-group mb-2">
-                                                                    <div class="d-flex align-items-center justify-content-between">
+                                                                <div class="asset-group mb-2 cursor-pointer" onclick="this.querySelector('button.reproducir-video').click();">
+                                                                    <div class="d-flex align-items-center justify-content-between ">
                                                                         <div class="d-flex align-items-center">
                                                                             <i class="bi bi-camera-video text-primary me-2"></i>
                                                                             <span class="fw-bold">Video:</span>
                                                                             <?php foreach ($videos as $video): ?>
-                                                                                <span class="ms-2">archivo_video.mp4</span>
+                                                                                <span class="ms-2">Video</span>
                                                                                 <?php if ($video['duracion_segundos']): ?>
                                                                                     <small class="text-muted ms-1">(<?= gmdate("H:i:s", $video['duracion_segundos']) ?>)</small>
                                                                                 <?php endif; ?>
                                                                             <?php endforeach; ?>
                                                                         </div>
-                                                                        <div class="video-actions">
+                                                                        <div class="video-actionsa">
                                                                             <?php foreach ($videos as $video): ?>
                                                                                 <button class="btn btn-sm btn-primary reproducir-video ms-2"
                                                                                     data-video-url="<?= $video['public_url'] ?>"
                                                                                     data-titulo="<?= htmlspecialchars($contenido['titulo']) ?>"
                                                                                     data-contenido-id="<?= $contenido['id'] ?>"
                                                                                     title="Reproducir video">
-                                                                                    <i class="bi bi-play-fill"></i> Reproducir
+                                                                                    <i class="bi bi-play-fill"></i>
                                                                                 </button>
                                                                             <?php endforeach; ?>
                                                                         </div>
