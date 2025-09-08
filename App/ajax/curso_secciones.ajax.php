@@ -79,6 +79,16 @@ switch ($accion) {
         }
         break;
 
+    case 'obtenerSeccionPorId':
+        $idSeccion = $datos['idSeccion'] ?? null;
+        if ($idSeccion) {
+            $respuesta = ControladorCursos::ctrObtenerSeccionPorId($idSeccion);
+            echo json_encode($respuesta);
+        } else {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de sección requerido']);
+        }
+        break;
+
     // ========== GESTIÓN DE CONTENIDO DE SECCIONES ==========
 
     case 'crearContenido':

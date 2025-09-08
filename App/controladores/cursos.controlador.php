@@ -613,13 +613,37 @@ class ControladorCursos
 	public static function ctrCrearSeccion($datos)
 	{
 		$respuesta = ModeloCursos::mdlCrearSeccion($datos);
-		return $respuesta;
+
+		if (is_array($respuesta) && isset($respuesta['success'])) {
+			return $respuesta;
+		} else if ($respuesta == "ok") {
+			return [
+				'success' => true,
+				'mensaje' => 'Sección creada correctamente'
+			];
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al crear la sección'
+			];
+		}
 	}
 
 	public static function ctrActualizarSeccion($datos)
 	{
 		$respuesta = ModeloCursos::mdlActualizarSeccion($datos);
-		return $respuesta;
+
+		if ($respuesta == "ok") {
+			return [
+				'success' => true,
+				'mensaje' => 'Sección actualizada correctamente'
+			];
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al actualizar la sección'
+			];
+		}
 	}
 
 	public static function ctrEliminarSeccion($id)
@@ -668,6 +692,23 @@ class ControladorCursos
 	{
 		$respuesta = ModeloCursos::mdlObtenerSecciones($idCurso);
 		return $respuesta;
+	}
+
+	/*=============================================
+	Obtener una sección específica por ID
+	=============================================*/
+	public static function ctrObtenerSeccionPorId($idSeccion)
+	{
+		$respuesta = ModeloCursos::mdlObtenerSeccionPorId($idSeccion);
+
+		if ($respuesta && isset($respuesta['success']) && $respuesta['success']) {
+			return $respuesta;
+		} else {
+			return [
+				'success' => false,
+				'mensaje' => 'No se pudo obtener la información de la sección'
+			];
+		}
 	}
 
 	/*--==========================================

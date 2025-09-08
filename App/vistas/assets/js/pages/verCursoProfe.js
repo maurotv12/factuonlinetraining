@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Elementos principales
     const cursoId = document.querySelector('[data-curso-id]')?.dataset.cursoId;
 
-    console.log('Curso ID detectado:', cursoId);
-
     if (!cursoId) {
         console.error('No se pudo obtener el ID del curso');
         mostrarNotificacion('Error: No se pudo obtener el ID del curso', 'error');
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Verificar si hay un modal abierto con backdrop
                 const backdrops = document.querySelectorAll('.modal-backdrop');
                 if (backdrops.length > 0) {
-                    console.log('ESC presionado, limpiando backdrop...');
                     setTimeout(() => {
                         limpiarBackdropModal();
                     }, 300);
@@ -44,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Listener para clicks en el backdrop
         document.addEventListener('click', function (e) {
             if (e.target.classList.contains('modal-backdrop')) {
-                console.log('Click en backdrop detectado, limpiando...');
                 setTimeout(() => {
                     limpiarBackdropModal();
                 }, 300);
@@ -241,8 +237,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const input = document.getElementById(`${campo}-input`);
         const valor = input.value.trim();
 
-        console.log('Guardando campo:', campo, 'Valor:', valor, 'Curso ID:', cursoId);
-
         if (!valor && campo !== 'valor') {
             mostrarNotificacion('El campo no puede estar vacío', 'error');
             return;
@@ -268,8 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
             valor: valor
         };
 
-        console.log('Datos a enviar:', datosEnviar);
-
         // Enviar datos al servidor
         fetch('/cursosApp/App/ajax/cursos.ajax.php', {
             method: 'POST',
@@ -280,15 +272,11 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify(datosEnviar)
         })
             .then(response => {
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
                 return response.text();
             })
             .then(text => {
-                console.log('Response text:', text);
                 try {
                     const data = JSON.parse(text);
-                    console.log('Parsed data:', data);
 
                     if (data.success) {
                         actualizarVisualizacionCampo(campo, valor, data.valorFormateado);
@@ -354,12 +342,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const promoVideo = videoContainer.dataset.promoVideo;
         const banner = videoContainer.dataset.banner;
 
-        console.log('Datos del video container:', { promoVideo, banner });
-
         // Renderizar contenido inicial (video promo o banner)
         if (promoVideo) {
             const urlFormateada = formatearUrlVideo(promoVideo);
-            console.log('URL video promocional formateada:', urlFormateada);
             renderizarVideoPromo(urlFormateada || promoVideo);
         } else if (banner) {
             renderizarBanner(banner);
@@ -523,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Configurar controles personalizados si es necesario
         video.addEventListener('loadedmetadata', function () {
-            console.log('Video cargado:', this.duration + ' segundos');
+            // Video cargado correctamente
         });
 
         video.addEventListener('error', function () {
@@ -544,11 +529,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function inicializarEventosVideosSecciones() {
         // Verificar si ya se inicializó para evitar duplicados
         if (window.eventosVideosSeccionesInicializados) {
-            console.log('Eventos de videos ya inicializados, saltando...');
             return;
         }
-
-        console.log('Inicializando eventos de videos de secciones...');
 
         // Agregar event listeners usando delegación de eventos (funciona para elementos dinámicos)
         document.addEventListener('click', function (e) {
@@ -564,15 +546,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const titulo = button.dataset.titulo;
                 const contenidoId = button.dataset.contenidoId;
 
-                console.log('🎬 Click en video detectado:', { videoUrl, titulo, contenidoId, button });
-
                 if (videoUrl) {
                     // Formatear la URL antes de reproducir
                     const urlFormateada = formatearUrlVideo(videoUrl);
-                    console.log('🔗 URL formateada:', urlFormateada);
                     reproducirVideoSeccion(urlFormateada, titulo, contenidoId);
                 } else {
-                    console.error('❌ No se encontró URL del video en el botón:', button);
                     mostrarNotificacion('Error: No se encontró la URL del video', 'error');
                 }
             }
@@ -580,7 +558,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Marcar como inicializado
         window.eventosVideosSeccionesInicializados = true;
-        console.log('✅ Eventos de videos inicializados correctamente');
     }
 
     /**
@@ -590,11 +567,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function inicializarEventosContenido() {
         // Verificar si ya se inicializó para evitar duplicados
         if (window.eventosContenidoInicializados) {
-            console.log('Eventos de contenido ya inicializados, saltando...');
             return;
         }
-
-        console.log('Inicializando eventos de botones de contenido...');
 
         // Event listener delegado para botones de contenido
         document.addEventListener('click', function (e) {
@@ -623,7 +597,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (contenidoId) {
-                    console.log('🖊️ Editando contenido ID:', contenidoId);
                     editarContenido(contenidoId);
                 }
             }
@@ -653,7 +626,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 if (contenidoId) {
-                    console.log('🗑️ Eliminando contenido ID:', contenidoId);
                     // Solo para elementos con data-attribute (dinámicos) llamar directamente
                     // Los elementos estáticos se manejan por su onclick original
                     if (btnDataAttribute && btnDataAttribute.dataset.contenidoId) {
@@ -665,14 +637,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Marcar como inicializado
         window.eventosContenidoInicializados = true;
-        console.log('✅ Eventos de contenido inicializados correctamente');
     }
 
     /**
      * Reproducir video de sección
      */
     function reproducirVideoSeccion(videoUrl, titulo, contenidoId) {
-        console.log('Reproduciendo video de sección:', { videoUrl, titulo, contenidoId });
         renderizarVideoSeccion(videoUrl, titulo, contenidoId);
 
         // Scroll al video container
@@ -686,7 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const video = document.getElementById('videoPlayer');
             if (video) {
                 video.play().catch(error => {
-                    console.log('Autoplay bloqueado por el navegador');
+                    // Autoplay bloqueado por el navegador
                 });
             }
         }, 100);
@@ -700,11 +670,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const promoVideo = videoContainer.dataset.promoVideo;
         const banner = videoContainer.dataset.banner;
 
-        console.log('Volviendo al video promocional:', { promoVideo, banner });
-
         if (promoVideo) {
             const urlFormateada = formatearUrlVideo(promoVideo);
-            console.log('URL video promocional formateada:', urlFormateada);
             renderizarVideoPromo(urlFormateada || promoVideo);
         } else if (banner) {
             renderizarBanner(banner);
@@ -902,7 +869,9 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(datos)
         })
-            .then(response => response.json())
+            .then(response => {
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     mostrarNotificacion(data.mensaje, 'success');
@@ -910,7 +879,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Recargar la página o actualizar la lista de secciones
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    mostrarNotificacion(data.mensaje, 'error');
+                    mostrarNotificacion(data.mensaje || 'Error desconocido', 'error');
                 }
             })
             .catch(error => {
@@ -967,35 +936,40 @@ document.addEventListener('DOMContentLoaded', function () {
      * Editar sección existente
      */
     window.editarSeccion = function (id) {
-        // Obtener datos de la sección y mostrar modal
+        // Obtener datos específicos de la sección
         fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                accion: 'obtenerSecciones',
-                idCurso: cursoId
+                accion: 'obtenerSeccionPorId',
+                idSeccion: id
             })
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    const seccion = data.secciones.find(s => s.seccion_id == id);
-                    if (seccion) {
-                        const modal = document.getElementById('modalSeccion') || crearModalSeccion();
-                        document.getElementById('seccion-id').value = seccion.seccion_id;
-                        document.getElementById('seccion-titulo').value = seccion.seccion_titulo;
-                        document.getElementById('seccion-descripcion').value = seccion.seccion_descripcion || '';
+                if (data.success && data.seccion) {
+                    const seccion = data.seccion;
+                    const modal = document.getElementById('modalSeccion') || crearModalSeccion();
 
-                        const bsModal = new bootstrap.Modal(modal);
-                        bsModal.show();
-                    }
+                    // Llenar el formulario con los datos de la sección
+                    document.getElementById('seccion-id').value = seccion.id;
+                    document.getElementById('seccion-titulo').value = seccion.titulo;
+                    document.getElementById('seccion-descripcion').value = seccion.descripcion || '';
+
+                    // Cambiar el título del modal
+                    document.querySelector('#modalSeccion .modal-title').textContent = 'Editar Sección';
+
+                    const bsModal = new bootstrap.Modal(modal);
+                    bsModal.show();
+                } else {
+                    mostrarNotificacion(data.mensaje || 'Error al cargar los datos de la sección', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                mostrarNotificacion('Error al obtener datos de la sección', 'error');
+                mostrarNotificacion('Error de conexión al obtener datos de la sección', 'error');
             });
     };
 
@@ -1255,17 +1229,13 @@ document.addEventListener('DOMContentLoaded', function () {
      * Agregar botón "Crear Contenido" a una sección
      */
     function agregarBotonCrearContenido(seccionId) {
-        console.log('Agregando botón a sección:', seccionId);
-
         const seccionContent = document.getElementById(`seccion-content-${seccionId}`);
         if (!seccionContent) {
-            console.log('No se encontró seccion-content para:', seccionId);
             return;
         }
 
         // Verificar si ya existe el botón
         if (seccionContent.querySelector('.btn-crear-contenido')) {
-            console.log('Botón ya existe para sección:', seccionId);
             return;
         }
 
@@ -1286,8 +1256,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             seccionContent.insertBefore(btnCrearContenido, seccionContent.firstChild);
         }
-
-        console.log('Botón creado exitosamente para sección:', seccionId);
     }
 
     /**
@@ -1394,7 +1362,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Event listener para cuando el modal se cierre manualmente
         modalElement.addEventListener('hidden.bs.modal', function () {
-            console.log('Modal cerrado manualmente, limpiando backdrop...');
             limpiarBackdropModal();
         });
 
@@ -1599,7 +1566,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return Promise.all(promesas)
             .then(resultados => {
-                console.log('Resultados de subida de assets:', resultados);
                 let todoExitoso = true;
                 let mensajes = [];
 
@@ -1677,8 +1643,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Remover clase modal-open del html también
         document.documentElement.classList.remove('modal-open');
-
-        console.log('🧹 Backdrop modal limpiado correctamente');
     }
 
     /**
@@ -1691,7 +1655,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Si hay backdrops pero no modales abiertos, limpiar
             if (backdrops.length > 0 && modalesAbiertos.length === 0) {
-                console.log('🔍 Detectados backdrops huérfanos, limpiando...');
                 limpiarBackdropModal();
             }
         }, 2000); // Verificar cada 2 segundos
@@ -1730,8 +1693,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log('Recargando contenido de sección:', seccionId);
-                    console.log('Contenido de sección actualizado:', data);
                     // En lugar de actualizarVistaContenidoSeccion, simplemente recargamos la página
                     location.reload();
                 }
@@ -2033,7 +1994,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!document.fullscreenElement) {
             video.requestFullscreen().catch(err => {
-                console.log('Error al entrar en pantalla completa:', err);
+                // Error al entrar en pantalla completa
             });
         } else {
             document.exitFullscreen();
@@ -2055,8 +2016,6 @@ document.addEventListener('DOMContentLoaded', function () {
      * Puede ser llamada desde la consola del navegador si hay problemas
      */
     window.forzarCierreModal = function () {
-        console.log('🔧 Forzando cierre de modales...');
-
         // Cerrar todos los modales Bootstrap
         const modales = document.querySelectorAll('.modal');
         modales.forEach(modal => {
@@ -2070,8 +2029,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Limpiar todos los backdrops
         limpiarBackdropModal();
-
-        console.log('✅ Modales cerrados forzosamente');
     };
 
     /**
@@ -2079,7 +2036,6 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     window.limpiarBackdrop = function () {
         limpiarBackdropModal();
-        console.log('✅ Backdrop limpiado');
     };
 
     // Exportar funciones principales para uso externo

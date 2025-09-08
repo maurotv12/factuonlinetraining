@@ -196,27 +196,64 @@ class ModeloCursos
 				'success' => false,
 				'mensaje' => 'Faltan datos requeridos: idCurso y titulo'
 			];
-		} // Validar que el orden sea >= 1
-		if (!isset($datos['orden']) || $datos['orden'] < 1) {
-			$datos['orden'] = 1;
 		}
-		$stmt = Conexion::conectar()->prepare("UPDATE curso_secciones SET 
-			titulo = :titulo,
-			descripcion = :descripcion,
-			orden = :orden,
-			estado = :estado
-			WHERE id = :id");
 
-		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
-		$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
-		$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-		$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
-		$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+		// Obtener el ID de la sección (puede venir como 'id' o 'idSeccion')
+		$idSeccion = $datos['idSeccion'] ?? $datos['id'] ?? null;
 
-		if ($stmt->execute()) {
-			return "ok";
+		if (!$idSeccion) {
+			return [
+				'success' => false,
+				'mensaje' => 'ID de sección requerido'
+			];
+		}
+
+		// Si no se envía orden, solo actualizamos título y descripción
+		if (!isset($datos['orden'])) {
+			$stmt = Conexion::conectar()->prepare("UPDATE curso_secciones SET 
+				titulo = :titulo,
+				descripcion = :descripcion
+				WHERE id = :id");
+
+			$stmt->bindParam(":id", $idSeccion, PDO::PARAM_INT);
+			$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+			$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
 		} else {
-			return "error";
+			// Si se envía orden, actualizamos todos los campos
+			if ($datos['orden'] < 1) {
+				$datos['orden'] = 1;
+			}
+			$stmt = Conexion::conectar()->prepare("UPDATE curso_secciones SET 
+				titulo = :titulo,
+				descripcion = :descripcion,
+				orden = :orden,
+				estado = :estado
+				WHERE id = :id");
+
+			$stmt->bindParam(":id", $idSeccion, PDO::PARAM_INT);
+			$stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+			$stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+			$stmt->bindParam(":orden", $datos["orden"], PDO::PARAM_INT);
+			$stmt->bindParam(":estado", $datos["estado"], PDO::PARAM_STR);
+		}
+
+		try {
+			if ($stmt->execute()) {
+				return "ok";
+			} else {
+				$errorInfo = $stmt->errorInfo();
+				error_log("Error al ejecutar actualización de sección: " . print_r($errorInfo, true));
+				return [
+					'success' => false,
+					'mensaje' => 'Error al ejecutar la actualización: ' . $errorInfo[2]
+				];
+			}
+		} catch (Exception $e) {
+			error_log("Excepción al actualizar sección: " . $e->getMessage());
+			return [
+				'success' => false,
+				'mensaje' => 'Error al actualizar la sección: ' . $e->getMessage()
+			];
 		}
 	}
 
@@ -1056,9 +1093,11 @@ class ModeloCursos
 	public static function mdlObtenerSecciones($idCurso)
 	{
 		try {
-			$stmt = Conexion::conectar()->prepare("SELECT 
+			$stmt = Conexion::conectar()->prepare("
+			SELECT 
 				id,
 				titulo,
+				descripcion,
 				orden,
 				estado,
 				fecha_creacion,
@@ -1081,6 +1120,49 @@ class ModeloCursos
 			return array(
 				"success" => false,
 				"mensaje" => "Error al obtener las secciones: " . $e->getMessage()
+			);
+		}
+	}
+
+	/*=============================================
+	Obtener una sección específica por ID
+	=============================================*/
+	public static function mdlObtenerSeccionPorId($idSeccion)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("
+			SELECT 
+				id,
+				titulo,
+				descripcion,
+				orden,
+				estado,
+				fecha_creacion,
+				fecha_actualizacion
+				FROM curso_secciones 
+				WHERE id = :id_seccion");
+
+			$stmt->bindParam(":id_seccion", $idSeccion, PDO::PARAM_INT);
+			$stmt->execute();
+			$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			if ($resultado) {
+				return array(
+					"success" => true,
+					"mensaje" => "Sección obtenida correctamente",
+					"seccion" => $resultado
+				);
+			} else {
+				return array(
+					"success" => false,
+					"mensaje" => "Sección no encontrada"
+				);
+			}
+		} catch (Exception $e) {
+			error_log("Error en mdlObtenerSeccionPorId: " . $e->getMessage());
+			return array(
+				"success" => false,
+				"mensaje" => "Error al obtener la sección: " . $e->getMessage()
 			);
 		}
 	}
