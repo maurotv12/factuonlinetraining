@@ -413,7 +413,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                         </div>
                                                                         <div class="video-actions">
                                                                             <?php foreach ($videos as $video): ?>
-                                                                                <button class="btn btn-sm btn-primary reproducir-video ms-2"
+                                                                                <button class="btn btn-sm btn-primary reproducir-video ms-2 d-none"
                                                                                     data-video-url="<?= $video['public_url'] ?>"
                                                                                     data-titulo="<?= htmlspecialchars($contenido['titulo']) ?>"
                                                                                     data-contenido-id="<?= $contenido['id'] ?>"

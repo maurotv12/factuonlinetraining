@@ -21,6 +21,36 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarGestionSecciones();
     inicializarSubidaArchivos();
     inicializarDescargaPDFs();
+    inicializarEventosGlobalesModal();
+
+    /**
+     * Inicializar eventos globales para manejo de modales
+     */
+    function inicializarEventosGlobalesModal() {
+        // Listener global para tecla ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                // Verificar si hay un modal abierto con backdrop
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                if (backdrops.length > 0) {
+                    console.log('ESC presionado, limpiando backdrop...');
+                    setTimeout(() => {
+                        limpiarBackdropModal();
+                    }, 300);
+                }
+            }
+        });
+
+        // Listener para clicks en el backdrop
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('modal-backdrop')) {
+                console.log('Click en backdrop detectado, limpiando...');
+                setTimeout(() => {
+                    limpiarBackdropModal();
+                }, 300);
+            }
+        });
+    }
 
     /**
      * Inicializar funcionalidad de descarga de PDFs
@@ -1351,6 +1381,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.body.insertAdjacentHTML('beforeend', modalHtml);
 
+        // Obtener el modal creado
+        const modalElement = document.getElementById('modalContenido');
+
         // Agregar event listeners
         const btnGuardarContenido = document.getElementById('btn-guardar-contenido');
         btnGuardarContenido.addEventListener('click', guardarContenido);
@@ -1359,7 +1392,33 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('contenido-video').addEventListener('change', mostrarInfoVideo);
         document.getElementById('contenido-pdfs').addEventListener('change', mostrarInfoPDFs);
 
-        return document.getElementById('modalContenido');
+        // Event listener para cuando el modal se cierre manualmente
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            console.log('Modal cerrado manualmente, limpiando backdrop...');
+            limpiarBackdropModal();
+        });
+
+        // Event listener para el botón X del modal
+        const btnCerrar = modalElement.querySelector('.btn-close');
+        if (btnCerrar) {
+            btnCerrar.addEventListener('click', function () {
+                setTimeout(() => {
+                    limpiarBackdropModal();
+                }, 300);
+            });
+        }
+
+        // Event listener para el botón Cancelar
+        const btnCancelar = modalElement.querySelector('[data-bs-dismiss="modal"]');
+        if (btnCancelar) {
+            btnCancelar.addEventListener('click', function () {
+                setTimeout(() => {
+                    limpiarBackdropModal();
+                }, 300);
+            });
+        }
+
+        return modalElement;
     }
 
     /**
@@ -1566,14 +1625,80 @@ document.addEventListener('DOMContentLoaded', function () {
      * Cerrar modal y recargar página completa
      */
     function cerrarModalYRecargar() {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalContenido'));
-        if (modal) modal.hide();
-
-        // Recargar la página completa después de cerrar el modal
-        setTimeout(() => {
+        const modalElement = document.getElementById('modalContenido');
+        if (!modalElement) {
             location.reload();
-        }, 500);
+            return;
+        }
+
+        // Obtener instancia del modal
+        const modal = bootstrap.Modal.getInstance(modalElement);
+
+        if (modal) {
+            // Cerrar modal existente
+            modal.hide();
+
+            // Esperar a que el modal se cierre completamente
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                // Limpiar cualquier backdrop que pueda quedar
+                limpiarBackdropModal();
+
+                // Recargar página
+                setTimeout(() => {
+                    location.reload();
+                }, 100);
+            }, { once: true });
+        } else {
+            // Si no hay instancia del modal, simplemente cerrar y limpiar
+            modalElement.style.display = 'none';
+            modalElement.classList.remove('show');
+            limpiarBackdropModal();
+
+            setTimeout(() => {
+                location.reload();
+            }, 100);
+        }
     }
+
+    /**
+     * Limpiar backdrops del modal que puedan quedar
+     */
+    function limpiarBackdropModal() {
+        // Remover todos los backdrops que puedan existir
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => {
+            backdrop.remove();
+        });
+
+        // Restaurar scroll del body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+
+        // Remover clase modal-open del html también
+        document.documentElement.classList.remove('modal-open');
+
+        console.log('🧹 Backdrop modal limpiado correctamente');
+    }
+
+    /**
+     * Verificador periódico de backdrops huérfanos
+     */
+    function iniciarVerificadorBackdrop() {
+        setInterval(() => {
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            const modalesAbiertos = document.querySelectorAll('.modal.show');
+
+            // Si hay backdrops pero no modales abiertos, limpiar
+            if (backdrops.length > 0 && modalesAbiertos.length === 0) {
+                console.log('🔍 Detectados backdrops huérfanos, limpiando...');
+                limpiarBackdropModal();
+            }
+        }, 2000); // Verificar cada 2 segundos
+    }
+
+    // Iniciar el verificador después de un delay
+    setTimeout(iniciarVerificadorBackdrop, 5000);
 
     /**
      * Recargar contenido de las secciones dinámicamente
@@ -1925,6 +2050,38 @@ document.addEventListener('DOMContentLoaded', function () {
         video.volume = Math.max(0, Math.min(1, volumen));
     };
 
+    /**
+     * Función de emergencia para forzar el cierre de modales
+     * Puede ser llamada desde la consola del navegador si hay problemas
+     */
+    window.forzarCierreModal = function () {
+        console.log('🔧 Forzando cierre de modales...');
+
+        // Cerrar todos los modales Bootstrap
+        const modales = document.querySelectorAll('.modal');
+        modales.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        });
+
+        // Limpiar todos los backdrops
+        limpiarBackdropModal();
+
+        console.log('✅ Modales cerrados forzosamente');
+    };
+
+    /**
+     * Función global para limpiar backdrop (accesible desde consola)
+     */
+    window.limpiarBackdrop = function () {
+        limpiarBackdropModal();
+        console.log('✅ Backdrop limpiado');
+    };
+
     // Exportar funciones principales para uso externo
     window.VideoContainer = {
         reproducirVideoPromo,
@@ -1932,6 +2089,8 @@ document.addEventListener('DOMContentLoaded', function () {
         recargarContenidoSecciones,
         formatearUrlVideo,
         validarVideo,
-        formatearDuracion
+        formatearDuracion,
+        forzarCierreModal: window.forzarCierreModal,
+        limpiarBackdrop: window.limpiarBackdrop
     };
 });
