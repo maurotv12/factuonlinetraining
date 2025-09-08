@@ -89,6 +89,10 @@ foreach ($categorias as $cat) {
     }
 }
 
+// Debug temporal - comentar después de verificar
+// echo "<!-- DEBUG PROFESOR: " . json_encode($profesor) . " -->";
+// echo "<!-- DEBUG CURSO ID_PERSONA: " . $curso['id_persona'] . " -->";
+
 // Incluir CSS para la página
 echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
@@ -194,6 +198,15 @@ if (isset($_SESSION['mensaje_error'])) {
                 <!-- El contenido se renderiza dinámicamente con JavaScript -->
             </div>
 
+            <!-- Botón para cambiar banner - Siempre visible para el profesor -->
+            <div class="banner-actions mt-2 mb-3">
+                <button class="btn btn-sm btn-outline-primary" id="btn-cambiar-banner">
+                    <i class="bi bi-image"></i> Cambiar Imagen del Banner
+                </button>
+                <!-- Input oculto para subir imagen -->
+                <input type="file" id="input-banner" accept="image/jpeg,image/jpg,image/png,image/webp" style="display: none;">
+            </div>
+
             <!-- Información del curso -->
             <div class="curso-info">
                 <div class="info-tabs">
@@ -222,6 +235,12 @@ if (isset($_SESSION['mensaje_error'])) {
                                 Para quién
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profesor-tab" data-bs-toggle="tab"
+                                data-bs-target="#profe" type="button" role="tab">
+                                Profesor
+                            </button>
+                        </li>
                     </ul>
                     <div class="tab-content" id="cursoTabsContent">
                         <!-- Descripción editable -->
@@ -233,7 +252,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                         <i class="bi bi-pencil"></i> Editar
                                     </button>
                                 </div>
-                                <div id="descripcion-display"
+                                <div id="descripcion-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['descripcion']) ?>">
                                     <?= nl2br(htmlspecialchars($curso['descripcion'])) ?>
                                 </div>
@@ -249,7 +268,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                         <i class="bi bi-pencil"></i> Editar
                                     </button>
                                 </div>
-                                <div id="lo_que_aprenderas-display"
+                                <div id="lo_que_aprenderas-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['lo_que_aprenderas']) ?>">
                                     <?php if (!empty($curso['lo_que_aprenderas'])): ?>
                                         <?= nl2br(htmlspecialchars($curso['lo_que_aprenderas'])) ?>
@@ -269,7 +288,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                         <i class="bi bi-pencil"></i> Editar
                                     </button>
                                 </div>
-                                <div id="requisitos-display"
+                                <div id="requisitos-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['requisitos']) ?>">
                                     <?php if (!empty($curso['requisitos'])): ?>
                                         <?= nl2br(htmlspecialchars($curso['requisitos'])) ?>
@@ -289,12 +308,165 @@ if (isset($_SESSION['mensaje_error'])) {
                                         <i class="bi bi-pencil"></i> Editar
                                     </button>
                                 </div>
-                                <div id="para_quien-display"
+                                <div id="para_quien-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['para_quien']) ?>">
                                     <?php if (!empty($curso['para_quien'])): ?>
                                         <?= nl2br(htmlspecialchars($curso['para_quien'])) ?>
                                     <?php else: ?>
                                         <p class="text-muted">Información no disponible.</p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Profesor -->
+                        <div class="tab-pane fade" id="profe" role="tabpanel">
+                            <div class="content-section">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>Profesor</h5>
+                                </div>
+                                <div id="profesor-display" class="profesor-info-container">
+                                    <?php if ($profesor): ?>
+                                        <div class="profesor-card">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="profesor-avatar">
+                                                        <?php
+                                                        $fotoProfesor = $profesor['foto'] ?? 'storage/public/usuarios/default.png';
+
+                                                        // Limpiar ruta para evitar rutas duplicadas
+                                                        $fotoProfesor = str_replace(['vistas/img/usuarios/default/', '/cursosApp/'], '', $fotoProfesor);
+
+                                                        // Si es la foto por defecto antigua, usar la nueva ruta
+                                                        if (strpos($fotoProfesor, 'default.png') !== false) {
+                                                            $fotoProfesor = 'storage/public/usuarios/default.png';
+                                                        }
+
+                                                        // Validar si el archivo existe, sino usar default
+                                                        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $fotoProfesor;
+                                                        if (!file_exists($rutaCompleta)) {
+                                                            $fotoProfesor = 'storage/public/usuarios/default.png';
+                                                        }
+                                                        ?>
+                                                        <a href="/cursosApp/App/perfilProfesor?id=<?= $profesor['id'] ?>"
+                                                            class="profesor-avatar-link"
+                                                            title="Ver perfil de <?= htmlspecialchars($profesor['nombre']) ?>">
+                                                            <img src="/cursosApp/<?= htmlspecialchars($fotoProfesor) ?>"
+                                                                alt="<?= htmlspecialchars($profesor['nombre']) ?>"
+                                                                class="profesor-photo"
+                                                                onerror="this.src='/cursosApp/storage/public/usuarios/default.png'">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <div class="profesor-details">
+                                                        <h4 class="profesor-nombre">
+                                                            <a href="/cursosApp/App/perfilProfesor?id=<?= $profesor['id'] ?>"
+                                                                class="profesor-nombre-link"
+                                                                title="Ver perfil de <?= htmlspecialchars($profesor['nombre']) ?>">
+                                                                <?= htmlspecialchars($profesor['nombre']) ?>
+                                                            </a>
+                                                        </h4>
+
+                                                        <?php if (!empty($profesor['profesion'])): ?>
+                                                            <p class="profesor-profesion">
+                                                                <i class="bi bi-briefcase"></i>
+                                                                <?= htmlspecialchars($profesor['profesion']) ?>
+                                                            </p>
+                                                        <?php endif; ?>
+
+                                                        <div class="profesor-contact-info">
+                                                            <!-- Email (mostrar solo si está permitido) -->
+                                                            <?php if ($profesor['mostrar_email'] == 1 && !empty($profesor['email'])): ?>
+                                                                <p class="contact-item">
+                                                                    <i class="bi bi-envelope"></i>
+                                                                    <a href="mailto:<?= htmlspecialchars($profesor['email']) ?>">
+                                                                        <?= htmlspecialchars($profesor['email']) ?>
+                                                                    </a>
+                                                                </p>
+                                                            <?php endif; ?>
+
+                                                            <!-- Teléfono (mostrar solo si está permitido) -->
+                                                            <?php if ($profesor['mostrar_telefono'] == 1 && !empty($profesor['telefono'])): ?>
+                                                                <p class="contact-item">
+                                                                    <i class="bi bi-telephone"></i>
+                                                                    <a href="tel:<?= htmlspecialchars($profesor['telefono']) ?>">
+                                                                        <?= htmlspecialchars($profesor['telefono']) ?>
+                                                                    </a>
+                                                                </p>
+                                                            <?php endif; ?>
+
+                                                            <!-- Identificación (mostrar solo si está permitido) -->
+                                                            <?php if ($profesor['mostrar_identificacion'] == 1 && !empty($profesor['numero_identificacion'])): ?>
+                                                                <p class="contact-item">
+                                                                    <i class="bi bi-card-text"></i>
+                                                                    ID: <?= htmlspecialchars($profesor['numero_identificacion']) ?>
+                                                                </p>
+                                                            <?php endif; ?>
+                                                        </div>
+
+                                                        <!-- Ubicación -->
+                                                        <?php if (!empty($profesor['pais']) || !empty($profesor['ciudad'])): ?>
+                                                            <p class="profesor-ubicacion">
+                                                                <i class="bi bi-geo-alt"></i>
+                                                                <?php
+                                                                $ubicacion = [];
+                                                                if (!empty($profesor['ciudad'])) $ubicacion[] = $profesor['ciudad'];
+                                                                if (!empty($profesor['pais'])) $ubicacion[] = $profesor['pais'];
+                                                                echo htmlspecialchars(implode(', ', $ubicacion));
+                                                                ?>
+                                                            </p>
+                                                        <?php endif; ?>
+
+                                                        <!-- Biografía -->
+                                                        <?php if (!empty($profesor['biografia'])): ?>
+                                                            <div class="profesor-biografia">
+                                                                <h6><i class="bi bi-person-badge"></i> Acerca del profesor</h6>
+                                                                <p><?= nl2br(htmlspecialchars($profesor['biografia'])) ?></p>
+                                                            </div>
+                                                        <?php endif; ?>
+
+                                                        <!-- Fecha de registro -->
+                                                        <p class="profesor-fecha-registro">
+                                                            <small class="text-muted">
+                                                                <i class="bi bi-calendar-check"></i>
+                                                                Instructor desde <?php
+                                                                                    // Formatear fecha en español
+                                                                                    $meses = [
+                                                                                        1 => 'Enero',
+                                                                                        2 => 'Febrero',
+                                                                                        3 => 'Marzo',
+                                                                                        4 => 'Abril',
+                                                                                        5 => 'Mayo',
+                                                                                        6 => 'Junio',
+                                                                                        7 => 'Julio',
+                                                                                        8 => 'Agosto',
+                                                                                        9 => 'Septiembre',
+                                                                                        10 => 'Octubre',
+                                                                                        11 => 'Noviembre',
+                                                                                        12 => 'Diciembre'
+                                                                                    ];
+                                                                                    $fecha = strtotime($profesor['fecha_registro']);
+                                                                                    $mes = $meses[date('n', $fecha)];
+                                                                                    $año = date('Y', $fecha);
+                                                                                    echo $mes . ' ' . $año;
+                                                                                    ?>
+                                                            </small>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle"></i>
+                                            <strong>Información del profesor no disponible</strong><br>
+                                            <small>Es posible que la información del profesor no esté configurada correctamente o que no tenga permisos suficientes para mostrar esta información.</small>
+                                        </div>
+
+                                        <!-- Debug: Información básica del curso -->
+                                        <div class="profesor-fallback">
+                                            <p><strong>ID del Instructor:</strong> <?= htmlspecialchars($curso['id_persona']) ?></p>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                             </div>

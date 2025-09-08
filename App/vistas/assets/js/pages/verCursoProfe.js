@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarGestionSecciones();
     inicializarSubidaArchivos();
     inicializarDescargaPDFs();
+    inicializarCambioBanner();
     inicializarEventosGlobalesModal();
 
     /**
@@ -129,6 +130,154 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.disabled = false;
             }, 1500);
         }
+    }
+
+    /**
+     * Inicializar funcionalidad de cambio de banner
+     */
+    function inicializarCambioBanner() {
+        const btnCambiarBanner = document.getElementById('btn-cambiar-banner');
+        const inputBanner = document.getElementById('input-banner');
+
+        if (!btnCambiarBanner || !inputBanner) {
+            console.warn('Elementos del banner no encontrados');
+            return;
+        }
+
+        // Click en el botón abre el selector de archivos
+        btnCambiarBanner.addEventListener('click', function () {
+            inputBanner.click();
+        });
+
+        // Cuando se selecciona un archivo
+        inputBanner.addEventListener('change', function (e) {
+            const archivo = e.target.files[0];
+            if (!archivo) return;
+
+            // Validar tipo de archivo
+            const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png',];
+            if (!tiposPermitidos.includes(archivo.type)) {
+                mostrarNotificacion('Solo se permiten archivos de imagen (JPG, PNG)', 'error');
+                inputBanner.value = '';
+                return;
+            }
+
+            // Validar tamaño (máximo 5MB)
+            const tamanoMaximo = 5 * 1024 * 1024; // 5MB
+            if (archivo.size > tamanoMaximo) {
+                mostrarNotificacion('La imagen no debe superar los 5MB', 'error');
+                inputBanner.value = '';
+                return;
+            }
+
+            // Validar dimensiones de la imagen (600x400)
+            validarDimensionesImagen(archivo).then((esValida) => {
+                if (!esValida) {
+                    mostrarNotificacion('La imagen debe tener exactamente 600x400 píxeles', 'error');
+                    inputBanner.value = '';
+                    return;
+                }
+
+                // Confirmar cambio si todas las validaciones pasaron
+                confirmarCambioBanner(archivo);
+            }).catch((error) => {
+                console.error('Error al validar dimensiones:', error);
+                mostrarNotificacion('Error al validar la imagen', 'error');
+                inputBanner.value = '';
+            });
+        });
+    }
+
+    /**
+     * Validar dimensiones de la imagen
+     */
+    function validarDimensionesImagen(archivo) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const url = URL.createObjectURL(archivo);
+
+            img.onload = function () {
+                // Limpiar URL del objeto
+                URL.revokeObjectURL(url);
+
+                // Validar dimensiones exactas 600x400
+                const esValida = (this.width === 600 && this.height === 400);
+                resolve(esValida);
+            };
+
+            img.onerror = function () {
+                URL.revokeObjectURL(url);
+                resolve(false);
+            };
+
+            img.src = url;
+        });
+    }
+
+    /**
+     * Confirmar cambio de banner
+     */
+    function confirmarCambioBanner(archivo) {
+        Swal.fire({
+            title: '¿Cambiar imagen del banner?',
+            text: 'Se reemplazará la imagen actual del curso (600x400px)',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cambiar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                subirNuevoBanner(archivo);
+            } else {
+                document.getElementById('input-banner').value = '';
+            }
+        });
+    }
+
+    /**
+     * Subir nuevo banner del curso
+     */
+    function subirNuevoBanner(archivo) {
+        const formData = new FormData();
+        formData.append('accion', 'cambiarBanner');
+        formData.append('idCurso', cursoId);
+        formData.append('banner', archivo);
+
+        // Mostrar progreso
+        const btnCambiarBanner = document.getElementById('btn-cambiar-banner');
+        const iconoOriginal = btnCambiarBanner.innerHTML;
+        btnCambiarBanner.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i> Subiendo...';
+        btnCambiarBanner.disabled = true;
+
+        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarNotificacion('Banner actualizado correctamente', 'success');
+
+                    // Recargar la página para mostrar el nuevo banner
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    mostrarNotificacion(data.mensaje || 'Error al actualizar el banner', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion('Error de conexión al actualizar el banner', 'error');
+            })
+            .finally(() => {
+                // Restaurar botón
+                btnCambiarBanner.innerHTML = iconoOriginal;
+                btnCambiarBanner.disabled = false;
+                document.getElementById('input-banner').value = '';
+            });
     }
 
     /**
@@ -446,11 +595,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h6 class="video-title mb-1">Vista previa del curso</h6>
                     <small class="text-muted">Imagen promocional</small>
                 </div>
-                <div class="video-actions">
-                    <button class="btn btn-sm btn-primary edit-image-btn">
-                        <i class="bi bi-image"></i> Cambiar imagen
-                    </button>
-                </div>
+                
             </div>`;
     }
 

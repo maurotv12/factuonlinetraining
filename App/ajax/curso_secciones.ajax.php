@@ -373,6 +373,35 @@ switch ($accion) {
         echo json_encode($respuesta);
         break;
 
+    // ========== CAMBIAR BANNER DEL CURSO ==========
+    case 'cambiarBanner':
+        // Validar que se recibieron todos los datos necesarios
+        if (!isset($_FILES['banner']) || !isset($_POST['idCurso'])) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Faltan datos: banner e idCurso son requeridos'
+            ]);
+            break;
+        }
+
+        $archivo = $_FILES['banner'];
+        $idCurso = intval($_POST['idCurso']);
+
+        // Verificar que el curso pertenece al usuario
+        $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
+        if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'No tienes permisos para editar este curso'
+            ]);
+            break;
+        }
+
+        // Procesar cambio del banner
+        $respuesta = procesarCambioBanner($archivo, $idCurso, $curso[0]['banner']);
+        echo json_encode($respuesta);
+        break;
+
     // ========== REEMPLAZAR ASSET EXISTENTE ==========
     case 'reemplazarAsset':
         // Validar que se recibieron todos los datos necesarios
@@ -546,6 +575,116 @@ function procesarVideoPromocional($archivo, $idCurso)
                 return [
                     'success' => false,
                     'mensaje' => $resultado['mensaje']
+                ];
+            }
+        } else {
+            return [
+                'success' => false,
+                'mensaje' => 'Error al mover el archivo'
+            ];
+        }
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'mensaje' => 'Error del servidor: ' . $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Procesar cambio de banner del curso
+ */
+function procesarCambioBanner($archivo, $idCurso, $bannerAnterior)
+{
+    // Validar archivo
+    if (!isset($archivo) || $archivo['error'] !== UPLOAD_ERR_OK) {
+        return [
+            'success' => false,
+            'mensaje' => 'Error al subir la imagen'
+        ];
+    }
+
+    // Validar tipo de archivo
+    $tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!in_array($archivo['type'], $tiposPermitidos)) {
+        return [
+            'success' => false,
+            'mensaje' => 'Solo se permiten archivos de imagen (JPG, PNG, WEBP)'
+        ];
+    }
+
+    // Validar tamaño (5MB máximo)
+    $tamanosMaximo = 5 * 1024 * 1024; // 5MB en bytes
+    if ($archivo['size'] > $tamanosMaximo) {
+        return [
+            'success' => false,
+            'mensaje' => 'La imagen no debe superar los 5MB'
+        ];
+    }
+
+    // Validar dimensiones de la imagen (600x400)
+    $dimensiones = getimagesize($archivo['tmp_name']);
+    if ($dimensiones === false) {
+        return [
+            'success' => false,
+            'mensaje' => 'El archivo no es una imagen válida'
+        ];
+    }
+
+    $ancho = $dimensiones[0];
+    $alto = $dimensiones[1];
+
+    if ($ancho !== 600 || $alto !== 400) {
+        return [
+            'success' => false,
+            'mensaje' => 'La imagen debe tener exactamente 600x400 píxeles. Dimensiones actuales: ' . $ancho . 'x' . $alto
+        ];
+    }
+
+    try {
+        // Crear directorio si no existe
+        $directorioDestino = "../../storage/public/banners/";
+        if (!file_exists($directorioDestino)) {
+            mkdir($directorioDestino, 0755, true);
+        }
+
+        // Generar nombre único para el archivo
+        $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+        $nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
+        $rutaCompleta = $directorioDestino . $nombreArchivo;
+        $rutaStorage = "storage/public/banners/" . $nombreArchivo;
+
+        // Mover archivo subido
+        if (move_uploaded_file($archivo['tmp_name'], $rutaCompleta)) {
+            // Actualizar base de datos
+            $conn = Conexion::conectar();
+            $stmt = $conn->prepare("UPDATE curso SET banner = ? WHERE id = ?");
+
+            if ($stmt->execute([$rutaStorage, $idCurso])) {
+                // Eliminar archivo anterior si existe y es diferente al default
+                if (
+                    !empty($bannerAnterior) &&
+                    $bannerAnterior !== 'storage/public/banners/default.png' &&
+                    strpos($bannerAnterior, 'default') === false
+                ) {
+
+                    $rutaAnteriorCompleta = "../../" . $bannerAnterior;
+                    if (file_exists($rutaAnteriorCompleta)) {
+                        unlink($rutaAnteriorCompleta);
+                    }
+                }
+
+                return [
+                    'success' => true,
+                    'mensaje' => 'Banner actualizado correctamente',
+                    'ruta' => $rutaStorage
+                ];
+            } else {
+                // Eliminar archivo si no se pudo actualizar BD
+                unlink($rutaCompleta);
+                return [
+                    'success' => false,
+                    'mensaje' => 'Error al actualizar la base de datos'
                 ];
             }
         } else {

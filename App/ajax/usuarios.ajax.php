@@ -152,8 +152,8 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "actualizar_campo") {
 			}
 		}
 
-		if ($campo == 'biografia' && strlen($valor) > 1000) {
-			echo json_encode(["success" => false, "message" => "La biografía no puede exceder 1000 caracteres"]);
+		if ($campo == 'biografia' && strlen($valor) > 10000) {
+			echo json_encode(["success" => false, "message" => "La biografía no puede exceder 10000 caracteres"]);
 			exit;
 		}
 

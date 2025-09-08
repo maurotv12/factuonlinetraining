@@ -125,6 +125,11 @@
     letter-spacing: 0.5px;
 }
 
+.badge-section {
+    font-size: 0.99rem;
+    color: black;
+}
+
 /* Botones de acción */
 .btn-group .btn {
     border-radius: 6px;
@@ -499,6 +504,7 @@
         transform: rotate(360deg);
     }
 }
+
 /* Estilos para el modal de cambio de estado */
 .estado-options .form-check {
     padding: 0.75rem;
@@ -512,7 +518,7 @@
     border-color: #dee2e6;
 }
 
-.estado-options .form-check-input:checked + .form-check-label {
+.estado-options .form-check-input:checked+.form-check-label {
     color: #495057;
     font-weight: 600;
 }
@@ -555,4 +561,3 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-

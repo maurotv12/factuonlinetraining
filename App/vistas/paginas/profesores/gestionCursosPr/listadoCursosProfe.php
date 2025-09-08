@@ -95,7 +95,7 @@ if (empty($cursos)) {
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="badge bg-outline-primary">
+                                                <span class="badge badge-section bg-outline-primary">
                                                     <i class="bi bi-collection"></i> <?= $curso["total_secciones"] ?? 0 ?>
                                                 </span>
                                             </td>

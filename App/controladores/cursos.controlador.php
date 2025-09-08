@@ -67,7 +67,7 @@ class ControladorCursos
 
 	/**
 	 * Obtener usuarios con rol de profesor
-	 * @return array Lista de profesores con su información
+	 * @return array Lista de profesores con su información completa
 	 */
 	public static function ctrObtenerProfesores()
 	{
@@ -79,10 +79,12 @@ class ControladorCursos
 		// Obtener conexión a base de datos
 		$conexion = Conexion::conectar();
 
-		// Consulta SQL para obtener usuarios con rol de profesor
-		// Esta consulta obtiene los datos de las personas que tienen el rol de profesor
+		// Consulta SQL para obtener usuarios con rol de profesor con toda la información necesaria
+		// Esta consulta obtiene los datos completos de las personas que tienen el rol de profesor
 		$stmt = $conexion->prepare(
-			"SELECT p.id, p.nombre, p.email, p.foto
+			"SELECT p.id, p.nombre, p.email, p.foto, p.profesion, p.telefono, p.direccion, 
+					p.biografia, p.pais, p.ciudad, p.estado, p.mostrar_email, p.mostrar_telefono, 
+					p.mostrar_identificacion, p.numero_identificacion, p.fecha_registro
 			 FROM persona p 
 			 INNER JOIN persona_roles pr ON p.id = pr.id_persona
 			 INNER JOIN roles r ON pr.id_rol = r.id

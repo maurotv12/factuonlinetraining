@@ -159,6 +159,45 @@
     border-radius: 15px;
 }
 
+/* Estilos para el botón de cambiar banner */
+.banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.banner-actions .btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+}
+
+.banner-actions .btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+}
+
+.banner-actions .btn:active {
+    transform: translateY(0);
+}
+
+.banner-actions .btn i {
+    margin-right: 0.5rem;
+}
+
+.banner-actions .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .placeholder-content {
     text-align: center;
     color: var(--gray-color);
@@ -1242,4 +1281,263 @@
 
 .pdf-list::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
+}
+
+/* =========================================
+   ESTILOS PARA INFORMACIÓN DEL PROFESOR
+   ========================================= */
+
+.profesor-info-container {
+    padding: 0;
+}
+
+.profesor-card {
+    background: var(--white);
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.profesor-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.profesor-avatar {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.profesor-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.profesor-photo:hover {
+    transform: scale(1.05);
+}
+
+.profesor-details {
+    text-align: left;
+}
+
+.profesor-nombre {
+    color: var(--dark-color);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-profesion {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-contact-info {
+    margin-bottom: 1.5rem;
+}
+
+.contact-item {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-color);
+    font-size: 0.95rem;
+}
+
+.contact-item i {
+    color: var(--primary-color);
+    width: 18px;
+    text-align: center;
+}
+
+.contact-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.profesor-ubicacion {
+    color: var(--gray-color);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-ubicacion i {
+    color: var(--primary-color);
+}
+
+.profesor-biografia {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.profesor-biografia h6 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-biografia h6 i {
+    color: var(--primary-color);
+}
+
+.profesor-biografia p {
+    color: var(--dark-color);
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.profesor-fecha-registro {
+    margin-bottom: 0;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.profesor-fecha-registro i {
+    color: var(--primary-color);
+}
+
+/* Enlaces del profesor */
+.profesor-avatar-link {
+    display: inline-block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 50%;
+}
+
+.profesor-avatar-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(54, 130, 196, 0.4);
+}
+
+.profesor-avatar-link:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+.profesor-nombre-link {
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+.profesor-nombre-link:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.profesor-nombre-link:focus {
+    color: var(--primary-color);
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Cursor pointer para elementos clickeables */
+.profesor-avatar-link,
+.profesor-nombre-link {
+    cursor: pointer;
+}
+
+/* Responsivo para tablets */
+@media (max-width: 768px) {
+    .profesor-card {
+        padding: 1.5rem;
+    }
+
+    .profesor-details {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .profesor-nombre {
+        font-size: 1.3rem;
+        justify-content: center;
+    }
+
+    .profesor-profesion {
+        justify-content: center;
+    }
+
+    .contact-item {
+        justify-content: center;
+    }
+
+    .profesor-ubicacion {
+        justify-content: center;
+    }
+}
+
+/* Responsivo para móviles */
+@media (max-width: 480px) {
+    .profesor-card {
+        padding: 1rem;
+    }
+
+    .profesor-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profesor-nombre {
+        font-size: 1.2rem;
+    }
+
+    .profesor-profesion {
+        font-size: 1rem;
+    }
+
+    .profesor-biografia {
+        padding: 1rem;
+    }
+}
+
+/* Estilos para mensaje de fallback del profesor */
+.profesor-fallback {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--gray-color);
+    margin-top: 1rem;
+}
+
+.profesor-fallback p {
+    margin: 0.5rem 0;
+    color: var(--dark-color);
+}
+
+.profesor-fallback strong {
+    color: var(--primary-color);
 }

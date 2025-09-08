@@ -5,8 +5,16 @@ if (!isset($_SESSION['idU'])) {
     exit;
 }
 
+// Determinar qué profesor mostrar
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    // Mostrar perfil de otro profesor
+    $profesorId = $_GET['id'];
+} else {
+    // Mostrar perfil propio
+    $profesorId = $_SESSION['idU'];
+}
+
 // Cargar información del profesor
-$profesorId = $_SESSION['idU'];
 $profesor = ControladorUsuarios::ctrMostrarUsuarios("id", $profesorId);
 
 if (!$profesor) {
@@ -20,16 +28,16 @@ $biografiaTexto = $profesor['biografia'] ?? '';
 $biografiaProcesada = [
     'bioShort' => $biografiaTexto,
     'bioFull' => $biografiaTexto,
-    'showVerMas' => strlen($biografiaTexto) > 200
+    'showVerMas' => strlen($biografiaTexto) > 500
 ];
 
 // Si la biografía es muy larga, cortarla para la vista previa
-if (strlen($biografiaTexto) > 200) {
-    $biografiaProcesada['bioShort'] = substr($biografiaTexto, 0, 200) . '...';
+if (strlen($biografiaTexto) > 2000) {
+    $biografiaProcesada['bioShort'] = substr($biografiaTexto, 0, 2000) . '...';
 }
 
 // Verificar si es el propio profesor
-$esProfesorLogueado = ($profesorId == $profesor['id']);
+$esProfesorLogueado = ($_SESSION['idU'] == $profesor['id']);
 
 // Obtener cursos del profesor si está disponible
 $cursosProfesore = [];
@@ -73,13 +81,6 @@ if (file_exists("controladores/cursos.controlador.php")) {
                             alt="Foto del profesor"
                             class="profile-photo"
                             id="profilePhoto">
-
-                        <?php if ($esProfesorLogueado): ?>
-                            <div class="photo-overlay" onclick="openPhotoModal()">
-                                <i class="bi bi-camera"></i>
-                                <span>Cambiar foto</span>
-                            </div>
-                        <?php endif; ?>
                     </div>
 
                     <!-- Información Básica -->

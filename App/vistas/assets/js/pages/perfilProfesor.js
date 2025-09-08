@@ -267,8 +267,8 @@ function processBiografia(biografia) {
         };
     }
 
-    const maxChars = 200;
-    const maxWords = 30;
+    const maxChars = 500;
+    const maxWords = 100;
 
     const words = biografia.split(' ');
     const shouldTruncate = biografia.length > maxChars || words.length > maxWords;
@@ -623,7 +623,7 @@ function validateField(field) {
             break;
 
         case 'biografia':
-            if (value.length > 1000) {
+            if (value.length > 10000) {
                 field.classList.add('is-invalid');
                 return false;
             }
