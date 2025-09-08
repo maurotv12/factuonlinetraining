@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-09-2025 a las 03:45:48
+-- Tiempo de generación: 08-09-2025 a las 04:21:19
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -85,8 +85,10 @@ INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `lo_que_aprende
 (12, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'describiendo', 'muchisimo', 'no experiencia', 'Para nadie', 'storage/public/banners/687fc17e343f8_2871333aa.jpg', NULL, 234324, 1, 2, 'activo', '2025-07-22 16:51:10'),
 (14, 'analitica-de-leche-de-vaca', 'Analitica de leche de vaca', 'asdasdas', 'dasdsadasd', 'asdasdsadasd', 'asdasdasd', 'storage/public/banners/68a77db350d47_1755807155.jpg', NULL, 40000, 3, 2, 'activo', '2025-08-21 20:12:35'),
 (15, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'dsadada', 'asdasdsa', 'asdasdas', 'dsadasdsad', 'storage/public/banners/68a87ff700a33_1755873271.jpg', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 90000, 1, 2, 'borrador', '2025-08-22 14:34:31'),
-(16, 'curso-de-generalidades', 'Curso de Generalidades', 'Estoy viendo que en verCursoProfe.php el if de // Procesar actualización del curso básico (migrado desde editarCursoProfe.php) no está procesando las secciones, el contenido de secciones, el progreso para poder conectarse con la base de datos y almacenas o actualizar o eliminar las secciones   y las secciones se van a manejar de la siguiente manera:\n1. Para Insertar/actualizar sección (curso_secciones):\ncrea una función PHP (PDO) que inserte una sección en `curso_secciones`\n// Parámetros: $idCurso, $titulo, $descripcion, $orden (int)\n// Retorna: id de la sección creada\n// Usa SQL INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden) VALUES (....);\n// No Manejes timestamps por defecto.\n// Valida que $orden sea >= 1. \n// Si existe, crea también una función actualizarSeccion($idSeccion, $titulo, $descripcion, $orden)\n2. Insertar contenido de tipo video/pdf en seccion_contenido\ncrea una función PHP (PDO) crearContenido($idSeccion, $titulo, $descripcion, $tipo, $duracion, $orden)\n// `tipo` ∈ {\'video\',\'pdf\'}. Para video, `duracion` = \'MM:SS\' o \'HH:MM:SS\'; para PDF puede ser NULL.\n// SQL: INSERT INTO seccion_contenido (id_seccion, titulo, descripcion, tipo, duracion, orden) VALUES (…);\n// Retorna: id del contenido\n// Valida que $orden >= 1 y tipo válido.\n3. Subir archivo y crear asset en seccion_contenido_assets\nescribe una función GuardarContenidoAsset($idContenido, $assetTipo, $rutaDestinoAbsoluta, $urlPublica = null, $tamanoBytes = null, $duracionSegundos = null)\n// Inserta en seccion_contenido_assets (id_contenido, asset_tipo, storage_path, public_url, tamano_bytes, duracion_segundos)\n// asset_tipo: \'attachment\' para MP4 directo, \'pdf\' para PDF, no generas miniatura\n4. Validaciones de subida MP4 ≤10min / hasta 1280×720 y PDF\nen el controller de subida, valida MIME:\n// - video/mp4 (max 10 min, 1280x720) -> rechaza si excede\n// - application/pdf\n// Calcula duración del video (si ffprobe está disponible) y pásala a crearContenido/guardarContenidoAsset\n// Construye rutas tipo que cree las carpetas si no existen \npara video usa storage/public/section_assets/{curso}/{seccion}/{contenido}/video/archivo.mp4 \npara pdf usa storage/public/section_assets/{curso}/{seccion}/{contenido}/pdf/archivo.pdf \n// Asegura permisos de carpeta (Windows + XAMPP), mueve el archivo y crea el asset\n\n5. Marcar progreso al consumir el contenido\nfunción upsertProgreso($idContenido, $idEstudiante, $visto, $progresoSegundos, $porcentaje)\n// Si existe fila (contenido+estudiante), haz UPDATE; si no, INSERT.\n// Si $porcentaje >= 90, fuerza $visto = 1 y porcentaje = 100.\n// Actualiza `ultima_vista` automáticamente (columna con ON UPDATE).', 'Aprenderas a asadasdasdsCrear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'Los requisitos son Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabadasdasdasdasdasd\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'Es para Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilidaasdasdasdasd', 'storage/public/banners/68b48d809a2f9_1756663168.png', 'storage/public/promoVideos/68b48d809a6ca_1756663168.mp4', 500000, 1, 1, 'activo', '2025-08-31 17:59:28'),
-(17, 'curso-prueba-secciones-test', 'Curso de Prueba Secciones - TEST DIRECTO', 'Descripción de prueba directa', 'Test directo', 'Test directo', 'Test directo', '', '', 88000, 1, 10, 'activo', '2025-09-05 02:10:03');
+(16, 'curso-de-generalidades', 'Curso de Generalidades', 'Estoy viendo que en verCursoProfe.php el if de // Procesar actualización del curso básico (migrado desde editarCursoProfe.php) no está procesando las secciones, el contenido de secciones, el progreso para poder conectarse con la ffffffffffffffs o actualizar o eliminar las secciones   y las secciones se van a manejar de la siguiente manera:\n1. Para Insertar/actualizar sección (curso_secciones):\ncrea una función PHP (PDO) que inserte una sección en `curso_secciones`\n// Parámetros: $idCurso, $titulo, $descripcion, $orden (int)\n// Retorna: id de la sección creada\n// Usa SQL INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden) VALUES (....);\n// No Manejes timestamps por defecto.\n// Valida que $orden sea >= 1. \n// Si existe, crea también una función actualizarSeccion($idSeccion, $titulo, $descripcion, $orden)\n2. Insertar contenido de tipo video/pdf en seccion_contenido\ncrea una función PHP (PDO) crearContenido($idSeccion, $titulo, $descripcion, $tipo, $duracion, $orden)\n// `tipo` ∈ {\'video\',\'pdf\'}. Para video, `duracion` = \'MM:SS\' o \'HH:MM:SS\'; para PDF puede ser NULL.\n// SQL: INSERT INTO seccion_contenido (id_seccion, titulo, descripcion, tipo, duracion, orden) VALUES (…);\n// Retorna: id del contenido\n// Valida que $orden >= 1 y tipo válido.\n3. Subir archivo y crear asset en seccion_contenido_assets\nescribe una función GuardarContenidoAsset($idContenido, $assetTipo, $rutaDestinoAbsoluta, $urlPublica = null, $tamanoBytes = null, $duracionSegundos = null)\n// Inserta en seccion_contenido_assets (id_contenido, asset_tipo, storage_path, public_url, tamano_bytes, duracion_segundos)\n// asset_tipo: \'attachment\' para MP4 directo, \'pdf\' para PDF, no generas miniatura\n4. Validaciones de subida MP4 ≤10min / hasta 1280×720 y PDF\nen el controller de subida, valida MIME:\n// - video/mp4 (max 10 min, 1280x720) -> rechaza si excede\n// - application/pdf\n// Calcula duración del video (si ffprobe está disponible) y pásala a crearContenido/guardarContenidoAsset\n// Construye rutas tipo que cree las carpetas si no existen \npara video usa storage/public/section_assets/{curso}/{seccion}/{contenido}/video/archivo.mp4 \npara pdf usa storage/public/section_assets/{curso}/{seccion}/{contenido}/pdf/archivo.pdf \n// Asegura permisos de carpeta (Windows + XAMPP), mueve el archivo y crea el asset\n\n5. Marcar progreso al consumir el contenido\nfunción upsertProgreso($idContenido, $idEstudiante, $visto, $progresoSegundos, $porcentaje)\n// Si existe fila (contenido+estudiante), haz UPDATE; si no, INSERT.\n// Si $porcentaje >= 90, fuerza $visto = 1 y porcentaje = 100.\n// Actualiza `ultima_vista` automáticamente (columna con ON UPDATE).', 'Aprenderas a asadasdasdsCrear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'Los requisitos son Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabadasdasdasdasdasd\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'Es para Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilidaasdasdasdasd', 'storage/public/banners/68b48d809a2f9_1756663168.png', 'storage/public/promoVideos/68be34993760e_1757295769.mp4', 500000, 1, 1, 'activo', '2025-08-31 17:59:28'),
+(17, 'curso-prueba-secciones-test', 'Curso de Prueba Secciones - TEST DIRECTO', 'Descripción de prueba directa', 'Test directo', 'Test directo', 'Test directo', '', '', 88000, 1, 10, 'activo', '2025-09-05 02:10:03'),
+(18, 'asdasdasd', 'asdasdasd', 'asdasdasdsaasdasdasdsaasdasdasdsaasdasdasdsaasdasdasdsa', 'asdasdasdsaasdasdasdsaasdasdasdsa', 'asdasdasdsaasdasdasdsaasdasdasdsa', 'asdasdasdsaasdasdasdsaasdasdasdsa', 'storage/public/banners/68bd9e76149b3_1757257334.png', 'storage/public/promoVideos/68bd9e7615168_1757257334.mp4', 0, 2, 1, 'borrador', '2025-09-07 15:02:15'),
+(19, 'cursod-e-pruebaacursod-e-pruebaacursod-e-pruebaa', 'Cursod e pruebaaCursod e pruebaaCursod e pruebaa', 'Cursod e pruebaaCursod e pruebaaCursod e pruebaaCursod e pruebaaaaaaaaaaaaaaaaaaaaaaaaa', 'Cursod e pruebaaCursod e pruebaa', 'Cursod e pruebaaCursod e pruebaa', 'Cursod e pruebaaCursod e pruebaa', 'storage/public/banners/68bd9ea87fb25_1757257384.png', 'storage/public/promoVideos/68be2c347aa60_1757293620.mp4', 0, 2, 1, 'borrador', '2025-09-07 15:03:04');
 
 -- --------------------------------------------------------
 
@@ -110,23 +112,14 @@ CREATE TABLE `curso_secciones` (
 --
 
 INSERT INTO `curso_secciones` (`id`, `id_curso`, `titulo`, `descripcion`, `orden`, `estado`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-(5, 1, 'Sección de Prueba', 'Esta es una sección de prueba', 1, 'activo', '2025-09-06 23:46:53', '2025-09-06 23:46:53'),
-(6, 16, 'Introduccion', '\'\'\'', 5, 'activo', '2025-09-06 23:47:43', '2025-09-06 23:47:43'),
-(8, 16, '3 seccion', 'asdasd', 7, 'activo', '2025-09-06 23:53:17', '2025-09-06 23:53:17'),
-(9, 16, '4 sección', 'cuarta', 8, 'activo', '2025-09-07 00:09:45', '2025-09-07 00:09:45'),
-(10, 16, '5sección', 'asdasdas', 9, 'activo', '2025-09-07 00:13:11', '2025-09-07 00:13:11'),
-(11, 16, '6sección', 'asdasd', 10, 'activo', '2025-09-07 00:13:20', '2025-09-07 00:13:20'),
-(12, 16, 'sección67', '', 11, 'activo', '2025-09-07 00:13:26', '2025-09-07 00:13:26'),
-(13, 16, '8', '', 12, 'activo', '2025-09-07 00:13:30', '2025-09-07 00:13:30'),
-(14, 16, '9', '', 13, 'activo', '2025-09-07 00:13:34', '2025-09-07 00:13:34'),
-(15, 16, '10', '', 14, 'activo', '2025-09-07 00:13:38', '2025-09-07 00:13:38'),
-(16, 16, '112', '', 15, 'activo', '2025-09-07 00:13:42', '2025-09-07 00:13:42'),
-(17, 16, '11', '', 16, 'activo', '2025-09-07 00:13:48', '2025-09-07 00:13:48'),
-(18, 16, '12', '', 17, 'activo', '2025-09-07 00:13:52', '2025-09-07 00:13:52'),
-(19, 16, '123', '', 18, 'activo', '2025-09-07 00:13:58', '2025-09-07 00:13:58'),
-(20, 16, '9', '', 19, 'activo', '2025-09-07 00:14:03', '2025-09-07 00:14:03'),
-(21, 16, '85', '', 20, 'activo', '2025-09-07 00:14:08', '2025-09-07 00:14:08'),
-(22, 16, '324', '', 21, 'activo', '2025-09-07 00:14:11', '2025-09-07 00:14:11');
+(28, 16, '2', '', 2, 'activo', '2025-09-07 20:15:43', '2025-09-07 20:15:43'),
+(29, 16, '3', '', 3, 'activo', '2025-09-07 20:15:47', '2025-09-07 20:15:47'),
+(30, 16, '4', '', 4, 'activo', '2025-09-07 20:15:52', '2025-09-07 20:15:52'),
+(32, 16, '78', '', 5, 'activo', '2025-09-07 23:59:20', '2025-09-07 23:59:20'),
+(33, 16, '66666666666', 'hhhh', 6, 'activo', '2025-09-08 00:41:44', '2025-09-08 00:41:44'),
+(34, 16, '78', '', 7, 'activo', '2025-09-08 01:05:39', '2025-09-08 01:05:39'),
+(35, 16, '79', '', 8, 'activo', '2025-09-08 01:05:47', '2025-09-08 01:05:47'),
+(36, 16, '85', '', 9, 'activo', '2025-09-08 01:05:54', '2025-09-08 01:05:54');
 
 -- --------------------------------------------------------
 
@@ -488,7 +481,10 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 (281, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 21:52:16'),
 (282, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 21:59:27'),
 (283, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-04 22:06:30'),
-(284, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-06 17:43:48');
+(284, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-06 17:43:48'),
+(285, 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-07 09:35:16'),
+(286, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-07 21:17:19'),
+(287, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '2025-09-07 21:17:37');
 
 -- --------------------------------------------------------
 
@@ -539,7 +535,7 @@ CREATE TABLE `persona` (
 --
 
 INSERT INTO `persona` (`id`, `usuario_link`, `nombre`, `email`, `password`, `verificacion`, `foto`, `profesion`, `telefono`, `direccion`, `biografia`, `pais`, `ciudad`, `estado`, `mostrar_email`, `mostrar_telefono`, `mostrar_identificacion`, `numero_identificacion`, `fecha_registro`) VALUES
-(1, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozsanchez12@gmail.com', '$2y$10$XJjXQcSuxiVhdhkovif7B.YfVKNSkVEK2Tl0ZBJa48CDWKY3.r80a', 1, 'storage/public/usuarios/1/perfil_1755892146_272.jpg', 'Contador', '3135529157', 'cra - 26k8121', '¿Por qué he llegado a más de 400k estudiantes pero mi calificación global no baja de 4.7 estrellas?', 'Colombia', 'Cali', 'activo', 0, 0, 0, '66847374', '2025-07-10 19:18:15'),
+(1, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozsanchez12@gmail.com', '$2y$10$XJjXQcSuxiVhdhkovif7B.YfVKNSkVEK2Tl0ZBJa48CDWKY3.r80a', 1, 'storage/public/usuarios/1/perfil_1755892146_272.jpg', 'Contador', '3135529157', 'cra - 26k8121', '¿Por qué he llegado a más de 400k estudiantes pero mi calificación global no baja de 4.7 estrellas?hhhh', 'Colombia', 'Cali', 'activo', 0, 0, 0, '66847374', '2025-07-10 19:18:15'),
 (2, 'clienteRegistro', 'Derly Pipicano', 'm-mau55@hotmail.com', '$2y$10$AlrkWRiRR2kIBFLn7qA.nux7d6//Va6PB818ZJK7NnrENSAv8a6kS', 0, 'storage/public/usuarios/2/perfil_1755891648_811.jpg', NULL, NULL, NULL, 'No hay mucho que contar de mi a parte de que soy profesora', 'Ecuador', 'Quito', 'activo', 1, 1, 1, NULL, '2025-07-15 13:42:06'),
 (3, 'clienteRegistro', 'Carlos Sanchez', 'mauro@gmail.com', '$2y$10$LwHLfPUetTXIxcrXlEp9hO/4brtB2Gdh5MbGRN.LmE1GpFa4OJpBO', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 14:28:33'),
 (4, 'clienteRegistro', 'Carlitos', 'mauriciomuozschez12@gmail.com', '$2y$10$dzomT0r6vKvgANN6W/AXYuRgMfkpmboCRlD0IJz35UFuYzwyIkgTG', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 16:37:46'),
@@ -635,6 +631,17 @@ CREATE TABLE `seccion_contenido` (
   `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `seccion_contenido`
+--
+
+INSERT INTO `seccion_contenido` (`id`, `id_seccion`, `titulo`, `duracion`, `orden`, `estado`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(30, 29, '4', '00:04:11', 1, 'activo', '2025-09-07 22:50:08', '2025-09-07 22:50:08'),
+(34, 28, 'Juano22', '00:04:11', 1, 'activo', '2025-09-07 23:34:38', '2025-09-08 02:13:32'),
+(36, 28, 'ttttttttttttttt', '00:09:27', 7, 'activo', '2025-09-07 23:37:26', '2025-09-07 23:37:27'),
+(37, 28, 'nonbre', '00:00:00', 1, 'activo', '2025-09-07 23:40:44', '2025-09-08 02:00:39'),
+(44, 33, 't', '00:09:27', 1, 'activo', '2025-09-08 00:53:54', '2025-09-08 00:53:54');
+
 -- --------------------------------------------------------
 
 --
@@ -651,6 +658,29 @@ CREATE TABLE `seccion_contenido_assets` (
   `duracion_segundos` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `seccion_contenido_assets`
+--
+
+INSERT INTO `seccion_contenido_assets` (`id`, `id_contenido`, `asset_tipo`, `storage_path`, `public_url`, `tamano_bytes`, `duracion_segundos`, `created_at`) VALUES
+(53, 30, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/29/30/pdf/68be0c20856a6_1757285408.pdf', 'storage/public/section_assets/16/29/30/pdf/68be0c20856a6_1757285408.pdf', 391662, NULL, '2025-09-07 22:50:08'),
+(54, 30, 'video', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/29/30/video/68be0c20e440b_1757285408.mp4', 'storage/public/section_assets/16/29/30/video/68be0c20e440b_1757285408.mp4', 24042978, 251, '2025-09-07 22:50:08'),
+(62, 34, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/34/pdf/68be168e20165_1757288078.pdf', 'storage/public/section_assets/16/28/34/pdf/68be168e20165_1757288078.pdf', 391662, NULL, '2025-09-07 23:34:38'),
+(63, 34, 'video', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/34/video/68be168e71833_1757288078.mp4', 'storage/public/section_assets/16/28/34/video/68be168e71833_1757288078.mp4', 24042978, 251, '2025-09-07 23:34:38'),
+(66, 36, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/36/pdf/68be173686c0c_1757288246.pdf', 'storage/public/section_assets/16/28/36/pdf/68be173686c0c_1757288246.pdf', 59402, NULL, '2025-09-07 23:37:26'),
+(67, 36, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/36/pdf/68be173695536_1757288246.pdf', 'storage/public/section_assets/16/28/36/pdf/68be173695536_1757288246.pdf', 115887, NULL, '2025-09-07 23:37:26'),
+(68, 36, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/36/pdf/68be1736a3683_1757288246.pdf', 'storage/public/section_assets/16/28/36/pdf/68be1736a3683_1757288246.pdf', 115024, NULL, '2025-09-07 23:37:26'),
+(69, 36, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/36/pdf/68be1736b77c1_1757288246.pdf', 'storage/public/section_assets/16/28/36/pdf/68be1736b77c1_1757288246.pdf', 126779, NULL, '2025-09-07 23:37:26'),
+(70, 36, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/36/pdf/68be1736c418a_1757288246.pdf', 'storage/public/section_assets/16/28/36/pdf/68be1736c418a_1757288246.pdf', 264586, NULL, '2025-09-07 23:37:26'),
+(71, 36, 'video', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/36/video/68be173713166_1757288247.mp4', 'storage/public/section_assets/16/28/36/video/68be173713166_1757288247.mp4', 34560875, 567, '2025-09-07 23:37:27'),
+(72, 37, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/37/pdf/68be17fcba2d2_1757288444.pdf', 'storage/public/section_assets/16/28/37/pdf/68be17fcba2d2_1757288444.pdf', 234773, NULL, '2025-09-07 23:40:44'),
+(88, 44, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/33/44/pdf/68be29221db1d_1757292834.pdf', 'storage/public/section_assets/16/33/44/pdf/68be29221db1d_1757292834.pdf', 391662, NULL, '2025-09-08 00:53:54'),
+(89, 44, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/33/44/pdf/68be292231432_1757292834.pdf', 'storage/public/section_assets/16/33/44/pdf/68be292231432_1757292834.pdf', 344443, NULL, '2025-09-08 00:53:54'),
+(90, 44, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/33/44/pdf/68be292236df9_1757292834.pdf', 'storage/public/section_assets/16/33/44/pdf/68be292236df9_1757292834.pdf', 59402, NULL, '2025-09-08 00:53:54'),
+(91, 44, 'pdf', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/33/44/pdf/68be2922459cc_1757292834.pdf', 'storage/public/section_assets/16/33/44/pdf/68be2922459cc_1757292834.pdf', 264586, NULL, '2025-09-08 00:53:54'),
+(92, 44, 'video', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/33/44/video/68be2922a22d2_1757292834.mp4', 'storage/public/section_assets/16/33/44/video/68be2922a22d2_1757292834.mp4', 34560875, 567, '2025-09-08 00:53:54'),
+(93, 37, 'video', 'C:/xampp/htdocs/cursosApp/storage/public/section_assets/16/28/37/video/68be389bdb638_1757296795.mp4', 'storage/public/section_assets/16/28/37/video/68be389bdb638_1757296795.mp4', 24042978, 251, '2025-09-08 01:59:55');
 
 -- --------------------------------------------------------
 
@@ -830,13 +860,13 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `curso_secciones`
 --
 ALTER TABLE `curso_secciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `email_verificacion_tokens`
@@ -860,7 +890,7 @@ ALTER TABLE `inscripciones`
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=288;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -890,13 +920,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `seccion_contenido`
 --
 ALTER TABLE `seccion_contenido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `seccion_contenido_assets`
 --
 ALTER TABLE `seccion_contenido_assets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- AUTO_INCREMENT de la tabla `seccion_contenido_progreso`
