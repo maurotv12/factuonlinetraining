@@ -411,7 +411,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                                 <?php endif; ?>
                                                                             <?php endforeach; ?>
                                                                         </div>
-                                                                        <div class="video-actionsa">
+                                                                        <div class="video-actions">
                                                                             <?php foreach ($videos as $video): ?>
                                                                                 <button class="btn btn-sm btn-primary reproducir-video ms-2"
                                                                                     data-video-url="<?= $video['public_url'] ?>"

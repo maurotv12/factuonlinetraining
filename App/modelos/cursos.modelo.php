@@ -344,8 +344,16 @@ class ModeloCursos
 			$datos['orden'] = 1;
 		}
 
+		// Calcular duración automáticamente basada en los assets
+		$resultadoDuracion = self::mdlCalcularDuracionTotalContenido($datos['id']);
+		if ($resultadoDuracion['success']) {
+			$duracion = $resultadoDuracion['duracion_formateada'];
+		} else {
+			// Si hay error al calcular, usar valor por defecto
+			$duracion = $datos["duracion"] ?? '00:00:00';
+		}
+
 		// Establecer valores por defecto
-		$duracion = $datos["duracion"] ?? '00:00:00';
 		$estado = $datos["estado"] ?? 'activo';
 
 		try {
@@ -365,6 +373,7 @@ class ModeloCursos
 			if ($stmt->execute()) {
 				return [
 					'success' => true,
+					'duracion_calculada' => $duracion,
 					'mensaje' => 'Contenido actualizado exitosamente'
 				];
 			} else {
@@ -518,9 +527,15 @@ class ModeloCursos
 			$stmt->bindParam(":duracion_segundos", $duracionSegundos, PDO::PARAM_INT);
 
 			if ($stmt->execute()) {
+				$assetId = $conn->lastInsertId();
+
+				// Actualizar automáticamente la duración del contenido
+				$actualizacionDuracion = self::mdlActualizarDuracionContenido($datos["id_contenido"]);
+
 				return [
 					'success' => true,
-					'id' => $conn->lastInsertId(),
+					'id' => $assetId,
+					'duracion_contenido_actualizada' => $actualizacionDuracion['success'] ? $actualizacionDuracion['duracion_actualizada'] : null,
 					'mensaje' => 'Asset guardado exitosamente'
 				];
 			} else {
@@ -544,52 +559,75 @@ class ModeloCursos
 		}
 
 		// Validaciones
-		if (!isset($datos['id']) || !isset($datos['asset_tipo']) || !isset($datos['storage_path'])) {
+		if (!isset($datos['id']) || !isset($datos['id_contenido'])) {
 			return [
 				'success' => false,
-				'mensaje' => 'Faltan datos requeridos: id, asset_tipo y storage_path'
+				'mensaje' => 'Faltan datos requeridos: id del asset e id_contenido'
 			];
 		}
 
-		// Validar tipos de asset permitidos
-		$tiposPermitidos = ['video', 'pdf', 'attachment'];
-		if (!in_array($datos['asset_tipo'], $tiposPermitidos)) {
-			return [
-				'success' => false,
-				'mensaje' => 'Tipo de asset no válido. Permitidos: ' . implode(', ', $tiposPermitidos)
-			];
+		// Validar tipos de asset permitidos si se está actualizando
+		if (isset($datos['asset_tipo'])) {
+			$tiposPermitidos = ['video', 'pdf', 'attachment'];
+			if (!in_array($datos['asset_tipo'], $tiposPermitidos)) {
+				return [
+					'success' => false,
+					'mensaje' => 'Tipo de asset no válido. Permitidos: ' . implode(', ', $tiposPermitidos)
+				];
+			}
 		}
-
-		// Establecer valores por defecto
-		$publicUrl = $datos["public_url"] ?? null;
-		$tamanoBytes = $datos["tamano_bytes"] ?? null;
-		$duracionSegundos = $datos["duracion_segundos"] ?? null;
 
 		try {
-			$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido_assets SET
-												asset_tipo = :asset_tipo,
-												storage_path = :storage_path,
-												public_url = :public_url,
-												tamano_bytes = :tamano_bytes,
-												duracion_segundos = :duracion_segundos
-												WHERE id = :id");
+			$conn = Conexion::conectar();
 
-			$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
-			$stmt->bindParam(":asset_tipo", $datos["asset_tipo"], PDO::PARAM_STR);
-			$stmt->bindParam(":storage_path", $datos["storage_path"], PDO::PARAM_STR);
-			$stmt->bindParam(":public_url", $publicUrl, PDO::PARAM_STR);
-			$stmt->bindParam(":tamano_bytes", $tamanoBytes, PDO::PARAM_INT);
-			$stmt->bindParam(":duracion_segundos", $duracionSegundos, PDO::PARAM_INT);
+			// Construir consulta dinámica
+			$campos = [];
+			$parametros = [':id' => $datos['id']];
 
-			if ($stmt->execute()) {
+			if (isset($datos['asset_tipo'])) {
+				$campos[] = "asset_tipo = :asset_tipo";
+				$parametros[':asset_tipo'] = $datos['asset_tipo'];
+			}
+			if (isset($datos['storage_path'])) {
+				$campos[] = "storage_path = :storage_path";
+				$parametros[':storage_path'] = $datos['storage_path'];
+			}
+			if (isset($datos['public_url'])) {
+				$campos[] = "public_url = :public_url";
+				$parametros[':public_url'] = $datos['public_url'];
+			}
+			if (isset($datos['tamano_bytes'])) {
+				$campos[] = "tamano_bytes = :tamano_bytes";
+				$parametros[':tamano_bytes'] = $datos['tamano_bytes'];
+			}
+			if (isset($datos['duracion_segundos'])) {
+				$campos[] = "duracion_segundos = :duracion_segundos";
+				$parametros[':duracion_segundos'] = $datos['duracion_segundos'];
+			}
+
+			if (empty($campos)) {
+				return [
+					'success' => false,
+					'mensaje' => 'No hay campos para actualizar'
+				];
+			}
+
+			$sql = "UPDATE seccion_contenido_assets SET " . implode(', ', $campos) . " WHERE id = :id";
+			$stmt = $conn->prepare($sql);
+
+			if ($stmt->execute($parametros)) {
+				// Actualizar automáticamente la duración del contenido
+				$actualizacionDuracion = self::mdlActualizarDuracionContenido($datos["id_contenido"]);
+
 				return [
 					'success' => true,
+					'duracion_contenido_actualizada' => $actualizacionDuracion['success'] ? $actualizacionDuracion['duracion_actualizada'] : null,
 					'mensaje' => 'Asset actualizado exitosamente'
 				];
 			} else {
 				return [
 					'success' => false,
-					'mensaje' => 'Error al ejecutar la consulta SQL'
+					'mensaje' => 'Error al actualizar el asset'
 				];
 			}
 		} catch (Exception $e) {
@@ -603,15 +641,38 @@ class ModeloCursos
 	/*=============================================
 	Eliminar asset de contenido
 	=============================================*/
-	public static function mdlEliminarContenidoAsset($id)
+	public static function mdlEliminarContenidoAsset($id, $idContenido = null)
 	{
 		try {
-			$stmt = Conexion::conectar()->prepare("DELETE FROM seccion_contenido_assets WHERE id = :id");
+			$conn = Conexion::conectar();
+
+			// Si no se proporciona el id_contenido, lo obtenemos primero
+			if ($idContenido === null) {
+				$stmt = $conn->prepare("SELECT id_contenido FROM seccion_contenido_assets WHERE id = :id");
+				$stmt->bindParam(":id", $id, PDO::PARAM_INT);
+				$stmt->execute();
+				$asset = $stmt->fetch(PDO::FETCH_ASSOC);
+
+				if (!$asset) {
+					return [
+						'success' => false,
+						'mensaje' => 'Asset no encontrado'
+					];
+				}
+
+				$idContenido = $asset['id_contenido'];
+			}
+
+			$stmt = $conn->prepare("DELETE FROM seccion_contenido_assets WHERE id = :id");
 			$stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
 			if ($stmt->execute()) {
+				// Actualizar automáticamente la duración del contenido
+				$actualizacionDuracion = self::mdlActualizarDuracionContenido($idContenido);
+
 				return [
 					'success' => true,
+					'duracion_contenido_actualizada' => $actualizacionDuracion['success'] ? $actualizacionDuracion['duracion_actualizada'] : null,
 					'mensaje' => 'Asset eliminado exitosamente'
 				];
 			} else {
@@ -634,16 +695,57 @@ class ModeloCursos
 	public static function mdlObtenerAssetsContenido($idContenido)
 	{
 		try {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM seccion_contenido_assets 
-												WHERE id_contenido = :id_contenido 
-												ORDER BY created_at ASC");
+			$stmt = Conexion::conectar()->prepare("
+				SELECT 
+					sca.*,
+					sc.id as contenido_id,
+					sc.id_seccion as contenido_id_seccion,
+					sc.titulo as contenido_titulo,
+					sc.duracion as contenido_duracion,
+					sc.orden as contenido_orden,
+					sc.estado as contenido_estado,
+					sc.fecha_creacion as contenido_fecha_creacion,
+					sc.fecha_actualizacion as contenido_fecha_actualizacion
+				FROM seccion_contenido_assets sca
+				INNER JOIN seccion_contenido sc ON sca.id_contenido = sc.id
+				WHERE sca.id_contenido = :id_contenido 
+				ORDER BY sca.created_at ASC
+			");
 			$stmt->bindParam(":id_contenido", $idContenido, PDO::PARAM_INT);
 			$stmt->execute();
 			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+			// Extraer información del contenido del primer resultado
+			$contenido = null;
+			if (!empty($resultados)) {
+				$contenido = [
+					'id' => $resultados[0]['contenido_id'],
+					'id_seccion' => $resultados[0]['contenido_id_seccion'],
+					'titulo' => $resultados[0]['contenido_titulo'],
+					'duracion' => $resultados[0]['contenido_duracion'],
+					'orden' => $resultados[0]['contenido_orden'],
+					'estado' => $resultados[0]['contenido_estado'],
+					'fecha_creacion' => $resultados[0]['contenido_fecha_creacion'],
+					'fecha_actualizacion' => $resultados[0]['contenido_fecha_actualizacion']
+				];
+
+				// Limpiar los resultados de assets para no duplicar información
+				foreach ($resultados as &$asset) {
+					unset($asset['contenido_id']);
+					unset($asset['contenido_id_seccion']);
+					unset($asset['contenido_titulo']);
+					unset($asset['contenido_duracion']);
+					unset($asset['contenido_orden']);
+					unset($asset['contenido_estado']);
+					unset($asset['contenido_fecha_creacion']);
+					unset($asset['contenido_fecha_actualizacion']);
+				}
+			}
+
 			return [
 				'success' => true,
 				'assets' => $resultados,
+				'contenido' => $contenido,
 				'mensaje' => 'Assets obtenidos correctamente'
 			];
 		} catch (Exception $e) {
@@ -790,9 +892,19 @@ class ModeloCursos
 	/*=============================================
 	Actualizar solo la duración de un contenido
 	=============================================*/
-	public static function mdlActualizarDuracionContenido($idContenido, $duracion)
+	public static function mdlActualizarDuracionContenido($idContenido, $duracion = null)
 	{
 		try {
+			// Si no se proporciona duración, calcularla automáticamente
+			if ($duracion === null) {
+				$resultadoDuracion = self::mdlCalcularDuracionTotalContenido($idContenido);
+				if ($resultadoDuracion['success']) {
+					$duracion = $resultadoDuracion['duracion_formateada'];
+				} else {
+					$duracion = '00:00:00';
+				}
+			}
+
 			$stmt = Conexion::conectar()->prepare("UPDATE seccion_contenido SET 
 													duracion = :duracion 
 													WHERE id = :id");
@@ -803,6 +915,7 @@ class ModeloCursos
 			if ($stmt->execute()) {
 				return [
 					'success' => true,
+					'duracion_actualizada' => $duracion,
 					'mensaje' => 'Duración actualizada exitosamente'
 				];
 			} else {
@@ -811,6 +924,101 @@ class ModeloCursos
 					'mensaje' => 'Error al actualizar la duración'
 				];
 			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/*=============================================
+	Actualizar duraciones de todos los contenidos de una sección
+	=============================================*/
+	public static function mdlActualizarDuracionesSeccion($idSeccion)
+	{
+		try {
+			$conn = Conexion::conectar();
+
+			// Obtener todos los contenidos de la sección
+			$stmt = $conn->prepare("SELECT id FROM seccion_contenido WHERE id_seccion = :id_seccion");
+			$stmt->bindParam(":id_seccion", $idSeccion, PDO::PARAM_INT);
+			$stmt->execute();
+			$contenidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			$actualizaciones = [];
+			$errores = [];
+
+			foreach ($contenidos as $contenido) {
+				$resultado = self::mdlActualizarDuracionContenido($contenido['id']);
+				if ($resultado['success']) {
+					$actualizaciones[] = [
+						'id_contenido' => $contenido['id'],
+						'duracion' => $resultado['duracion_actualizada']
+					];
+				} else {
+					$errores[] = [
+						'id_contenido' => $contenido['id'],
+						'error' => $resultado['mensaje']
+					];
+				}
+			}
+
+			return [
+				'success' => true,
+				'actualizaciones' => $actualizaciones,
+				'errores' => $errores,
+				'total_contenidos' => count($contenidos),
+				'total_actualizados' => count($actualizaciones),
+				'mensaje' => 'Proceso de actualización completado'
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/*=============================================
+	Actualizar duraciones de todos los contenidos de un curso
+	=============================================*/
+	public static function mdlActualizarDuracionesCurso($idCurso)
+	{
+		try {
+			$conn = Conexion::conectar();
+
+			// Obtener todas las secciones del curso
+			$stmt = $conn->prepare("SELECT id FROM curso_secciones WHERE id_curso = :id_curso");
+			$stmt->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
+			$stmt->execute();
+			$secciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			$actualizacionesCurso = [];
+			$erroresCurso = [];
+			$totalContenidos = 0;
+			$totalActualizados = 0;
+
+			foreach ($secciones as $seccion) {
+				$resultado = self::mdlActualizarDuracionesSeccion($seccion['id']);
+				$actualizacionesCurso[$seccion['id']] = $resultado;
+				$totalContenidos += $resultado['total_contenidos'];
+				$totalActualizados += $resultado['total_actualizados'];
+
+				if (!empty($resultado['errores'])) {
+					$erroresCurso = array_merge($erroresCurso, $resultado['errores']);
+				}
+			}
+
+			return [
+				'success' => true,
+				'secciones_procesadas' => count($secciones),
+				'total_contenidos' => $totalContenidos,
+				'total_actualizados' => $totalActualizados,
+				'actualizaciones_por_seccion' => $actualizacionesCurso,
+				'errores' => $erroresCurso,
+				'mensaje' => 'Proceso de actualización del curso completado'
+			];
 		} catch (Exception $e) {
 			return [
 				'success' => false,

@@ -355,10 +355,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     <source src="${videoUrl}" type="video/mp4">
                     Tu navegador no soporta videos.
                 </video>
-                <div class="video-overlay">
-                    <div class="video-title">Video promocional</div>
-                    <button class="btn btn-sm btn-outline-light edit-video-btn" id="btn-subir-promo">
-                        <i class="bi bi-camera-video"></i> Cambiar video
+            </div>
+            <div class="video-controls-bottom">
+                <div class="video-info">
+                    <h6 class="video-title mb-1">Video promocional</h6>
+                    <small class="text-muted">Video de presentación del curso</small>
+                </div>
+                <div class="video-actions">
+                    <button class="btn btn-sm btn-primary" id="btn-subir-promo">
+                        <i class="bi bi-camera-video"></i> Cambiar video promocional
                     </button>
                 </div>
             </div>`;
@@ -395,16 +400,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     <source src="${videoUrl}" type="video/mp4">
                     Tu navegador no soporta videos.
                 </video>
-                <div class="video-overlay">
-                    <div class="video-title">${titulo}</div>
-                    <div class="video-actions">
-                        <button class="btn btn-sm btn-outline-light" onclick="reproducirVideoPromo()">
-                            <i class="bi bi-house"></i> Video promo
-                        </button>
-                        <button class="btn btn-sm btn-outline-light" onclick="editarContenido(${contenidoId})">
-                            <i class="bi bi-pencil"></i> Editar
-                        </button>
-                    </div>
+            </div>
+            <div class="video-controls-bottom">
+                <div class="video-info">
+                    <h6 class="video-title mb-1">${titulo}</h6>
+                    <small class="text-muted">Contenido del curso</small>
+                </div>
+                <div class="video-actions">
+                    <button class="btn btn-sm btn-secondary me-2" onclick="reproducirVideoPromo()">
+                        <i class="bi bi-house"></i> Video promo
+                    </button>
                 </div>
             </div>`;
 
@@ -418,11 +423,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderizarBanner(bannerUrl) {
         const videoContainer = document.getElementById('video-container');
         videoContainer.innerHTML = `
-            <div class="image-wrapper">
+            <div class="video-wrapper">
                 <img src="${bannerUrl}" alt="Banner del curso" class="main-image">
-                <div class="image-overlay">
-                    <div class="image-title">Vista previa del curso</div>
-                    <button class="btn btn-sm btn-outline-light edit-image-btn">
+            </div>
+            <div class="video-controls-bottom">
+                <div class="video-info">
+                    <h6 class="video-title mb-1">Vista previa del curso</h6>
+                    <small class="text-muted">Imagen promocional</small>
+                </div>
+                <div class="video-actions">
+                    <button class="btn btn-sm btn-primary edit-image-btn">
                         <i class="bi bi-image"></i> Cambiar imagen
                     </button>
                 </div>
@@ -435,18 +445,24 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderizarPlaceholder() {
         const videoContainer = document.getElementById('video-container');
         videoContainer.innerHTML = `
-            <div class="placeholder-wrapper">
+            <div class="video-wrapper">
                 <div class="placeholder-content">
                     <i class="bi bi-plus-circle"></i>
                     <p>Agregar contenido multimedia</p>
-                    <div class="upload-buttons">
-                        <button class="btn btn-primary me-2 add-video-btn" id="btn-subir-promo">
-                            <i class="bi bi-camera-video"></i> Agregar Video
-                        </button>
-                        <button class="btn btn-secondary add-image-btn">
-                            <i class="bi bi-image"></i> Agregar Imagen
-                        </button>
-                    </div>
+                </div>
+            </div>
+            <div class="video-controls-bottom">
+                <div class="video-info">
+                    <h6 class="video-title mb-1">Sin contenido multimedia</h6>
+                    <small class="text-muted">Agrega un video o imagen para comenzar</small>
+                </div>
+                <div class="video-actions">
+                    <button class="btn btn-primary me-2 add-video-btn" id="btn-subir-promo">
+                        <i class="bi bi-camera-video"></i> Agregar Video
+                    </button>
+                    <button class="btn btn-secondary add-image-btn">
+                        <i class="bi bi-image"></i> Agregar Imagen
+                    </button>
                 </div>
             </div>`;
 
