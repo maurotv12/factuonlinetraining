@@ -307,9 +307,12 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                                         <p><?php echo htmlspecialchars(substr($curso['descripcion'] ?? '', 0, 100)) . '...'; ?></p>
                                                         <div class="course-meta">
                                                             <span class="price">$<?php echo number_format($curso['valor'] ?? 0); ?></span>
-                                                            <span class="status badge badge-<?php echo $curso['estado'] == 'activo' ? 'success' : 'warning'; ?>">
-                                                                <?php echo ucfirst($curso['estado']); ?>
-                                                            </span>
+                                                            <!-- Estado del curso - Solo visible para admin y profesor -->
+                                                            <?php if (ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin', 'profesor'])): ?>
+                                                                <span class="status badge badge-<?php echo $curso['estado'] == 'activo' ? 'success' : 'warning'; ?>">
+                                                                    <?php echo ucfirst($curso['estado']); ?>
+                                                                </span>
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
                                                 </div>

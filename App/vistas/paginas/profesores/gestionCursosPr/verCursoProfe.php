@@ -146,11 +146,13 @@ if (isset($_SESSION['mensaje_error'])) {
                         data-valor-original="<?= htmlspecialchars($curso['nombre']) ?>">
                         <?= htmlspecialchars($curso['nombre']) ?>
                     </h1>
-                    <button class="btn btn-sm btn-outline-primary edit-btn"
-                        id="btn-editar-nombre"
-                        title="Editar título">
-                        <i class="bi bi-pencil"></i>
-                    </button>
+                    <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                        <button class="btn btn-sm btn-outline-primary edit-btn"
+                            id="btn-editar-nombre"
+                            title="Editar título">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    <?php endif; ?>
                 </div>
 
                 <div class="curso-meta">
@@ -162,14 +164,19 @@ if (isset($_SESSION['mensaje_error'])) {
                             data-categoria-id="<?= $curso['id_categoria'] ?>">
                             <?= htmlspecialchars($categoria['nombre'] ?? 'Sin categoría') ?>
                         </span>
-                        <button class="btn btn-sm btn-outline-primary edit-btn"
-                            id="btn-editar-id_categoria"
-                            title="Cambiar categoría">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                        <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                            <button class="btn btn-sm btn-outline-primary edit-btn"
+                                id="btn-editar-id_categoria"
+                                title="Cambiar categoría">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        <?php endif; ?>
                     </div>
 
-                    <span class="badge badge-estado badge-<?= $curso['estado'] ?>"><?= htmlspecialchars($curso['estado']) ?></span>
+                    <!-- Estado del curso - Solo visible para admin y profesor -->
+                    <?php if (ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'profesor'])): ?>
+                        <span class="badge badge-estado badge-<?= $curso['estado'] ?>"><?= htmlspecialchars($curso['estado']) ?></span>
+                    <?php endif; ?>
 
                     <!-- Precio editable -->
                     <div class="editable-field d-inline-block ms-2">
@@ -178,11 +185,13 @@ if (isset($_SESSION['mensaje_error'])) {
                             data-valor-original="$<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>">
                             $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>
                         </span>
-                        <button class="btn btn-sm btn-outline-primary edit-btn"
-                            id="btn-editar-valor"
-                            title="Editar precio">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                        <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                            <button class="btn btn-sm btn-outline-primary edit-btn"
+                                id="btn-editar-valor"
+                                title="Editar precio">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -198,14 +207,16 @@ if (isset($_SESSION['mensaje_error'])) {
                 <!-- El contenido se renderiza dinámicamente con JavaScript -->
             </div>
 
-            <!-- Botón para cambiar banner - Siempre visible para el profesor -->
-            <div class="banner-actions mt-2 mb-3">
-                <button class="btn btn-sm btn-outline-primary" id="btn-cambiar-banner">
-                    <i class="bi bi-image"></i> Cambiar Imagen del Banner
-                </button>
-                <!-- Input oculto para subir imagen -->
-                <input type="file" id="input-banner" accept="image/jpeg,image/jpg,image/png,image/webp" style="display: none;">
-            </div>
+            <!-- Botón para cambiar banner - Solo visible para el dueño del curso -->
+            <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                <div class="banner-actions mt-2 mb-3">
+                    <button class="btn btn-sm btn-outline-primary" id="btn-cambiar-banner">
+                        <i class="bi bi-image"></i> Cambiar Imagen del Banner
+                    </button>
+                    <!-- Input oculto para subir imagen -->
+                    <input type="file" id="input-banner" accept="image/jpeg,image/jpg,image/png,image/webp" style="display: none;">
+                </div>
+            <?php endif; ?>
 
             <!-- Información del curso -->
             <div class="curso-info">
@@ -248,9 +259,11 @@ if (isset($_SESSION['mensaje_error'])) {
                             <div class="content-section">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5>Acerca de este curso</h5>
-                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-descripcion">
-                                        <i class="bi bi-pencil"></i> Editar
-                                    </button>
+                                    <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                        <button class="btn btn-sm btn-outline-primary" id="btn-editar-descripcion">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                                 <div id="descripcion-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['descripcion']) ?>">
@@ -264,9 +277,11 @@ if (isset($_SESSION['mensaje_error'])) {
                             <div class="content-section">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5>Al finalizar este curso serás capaz de:</h5>
-                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-lo_que_aprenderas">
-                                        <i class="bi bi-pencil"></i> Editar
-                                    </button>
+                                    <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                        <button class="btn btn-sm btn-outline-primary" id="btn-editar-lo_que_aprenderas">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                                 <div id="lo_que_aprenderas-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['lo_que_aprenderas']) ?>">
@@ -284,9 +299,11 @@ if (isset($_SESSION['mensaje_error'])) {
                             <div class="content-section">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5>Requisitos y conocimientos previos</h5>
-                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-requisitos">
-                                        <i class="bi bi-pencil"></i> Editar
-                                    </button>
+                                    <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                        <button class="btn btn-sm btn-outline-primary" id="btn-editar-requisitos">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                                 <div id="requisitos-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['requisitos']) ?>">
@@ -304,9 +321,11 @@ if (isset($_SESSION['mensaje_error'])) {
                             <div class="content-section">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5>¿Para quién es este curso?</h5>
-                                    <button class="btn btn-sm btn-outline-primary" id="btn-editar-para_quien">
-                                        <i class="bi bi-pencil"></i> Editar
-                                    </button>
+                                    <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                        <button class="btn btn-sm btn-outline-primary" id="btn-editar-para_quien">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                                 <div id="para_quien-display" class="text-wrap text-break"
                                     data-valor-original="<?= htmlspecialchars($curso['para_quien']) ?>">
@@ -482,9 +501,11 @@ if (isset($_SESSION['mensaje_error'])) {
                 <div class="sidebar-header-content">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4>Contenido del curso</h4>
-                        <button class="btn btn-sm btn-primary" id="btn-agregar-seccion">
-                            <i class="bi bi-plus"></i> Nueva Sección
-                        </button>
+                        <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                            <button class="btn btn-sm btn-primary" id="btn-agregar-seccion">
+                                <i class="bi bi-plus"></i> Nueva Sección
+                            </button>
+                        <?php endif; ?>
                     </div>
                     <div class="curso-stats">
                         <span class="stat-item">
@@ -505,18 +526,20 @@ if (isset($_SESSION['mensaje_error'])) {
                                 <div class="seccion-container" data-seccion-id="<?= $seccion['id'] ?>">
                                     <div class="seccion-header" onclick="toggleSeccion(<?= $seccion['id'] ?>)">
                                         <h6 class="seccion-title"><?= htmlspecialchars($seccion['titulo']) ?></h6>
-                                        <div class="seccion-actions" onclick="event.stopPropagation();">
-                                            <button class="btn btn-sm btn-outline-light"
-                                                onclick="editarSeccion(<?= $seccion['id'] ?>)"
-                                                title="Editar sección">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-light"
-                                                onclick="eliminarSeccion(<?= $seccion['id'] ?>)"
-                                                title="Eliminar sección">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
+                                        <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                            <div class="seccion-actions" onclick="event.stopPropagation();">
+                                                <button class="btn btn-sm btn-outline-light"
+                                                    onclick="editarSeccion(<?= $seccion['id'] ?>)"
+                                                    title="Editar sección">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-light"
+                                                    onclick="eliminarSeccion(<?= $seccion['id'] ?>)"
+                                                    title="Eliminar sección">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="seccion-content<?= $index == 0 ? ' show' : '' ?>" id="seccion-content-<?= $seccion['id'] ?>">
@@ -553,18 +576,20 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                 <h6 class="mb-1"><?= htmlspecialchars($contenido['titulo']) ?></h6>
                                                                 <small class="text-muted">Duración: <?= $contenido['duracion'] ?? '00:00:00' ?></small>
                                                             </div>
-                                                            <div class="contenido-actions">
-                                                                <button class="btn btn-sm btn-outline-primary"
-                                                                    onclick="editarContenido(<?= $contenido['id'] ?>)"
-                                                                    title="Editar contenido">
-                                                                    <i class="bi bi-pencil"></i>
-                                                                </button>
-                                                                <button class="btn btn-sm btn-outline-danger"
-                                                                    onclick="eliminarContenido(<?= $contenido['id'] ?>)"
-                                                                    title="Eliminar contenido">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            </div>
+                                                            <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                                                <div class="contenido-actions">
+                                                                    <button class="btn btn-sm btn-outline-primary"
+                                                                        onclick="editarContenido(<?= $contenido['id'] ?>)"
+                                                                        title="Editar contenido">
+                                                                        <i class="bi bi-pencil"></i>
+                                                                    </button>
+                                                                    <button class="btn btn-sm btn-outline-danger"
+                                                                        onclick="eliminarContenido(<?= $contenido['id'] ?>)"
+                                                                        title="Eliminar contenido">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            <?php endif; ?>
                                                         </div>
 
                                                         <!-- Assets del contenido -->
@@ -665,9 +690,11 @@ if (isset($_SESSION['mensaje_error'])) {
                             <i class="bi bi-collection"></i>
                             <h6>Sin contenido disponible</h6>
                             <p>Comienza creando tu primera sección de contenido.</p>
-                            <button class="btn btn-primary btn-sm mt-2" id="btn-crear-primera-seccion">
-                                <i class="bi bi-plus"></i> Crear Primera Sección
-                            </button>
+                            <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                                <button class="btn btn-primary btn-sm mt-2" id="btn-crear-primera-seccion">
+                                    <i class="bi bi-plus"></i> Crear Primera Sección
+                                </button>
+                            <?php endif; ?>
                         </div>
                     <?php endif; ?>
                 </div>
