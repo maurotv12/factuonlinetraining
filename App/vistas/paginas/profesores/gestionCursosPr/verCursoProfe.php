@@ -207,14 +207,17 @@ if (isset($_SESSION['mensaje_error'])) {
                 <!-- El contenido se renderiza dinámicamente con JavaScript -->
             </div>
 
-            <!-- Botón para cambiar banner - Solo visible para el dueño del curso -->
+            <!-- Botones para cambiar banner y video - Solo visible para el dueño del curso -->
             <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
                 <div class="banner-actions mt-2 mb-3">
                     <button class="btn btn-sm btn-outline-primary" id="btn-cambiar-banner">
                         <i class="bi bi-image"></i> Cambiar Imagen del Banner
                     </button>
+                    <button class="btn btn-sm btn-primary ms-2" id="btn-subir-promo">
+                        <i class="bi bi-camera-video"></i> Cambiar video promocional
+                    </button>
                     <!-- Input oculto para subir imagen -->
-                    <input type="file" id="input-banner" accept="image/jpeg,image/jpg,image/png,image/webp" style="display: none;">
+                    <input type="file" id="input-banner" accept="image/jpeg,image/jpg,image/png" style="display: none;">
                 </div>
             <?php endif; ?>
 

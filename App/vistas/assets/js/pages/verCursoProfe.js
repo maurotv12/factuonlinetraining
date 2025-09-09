@@ -525,11 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h6 class="video-title mb-1">Video promocional</h6>
                     <small class="text-muted">Video de presentación del curso</small>
                 </div>
-                <div class="video-actions">
-                    <button class="btn btn-sm btn-primary" id="btn-subir-promo">
-                        <i class="bi bi-camera-video"></i> Cambiar video promocional
-                    </button>
-                </div>
+                
             </div>`;
 
         // Configurar eventos del video
