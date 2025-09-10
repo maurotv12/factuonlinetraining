@@ -289,7 +289,7 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                     <div class="row">
                                         <?php foreach ($cursosProfesore as $curso): ?>
                                             <?php
-                                            // Usar URL amigable si está disponible, sino usar ID para ver
+                                            // Usar URL amigable 
                                             $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
                                             ?>
                                             <div class="col-md-6 mb-4">

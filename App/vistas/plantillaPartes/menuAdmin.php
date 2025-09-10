@@ -27,23 +27,9 @@
     <li class="sidebar-title">Gestión de Cursos</li>
 
     <li class="sidebar-item">
-        <a href="/cursosApp/App/crearCurso" class='sidebar-link'>
-            <i class="bi-plus-square"></i>
-            <span>Crear Curso</span>
-        </a>
-    </li>
-
-    <li class="sidebar-item">
         <a href="/cursosApp/App/listadoCursos" class='sidebar-link'>
             <i class="bi bi-journal-bookmark"></i>
             <span>Todos los Cursos</span>
-        </a>
-    </li>
-
-    <li class="sidebar-item">
-        <a href="/cursosApp/App/cursos-pendientes" class='sidebar-link'>
-            <i class="bi bi-clock-history"></i>
-            <span>Cursos Pendientes</span>
         </a>
     </li>
 

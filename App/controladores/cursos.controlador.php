@@ -1,11 +1,5 @@
 <?php
 
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-12/06/2022 Plataforma Calibelula mostrar Cursos
-Controlador de cursos registro
- */
-
 // Incluir modelo de cursos - Ruta adaptativa para AJAX
 if (file_exists("modelos/cursos.modelo.php")) {
 	require_once "modelos/cursos.modelo.php";

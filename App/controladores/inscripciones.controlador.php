@@ -1,10 +1,7 @@
 <?php
 
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-12/06/2022 Plataforma Calibelula mostrar Cursos
-Controlador de cursos gestion cursos.
- */
+require_once "modelos/inscripciones.modelo.php";
+
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -12,7 +9,6 @@ use PHPMailer\PHPMailer\SMTP;
 
 class ControladorInscripciones
 {
-
 	/*======================================================
 	Mostrar Inscripciones pendientes de cada Usuario
 ========================================================*/
