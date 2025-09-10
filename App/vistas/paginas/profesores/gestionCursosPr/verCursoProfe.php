@@ -82,16 +82,13 @@ foreach ($profesores as $prof) {
     }
 }
 
+
 foreach ($categorias as $cat) {
     if ($cat['id'] == $curso['id_categoria']) {
         $categoria = $cat;
         break;
     }
 }
-
-// Debug temporal - comentar después de verificar
-// echo "<!-- DEBUG PROFESOR: " . json_encode($profesor) . " -->";
-// echo "<!-- DEBUG CURSO ID_PERSONA: " . $curso['id_persona'] . " -->";
 
 // Incluir CSS para la página
 echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
@@ -484,11 +481,6 @@ if (isset($_SESSION['mensaje_error'])) {
                                             <strong>Información del profesor no disponible</strong><br>
                                             <small>Es posible que la información del profesor no esté configurada correctamente o que no tenga permisos suficientes para mostrar esta información.</small>
                                         </div>
-
-                                        <!-- Debug: Información básica del curso -->
-                                        <div class="profesor-fallback">
-                                            <p><strong>ID del Instructor:</strong> <?= htmlspecialchars($curso['id_persona']) ?></p>
-                                        </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -555,9 +547,6 @@ if (isset($_SESSION['mensaje_error'])) {
                                             <?php
                                             // Obtener contenido de la sección con assets
                                             $contenidoCompleto = ControladorCursos::ctrObtenerContenidoSeccionConAssets($seccion['id']);
-
-                                            // Debug temporal - eliminar después
-                                            echo "<!-- DEBUG SECCION " . $seccion['id'] . ": " . json_encode($contenidoCompleto) . " -->";
 
                                             if ($contenidoCompleto['success'] && !empty($contenidoCompleto['contenido'])):
                                                 foreach ($contenidoCompleto['contenido'] as $contenido):

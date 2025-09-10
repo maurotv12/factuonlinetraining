@@ -1,11 +1,5 @@
 <?php
 
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-12/06/2022 Plataforma Calibelula mostrar Cursos
-Controlador de rutas y plantilla
- */
-
 class ControladorGeneral
 {
 
