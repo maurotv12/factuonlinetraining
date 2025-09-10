@@ -217,8 +217,11 @@ function cargarCursosEnModal(usuarioId, cursosPorProfesor) {
         const fechaCreacion = curso.fecha_registro || 'No disponible';
         const precio = curso.valor || '0';
 
+        const urlVer = `/cursosApp/App/verCursoProfe/${curso.url_amiga}`;
+
         cursosHtml += `
-            <div class="curso-item" style="animation-delay: ${index * 0.1}s">
+            <div class="curso-item" style="animation-delay: ${index * 0.1}s; cursor: pointer;" data-curso-url="${urlVer}"
+                 title="Click para ver el curso">
                 <div class="curso-titulo">
                     <i class="fas fa-graduation-cap"></i>
                     ${escapeHtml(curso.nombre)}
@@ -240,10 +243,38 @@ function cargarCursosEnModal(usuarioId, cursosPorProfesor) {
                     </div>
                 </div>
             </div>
-        `;
+            `;
     });
 
     listaCursos.innerHTML = cursosHtml;
+
+    // Agregar eventos de clic para redirección
+    const cursosItems = listaCursos.querySelectorAll('.curso-item');
+    cursosItems.forEach(item => {
+        item.addEventListener('click', function () {
+            const cursoUrl = this.getAttribute('data-curso-url');
+            if (cursoUrl) {
+                // Agregar efecto visual antes de redirigir
+                this.style.transform = 'scale(0.95)';
+                this.style.opacity = '0.8';
+
+                setTimeout(() => {
+                    window.location.href = cursoUrl;
+                }, 200);
+            }
+        });
+
+        // Agregar efecto hover
+        item.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        });
+
+        item.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
 
     // Agregar animación de entrada
     setTimeout(() => {
@@ -276,7 +307,7 @@ function mostrarCargandoCursos() {
                 </div>
                 <p class="mt-3 text-muted">Cargando cursos...</p>
             </div>
-        `;
+            `;
     }
 }
 
@@ -390,23 +421,23 @@ function configurarEventosBadges() {
  */
 function mostrarModalImagen(src, alt) {
     const modalHtml = `
-        <div class="modal fade" id="modalImagenUsuario" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Vista previa de imagen</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal fade" id="modalImagenUsuario" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Vista previa de imagen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+            `;
 
     // Eliminar modal existente si lo hay
     const modalExistente = document.getElementById('modalImagenUsuario');
@@ -462,11 +493,11 @@ function configurarFiltrosAvanzados() {
     const filtroRol = document.createElement('select');
     filtroRol.className = 'form-select form-select-sm ms-2';
     filtroRol.innerHTML = `
-        <option value="">Todos los roles</option>
+            <option value="">Todos los roles</option>
         <option value="admin">Administrador</option>
         <option value="profesor">Profesor</option>
         <option value="estudiante">Estudiante</option>
-    `;
+        `;
 
     filtroRol.addEventListener('change', function () {
         if ($.fn.DataTable.isDataTable('#table_id')) {
@@ -478,10 +509,10 @@ function configurarFiltrosAvanzados() {
     const filtroEstado = document.createElement('select');
     filtroEstado.className = 'form-select form-select-sm ms-2';
     filtroEstado.innerHTML = `
-        <option value="">Todos los estados</option>
+            <option value="">Todos los estados</option>
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
-    `;
+        `;
 
     filtroEstado.addEventListener('change', function () {
         if ($.fn.DataTable.isDataTable('#table_id')) {
@@ -538,11 +569,11 @@ function mostrarCargandoExportacion() {
     overlay.className = 'loading-overlay';
     overlay.id = 'loadingExportacion';
     overlay.innerHTML = `
-        <div class="text-center text-white">
+            <div class="text-center text-white">
             <div class="loading-spinner"></div>
             <p class="mt-3">Exportando datos...</p>
         </div>
-    `;
+            `;
     document.body.appendChild(overlay);
 }
 
