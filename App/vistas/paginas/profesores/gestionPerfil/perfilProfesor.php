@@ -156,18 +156,10 @@ if (file_exists("controladores/cursos.controlador.php")) {
             <div class="card stats-card">
                 <div class="card-body">
                     <h5 class="card-title">Estadísticas</h5>
-                    <div class="stats-grid">
+                    <div class="stats-grid d-flex justify-content-around">
                         <div class="stat-item">
                             <div class="stat-number"><?php echo count($cursosProfesore); ?></div>
                             <div class="stat-label">Cursos</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">0</div>
-                            <div class="stat-label">Estudiantes</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">4.8</div>
-                            <div class="stat-label">Calificación</div>
                         </div>
                     </div>
                 </div>
@@ -296,8 +288,12 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                 <?php if (!empty($cursosProfesore)): ?>
                                     <div class="row">
                                         <?php foreach ($cursosProfesore as $curso): ?>
+                                            <?php
+                                            // Usar URL amigable si está disponible, sino usar ID para ver
+                                            $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                                            ?>
                                             <div class="col-md-6 mb-4">
-                                                <div class="course-card">
+                                                <div class="course-card" role="group" data-url="<?php echo $urlVer; ?>" style="cursor: pointer;">
                                                     <div class="course-image">
                                                         <img src="<?php echo ControladorCursos::ctrValidarImagenCurso($curso['banner']); ?>"
                                                             alt="<?php echo htmlspecialchars($curso['nombre']); ?>">
@@ -308,13 +304,14 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                                         <div class="course-meta">
                                                             <span class="price">$<?php echo number_format($curso['valor'] ?? 0); ?></span>
                                                             <!-- Estado del curso - Solo visible para admin y profesor -->
-                                                            <?php if (ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'superadmin', 'profesor'])): ?>
+                                                            <?php if (ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin', 'profesor'])): ?>
                                                                 <span class="status badge badge-<?php echo $curso['estado'] == 'activo' ? 'success' : 'warning'; ?>">
                                                                     <?php echo ucfirst($curso['estado']); ?>
                                                                 </span>
                                                             <?php endif; ?>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         <?php endforeach; ?>
@@ -470,6 +467,12 @@ if (file_exists("controladores/cursos.controlador.php")) {
         mostrar_telefono: <?php echo json_encode((isset($profesor['mostrar_telefono']) && $profesor['mostrar_telefono']) ? true : false); ?>,
         mostrar_identificacion: <?php echo json_encode((isset($profesor['mostrar_identificacion']) && $profesor['mostrar_identificacion']) ? true : false); ?>
     };
+    // Hacer clickeable las tarjetas de cursos
+    document.querySelectorAll('.course-card[data-url]').forEach(card => {
+        card.addEventListener('click', function() {
+            window.location.href = this.getAttribute('data-url');
+        });
+    });
 </script>
 
 <script src="vistas/assets/js/pages/perfilProfesor.js"></script>

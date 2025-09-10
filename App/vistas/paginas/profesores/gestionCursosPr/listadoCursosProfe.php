@@ -106,26 +106,12 @@ if (empty($cursos)) {
                                                 <div class="btn-group" role="group">
                                                     <?php
                                                     // Usar URL amigable si está disponible, sino usar ID para ver
-                                                    $urlVer = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/profesores/gestionCursosPr/verCursoProfe?id=" . $curso["id"];
+                                                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
                                                     ?>
-                                                    <a href="<?= $urlVer ?>" class="btn btn-sm btn-info" title="Ver curso">
-                                                        <i class="bi bi-eye"></i>
+                                                    <a href="<?= $urlVer ?>" class="btn btn-sm btn-info" title="Ver curso y editarlo">
+                                                        <i class="bi bi-eye"></i> Ver y editar
                                                     </a>
-                                                    <?php
-                                                    // Usar URL amigable si está disponible, sino usar ID
-                                                    $urlEditar = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/verCursoProfe?id=" . $curso["id"];
-                                                    ?>
-                                                    <a href="<?= $urlEditar ?>" class="btn btn-sm btn-warning" title="Editar curso">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <button class="btn btn-sm btn-success" title="Gestionar contenido"
-                                                        onclick="gestionarContenido('<?= !empty($curso['url_amiga']) ? $curso['url_amiga'] : $curso['id'] ?>', <?= !empty($curso['url_amiga']) ? 'true' : 'false' ?>)">
-                                                        <i class="bi bi-collection-play"></i>
-                                                    </button>
+
                                                 </div>
                                             </td>
                                         </tr>

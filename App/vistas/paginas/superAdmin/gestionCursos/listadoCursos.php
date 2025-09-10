@@ -126,9 +126,7 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                                 <div class="btn-group" role="group">
                                                     <?php
                                                     // Usar URL amigable si está disponible, sino usar ID para ver
-                                                    $urlVer = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/profesor/gestionCursosPr/verCursoProfe?id=" . $curso["id"];
+                                                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
                                                     ?>
                                                     <a href="<?= $urlVer ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
