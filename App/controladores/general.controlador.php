@@ -316,7 +316,6 @@ class ControladorGeneral
 			'superAdmin/gestionUsuarios/verCurso' => ['admin'],
 			'superAdmin/gestionCursos/listadoCursos' => ['admin'],
 			'superAdmin/gestionCursos/crearCurso' => ['admin', 'profesor'],
-			'superAdmin/gestionCursos/editarCurso' => ['admin', 'profesor'],
 
 			'superAdmin/configuracion' => ['admin'],
 			'superAdmin/reportes' => ['admin'],
@@ -326,7 +325,7 @@ class ControladorGeneral
 			// Páginas para profesores y administradores
 			'cursos' => ['profesor', 'admin'],
 			'profesores' => ['profesor', 'admin'],
-			'profesores/gestionPerfil/perfilProfesor' => ['profesor'],
+			'profesores/gestionPerfil/perfilProfesor' => ['profesor', 'admin', 'estudiante'],
 
 			// Páginas para estudiantes, profesores y administradores
 			'misCursos' => ['estudiante', 'profesor', 'admin'],
@@ -334,6 +333,8 @@ class ControladorGeneral
 			'inscripciones' => ['estudiante', 'profesor', 'admin'],
 
 			// Páginas de perfil (todos los usuarios autenticados)
+			'profesores/gestionCursosPr/verCursoProfe' => ['admin', 'profesor', 'estudiante'],
+
 			'perfil' => ['estudiante', 'profesor', 'admin'],
 			'modalPassword' => ['estudiante', 'profesor', 'admin'],
 			'modalFoto' => ['estudiante', 'profesor', 'admin'],
@@ -437,14 +438,14 @@ class ControladorGeneral
 			'nombre' => 'Inicio',
 			'url' => 'inicio',
 			'icono' => 'fas fa-home',
-			'roles' => ['estudiante', 'profesor', 'admin', 'superadmin']
+			'roles' => ['estudiante', 'profesor', 'admin']
 		];
 
 		$menuItems[] = [
 			'nombre' => 'Mi Perfil',
 			'url' => 'perfil',
 			'icono' => 'fas fa-user',
-			'roles' => ['estudiante', 'profesor', 'admin', 'superadmin']
+			'roles' => ['estudiante', 'profesor', 'admin']
 		];
 
 		// Elementos para estudiantes
@@ -452,14 +453,14 @@ class ControladorGeneral
 			'nombre' => 'Mis Cursos',
 			'url' => 'misCursos',
 			'icono' => 'fas fa-book',
-			'roles' => ['estudiante', 'profesor', 'admin', 'superadmin']
+			'roles' => ['estudiante', 'profesor', 'admin']
 		];
 
 		$menuItems[] = [
 			'nombre' => 'Inscripciones',
 			'url' => 'inscripciones',
 			'icono' => 'fas fa-clipboard-list',
-			'roles' => ['estudiante', 'profesor', 'admin', 'superadmin']
+			'roles' => ['estudiante', 'profesor', 'admin']
 		];
 
 		// Elementos para profesores
@@ -467,14 +468,14 @@ class ControladorGeneral
 			'nombre' => 'Gestionar Cursos',
 			'url' => 'cursos',
 			'icono' => 'fas fa-chalkboard-teacher',
-			'roles' => ['profesor', 'admin', 'superadmin']
+			'roles' => ['profesor', 'admin']
 		];
 
 		$menuItems[] = [
 			'nombre' => 'Profesores',
 			'url' => 'profesores',
 			'icono' => 'fas fa-users',
-			'roles' => ['profesor', 'admin', 'superadmin']
+			'roles' => ['profesor', 'admin']
 		];
 
 		// Elementos para administradores
@@ -482,7 +483,7 @@ class ControladorGeneral
 			'nombre' => 'Administración',
 			'url' => '#',
 			'icono' => 'fas fa-cogs',
-			'roles' => ['admin', 'superadmin'],
+			'roles' => ['admin'],
 			'submenu' => [
 				[
 					'nombre' => 'Usuarios',

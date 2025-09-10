@@ -612,14 +612,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h6 class="video-title mb-1">Sin contenido multimedia</h6>
                     <small class="text-muted">Agrega un video o imagen para comenzar</small>
                 </div>
-                <div class="video-actions">
-                    <button class="btn btn-primary me-2 add-video-btn" id="btn-subir-promo">
-                        <i class="bi bi-camera-video"></i> Agregar Video
-                    </button>
-                    <button class="btn btn-secondary add-image-btn">
-                        <i class="bi bi-image"></i> Agregar Imagen
-                    </button>
-                </div>
             </div>`;
 
         // Agregar event listener para el botón de subir video del placeholder
@@ -1350,6 +1342,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // ========================================
 
     /**
+     * Verificar si el usuario actual es el propietario del curso
+     */
+    function esPropietarioCurso() {
+        return window.cursoData &&
+            window.cursoData.usuario_actual_id &&
+            window.cursoData.id_persona &&
+            window.cursoData.usuario_actual_id === window.cursoData.id_persona;
+    }
+
+    /**
      * Inicializar botones de crear contenido en cada sección
      */
     function inicializarBotonesCrearContenido() {
@@ -1380,6 +1382,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Verificar si el usuario actual es el propietario del curso
+        if (!esPropietarioCurso()) {
+            return;
+        }
+
         // Crear el botón
         const btnCrearContenido = document.createElement('button');
         btnCrearContenido.className = 'btn btn-sm btn-success btn-crear-contenido mb-3';
@@ -1403,6 +1410,12 @@ document.addEventListener('DOMContentLoaded', function () {
      * Mostrar modal para crear contenido
      */
     function mostrarModalCrearContenido(seccionId) {
+        // Verificar si el usuario actual es el propietario del curso
+        if (!esPropietarioCurso()) {
+            mostrarNotificacion('No tienes permisos para crear contenido en este curso', 'error');
+            return;
+        }
+
         const modal = document.getElementById('modalContenido') || crearModalContenido();
 
         // Limpiar formulario
@@ -1459,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <div class="mb-3">
                                             <label for="contenido-video" class="form-label">Video (MP4 - Opcional)</label>
                                             <input type="file" class="form-control" id="contenido-video" accept="video/mp4">
-                                            <div class="form-text">Máximo 1 video por contenido. Límite: 10 minutos, HD 1280x720, 100MB</div>
+                                            <div class="form-text">Máximo 1 video por contenido. Límite: 10 minutos, HD 1280x720, 40MB</div>
                                             <div id="video-file-info" class="mt-2"></div>
                                         </div>
                                     </div>
@@ -1591,6 +1604,12 @@ document.addEventListener('DOMContentLoaded', function () {
      * Guardar contenido con assets
      */
     function guardarContenido() {
+        // Verificar si el usuario actual es el propietario del curso
+        if (!esPropietarioCurso()) {
+            mostrarNotificacion('No tienes permisos para crear contenido en este curso', 'error');
+            return;
+        }
+
         const id = document.getElementById('contenido-id').value;
         const seccionId = document.getElementById('contenido-seccion-id').value;
         const titulo = document.getElementById('contenido-titulo').value.trim();
@@ -1851,6 +1870,12 @@ document.addEventListener('DOMContentLoaded', function () {
      * Editar contenido existente
      */
     window.editarContenido = function (contenidoId) {
+        // Verificar si el usuario actual es el propietario del curso
+        if (!esPropietarioCurso()) {
+            mostrarNotificacion('No tienes permisos para editar contenido en este curso', 'error');
+            return;
+        }
+
         // Obtener datos del contenido
         fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
@@ -1917,9 +1942,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 videoHtml += `
                     <li class="d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-camera-video"></i> ${video.nombre_original}</span>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarAsset(${video.id}, ${video.id_contenido})">
-                            <i class="bi bi-trash"></i>
-                        </button>
                     </li>`;
             });
             videoHtml += '</ul></div>';
@@ -1933,9 +1955,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 pdfHtml += `
                     <li class="d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-file-pdf"></i> ${pdf.nombre_original}</span>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarAsset(${pdf.id}, ${pdf.id_contenido})">
-                            <i class="bi bi-trash"></i>
-                        </button>
                     </li>`;
             });
             pdfHtml += '</ul></div>';
@@ -1944,7 +1963,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Eliminar asset
+     * Eliminar asset proximas versiones
      */
     window.eliminarAsset = function (assetId, contenidoId) {
         if (!confirm('¿Estás seguro de que quieres eliminar este archivo?')) {
@@ -1986,6 +2005,12 @@ document.addEventListener('DOMContentLoaded', function () {
      * Eliminar contenido completo
      */
     window.eliminarContenido = function (contenidoId) {
+        // Verificar si el usuario actual es el propietario del curso
+        if (!esPropietarioCurso()) {
+            mostrarNotificacion('No tienes permisos para eliminar contenido en este curso', 'error');
+            return;
+        }
+
         Swal.fire({
             title: '¿Estás seguro?',
             text: '¿Estás seguro de que quieres eliminar este contenido y todos sus archivos asociados?',

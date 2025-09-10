@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Verificar acceso (solo profesores)
-if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
+if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin', 'estudiante'])) {
     echo '<div class="alert alert-danger">No tienes permisos para acceder a esta página.</div>';
     return;
 }
@@ -36,11 +36,11 @@ $profesores = $datosVisualizacion['profesores'];
 $secciones = $datosVisualizacion['secciones'];
 $contenidoSecciones = $datosVisualizacion['contenidoSecciones'];
 
-// Verificar que el profesor puede ver este curso (solo sus propios cursos)
-if ($curso['id_persona'] != $_SESSION['idU']) {
-    echo '<div class="alert alert-danger">No tienes permisos para ver este curso.</div>';
-    return;
-}
+// Verificar que el profesor puede ver este curso (solo sus propios cursos) TODO 
+// if ($curso['id_persona'] != $_SESSION['idU']) {
+//     echo '<div class="alert alert-danger">No tienes permisos para ver este curso.</div>';
+//     return;
+// }
 
 // Procesar actualización del curso básico (migrado desde editarCursoProfe.php)
 if (isset($_POST['actualizarCurso'])) {
@@ -713,7 +713,9 @@ if (isset($_SESSION['mensaje_error'])) {
     window.cursoData = {
         id: <?= $curso['id'] ?>,
         nombre: <?= json_encode($curso['nombre']) ?>,
-        estado: <?= json_encode($curso['estado']) ?>
+        estado: <?= json_encode($curso['estado']) ?>,
+        id_persona: <?= $curso['id_persona'] ?>,
+        usuario_actual_id: <?= isset($_SESSION['idU']) ? $_SESSION['idU'] : 'null' ?>
     };
 </script>
 

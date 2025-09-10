@@ -127,21 +127,11 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                                     <?php
                                                     // Usar URL amigable si está disponible, sino usar ID para ver
                                                     $urlVer = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/verCurso/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/superAdmin/gestionCursos/verCurso?id=" . $curso["id"];
+                                                        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
+                                                        : "/cursosApp/App/profesor/gestionCursosPr/verCursoProfe?id=" . $curso["id"];
                                                     ?>
                                                     <a href="<?= $urlVer ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
-                                                    </a>
-                                                    <?php
-                                                    // Ahora tanto ver como editar van a la misma vista (verCurso)
-                                                    $urlEditar = !empty($curso["url_amiga"])
-                                                        ? "/cursosApp/App/verCurso/" . $curso["url_amiga"]
-                                                        : "/cursosApp/App/superAdmin/gestionCursos/verCurso?id=" . $curso["id"];
-                                                    ?>
-                                                    <a href="<?= $urlEditar ?>" class="btn btn-sm btn-warning"
-                                                        title="URL: <?= htmlspecialchars($urlEditar) ?>">
-                                                        <i class="bi bi-pencil"></i> Editar
                                                     </a>
                                                 </div>
                                             </td>
