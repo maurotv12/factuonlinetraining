@@ -124,17 +124,19 @@ if (isset($_SESSION['mensaje_error'])) {
 }
 ?>
 
-<!-- Vista del curso para profesores -->
+<!-- Vista del curso -->
 <div class="ver-curso-container" data-curso-id="<?= $curso['id'] ?>">
     <!-- Header del curso -->
     <div class="curso-header">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <div class="breadcrumb-custom">
-                    <a href="/cursosApp/App/listadoCursosProfe" class="breadcrumb-link">
-                        <i class="bi bi-arrow-left"></i> Volver a mis cursos
-                    </a>
-                </div>
+                <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                    <div class="breadcrumb-custom">
+                        <a href="/cursosApp/App/listadoCursosProfe" class="breadcrumb-link">
+                            <i class="bi bi-arrow-left"></i> Volver a mis cursos
+                        </a>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Título editable -->
                 <div class="editable-field">
