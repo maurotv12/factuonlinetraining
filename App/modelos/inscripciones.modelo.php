@@ -209,15 +209,57 @@ class ModeloInscripciones
 	==============================================*/
 	public static function mdlConvertirPreinscripcionAInscripcion($idPreinscripcion, $idInscripcion)
 	{
-		$stmt = Conexion::conectar()->prepare("UPDATE preinscripciones SET estado = 'convertido', id_inscripcion = :id_inscripcion, fecha_actualizacion = NOW() WHERE id = :id");
+		// Validaciones básicas
+		if (!$idPreinscripcion || !$idInscripcion) {
+			return [
+				'success' => false,
+				'mensaje' => 'ID de preinscripción e ID de inscripción son requeridos'
+			];
+		}
 
-		$stmt->bindParam(":id", $idPreinscripcion, PDO::PARAM_INT);
-		$stmt->bindParam(":id_inscripcion", $idInscripcion, PDO::PARAM_INT);
+		try {
+			// Verificar que la preinscripción existe y está en estado 'preinscrito'
+			$stmtVerificar = Conexion::conectar()->prepare("SELECT estado FROM preinscripciones WHERE id = :id");
+			$stmtVerificar->bindParam(":id", $idPreinscripcion, PDO::PARAM_INT);
+			$stmtVerificar->execute();
+			$preinscripcion = $stmtVerificar->fetch(PDO::FETCH_ASSOC);
 
-		if ($stmt->execute()) {
-			return "ok";
-		} else {
-			return "error";
+			if (!$preinscripcion) {
+				return [
+					'success' => false,
+					'mensaje' => 'Preinscripción no encontrada'
+				];
+			}
+
+			if ($preinscripcion['estado'] !== 'preinscrito') {
+				return [
+					'success' => false,
+					'mensaje' => 'La preinscripción no puede ser convertida. Estado actual: ' . $preinscripcion['estado']
+				];
+			}
+
+			// Actualizar la preinscripción
+			$stmt = Conexion::conectar()->prepare("UPDATE preinscripciones SET estado = 'convertido', id_inscripcion = :id_inscripcion, fecha_actualizacion = NOW() WHERE id = :id");
+
+			$stmt->bindParam(":id", $idPreinscripcion, PDO::PARAM_INT);
+			$stmt->bindParam(":id_inscripcion", $idInscripcion, PDO::PARAM_INT);
+
+			if ($stmt->execute()) {
+				return [
+					'success' => true,
+					'mensaje' => 'Preinscripción convertida exitosamente'
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al convertir la preinscripción'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
+			];
 		}
 	}
 
@@ -247,9 +289,13 @@ class ModeloInscripciones
 		$estado = $datos['estado'] ?? 'pendiente';
 
 		try {
+			$conexion = Conexion::conectar();
+			$conexion->beginTransaction();
+
 			// Verificar si ya está inscrito
 			$inscripcionExistente = self::mdlVerificarInscripcion($datos['idCurso'], $datos['idEstudiante']);
 			if ($inscripcionExistente) {
+				$conexion->rollBack();
 				return [
 					'success' => false,
 					'mensaje' => 'El usuario ya está inscrito en este curso',
@@ -257,25 +303,46 @@ class ModeloInscripciones
 				];
 			}
 
-			$stmt = Conexion::conectar()->prepare("INSERT INTO inscripciones (id_curso, id_estudiante, estado, fecha_registro) VALUES (:id_curso, :id_estudiante, :estado, NOW())");
+			// Verificar si existe una preinscripción activa para convertir
+			$preinscripcionActiva = self::mdlVerificarPreinscripcion($datos['idCurso'], $datos['idEstudiante']);
+
+			// Crear la inscripción
+			$stmt = $conexion->prepare("INSERT INTO inscripciones (id_curso, id_estudiante, estado, fecha_registro) VALUES (:id_curso, :id_estudiante, :estado, NOW())");
 
 			$stmt->bindParam(":id_curso", $datos['idCurso'], PDO::PARAM_INT);
 			$stmt->bindParam(":id_estudiante", $datos['idEstudiante'], PDO::PARAM_INT);
 			$stmt->bindParam(":estado", $estado, PDO::PARAM_STR);
 
 			if ($stmt->execute()) {
+				$idInscripcion = $conexion->lastInsertId();
+
+				// Si existe una preinscripción activa, actualizarla a 'convertido'
+				if ($preinscripcionActiva) {
+					$stmtUpdate = $conexion->prepare("UPDATE preinscripciones SET estado = 'convertido', id_inscripcion = :id_inscripcion, fecha_actualizacion = NOW() WHERE id = :id_preinscripcion");
+					$stmtUpdate->bindParam(":id_inscripcion", $idInscripcion, PDO::PARAM_INT);
+					$stmtUpdate->bindParam(":id_preinscripcion", $preinscripcionActiva['id'], PDO::PARAM_INT);
+					$stmtUpdate->execute();
+				}
+
+				$conexion->commit();
+
 				return [
 					'success' => true,
-					'mensaje' => 'Inscripción creada exitosamente',
-					'id' => Conexion::conectar()->lastInsertId()
+					'mensaje' => 'Inscripción creada exitosamente' . ($preinscripcionActiva ? ' y preinscripción convertida' : ''),
+					'id' => $idInscripcion,
+					'preinscripcion_convertida' => (bool)$preinscripcionActiva
 				];
 			} else {
+				$conexion->rollBack();
 				return [
 					'success' => false,
 					'mensaje' => 'Error al crear la inscripción'
 				];
 			}
 		} catch (Exception $e) {
+			if (isset($conexion)) {
+				$conexion->rollBack();
+			}
 			return [
 				'success' => false,
 				'mensaje' => 'Error de base de datos: ' . $e->getMessage()
@@ -654,14 +721,27 @@ class ModeloInscripciones
 			$stmt = $conexion->prepare("SELECT * FROM preinscripciones WHERE id = :id AND estado = 'preinscrito'");
 			$stmt->bindParam(":id", $idPreinscripcion, PDO::PARAM_INT);
 			$stmt->execute();
-			$preinscripcion = $stmt->fetch();
+			$preinscripcion = $stmt->fetch(PDO::FETCH_ASSOC);
 
 			if (!$preinscripcion) {
 				$conexion->rollBack();
 				return false;
 			}
 
-			// Crear inscripción
+			// Verificar si ya existe una inscripción para este curso y estudiante
+			$inscripcionExistente = self::mdlVerificarInscripcion($preinscripcion['id_curso'], $preinscripcion['id_estudiante']);
+			if ($inscripcionExistente) {
+				// Si ya existe una inscripción, solo actualizar la preinscripción
+				$stmt = $conexion->prepare("UPDATE preinscripciones SET estado = 'convertido', id_inscripcion = :id_inscripcion, fecha_actualizacion = NOW() WHERE id = :id");
+				$stmt->bindParam(":id", $idPreinscripcion, PDO::PARAM_INT);
+				$stmt->bindParam(":id_inscripcion", $inscripcionExistente['id'], PDO::PARAM_INT);
+				$stmt->execute();
+
+				$conexion->commit();
+				return $inscripcionExistente['id'];
+			}
+
+			// Crear nueva inscripción
 			$stmt = $conexion->prepare("INSERT INTO inscripciones (id_curso, id_estudiante, estado, fecha_registro) VALUES (:id_curso, :id_estudiante, 'activo', NOW())");
 			$stmt->bindParam(":id_curso", $preinscripcion["id_curso"], PDO::PARAM_INT);
 			$stmt->bindParam(":id_estudiante", $preinscripcion["id_estudiante"], PDO::PARAM_INT);
@@ -678,7 +758,10 @@ class ModeloInscripciones
 			$conexion->commit();
 			return $idInscripcion;
 		} catch (Exception $e) {
-			$conexion->rollBack();
+			if (isset($conexion)) {
+				$conexion->rollBack();
+			}
+			error_log("Error en mdlProcesarInscripcionDesdePreinscripcion: " . $e->getMessage());
 			return false;
 		}
 	}

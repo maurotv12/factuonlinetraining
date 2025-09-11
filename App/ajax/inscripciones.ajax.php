@@ -1,8 +1,8 @@
 <?php
 
 /**
- * AJAX para gestión dinámica de cursos
- * Permite edición de campos individuales, secciones y contenido
+ * AJAX para gestión de inscripciones y preinscripciones
+ * Maneja todas las operaciones CRUD relacionadas con inscripciones
  */
 
 session_start();
@@ -16,719 +16,452 @@ if (!isset($_SESSION['idU'])) {
 
 // Incluir controladores necesarios con rutas absolutas
 $baseDir = dirname(dirname(__FILE__));
-require_once $baseDir . "/controladores/cursos.controlador.php";
-require_once $baseDir . "/controladores/general.controlador.php";
 require_once $baseDir . "/controladores/inscripciones.controlador.php";
+require_once $baseDir . "/controladores/general.controlador.php";
 require_once $baseDir . "/modelos/conexion.php";
-
-// Verificar que el usuario sea estudiante
-if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['estudiante'])) {
-    echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para inscribirse a este curso']);
-    exit;
-}
 
 // Manejar tanto datos JSON como FormData
 $accion = '';
 $datos = [];
 
 if (isset($_POST['accion'])) {
-    // Datos de FormData (para subida de archivos)
+    // Datos de FormData
     $accion = $_POST['accion'];
     $datos = $_POST;
 } else {
     // Datos JSON
-    $datos = json_decode(file_get_contents('php://input'), true);
+    $input = file_get_contents('php://input');
+    $datos = json_decode($input, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['success' => false, 'mensaje' => 'Datos JSON inválidos']);
+        exit;
+    }
+
     $accion = $datos['accion'] ?? '';
-    $datos['id_seccion'] = $datos['idSeccion'] ?? null; // Normalizar nombre
+}
+
+// Función auxiliar para validar roles
+function validarRolParaAccion($accion)
+{
+    $rolesPermitidos = [];
+
+    // Acciones para estudiantes
+    $accionesEstudiante = [
+        'crearPreinscripcion',
+        'mostrarMisPreinscripciones',
+        'mostrarMisInscripciones',
+        'cancelarPreinscripcion',
+        'verificarPreinscripcion',
+        'verificarInscripcion',
+        'validarInscripcion',
+        'obtenerMisEstadisticas',
+        'obtenerMiActividad',
+        'obtenerEstadosPermitidos',     // <-- utilidades para todos
+        'validarDatos'
+    ];
+
+    // Acciones para profesores
+    $accionesProfesores = [
+        'mostrarInscripcionesCurso',
+        'contarInscripcionesCurso',
+        'estadisticasInstructor',
+        'contarPreinscripcionesCurso',
+        'contarInscripcionesPorEstado',
+        'obtenerEstadosPermitidos',     // <-- utilidades para todos
+        'validarDatos'
+    ];
+
+    // Acciones para administradores
+    $accionesAdmin = [
+        'crearInscripcion',
+        'actualizarEstadoInscripcion',
+        'eliminarInscripcion',
+        'mostrarTodasPreinscripciones',
+        'mostrarInscripcionesPendientes',
+        'procesarInscripcionDesdePreinscripcion',
+        'contarInscripcionesPorEstado',
+        'obtenerEstadisticasEstudiante',
+        'obtenerEstadosPermitidos',     // <-- utilidades para todos
+        'validarDatos'
+    ];
+
+    if (in_array($accion, $accionesEstudiante)) {
+        $rolesPermitidos = ['estudiante', 'profesor', 'admin'];
+    } elseif (in_array($accion, $accionesProfesores)) {
+        $rolesPermitidos = ['profesor', 'admin'];
+    } elseif (in_array($accion, $accionesAdmin)) {
+        $rolesPermitidos = ['admin'];
+    } else {
+        return false;
+    }
+
+    return ControladorGeneral::ctrUsuarioTieneAlgunRol($rolesPermitidos);
+}
+
+// Validar permisos para la acción
+if (!validarRolParaAccion($accion)) {
+    echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para realizar esta acción']);
+    exit;
 }
 
 switch ($accion) {
-    case 'crearSeccion':
-        // Acceder a los datos que identificaste
-        $idCurso = $datos['idCurso'];
-        $titulo = $datos['titulo'];
-        $descripcion = $datos['descripcion'];
+    /*=========================================================
+    PREINSCRIPCIONES
+    ===========================================================*/
 
-        $respuesta = ControladorCursos::ctrCrearSeccion($datos);
+    case 'crearPreinscripcion':
+        // Validar datos requeridos
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
 
-        // Devolver la respuesta como JSON
+        // Preparar datos para el controlador
+        $datosPreinscripcion = [
+            'idCurso' => $datos['idCurso'],
+            'idEstudiante' => $_SESSION['idU']
+        ];
+
+        $respuesta = ControladorInscripciones::ctrCrearPreinscripcion($datosPreinscripcion);
         echo json_encode($respuesta);
         break;
 
-    case 'actualizarSeccion':
-        $respuesta = ControladorCursos::ctrActualizarSeccion($datos);
+    case 'mostrarMisPreinscripciones':
+        // El estudiante ve sus propias preinscripciones
+        $estado = $datos['estado'] ?? 'preinscrito';
+        $respuesta = ControladorInscripciones::ctrMostrarPreinscripcionesPorUsuario($_SESSION['idU'], $estado);
         echo json_encode($respuesta);
         break;
 
-    case 'obtenerSecciones':
+    case 'cancelarPreinscripcion':
+        // Validar datos requeridos
+        if (!isset($datos['idPreinscripcion'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de preinscripción es requerido']);
+            break;
+        }
+
+        // Verificar que la preinscripción pertenece al usuario
+        $preinscripcion = ControladorInscripciones::ctrMostrarInscripcion('preinscripciones', 'id', $datos['idPreinscripcion']);
+        if (!$preinscripcion || $preinscripcion['id_estudiante'] != $_SESSION['idU']) {
+            echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para cancelar esta preinscripción']);
+            break;
+        }
+
+        $respuesta = ControladorInscripciones::ctrCancelarPreinscripcion($datos['idPreinscripcion']);
+        echo json_encode($respuesta);
+        break;
+
+    case 'verificarPreinscripcion':
+        // Validar datos requeridos
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
+
+        $existe = ControladorInscripciones::ctrVerificarPreinscripcion($datos['idCurso'], $_SESSION['idU']);
+        echo json_encode([
+            'success' => true,
+            'existe' => (bool)$existe,
+            'preinscripcion' => $existe
+        ]);
+        break;
+
+    case 'mostrarTodasPreinscripciones':
+        // Solo para administradores
+        $estado = $datos['estado'] ?? null;
+        $respuesta = ControladorInscripciones::ctrMostrarTodasPreinscripciones($estado);
+        echo json_encode($respuesta);
+        break;
+
+    case 'contarPreinscripcionesCurso':
+        // Para profesores y administradores
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
+
+        // Verificar que el curso pertenece al profesor (si no es admin)
+        if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin'])) {
+            require_once $baseDir . "/controladores/cursos.controlador.php";
+            $curso = ControladorCursos::ctrMostrarCursos('id', $datos['idCurso']);
+            if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
+                echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para ver este curso']);
+                break;
+            }
+        }
+
+        $estado = $datos['estado'] ?? 'preinscrito';
+        $respuesta = ControladorInscripciones::ctrContarPreinscripcionesPorCurso($datos['idCurso'], $estado);
+        echo json_encode($respuesta);
+        break;
+
+    /*=========================================================
+    INSCRIPCIONES
+    ===========================================================*/
+
+    case 'crearInscripcion':
+        // Solo para administradores
+        if (!isset($datos['idCurso']) || !isset($datos['idEstudiante'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso e ID del estudiante son requeridos']);
+            break;
+        }
+
+        $respuesta = ControladorInscripciones::ctrCrearInscripcion($datos);
+        echo json_encode($respuesta);
+        break;
+
+    case 'mostrarMisInscripciones':
+        // El usuario ve sus propias inscripciones
+        $estado = $datos['estado'] ?? null;
+        $respuesta = ControladorInscripciones::ctrMostrarInscripcionesPorUsuario($_SESSION['idU'], $estado);
+        echo json_encode($respuesta);
+        break;
+
+    case 'mostrarInscripcionesCurso':
+        // Para profesores y administradores
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
+
+        // Verificar que el curso pertenece al profesor (si no es admin)
+        if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin'])) {
+            require_once $baseDir . "/controladores/cursos.controlador.php";
+            $curso = ControladorCursos::ctrMostrarCursos('id', $datos['idCurso']);
+            if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
+                echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para ver este curso']);
+                break;
+            }
+        }
+
+        $estado = $datos['estado'] ?? null;
+        $respuesta = ControladorInscripciones::ctrMostrarInscripcionesPorCurso($datos['idCurso'], $estado);
+        echo json_encode($respuesta);
+        break;
+
+    case 'verificarInscripcion':
+        // Verificar si el usuario está inscrito en un curso
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
+
+        $existe = ControladorInscripciones::ctrVerificarInscripcion($datos['idCurso'], $_SESSION['idU']);
+        echo json_encode([
+            'success' => true,
+            'existe' => (bool)$existe,
+            'inscripcion' => $existe
+        ]);
+        break;
+
+    case 'actualizarEstadoInscripcion':
+        // Solo para administradores
+        if (!isset($datos['idInscripcion']) || !isset($datos['estado'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de inscripción y estado son requeridos']);
+            break;
+        }
+
+        $respuesta = ControladorInscripciones::ctrActualizarEstadoInscripcion($datos['idInscripcion'], $datos['estado']);
+        echo json_encode($respuesta);
+        break;
+
+    case 'marcarCursoFinalizado':
+        // Para estudiantes en sus propias inscripciones
+        if (!isset($datos['idInscripcion'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de inscripción es requerido']);
+            break;
+        }
+
+        // Verificar que la inscripción pertenece al usuario (si no es admin)
+        if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin'])) {
+            $inscripcion = ControladorInscripciones::ctrMostrarInscripcion('inscripciones', 'id', $datos['idInscripcion']);
+            if (!$inscripcion || $inscripcion['id_estudiante'] != $_SESSION['idU']) {
+                echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para modificar esta inscripción']);
+                break;
+            }
+        }
+
+        $resultado = ControladorInscripciones::ctrMarcarCursoFinalizado($datos['idInscripcion']);
+        echo json_encode([
+            'success' => $resultado === 'ok',
+            'mensaje' => $resultado === 'ok' ? 'Curso marcado como finalizado' : 'Error al marcar el curso como finalizado'
+        ]);
+        break;
+
+    case 'eliminarInscripcion':
+        // Solo para administradores
+        if (!isset($datos['idInscripcion'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de inscripción es requerido']);
+            break;
+        }
+
+        $respuesta = ControladorInscripciones::ctrEliminarInscripcion($datos['idInscripcion']);
+        echo json_encode($respuesta);
+        break;
+
+    /*=========================================================
+    VALIDACIONES Y ESTADÍSTICAS
+    ===========================================================*/
+
+    case 'validarInscripcion':
+        // Validar si un usuario puede inscribirse
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
+
+        $idEstudiante = $datos['idEstudiante'] ?? $_SESSION['idU'];
+        $respuesta = ControladorInscripciones::ctrValidarInscripcion($datos['idCurso'], $idEstudiante);
+        echo json_encode($respuesta);
+        break;
+
+    case 'contarInscripcionesPorEstado':
+        // Para administradores y profesores
         $idCurso = $datos['idCurso'] ?? null;
-        if ($idCurso) {
-            $respuesta = ControladorCursos::ctrObtenerSecciones($idCurso);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de curso requerido']);
-        }
-        break;
 
-    case 'eliminarSeccion':
-        $idSeccion = $datos['idSeccion'] ?? null;
-        if ($idSeccion) {
-            $respuesta = ControladorCursos::ctrEliminarSeccion($idSeccion);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de sección requerido']);
-        }
-        break;
-
-    case 'obtenerSeccionPorId':
-        $idSeccion = $datos['idSeccion'] ?? null;
-        if ($idSeccion) {
-            $respuesta = ControladorCursos::ctrObtenerSeccionPorId($idSeccion);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de sección requerido']);
-        }
-        break;
-
-    // ========== GESTIÓN DE CONTENIDO DE SECCIONES ==========
-
-    case 'crearContenido':
-        // Validar campos requeridos
-        if (!isset($datos['idSeccion']) || !isset($datos['titulo'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan campos requeridos: idSeccion y titulo'
-            ]);
-            break;
-        }
-
-        $respuesta = ControladorCursos::ctrCrearContenido($datos);
-        echo json_encode($respuesta);
-        break;
-
-    case 'actualizarContenido':
-        // Validar campos requeridos
-        if (!isset($datos['id']) || !isset($datos['titulo'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan campos requeridos: id y titulo'
-            ]);
-            break;
-        }
-
-        $respuesta = ControladorCursos::ctrActualizarContenido($datos);
-        echo json_encode($respuesta);
-        break;
-
-    case 'eliminarContenido':
-        $idContenido = $datos['id'] ?? null;
-        if ($idContenido) {
-            $respuesta = ControladorCursos::ctrEliminarContenido($idContenido);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de contenido requerido']);
-        }
-        break;
-
-    case 'obtenerContenidoSeccion':
-        $idSeccion = $datos['idSeccion'] ?? null;
-        if ($idSeccion) {
-            $respuesta = ControladorCursos::ctrObtenerContenidoSeccionConAssets($idSeccion);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de sección requerido']);
-        }
-        break;
-
-    case 'obtenerVideoContenido':
-        $idContenido = $datos['idContenido'] ?? null;
-        if ($idContenido) {
-            // Obtener información específica del video
-            $conexion = Conexion::conectar();
-            $stmt = $conexion->prepare("
-                SELECT sc.titulo, sca.public_url, sca.duracion_segundos, sca.tamano_bytes
-                FROM seccion_contenido sc
-                JOIN seccion_contenido_assets sca ON sc.id = sca.id_contenido
-                WHERE sc.id = :id_contenido AND sca.asset_tipo = 'video'
-                LIMIT 1
-            ");
-            $stmt->bindParam(':id_contenido', $idContenido, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $video = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($video) {
-                echo json_encode([
-                    'success' => true,
-                    'video' => $video
-                ]);
-            } else {
-                echo json_encode([
-                    'success' => false,
-                    'mensaje' => 'Video no encontrado'
-                ]);
-            }
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de contenido requerido']);
-        }
-        break;    // ========== GESTIÓN DE ASSETS DE CONTENIDO ==========
-
-    case 'obtenerAssetsContenido':
-        $idContenido = $datos['idContenido'] ?? null;
-        if ($idContenido) {
-            $respuesta = ControladorCursos::ctrObtenerAssetsContenido($idContenido);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de contenido requerido']);
-        }
-        break;
-
-    case 'eliminarAsset':
-        $idAsset = $datos['idAsset'] ?? null;
-        $idContenido = $datos['idContenido'] ?? null;
-
-        if ($idAsset) {
-            $respuesta = ControladorCursos::ctrEliminarContenidoAsset($idAsset);
-
-            // Si se eliminó correctamente y se proporcionó el ID del contenido, actualizar duración
-            if ($respuesta['success'] && $idContenido) {
-                ControladorCursos::ctrActualizarDuracionContenido($idContenido);
-            }
-
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de asset requerido']);
-        }
-        break;
-
-    case 'calcularDuracionContenido':
-        $idContenido = $datos['idContenido'] ?? null;
-        if ($idContenido) {
-            $respuesta = ControladorCursos::ctrCalcularDuracionTotalContenido($idContenido);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de contenido requerido']);
-        }
-        break;
-
-    case 'actualizarDuracionContenido':
-        $idContenido = $datos['idContenido'] ?? null;
-        if ($idContenido) {
-            $respuesta = ControladorCursos::ctrActualizarDuracionContenido($idContenido);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode(['success' => false, 'mensaje' => 'ID de contenido requerido']);
-        }
-        break;
-
-    // ========== VALIDACIONES DE ARCHIVOS ==========
-
-    case 'validarVideoMP4':
-        if (!isset($_FILES['video'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'No se recibió el archivo de video'
-            ]);
-            break;
-        }
-
-        $respuesta = ControladorCursos::ctrValidarVideoMP4($_FILES['video']);
-        echo json_encode($respuesta);
-        break;
-
-    case 'validarPDF':
-        if (!isset($_FILES['pdf'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'No se recibió el archivo PDF'
-            ]);
-            break;
-        }
-
-        $respuesta = ControladorCursos::ctrValidarPDF($_FILES['pdf']);
-        echo json_encode($respuesta);
-        break;
-
-    // ========== SUBIDA COMPLETA DE ASSETS ==========
-
-    case 'subirVideoContenido':
-        // Validar que se recibieron todos los datos necesarios
-        if (!isset($_FILES['video']) || !isset($_POST['idContenido']) || !isset($_POST['idCurso']) || !isset($_POST['idSeccion'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan datos requeridos: video, idContenido, idCurso, idSeccion'
-            ]);
-            break;
-        }
-
-        $archivo = $_FILES['video'];
-        $idContenido = intval($_POST['idContenido']);
-        $idCurso = intval($_POST['idCurso']);
-        $idSeccion = intval($_POST['idSeccion']);
-
-        // Procesar subida del video (reemplaza automáticamente si existe uno anterior)
-        $respuesta = ControladorCursos::ctrProcesarSubidaAsset($archivo, $idContenido, 'video', $idCurso, $idSeccion);
-        echo json_encode($respuesta);
-        break;
-
-    case 'subirPDFContenido':
-        // Validar que se recibieron todos los datos necesarios
-        if (!isset($_FILES['pdf']) || !isset($_POST['idContenido']) || !isset($_POST['idCurso']) || !isset($_POST['idSeccion'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan datos requeridos: pdf, idContenido, idCurso, idSeccion'
-            ]);
-            break;
-        }
-
-        $archivo = $_FILES['pdf'];
-        $idContenido = intval($_POST['idContenido']);
-        $idCurso = intval($_POST['idCurso']);
-        $idSeccion = intval($_POST['idSeccion']);
-
-        // Procesar subida del PDF (se permiten múltiples PDFs)
-        $respuesta = ControladorCursos::ctrProcesarSubidaAsset($archivo, $idContenido, 'pdf', $idCurso, $idSeccion);
-        echo json_encode($respuesta);
-        break;
-
-    // ========== GESTIÓN AVANZADA DE ASSETS ==========
-
-    case 'crearEstructuraDirectorios':
-        // Validar campos requeridos
-        if (!isset($datos['idCurso']) || !isset($datos['idSeccion']) || !isset($datos['idContenido'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan campos requeridos: idCurso, idSeccion, idContenido'
-            ]);
-            break;
-        }
-
-        $respuesta = ControladorCursos::ctrCrearEstructuraDirectoriosAssets(
-            $datos['idCurso'],
-            $datos['idSeccion'],
-            $datos['idContenido']
-        );
-        echo json_encode($respuesta);
-        break;
-
-    case 'guardarAsset':
-        // Validar campos requeridos
-        $camposRequeridos = ['id_contenido', 'asset_tipo', 'storage_path'];
-        foreach ($camposRequeridos as $campo) {
-            if (!isset($datos[$campo])) {
-                echo json_encode([
-                    'success' => false,
-                    'mensaje' => "Falta el campo requerido: $campo"
-                ]);
-                break 2; // Salir del foreach y del case
+        // Si se especifica un curso, verificar permisos
+        if ($idCurso && !ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin'])) {
+            require_once $baseDir . "/controladores/cursos.controlador.php";
+            $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
+            if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
+                echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para ver este curso']);
+                break;
             }
         }
 
-        $respuesta = ControladorCursos::ctrGuardarContenidoAsset($datos);
-        echo json_encode($respuesta);
+        $respuesta = ControladorInscripciones::ctrContarInscripcionesPorEstado($idCurso);
+        echo json_encode(['success' => true, 'datos' => $respuesta]);
         break;
 
-    case 'actualizarAsset':
-        // Validar campos requeridos
-        $camposRequeridos = ['id', 'asset_tipo', 'storage_path'];
-        foreach ($camposRequeridos as $campo) {
-            if (!isset($datos[$campo])) {
-                echo json_encode([
-                    'success' => false,
-                    'mensaje' => "Falta el campo requerido: $campo"
-                ]);
-                break 2; // Salir del foreach y del case
-            }
-        }
+    case 'estadisticasInstructor':
+        // Para profesores viendo sus propias estadísticas
+        $idInstructor = ControladorGeneral::ctrUsuarioTieneAlgunRol(['admin']) ?
+            ($datos['idInstructor'] ?? $_SESSION['idU']) : $_SESSION['idU'];
 
-        $respuesta = ControladorCursos::ctrActualizarContenidoAsset($datos);
-        echo json_encode($respuesta);
+        $respuesta = ControladorInscripciones::ctrEstadisticasInscripcionesPorInstructor($idInstructor);
+        echo json_encode(['success' => true, 'datos' => $respuesta]);
         break;
 
-    // ========== GESTIÓN DE VIDEO PROMOCIONAL ==========
-    case 'subirVideoPromocional':
-        // Validar que se recibieron todos los datos necesarios
-        if (!isset($_FILES['video']) || !isset($_POST['idCurso'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan datos: video e idCurso son requeridos'
-            ]);
-            break;
-        }
-
-        $archivo = $_FILES['video'];
-        $idCurso = intval($_POST['idCurso']);
-
-        // Verificar que el curso pertenece al usuario
-        $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
-        if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'No tienes permisos para editar este curso'
-            ]);
-            break;
-        }
-
-        // Procesar subida del video promocional
-        $respuesta = procesarVideoPromocional($archivo, $idCurso);
-        echo json_encode($respuesta);
+    case 'mostrarInscripcionesPendientes':
+        // Solo para administradores
+        $respuesta = ControladorInscripciones::ctrMostrarInscripcionesPendientes();
+        echo json_encode(['success' => true, 'datos' => $respuesta]);
         break;
 
-    // ========== CAMBIAR BANNER DEL CURSO ==========
-    case 'cambiarBanner':
-        // Validar que se recibieron todos los datos necesarios
-        if (!isset($_FILES['banner']) || !isset($_POST['idCurso'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan datos: banner e idCurso son requeridos'
-            ]);
+    case 'procesarInscripcionDesdePreinscripcion':
+        // Solo para administradores
+        if (!isset($datos['idPreinscripcion'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de preinscripción es requerido']);
             break;
         }
 
-        $archivo = $_FILES['banner'];
-        $idCurso = intval($_POST['idCurso']);
+        $idInscripcion = ControladorInscripciones::ctrProcesarInscripcionDesdePreinscripcion($datos['idPreinscripcion']);
 
-        // Verificar que el curso pertenece al usuario
-        $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
-        if (!$curso || $curso[0]['id_persona'] != $_SESSION['idU']) {
+        if ($idInscripcion) {
             echo json_encode([
-                'success' => false,
-                'mensaje' => 'No tienes permisos para editar este curso'
+                'success' => true,
+                'mensaje' => 'Preinscripción convertida a inscripción exitosamente',
+                'idInscripcion' => $idInscripcion
             ]);
-            break;
-        }
-
-        // Procesar cambio del banner
-        $respuesta = procesarCambioBanner($archivo, $idCurso, $curso[0]['banner']);
-        echo json_encode($respuesta);
-        break;
-
-    // ========== REEMPLAZAR ASSET EXISTENTE ==========
-    case 'reemplazarAsset':
-        // Validar que se recibieron todos los datos necesarios
-        if (!isset($_FILES['archivo']) || !isset($_POST['idAsset']) || !isset($_POST['assetTipo'])) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Faltan datos requeridos: archivo, idAsset, assetTipo'
-            ]);
-            break;
-        }
-
-        $archivo = $_FILES['archivo'];
-        $idAsset = intval($_POST['idAsset']);
-        $assetTipo = $_POST['assetTipo'];
-
-        // Obtener información del asset actual
-        $assetActual = ModeloCursos::mdlObtenerAssetPorId($idAsset);
-        if (!$assetActual) {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Asset no encontrado'
-            ]);
-            break;
-        }
-
-        // Validar archivo según tipo
-        if ($assetTipo === 'video') {
-            $validacion = ControladorCursos::ctrValidarVideoMP4($archivo);
-        } else if ($assetTipo === 'pdf') {
-            $validacion = ControladorCursos::ctrValidarPDF($archivo);
         } else {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Tipo de asset no válido'
-            ]);
-            break;
-        }
-
-        if (!$validacion['success']) {
-            echo json_encode($validacion);
-            break;
-        }
-
-        // Generar nueva ruta para el archivo
-        $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-        $nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
-        $directorioAnterior = dirname($assetActual['storage_path']);
-        $nuevaRuta = $directorioAnterior . '/' . $nombreArchivo;
-
-        // Mover el nuevo archivo
-        if (move_uploaded_file($archivo['tmp_name'], $nuevaRuta)) {
-            // Actualizar datos en la base de datos (esto elimina el archivo anterior automáticamente)
-            $datosActualizar = [
-                'id' => $idAsset,
-                'asset_tipo' => $assetTipo,
-                'storage_path' => $nuevaRuta,
-                'tamano_bytes' => $archivo['size'],
-                'duracion_segundos' => $validacion['duracion_segundos'] ?? null
-            ];
-
-            $respuesta = ControladorCursos::ctrActualizarContenidoAsset($datosActualizar);
-            echo json_encode($respuesta);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'mensaje' => 'Error al subir el nuevo archivo'
-            ]);
+            echo json_encode(['success' => false, 'mensaje' => 'Error al procesar la preinscripción']);
         }
         break;
+
+    case 'obtenerMisEstadisticas':
+        // Para usuarios viendo sus propias estadísticas
+        $respuesta = ControladorInscripciones::ctrObtenerEstadisticasEstudiante($_SESSION['idU']);
+        echo json_encode($respuesta);
+        break;
+
+    case 'obtenerEstadisticasEstudiante':
+        // Solo para administradores
+        if (!isset($datos['idEstudiante'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del estudiante es requerido']);
+            break;
+        }
+
+        $respuesta = ControladorInscripciones::ctrObtenerEstadisticasEstudiante($datos['idEstudiante']);
+        echo json_encode($respuesta);
+        break;
+
+    case 'obtenerMiActividad':
+        // Para usuarios viendo su propia actividad
+        $dias = $datos['dias'] ?? 30;
+        $respuesta = ControladorInscripciones::ctrObtenerActividadReciente($_SESSION['idU'], $dias);
+        echo json_encode($respuesta);
+        break;
+
+    /*=========================================================
+    UTILIDADES
+    ===========================================================*/
+
+    case 'obtenerEstadosPermitidos':
+        // Obtener lista de estados válidos
+        $respuesta = ControladorInscripciones::ctrObtenerEstadosPermitidos();
+        echo json_encode(['success' => true, 'datos' => $respuesta]);
+        break;
+
+    case 'validarDatos':
+        // Validar datos de inscripción
+        $respuesta = ControladorInscripciones::ctrValidarDatosInscripcion($datos);
+        echo json_encode($respuesta);
+        break;
+
+    /*=========================================================
+    CASO POR DEFECTO
+    ===========================================================*/
 
     default:
-        // Manejar caso de acción no válida
-        $accionesValidas = [
-            // Gestión de secciones
-            'crearSeccion',
-            'actualizarSeccion',
-            'obtenerSecciones',
-            'eliminarSeccion',
-            // Gestión de contenido
-            'crearContenido',
-            'actualizarContenido',
-            'eliminarContenido',
-            'obtenerContenidoSeccion',
-            // Gestión de assets
-            'obtenerAssetsContenido',
-            'eliminarAsset',
-            'calcularDuracionContenido',
-            'actualizarDuracionContenido',
-            // Validaciones
-            'validarVideoMP4',
-            'validarPDF',
-            // Subida de assets
-            'subirVideoContenido',
-            'subirPDFContenido',
-            // Gestión avanzada
-            'crearEstructuraDirectorios',
-            'guardarAsset',
-            'actualizarAsset',
-            // Video promocional
-            'subirVideoPromocional',
-            // Reemplazar assets
-            'reemplazarAsset'
+        // Listar acciones disponibles
+        $accionesDisponibles = [
+            // Preinscripciones
+            'crearPreinscripcion',
+            'mostrarMisPreinscripciones',
+            'cancelarPreinscripcion',
+            'verificarPreinscripcion',
+            'mostrarTodasPreinscripciones',
+            'contarPreinscripcionesCurso',
+            // Inscripciones
+            'crearInscripcion',
+            'mostrarMisInscripciones',
+            'mostrarInscripcionesCurso',
+            'verificarInscripcion',
+            'actualizarEstadoInscripcion',
+            'marcarCursoFinalizado',
+            'eliminarInscripcion',
+            // Estadísticas y validaciones
+            'validarInscripcion',
+            'contarInscripcionesPorEstado',
+            'estadisticasInstructor',
+            'mostrarInscripcionesPendientes',
+            'procesarInscripcionDesdePreinscripcion',
+            'obtenerMisEstadisticas',
+            'obtenerEstadisticasEstudiante',
+            'obtenerMiActividad',
+            // Utilidades
+            'obtenerEstadosPermitidos',
+            'validarDatos'
         ];
 
         echo json_encode([
             'success' => false,
-            'mensaje' => 'Acción no válida. Acciones disponibles: ' . implode(', ', $accionesValidas),
-            'accion_recibida' => $accion ?? 'undefined'
+            'mensaje' => 'Acción no válida. Acciones disponibles: ' . implode(', ', $accionesDisponibles),
+            'accion_recibida' => $accion ?: 'undefined'
         ]);
         break;
 }
 
-/**
- * Procesar subida de video promocional
- */
-function procesarVideoPromocional($archivo, $idCurso)
+// Función auxiliar para log de errores (opcional)
+function logError($mensaje, $datos = [])
 {
-    // Validar archivo
-    if (!isset($archivo) || $archivo['error'] !== UPLOAD_ERR_OK) {
-        return [
-            'success' => false,
-            'mensaje' => 'Error al subir el archivo'
-        ];
-    }
+    $log = [
+        'timestamp' => date('Y-m-d H:i:s'),
+        'usuario' => $_SESSION['idU'] ?? 'no_auth',
+        'mensaje' => $mensaje,
+        'datos' => $datos
+    ];
 
-    // Validar tipo de archivo
-    $tiposPermitidos = ['video/mp4'];
-    if (!in_array($archivo['type'], $tiposPermitidos)) {
-        return [
-            'success' => false,
-            'mensaje' => 'Solo se permiten archivos MP4'
-        ];
-    }
-
-    // Validar tamaño (100MB máximo)
-    $tamanosMaximo = 100 * 1024 * 1024; // 100MB en bytes
-    if ($archivo['size'] > $tamanosMaximo) {
-        return [
-            'success' => false,
-            'mensaje' => 'El archivo no puede superar los 100MB'
-        ];
-    }
-
-    try {
-        // Crear directorio si no existe
-        $directorioDestino = "../../storage/public/promoVideos/";
-        if (!file_exists($directorioDestino)) {
-            mkdir($directorioDestino, 0755, true);
-        }
-
-        // Generar nombre único para el archivo
-        $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-        $nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
-        $rutaCompleta = $directorioDestino . $nombreArchivo;
-        $rutaStorage = "storage/public/promoVideos/" . $nombreArchivo;
-
-        // Mover archivo
-        if (move_uploaded_file($archivo['tmp_name'], $rutaCompleta)) {
-            // Actualizar base de datos usando el controlador que maneja la eliminación del anterior
-            $resultado = ControladorCursos::ctrActualizarVideoPromocional($idCurso, $rutaStorage);
-
-            if ($resultado['success']) {
-                return [
-                    'success' => true,
-                    'mensaje' => 'Video promocional subido exitosamente',
-                    'ruta' => $rutaStorage
-                ];
-            } else {
-                // Eliminar archivo si no se pudo guardar en BD
-                unlink($rutaCompleta);
-                return [
-                    'success' => false,
-                    'mensaje' => $resultado['mensaje']
-                ];
-            }
-        } else {
-            return [
-                'success' => false,
-                'mensaje' => 'Error al mover el archivo'
-            ];
-        }
-    } catch (Exception $e) {
-        return [
-            'success' => false,
-            'mensaje' => 'Error del servidor: ' . $e->getMessage()
-        ];
-    }
+    error_log("INSCRIPCIONES_AJAX: " . json_encode($log));
 }
-
-/**
- * Procesar cambio de banner del curso
- */
-function procesarCambioBanner($archivo, $idCurso, $bannerAnterior)
-{
-    // Validar archivo
-    if (!isset($archivo) || $archivo['error'] !== UPLOAD_ERR_OK) {
-        return [
-            'success' => false,
-            'mensaje' => 'Error al subir la imagen'
-        ];
-    }
-
-    // Validar tipo de archivo
-    $tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!in_array($archivo['type'], $tiposPermitidos)) {
-        return [
-            'success' => false,
-            'mensaje' => 'Solo se permiten archivos de imagen (JPG, PNG, WEBP)'
-        ];
-    }
-
-    // Validar tamaño (5MB máximo)
-    $tamanosMaximo = 5 * 1024 * 1024; // 5MB en bytes
-    if ($archivo['size'] > $tamanosMaximo) {
-        return [
-            'success' => false,
-            'mensaje' => 'La imagen no debe superar los 5MB'
-        ];
-    }
-
-    // Validar dimensiones de la imagen (600x400)
-    $dimensiones = getimagesize($archivo['tmp_name']);
-    if ($dimensiones === false) {
-        return [
-            'success' => false,
-            'mensaje' => 'El archivo no es una imagen válida'
-        ];
-    }
-
-    $ancho = $dimensiones[0];
-    $alto = $dimensiones[1];
-
-    if ($ancho !== 600 || $alto !== 400) {
-        return [
-            'success' => false,
-            'mensaje' => 'La imagen debe tener exactamente 600x400 píxeles. Dimensiones actuales: ' . $ancho . 'x' . $alto
-        ];
-    }
-
-    try {
-        // Crear directorio si no existe
-        $directorioDestino = "../../storage/public/banners/";
-        if (!file_exists($directorioDestino)) {
-            mkdir($directorioDestino, 0755, true);
-        }
-
-        // Generar nombre único para el archivo
-        $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-        $nombreArchivo = uniqid() . '_' . time() . '.' . $extension;
-        $rutaCompleta = $directorioDestino . $nombreArchivo;
-        $rutaStorage = "storage/public/banners/" . $nombreArchivo;
-
-        // Mover archivo subido
-        if (move_uploaded_file($archivo['tmp_name'], $rutaCompleta)) {
-            // Actualizar base de datos
-            $conn = Conexion::conectar();
-            $stmt = $conn->prepare("UPDATE curso SET banner = ? WHERE id = ?");
-
-            if ($stmt->execute([$rutaStorage, $idCurso])) {
-                // Eliminar archivo anterior si existe y es diferente al default
-                if (
-                    !empty($bannerAnterior) &&
-                    $bannerAnterior !== 'storage/public/banners/default.png' &&
-                    strpos($bannerAnterior, 'default') === false
-                ) {
-
-                    $rutaAnteriorCompleta = "../../" . $bannerAnterior;
-                    if (file_exists($rutaAnteriorCompleta)) {
-                        unlink($rutaAnteriorCompleta);
-                    }
-                }
-
-                return [
-                    'success' => true,
-                    'mensaje' => 'Banner actualizado correctamente',
-                    'ruta' => $rutaStorage
-                ];
-            } else {
-                // Eliminar archivo si no se pudo actualizar BD
-                unlink($rutaCompleta);
-                return [
-                    'success' => false,
-                    'mensaje' => 'Error al actualizar la base de datos'
-                ];
-            }
-        } else {
-            return [
-                'success' => false,
-                'mensaje' => 'Error al mover el archivo'
-            ];
-        }
-    } catch (Exception $e) {
-        return [
-            'success' => false,
-            'mensaje' => 'Error del servidor: ' . $e->getMessage()
-        ];
-    }
-}
-
-/**
- * DOCUMENTACIÓN DE NUEVAS FUNCIONES AGREGADAS:
- * 
- * GESTIÓN DE CONTENIDO:
- * - crearContenido: Crea nuevo contenido en una sección
- * - actualizarContenido: Actualiza contenido existente
- * - eliminarContenido: Elimina contenido y sus assets
- * - obtenerContenidoSeccion: Lista contenido de una sección (placeholder)
- * 
- * GESTIÓN DE ASSETS:
- * - obtenerAssetsContenido: Lista assets de un contenido específico
- * - eliminarAsset: Elimina un asset específico
- * - calcularDuracionContenido: Calcula duración total del contenido
- * - actualizarDuracionContenido: Actualiza duración en BD
- * 
- * VALIDACIONES:
- * - validarVideoMP4: Valida formato y límites de video
- * - validarPDF: Valida formato y tamaño de PDF
- * 
- * SUBIDA DE ASSETS:
- * - subirVideoContenido: Sube video (1 por contenido máximo)
- * - subirPDFContenido: Sube PDF (múltiples permitidos)
- * 
- * GESTIÓN AVANZADA:
- * - crearEstructuraDirectorios: Crea estructura de folders
- * - guardarAsset: Guarda registro de asset en BD
- * - actualizarAsset: Actualiza datos de asset
- * 
- * NOTA: Para subidas masivas o complejas usar subir_contenido.ajax.php
- */
