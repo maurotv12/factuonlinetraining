@@ -13,40 +13,8 @@ $valor = $idUsuario;
 $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 ?>
 
-<!-- Navbar específico para estudiantes -->
-<nav class="estudiante-navbar">
-    <div class="estudiante-nav-container">
-        <div class="nav-content">
-            <a href="/cursosApp/App/inicioEstudiante" class="nav-brand">
-                <i class="bi bi-book-fill"></i>
-                CursosApp
-            </a>
-
-            <div class="search-container">
-                <i class="bi bi-search search-icon"></i>
-                <input type="text"
-                    id="courseSearch"
-                    class="search-input"
-                    placeholder="Buscar cursos, instructores, categorías...">
-            </div>
-
-            <div class="nav-buttons">
-                <a href="/cursosApp/App/cursosCategorias" class="nav-btn" id="categoriesBtn">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                    Categorías
-                </a>
-                <a href="/cursosApp/App/preinscripciones" class="nav-btn accent" id="preregistrationBtn">
-                    <i class="bi bi-cart3"></i>
-                    Preinscripciones
-                </a>
-                <a href="/cursosApp/App/cursosEstudiante" class="nav-btn" id="myCoursesBtn">
-                    <i class="bi bi-journal-bookmark"></i>
-                    Mis Cursos
-                </a>
-            </div>
-        </div>
-    </div>
-</nav>
+<!-- Incluir navbar de estudiante -->
+<?php include "vistas/plantillaPartes/navbarEstudiante.php"; ?>
 
 <!-- Contenido principal -->
 <div class="estudiante-content">
@@ -169,8 +137,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript base y específico para inicio de estudiante -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<!-- JavaScript específico para inicio de estudiante -->
 <script src="/cursosApp/App/vistas/assets/js/pages/inicioEstudiante.js"></script>
 
 <script>

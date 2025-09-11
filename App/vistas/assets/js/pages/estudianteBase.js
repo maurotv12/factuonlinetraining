@@ -174,7 +174,7 @@ function createCourseCard(course) {
     }
 
     return `
-        <div class="course-card" data-course-id="${course.id}">
+        <div class="course-card aa" data-course-id="${course.id}">
             ${course.esNuevo ? '<div class="course-badge badge-new">Nuevo</div>' : ''}
             ${course.esPopular ? '<div class="course-badge badge-popular">Popular</div>' : ''}
             

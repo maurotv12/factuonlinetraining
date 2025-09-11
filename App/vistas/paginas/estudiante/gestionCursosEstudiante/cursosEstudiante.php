@@ -8,8 +8,11 @@ require_once "controladores/inscripciones.controlador.php";
 $idUsuario = $_SESSION["idU"];
 $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
 
-// Por ahora simulamos los cursos - aquí irá la lógica real
-$cursosInscritos = []; // Aquí se cargarían los cursos reales desde la BD
+// Obtener cursos inscritos del usuario
+$inscripciones = ControladorInscripciones::ctrMostrarInscripcionesPorUsuario($idUsuario, 'inscrito');
+$cursosInscritos = $inscripciones['success'] ? $inscripciones['data'] : [];
+
+// Calcular estadísticas
 $estadisticas = [
     'completados' => 0,
     'en_progreso' => 0,
@@ -17,42 +20,27 @@ $estadisticas = [
     'total_horas' => 0,
     'certificados' => 0
 ];
+
+foreach ($cursosInscritos as $inscripcion) {
+    $estadisticas['total_horas'] += $inscripcion['curso']['duracion_total'] ?? 0;
+
+    switch ($inscripcion['estado']) {
+        case 'completado':
+            $estadisticas['completados']++;
+            $estadisticas['certificados']++;
+            break;
+        case 'en_progreso':
+            $estadisticas['en_progreso']++;
+            break;
+        case 'inscrito':
+            $estadisticas['no_iniciados']++;
+            break;
+    }
+}
 ?>
 
-<!-- Navbar específico para estudiantes -->
-<nav class="estudiante-navbar">
-    <div class="estudiante-nav-container">
-        <div class="nav-content">
-            <a href="/cursosApp/App/inicioEstudiante" class="nav-brand">
-                <i class="bi bi-book-fill"></i>
-                CursosApp
-            </a>
-
-            <div class="search-container">
-                <i class="bi bi-search search-icon"></i>
-                <input type="text"
-                    id="courseSearch"
-                    class="search-input"
-                    placeholder="Buscar en mis cursos...">
-            </div>
-
-            <div class="nav-buttons">
-                <a href="/cursosApp/App/cursosCategorias" class="nav-btn" id="categoriesBtn">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                    Categorías
-                </a>
-                <a href="/cursosApp/App/preinscripciones" class="nav-btn" id="preregistrationBtn">
-                    <i class="bi bi-cart3"></i>
-                    Preinscripciones
-                </a>
-                <a href="/cursosApp/App/cursosEstudiante" class="nav-btn accent" id="myCoursesBtn">
-                    <i class="bi bi-journal-bookmark"></i>
-                    Mis Cursos
-                </a>
-            </div>
-        </div>
-    </div>
-</nav>
+<!-- Incluir navbar de estudiante -->
+<?php include "vistas/plantillaPartes/navbarEstudiante.php"; ?>
 
 <!-- Contenido principal -->
 <div class="estudiante-content">
@@ -149,11 +137,14 @@ $estadisticas = [
         <!-- Grid de mis cursos -->
         <div class="courses-grid" id="myCoursesContainer">
             <?php if (count($cursosInscritos) > 0): ?>
-                <?php foreach ($cursosInscritos as $curso): ?>
-                    <div class="course-card my-course" data-course-id="<?php echo $curso['id']; ?>" data-status="<?php echo $curso['estado'] ?? 'no_iniciado'; ?>">
+                <?php foreach ($cursosInscritos as $inscripcion):
+                    $curso = $inscripcion['curso'];
+                    $fechaInscripcion = new DateTime($inscripcion['fecha_inscripcion']);
+                ?>
+                    <div class="course-card my-course" data-course-id="<?php echo $curso['id']; ?>" data-status="<?php echo $inscripcion['estado']; ?>" data-inscripcion-id="<?php echo $inscripcion['id']; ?>">
                         <!-- Badge de estado -->
                         <?php
-                        $estado = $curso['estado'] ?? 'no_iniciado';
+                        $estado = $inscripcion['estado'];
                         $badgeColor = '#8a9cac';
                         $badgeText = 'No iniciado';
 
@@ -172,19 +163,19 @@ $estadisticas = [
                             <?php echo $badgeText; ?>
                         </div>
 
-                        <img src="<?php echo ControladorCursos::ctrValidarImagenCurso($curso['banner']); ?>"
-                            alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
+                        <img src="<?php echo !empty($curso['imagen']) ? '/cursosApp/storage/public/courses/' . $curso['imagen'] : '/cursosApp/App/vistas/assets/img/default-course.jpg'; ?>"
+                            alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
                             class="course-image"
                             onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
 
                         <div class="course-content">
                             <h3 class="course-title">
-                                <?php echo htmlspecialchars($curso['nombre']); ?>
+                                <?php echo htmlspecialchars($curso['titulo']); ?>
                             </h3>
 
                             <div class="course-professor">
                                 <i class="bi bi-person-circle"></i>
-                                <span><?php echo htmlspecialchars($curso['profesor'] ?? 'Instructor'); ?></span>
+                                <span><?php echo htmlspecialchars($curso['instructor_nombre'] . ' ' . $curso['instructor_apellido']); ?></span>
                             </div>
 
                             <!-- Progreso del curso -->
@@ -192,11 +183,11 @@ $estadisticas = [
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                                     <span style="color: var(--gray); font-size: 0.85rem;">Progreso</span>
                                     <span style="color: var(--dark); font-size: 0.85rem; font-weight: 600;">
-                                        <?php echo $curso['progreso'] ?? 0; ?>%
+                                        <?php echo $inscripcion['progreso'] ?? 0; ?>%
                                     </span>
                                 </div>
                                 <div class="progress-bar" style="width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
-                                    <div class="progress-fill" style="width: <?php echo $curso['progreso'] ?? 0; ?>%; height: 100%; background: var(--accent); transition: width 0.3s ease;"></div>
+                                    <div class="progress-fill" style="width: <?php echo $inscripcion['progreso'] ?? 0; ?>%; height: 100%; background: var(--accent); transition: width 0.3s ease;"></div>
                                 </div>
                             </div>
 
@@ -205,18 +196,18 @@ $estadisticas = [
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
                                     <span style="color: var(--gray); font-size: 0.8rem;">
                                         <i class="bi bi-clock"></i>
-                                        <?php echo $curso['duracion'] ?? '0'; ?> horas
+                                        <?php echo $curso['duracion_total'] ?? '0'; ?> horas
                                     </span>
                                     <span style="color: var(--gray); font-size: 0.8rem;">
                                         <i class="bi bi-calendar"></i>
-                                        <?php echo date('d/m/Y', strtotime($curso['fecha_inscripcion'] ?? 'now')); ?>
+                                        <?php echo $fechaInscripcion->format('d/m/Y'); ?>
                                     </span>
                                 </div>
 
-                                <?php if ($estado === 'completado' && isset($curso['fecha_completado'])): ?>
+                                <?php if ($estado === 'completado' && isset($inscripcion['fecha_completado'])): ?>
                                     <div style="color: #28a745; font-size: 0.8rem;">
                                         <i class="bi bi-check-circle"></i>
-                                        Completado el <?php echo date('d/m/Y', strtotime($curso['fecha_completado'])); ?>
+                                        Completado el <?php echo date('d/m/Y', strtotime($inscripcion['fecha_completado'])); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -224,18 +215,18 @@ $estadisticas = [
                             <div class="course-footer">
                                 <div style="display: flex; gap: 0.5rem; width: 100%;">
                                     <?php if ($estado === 'completado'): ?>
-                                        <button class="course-btn" onclick="verCertificado(<?php echo $curso['id']; ?>)" style="background: #28a745; font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                                        <button class="course-btn" onclick="verCertificado(<?php echo $inscripcion['id']; ?>)" style="background: #28a745; font-size: 0.8rem; padding: 0.4rem 0.8rem;">
                                             <i class="bi bi-award"></i>
                                             Certificado
                                         </button>
-                                        <button class="course-btn" onclick="revisarCurso(<?php echo $curso['id']; ?>)" style="background: var(--primary); font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                                        <button class="course-btn" onclick="revisarCurso(<?php echo $inscripcion['id']; ?>)" style="background: var(--primary); font-size: 0.8rem; padding: 0.4rem 0.8rem;">
                                             <i class="bi bi-arrow-clockwise"></i>
                                             Revisar
                                         </button>
                                     <?php else: ?>
-                                        <button class="course-btn" onclick="continuarCurso(<?php echo $curso['id']; ?>)" style="background: var(--accent); font-size: 0.8rem; padding: 0.4rem 0.8rem; flex: 1;">
+                                        <button class="course-btn" onclick="continuarCurso(<?php echo $inscripcion['id']; ?>)" style="background: var(--accent); font-size: 0.8rem; padding: 0.4rem 0.8rem; flex: 1;">
                                             <i class="bi bi-play-circle"></i>
-                                            <?php echo $estado === 'no_iniciado' ? 'Comenzar' : 'Continuar'; ?>
+                                            <?php echo $estado === 'inscrito' ? 'Comenzar' : 'Continuar'; ?>
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -290,8 +281,7 @@ $estadisticas = [
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript base y específico para mis cursos -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<!-- JavaScript específico para mis cursos -->
 <script src="/cursosApp/App/vistas/assets/js/pages/cursosEstudiante.js"></script>
 
 <script>
