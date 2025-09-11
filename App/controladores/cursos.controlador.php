@@ -162,8 +162,8 @@ class ControladorCursos
 			return "formato_invalido";
 		}
 
-		// Validar tamaño (máximo 15MB para videos HD/FHD)
-		if ($video['size'] > 15 * 1024 * 1024) {
+		// Validar tamaño (máximo 40MB para videos HD/FHD)
+		if ($video['size'] > 40 * 1024 * 1024) {
 			return "archivo_grande";
 		}
 
