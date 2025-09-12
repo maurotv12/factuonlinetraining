@@ -6,6 +6,7 @@ require_once "controladores/inscripciones.controlador.php";
 
 // Obtener información del usuario actual
 $idUsuario = $_SESSION["idU"];
+$cursos = ControladorCursos::ctrMostrarCursos('estado', 'activo', 'inscripciones', $idUsuario);
 $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
 
 // Obtener cursos inscritos del usuario
@@ -134,124 +135,61 @@ foreach ($cursosInscritos as $inscripcion) {
             </div>
         </div>
 
-        <!-- Grid de mis cursos -->
-        <div class="courses-grid" id="myCoursesContainer">
-            <?php if (count($cursosInscritos) > 0): ?>
-                <?php foreach ($cursosInscritos as $inscripcion):
-                    $curso = $inscripcion['curso'];
-                    $fechaInscripcion = new DateTime($inscripcion['fecha_inscripcion']);
-                ?>
-                    <div class="course-card my-course" data-course-id="<?php echo $curso['id']; ?>" data-status="<?php echo $inscripcion['estado']; ?>" data-inscripcion-id="<?php echo $inscripcion['id']; ?>">
-                        <!-- Badge de estado -->
-                        <?php
-                        $estado = $inscripcion['estado'];
-                        $badgeColor = '#8a9cac';
-                        $badgeText = 'No iniciado';
+        <!-- Grid de cursos -->
+        <div class="courses-grid" id="coursesContainer">
+            <!-- Los cursos se cargarán dinámicamente aquí -->
+            <?php if ($cursos && count($cursos) > 0): ?>
+                <?php foreach ($cursos as $curso): ?>
+                    <?php
+                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                    ?>
+                    <a href="<?php echo $urlVer; ?>" class="text-decoration-none">
+                        <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
+                            <?php if (isset($curso['es_nuevo']) && $curso['es_nuevo']): ?>
+                                <div class="course-badge badge-new">Nuevo</div>
+                            <?php endif; ?>
 
-                        switch ($estado) {
-                            case 'en_progreso':
-                                $badgeColor = '#ff8d14';
-                                $badgeText = 'En progreso';
-                                break;
-                            case 'completado':
-                                $badgeColor = '#28a745';
-                                $badgeText = 'Completado';
-                                break;
-                        }
-                        ?>
-                        <div class="course-badge" style="background: <?php echo $badgeColor; ?>; color: white;">
-                            <?php echo $badgeText; ?>
-                        </div>
+                            <img src="<?php
+                                        // Usar el controlador para validar la imagen (solo storage)
+                                        echo ControladorCursos::ctrValidarImagenCurso($curso['banner']);
+                                        ?>"
+                                alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
+                                class="course-image"
+                                onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
 
-                        <img src="<?php echo !empty($curso['imagen']) ? '/cursosApp/storage/public/courses/' . $curso['imagen'] : '/cursosApp/App/vistas/assets/img/default-course.jpg'; ?>"
-                            alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
-                            class="course-image"
-                            onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                            <div class="course-content">
+                                <h3 class="course-title">
+                                    <?php echo htmlspecialchars($curso['nombre']); ?>
+                                </h3>
 
-                        <div class="course-content">
-                            <h3 class="course-title">
-                                <?php echo htmlspecialchars($curso['titulo']); ?>
-                            </h3>
-
-                            <div class="course-professor">
-                                <i class="bi bi-person-circle"></i>
-                                <span><?php echo htmlspecialchars($curso['instructor_nombre'] . ' ' . $curso['instructor_apellido']); ?></span>
-                            </div>
-
-                            <!-- Progreso del curso -->
-                            <div class="course-progress" style="margin: 1rem 0;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span style="color: var(--gray); font-size: 0.85rem;">Progreso</span>
-                                    <span style="color: var(--dark); font-size: 0.85rem; font-weight: 600;">
-                                        <?php echo $inscripcion['progreso'] ?? 0; ?>%
-                                    </span>
-                                </div>
-                                <div class="progress-bar" style="width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
-                                    <div class="progress-fill" style="width: <?php echo $inscripcion['progreso'] ?? 0; ?>%; height: 100%; background: var(--accent); transition: width 0.3s ease;"></div>
-                                </div>
-                            </div>
-
-                            <!-- Información adicional -->
-                            <div class="course-info" style="margin-bottom: 1rem;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-                                    <span style="color: var(--gray); font-size: 0.8rem;">
-                                        <i class="bi bi-clock"></i>
-                                        <?php echo $curso['duracion_total'] ?? '0'; ?> horas
-                                    </span>
-                                    <span style="color: var(--gray); font-size: 0.8rem;">
-                                        <i class="bi bi-calendar"></i>
-                                        <?php echo $fechaInscripcion->format('d/m/Y'); ?>
-                                    </span>
+                                <div class="course-professor">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span><?php echo htmlspecialchars($curso['profesor'] ?? 'Instructor'); ?></span>
                                 </div>
 
-                                <?php if ($estado === 'completado' && isset($inscripcion['fecha_completado'])): ?>
-                                    <div style="color: #28a745; font-size: 0.8rem;">
-                                        <i class="bi bi-check-circle"></i>
-                                        Completado el <?php echo date('d/m/Y', strtotime($inscripcion['fecha_completado'])); ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="course-footer">
-                                <div style="display: flex; gap: 0.5rem; width: 100%;">
-                                    <?php if ($estado === 'completado'): ?>
-                                        <button class="course-btn" onclick="verCertificado(<?php echo $inscripcion['id']; ?>)" style="background: #28a745; font-size: 0.8rem; padding: 0.4rem 0.8rem;">
-                                            <i class="bi bi-award"></i>
-                                            Certificado
-                                        </button>
-                                        <button class="course-btn" onclick="revisarCurso(<?php echo $inscripcion['id']; ?>)" style="background: var(--primary); font-size: 0.8rem; padding: 0.4rem 0.8rem;">
-                                            <i class="bi bi-arrow-clockwise"></i>
-                                            Revisar
-                                        </button>
-                                    <?php else: ?>
-                                        <button class="course-btn" onclick="continuarCurso(<?php echo $inscripcion['id']; ?>)" style="background: var(--accent); font-size: 0.8rem; padding: 0.4rem 0.8rem; flex: 1;">
-                                            <i class="bi bi-play-circle"></i>
-                                            <?php echo $estado === 'inscrito' ? 'Comenzar' : 'Continuar'; ?>
-                                        </button>
-                                    <?php endif; ?>
+                                <div class="course-footer">
+                                    <span class="course-price">
+                                        <?php
+                                        if ($curso['valor'] && $curso['valor'] > 0) {
+                                            echo '$' . number_format($curso['valor'], 0, ',', '.');
+                                        } else {
+                                            echo 'Gratis';
+                                        }
+                                        ?>
+                                    </span>
+                                    <button class="course-btn" onclick="viewCourse(<?php echo $curso['id']; ?>)">
+                                        Ver curso
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="no-courses" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
-                    <i class="bi bi-journal-x" style="font-size: 5rem; color: var(--gray); margin-bottom: 2rem;"></i>
-                    <h3 style="color: var(--dark); margin-bottom: 1rem;">Aún no tienes cursos</h3>
-                    <p style="color: var(--gray); margin-bottom: 2rem; line-height: 1.6;">
-                        ¡Comienza tu viaje de aprendizaje hoy!<br>
-                        Explora nuestro catálogo y encuentra el curso perfecto para desarrollar nuevas habilidades.
-                    </p>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="/cursosApp/App/cursosCategorias" class="course-btn" style="text-decoration: none; background: var(--accent);">
-                            <i class="bi bi-compass"></i>
-                            Explorar cursos
-                        </a>
-                        <a href="/cursosApp/App/preinscripciones" class="course-btn" style="text-decoration: none;">
-                            <i class="bi bi-cart3"></i>
-                            Ver preinscripciones
-                        </a>
-                    </div>
+                <div class="no-courses" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <i class="bi bi-journal-x" style="font-size: 4rem; color: var(--gray); margin-bottom: 1rem;"></i>
+                    <h3 style="color: var(--gray);">No hay cursos disponibles</h3>
+                    <p style="color: var(--gray);">Pronto tendremos nuevos cursos para ti.</p>
                 </div>
             <?php endif; ?>
         </div>

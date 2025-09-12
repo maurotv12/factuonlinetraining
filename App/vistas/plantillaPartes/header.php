@@ -13,6 +13,7 @@
                             <p class="text-subtitle text-muted"><?php echo $usuario["nombre"]; ?></p>
                         </div>
 
+
                         <div class="d-flex align-items-center flex-shrink-0">
                             <button class="btn btn1 me-3 d-none d-lg-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                                 ☰ <span class="ms-2">Menú</span>

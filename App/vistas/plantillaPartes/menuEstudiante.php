@@ -13,7 +13,7 @@
         </a>
     </li>
     <li class="sidebar-item">
-        <a href="/cursosApp/App/cursosEstudiante" class='sidebar-link'>
+        <a href="/cursosApp/App/preinscripciones" class='sidebar-link'>
             <i class="bi bi-cart3"></i>
             <span>Preinscripciones</span>
         </a>
