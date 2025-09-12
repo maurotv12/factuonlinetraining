@@ -4,8 +4,10 @@ require_once "controladores/cursos.controlador.php";
 require_once "controladores/usuarios.controlador.php";
 require_once "controladores/inscripciones.controlador.php";
 
+
 // Obtener información del usuario actual
 $idUsuario = $_SESSION["idU"];
+$cursos = ControladorCursos::ctrMostrarCursos('estado', 'activo', 'preinscripciones', $idUsuario);
 $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
 
 // Obtener preinscripciones reales del usuario
@@ -73,82 +75,61 @@ $datosPreinscripciones = $preinscripciones['success'] ? $preinscripciones['data'
             <?php endif; ?>
         </div>
 
-        <!-- Grid de preinscripciones -->
-        <div class="courses-grid" id="preregistrationsContainer">
-            <?php if (count($datosPreinscripciones) > 0): ?>
-                <?php foreach ($datosPreinscripciones as $preinscripcion):
-                    $curso = $preinscripcion['curso'];
-                    $fechaPreinscripcion = new DateTime($preinscripcion['fecha_preinscripcion']);
-                ?>
-                    <div class="course-card preregistered" data-course-id="<?php echo $curso['id']; ?>" data-preinscripcion-id="<?php echo $preinscripcion['id']; ?>">
-                        <!-- Badge de preinscripción -->
-                        <div class="course-badge" style="background: var(--accent); color: white;">
-                            Preinscrito
-                        </div>
+        <!-- Grid de cursos -->
+        <div class="courses-grid" id="coursesContainer">
+            <!-- Los cursos se cargarán dinámicamente aquí -->
+            <?php if ($cursos && count($cursos) > 0): ?>
+                <?php foreach ($cursos as $curso): ?>
+                    <?php
+                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                    ?>
+                    <a href="<?php echo $urlVer; ?>" class="text-decoration-none">
+                        <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
+                            <?php if (isset($curso['es_nuevo']) && $curso['es_nuevo']): ?>
+                                <div class="course-badge badge-new">Nuevo</div>
+                            <?php endif; ?>
 
-                        <img src="<?php echo !empty($curso['imagen']) ? '/cursosApp/storage/public/courses/' . $curso['imagen'] : '/cursosApp/App/vistas/assets/img/default-course.jpg'; ?>"
-                            alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
-                            class="course-image"
-                            onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                            <img src="<?php
+                                        // Usar el controlador para validar la imagen (solo storage)
+                                        echo ControladorCursos::ctrValidarImagenCurso($curso['banner']);
+                                        ?>"
+                                alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
+                                class="course-image"
+                                onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
 
-                        <div class="course-content">
-                            <h3 class="course-title">
-                                <?php echo htmlspecialchars($curso['titulo']); ?>
-                            </h3>
+                            <div class="course-content">
+                                <h3 class="course-title">
+                                    <?php echo htmlspecialchars($curso['nombre']); ?>
+                                </h3>
 
-                            <div class="course-professor">
-                                <i class="bi bi-person-circle"></i>
-                                <span><?php echo htmlspecialchars($curso['instructor_nombre'] . ' ' . $curso['instructor_apellido']); ?></span>
-                            </div>
+                                <div class="course-professor">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span><?php echo htmlspecialchars($curso['profesor'] ?? 'Instructor'); ?></span>
+                                </div>
 
-                            <!-- Fecha de preinscripción -->
-                            <div class="preregistration-date" style="margin-bottom: 1rem;">
-                                <i class="bi bi-clock" style="color: var(--gray); margin-right: 0.5rem;"></i>
-                                <span style="color: var(--gray); font-size: 0.85rem;">
-                                    Guardado el <?php echo $fechaPreinscripcion->format('d/m/Y'); ?>
-                                </span>
-                            </div>
-
-                            <div class="course-footer">
-                                <span class="course-price">
-                                    <?php
-                                    if ($curso['precio'] && $curso['precio'] > 0) {
-                                        echo '$' . number_format($curso['precio'], 2);
-                                    } else {
-                                        echo 'Gratis';
-                                    }
-                                    ?>
-                                </span>
-                                <div style="display: flex; gap: 0.5rem;">
-                                    <button class="course-btn" onclick="completarInscripcion(<?php echo $preinscripcion['id']; ?>)" style="background: var(--accent); font-size: 0.8rem; padding: 0.4rem 0.8rem;">
-                                        Inscribirse
-                                    </button>
-                                    <button class="course-btn" onclick="removerPreinscripcion(<?php echo $preinscripcion['id']; ?>)" style="background: var(--gray); font-size: 0.8rem; padding: 0.4rem 0.8rem;">
-                                        <i class="bi bi-trash"></i>
+                                <div class="course-footer">
+                                    <span class="course-price">
+                                        <?php
+                                        if ($curso['valor'] && $curso['valor'] > 0) {
+                                            echo '$' . number_format($curso['valor'], 0, ',', '.');
+                                        } else {
+                                            echo 'Gratis';
+                                        }
+                                        ?>
+                                    </span>
+                                    <button class="course-btn" onclick="viewCourse(<?php echo $curso['id']; ?>)">
+                                        Ver curso
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="no-preregistrations" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
-                    <i class="bi bi-cart-x" style="font-size: 5rem; color: var(--gray); margin-bottom: 2rem;"></i>
-                    <h3 style="color: var(--dark); margin-bottom: 1rem;">No tienes preinscripciones</h3>
-                    <p style="color: var(--gray); margin-bottom: 2rem; line-height: 1.6;">
-                        Cuando encuentres cursos que te interesen, puedes guardarlos aquí para inscribirte más tarde.<br>
-                        ¡Explora nuestro catálogo y encuentra el curso perfecto para ti!
-                    </p>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="/cursosApp/App/inicioEstudiante" class="course-btn" style="text-decoration: none;">
-                            <i class="bi bi-house"></i>
-                            Ir al inicio
-                        </a>
-                        <a href="/cursosApp/App/cursosCategorias" class="course-btn" style="text-decoration: none; background: var(--accent);">
-                            <i class="bi bi-compass"></i>
-                            Explorar cursos
-                        </a>
-                    </div>
+                <div class="no-courses" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <i class="bi bi-journal-x" style="font-size: 4rem; color: var(--gray); margin-bottom: 1rem;"></i>
+                    <h3 style="color: var(--gray);">No hay cursos disponibles</h3>
+                    <p style="color: var(--gray);">Pronto tendremos nuevos cursos para ti.</p>
                 </div>
             <?php endif; ?>
         </div>

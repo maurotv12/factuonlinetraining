@@ -3,7 +3,7 @@
 require_once "controladores/cursos.controlador.php";
 require_once "controladores/usuarios.controlador.php";
 
-$cursos = ControladorCursos::ctrMostrarCursos(null, null);
+$cursos = ControladorCursos::ctrMostrarCursos('estado', 'activo');
 $categorias = ControladorCursos::ctrObtenerCategorias();
 
 // Obtener información del usuario actual

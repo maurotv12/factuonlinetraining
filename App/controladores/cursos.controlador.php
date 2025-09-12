@@ -23,13 +23,14 @@ class ControladorCursos
 	 * @param mixed|null $valor Valor para el filtro
 	 * @return array|null Devuelve array de cursos o null
 	 */
-	public static function ctrMostrarCursos($item, $valor)
+	public static function ctrMostrarCursos($item, $valor, $tipo = null, $id_persona = null)
 	{
 		$tabla = "curso";
+
 		// $item = null;
 		// $valor = null;
 		$rutaInicio = ControladorGeneral::ctrRuta();
-		$respuesta = ModeloCursos::mdlMostrarCursos($tabla, $item, $valor);
+		$respuesta = ModeloCursos::mdlMostrarCursos($tabla, $item, $valor, $tipo, $id_persona);
 
 		// Normalizar resultado para garantizar formato consistente
 		if ($respuesta === false || $respuesta === null) {

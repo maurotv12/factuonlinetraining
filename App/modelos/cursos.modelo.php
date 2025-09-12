@@ -13,7 +13,7 @@ class ModeloCursos
 	 * @param mixed|null $valor Valor del campo para filtrar
 	 * @return array|false Array con los cursos encontrados o false si hay error
 	 */
-	public static function mdlMostrarCursos($tabla, $item, $valor)
+	public static function mdlMostrarCursos($tabla, $item, $valor, $tipo = null, $id_persona = null)
 	{
 		try {
 			// Query con JOIN para obtener información relacionada
@@ -25,11 +25,20 @@ class ModeloCursos
 					LEFT JOIN categoria cat ON c.id_categoria = cat.id
 					LEFT JOIN persona p ON c.id_persona = p.id";
 
+
+
+
 			if ($item != null && $valor != null) {
 				$sql .= " WHERE c.$item = :$item";
+				if ($tipo === 'preinscripciones' || $tipo === 'inscripciones') {
+					$validarEstado = ($tipo === 'preinscripciones') ? " AND estado = 'preinscrito'" : '';
+					$sql .= " AND c.id IN (SELECT id_curso FROM $tipo WHERE id_estudiante = :id_estudiante $validarEstado)";
+				}
 				$stmt = Conexion::conectar()->prepare($sql);
+				if ($tipo === 'preinscripciones' || $tipo === 'inscripciones') $stmt->bindParam(":id_estudiante", $id_persona, PDO::PARAM_INT);
 				$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 				$stmt->execute();
+
 
 				// Para campos únicos (id, url_amiga), devolvemos solo un registro
 				if ($item === 'id' || $item === 'url_amiga') {
@@ -41,6 +50,7 @@ class ModeloCursos
 				}
 			} else {
 				$stmt = Conexion::conectar()->prepare($sql);
+				if ($tipo === 'preinscrito') $stmt->bindParam(":id_estudiante", $id_persona, PDO::PARAM_INT);
 				$stmt->execute();
 				return $stmt->fetchAll(PDO::FETCH_ASSOC);
 			}
