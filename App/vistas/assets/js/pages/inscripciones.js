@@ -46,11 +46,15 @@ async function verificarEstadoInscripcion() {
     }
 
     try {
+        console.log('Iniciando verificación de estado para curso ID:', window.cursoData.id);
+
         // Verificar preinscripción
         const estadoPreinscripcion = await verificarPreinscripcion(window.cursoData.id);
 
         // Verificar inscripción
         const estadoInscripcion = await verificarInscripcion(window.cursoData.id);
+
+        console.log('Estados obtenidos - Inscripción:', estadoInscripcion, 'Preinscripción:', estadoPreinscripcion);
 
         // Actualizar botones según el estado
         actualizarBotonesSegunEstado(estadoInscripcion, estadoPreinscripcion);
@@ -58,6 +62,20 @@ async function verificarEstadoInscripcion() {
     } catch (error) {
         console.error('Error al verificar estado de inscripción:', error);
         mostrarMensaje('Error al verificar el estado de inscripción', 'error');
+
+        // En caso de error, mostrar botones normales
+        const btnInscribirse = document.getElementById('btn-inscribirse');
+        const btnPreinscribirse = document.getElementById('btn-preinscribirse');
+
+        if (btnInscribirse && btnPreinscribirse) {
+            btnInscribirse.innerHTML = '<i class="bi bi-person-plus me-2"></i>Inscribirse';
+            btnInscribirse.className = 'btn btn-primary';
+            btnInscribirse.disabled = false;
+
+            btnPreinscribirse.innerHTML = '<i class="bi bi-clock me-2"></i>Preinscribirse';
+            btnPreinscribirse.className = 'btn btn-secondary';
+            btnPreinscribirse.disabled = false;
+        }
     }
 }
 
@@ -66,6 +84,8 @@ async function verificarEstadoInscripcion() {
  */
 async function verificarPreinscripcion(idCurso) {
     try {
+        console.log('Verificando preinscripción para curso:', idCurso);
+
         const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
@@ -78,6 +98,8 @@ async function verificarPreinscripcion(idCurso) {
         });
 
         const data = await response.json();
+        console.log('Respuesta verificarPreinscripcion:', data);
+
         return data.success ? data.preinscripcion : false;
     } catch (error) {
         console.error('Error al verificar preinscripción:', error);
@@ -90,6 +112,8 @@ async function verificarPreinscripcion(idCurso) {
  */
 async function verificarInscripcion(idCurso) {
     try {
+        console.log('Verificando inscripción para curso:', idCurso);
+
         const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
@@ -102,6 +126,8 @@ async function verificarInscripcion(idCurso) {
         });
 
         const data = await response.json();
+        console.log('Respuesta verificarInscripcion:', data);
+
         return data.success ? data.inscripcion : false;
     } catch (error) {
         console.error('Error al verificar inscripción:', error);
@@ -116,43 +142,64 @@ function actualizarBotonesSegunEstado(inscripcion, preinscripcion) {
     const btnInscribirse = document.getElementById('btn-inscribirse');
     const btnPreinscribirse = document.getElementById('btn-preinscribirse');
 
-    if (!btnInscribirse || !btnPreinscribirse) return;
+    if (!btnInscribirse || !btnPreinscribirse) {
+        console.log('Botones no encontrados en actualizarBotonesSegunEstado');
+        return;
+    }
 
-    // Reset de clases
+    console.log('Estado inscripción:', inscripcion);
+    console.log('Estado preinscripción:', preinscripcion);
+
+    // Limpiar cualquier botón de cancelar existente
+    const botonesExistentes = btnPreinscribirse.parentNode.querySelectorAll('.btn-outline-danger');
+    botonesExistentes.forEach(btn => btn.remove());
+
+    // Reset completo de ambos botones
+    btnInscribirse.style.display = 'block';
+    btnPreinscribirse.style.display = 'block';
+    btnInscribirse.disabled = false;
+    btnPreinscribirse.disabled = false;
     btnInscribirse.className = 'btn';
     btnPreinscribirse.className = 'btn';
 
     if (inscripcion) {
         // Usuario ya está inscrito
-        btnInscribirse.textContent = 'Inscrito';
-        btnInscribirse.className += ' btn-success';
+        console.log('Usuario inscrito - actualizando botones');
+        btnInscribirse.innerHTML = '<i class="bi bi-check-circle me-2"></i>Inscrito';
+        btnInscribirse.className = 'btn btn-success';
         btnInscribirse.disabled = true;
 
         btnPreinscribirse.style.display = 'none';
 
-    } else if (preinscripcion && preinscripcion.estado === 'preinscrito') {
+    } else if (preinscripcion) {
+        console.log('aaaaaaaaaaaPreinscripción activa encontrada:', preinscripcion);
+        console.log('aaaaaaaaaaaID de preinscripción:', preinscripcion.estado);
         // Usuario está preinscrito
-        btnPreinscribirse.textContent = 'Preinscrito';
-        btnPreinscribirse.className += ' btn-info';
+        console.log('Usuario preinscrito - actualizando botones');
+        btnPreinscribirse.innerHTML = '<i class="bi bi-clock me-2"></i>Preinscrito';
+        btnPreinscribirse.className = 'btn btn-info';
         btnPreinscribirse.disabled = true;
 
-        // Mostrar botón para cancelar preinscripción
+        // Crear botón para cancelar preinscripción
         const btnCancelar = document.createElement('button');
-        btnCancelar.className = 'btn btn-outline-danger btn-sm ms-2';
-        btnCancelar.textContent = 'Cancelar';
+        btnCancelar.className = 'btn btn-outline-danger btn-sm mt-2';
+        btnCancelar.innerHTML = '<i class="bi bi-x-circle me-1"></i>Cancelar preinscripción';
         btnCancelar.onclick = () => cancelarPreinscripcion(preinscripcion.id);
+
+        // Insertar el botón de cancelar después del botón de preinscripción
         btnPreinscribirse.parentNode.appendChild(btnCancelar);
 
         btnInscribirse.style.display = 'none';
 
     } else {
         // Usuario no está inscrito ni preinscrito
-        btnInscribirse.textContent = 'Inscribirse';
-        btnInscribirse.className += ' btn-primary';
+        console.log('Usuario sin inscripción - mostrando botones normales');
+        btnInscribirse.innerHTML = '<i class="bi bi-person-plus me-2"></i>Inscribirse';
+        btnInscribirse.className = 'btn btn-primary';
         btnInscribirse.disabled = false;
 
-        btnPreinscribirse.textContent = 'Preinscribirse';
-        btnPreinscribirse.className += ' btn-secondary';
+        btnPreinscribirse.innerHTML = '<i class="bi bi-clock me-2"></i>Preinscribirse';
+        btnPreinscribirse.className = 'btn btn-secondary';
         btnPreinscribirse.disabled = false;
     }
 }
@@ -193,11 +240,13 @@ async function manejarInscripcion() {
         });
 
         const data = await response.json();
+        console.log('Respuesta de inscripción:', data);
 
         if (data.success) {
             mostrarMensaje('¡Te has inscrito exitosamente al curso!', 'success');
-            // Recargar estado de botones
-            setTimeout(() => verificarEstadoInscripcion(), 1000);
+            // Verificar estado inmediatamente después del éxito
+            console.log('Verificando estado después de inscripción exitosa...');
+            await verificarEstadoInscripcion();
         } else {
             mostrarMensaje(data.mensaje || 'Error al procesar la inscripción', 'error');
         }
@@ -244,11 +293,13 @@ async function manejarPreinscripcion() {
         });
 
         const data = await response.json();
+        console.log('Respuesta de preinscripción:', data);
 
         if (data.success) {
             mostrarMensaje('¡Te has preinscrito exitosamente al curso!', 'success');
-            // Recargar estado de botones
-            setTimeout(() => verificarEstadoInscripcion(), 1000);
+            // Verificar estado inmediatamente después del éxito
+            console.log('Verificando estado después de preinscripción exitosa...');
+            await verificarEstadoInscripcion();
         } else {
             mostrarMensaje(data.mensaje || 'Error al procesar la preinscripción', 'error');
         }
@@ -290,11 +341,13 @@ async function cancelarPreinscripcion(idPreinscripcion) {
         });
 
         const data = await response.json();
+        console.log('Respuesta de cancelación:', data);
 
         if (data.success) {
             mostrarMensaje('Preinscripción cancelada exitosamente', 'success');
-            // Recargar estado de botones
-            setTimeout(() => verificarEstadoInscripcion(), 1000);
+            // Verificar estado inmediatamente después del éxito
+            console.log('Verificando estado después de cancelación exitosa...');
+            await verificarEstadoInscripcion();
         } else {
             mostrarMensaje(data.mensaje || 'Error al cancelar la preinscripción', 'error');
         }
