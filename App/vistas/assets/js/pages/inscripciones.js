@@ -172,13 +172,17 @@ function actualizarBotonesSegunEstado(inscripcion, preinscripcion) {
         btnPreinscribirse.style.display = 'none';
 
     } else if (preinscripcion) {
-        console.log('aaaaaaaaaaaPreinscripción activa encontrada:', preinscripcion);
-        console.log('aaaaaaaaaaaID de preinscripción:', preinscripcion.estado);
-        // Usuario está preinscrito
-        console.log('Usuario preinscrito - actualizando botones');
+        console.log('Usuario preinscrito - mostrando botones de preinscripción + inscripción');
+
+        // Botón de preinscripción: mostrar estado actual (deshabilitado)
         btnPreinscribirse.innerHTML = '<i class="bi bi-clock me-2"></i>Preinscrito';
         btnPreinscribirse.className = 'btn btn-info';
         btnPreinscribirse.disabled = true;
+
+        // Botón de inscribirse: mantener funcionalidad activa para inscripción directa
+        btnInscribirse.innerHTML = '<i class="bi bi-person-plus me-2"></i>Inscribirse ahora';
+        btnInscribirse.className = 'btn btn-primary';
+        btnInscribirse.disabled = false;
 
         // Crear botón para cancelar preinscripción
         const btnCancelar = document.createElement('button');
@@ -188,8 +192,6 @@ function actualizarBotonesSegunEstado(inscripcion, preinscripcion) {
 
         // Insertar el botón de cancelar después del botón de preinscripción
         btnPreinscribirse.parentNode.appendChild(btnCancelar);
-
-        btnInscribirse.style.display = 'none';
 
     } else {
         // Usuario no está inscrito ni preinscrito

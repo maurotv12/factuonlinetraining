@@ -148,8 +148,8 @@ $datosPreinscripciones = $preinscripciones['success'] ? $preinscripciones['data'
 
 <?php include "vistas/plantillaPartes/footer.php"; ?>
 
-<!-- JavaScript específico para preinscripciones -->
-<script src="/cursosApp/App/vistas/assets/js/pages/preinscripciones.js"></script>
+<!-- JavaScript específico para inscripciones -->
+<script src="/cursosApp/App/vistas/assets/js/pages/inscripciones.js"></script>
 
 <script>
     // Cargar datos iniciales
