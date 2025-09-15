@@ -1541,3 +1541,103 @@
 .profesor-fallback strong {
     color: var(--primary-color);
 }
+
+/* =======================================================
+   ESTILOS PARA BOTONES DE INSCRIPCIÓN
+   ======================================================= */
+
+.inscription-buttons {
+    min-width: 200px;
+}
+
+.inscription-buttons .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.inscription-buttons .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.inscription-buttons .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), #2c5aa0);
+    border: none;
+    box-shadow: 0 4px 15px rgba(54, 130, 196, 0.3);
+}
+
+.inscription-buttons .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(54, 130, 196, 0.4);
+}
+
+.inscription-buttons .btn-secondary {
+    background: linear-gradient(135deg, var(--gray-color), #7a8a9a);
+    border: none;
+    box-shadow: 0 4px 15px rgba(138, 156, 172, 0.3);
+}
+
+.inscription-buttons .btn-secondary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(138, 156, 172, 0.4);
+}
+
+.inscription-buttons .btn-success {
+    background: linear-gradient(135deg, #28a745, #218838);
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.inscription-buttons .btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    border: none;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+}
+
+.inscription-buttons .btn-outline-danger {
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+}
+
+.inscription-buttons .btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.inscription-buttons .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.alert-info.instructor-info {
+    border: 2px solid var(--primary-color);
+    background: linear-gradient(135deg, rgba(54, 130, 196, 0.1), rgba(54, 130, 196, 0.05));
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.alert-info.instructor-info i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .inscription-buttons {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .inscription-buttons .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+}

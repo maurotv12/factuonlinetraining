@@ -129,7 +129,7 @@ if (isset($_SESSION['mensaje_error'])) {
     <!-- Header del curso -->
     <div class="curso-header">
         <div class="row align-items-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
                     <div class="breadcrumb-custom">
                         <a href="/cursosApp/App/listadoCursosProfe" class="breadcrumb-link">
@@ -193,6 +193,37 @@ if (isset($_SESSION['mensaje_error'])) {
                         <?php endif; ?>
                     </div>
                 </div>
+            </div>
+            <div class="align-items-center col-md-2">
+                <!-- Botones de inscripción y preinscripción - Solo visible para usuarios logueados -->
+                <?php if (isset($_SESSION['idU'])): ?>
+                    <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
+                        <!-- Si es el profesor del curso, mostrar mensaje informativo -->
+                        <div class="alert alert-info instructor-info text-center">
+                            <i class="bi bi-person-check"></i><br>
+                            <strong>Eres el instructor de este curso</strong>
+                        </div>
+                    <?php else: ?>
+                        <!-- Botones para estudiantes -->
+                        <div class="inscription-buttons d-flex flex-column gap-2">
+                            <button class="btn btn-primary" id="btn-inscribirse" disabled>
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Verificando...
+                            </button>
+                            <button class="btn btn-secondary" id="btn-preinscribirse" disabled>
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Verificando...
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="inscription-buttons d-flex flex-column gap-2">
+                        <a href="/cursosApp/login" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Iniciar sesión para inscribirse
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
@@ -711,4 +742,5 @@ if (isset($_SESSION['mensaje_error'])) {
 </script>
 
 <!-- Incluir JavaScript para la página -->
+<script src="/cursosApp/App/vistas/assets/js/pages/inscripciones.js?v=<?= time() ?>"></script>
 <script src="/cursosApp/App/vistas/assets/js/pages/verCursoProfe.js?v=<?= time() ?>"></script>

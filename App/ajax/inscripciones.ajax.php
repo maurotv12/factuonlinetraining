@@ -49,6 +49,7 @@ function validarRolParaAccion($accion)
     // Acciones para estudiantes
     $accionesEstudiante = [
         'crearPreinscripcion',
+        'autoInscripcion',              // <-- nueva acción para que estudiantes se inscriban
         'mostrarMisPreinscripciones',
         'mostrarMisInscripciones',
         'cancelarPreinscripcion',
@@ -208,6 +209,24 @@ switch ($accion) {
         }
 
         $respuesta = ControladorInscripciones::ctrCrearInscripcion($datos);
+        echo json_encode($respuesta);
+        break;
+
+    case 'autoInscripcion':
+        // Para que estudiantes se inscriban a sí mismos
+        if (!isset($datos['idCurso'])) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID del curso es requerido']);
+            break;
+        }
+
+        // Preparar datos para la inscripción automática
+        $datosInscripcion = [
+            'idCurso' => $datos['idCurso'],
+            'idEstudiante' => $_SESSION['idU'], // Usar el ID del usuario actual
+            'estado' => 'pendiente'  // Estado inicial de la inscripción
+        ];
+
+        $respuesta = ControladorInscripciones::ctrCrearInscripcion($datosInscripcion);
         echo json_encode($respuesta);
         break;
 

@@ -61,18 +61,7 @@ $datosPreinscripciones = $preinscripciones['success'] ? $preinscripciones['data'
                 </div>
             </div>
 
-            <?php if (count($datosPreinscripciones) > 0): ?>
-                <div style="display: flex; gap: 1rem;">
-                    <button class="course-btn" onclick="completarTodasInscripciones()" style="background: var(--accent);">
-                        <i class="bi bi-credit-card"></i>
-                        Completar todas las inscripciones
-                    </button>
-                    <button class="course-btn" onclick="limpiarPreinscripciones()" style="background: var(--gray);">
-                        <i class="bi bi-trash"></i>
-                        Limpiar lista
-                    </button>
-                </div>
-            <?php endif; ?>
+
         </div>
 
         <!-- Grid de cursos -->
