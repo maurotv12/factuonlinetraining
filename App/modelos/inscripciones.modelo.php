@@ -47,22 +47,50 @@ class ModeloInscripciones
 				];
 			}
 
-			$stmt = Conexion::conectar()->prepare("INSERT INTO preinscripciones (id_curso, id_estudiante, estado, fecha_preinscripcion) VALUES (:id_curso, :id_estudiante, 'preinscrito', NOW())");
-
+			// Verificar si existe una preinscripción cancelada para reactivarla
+			$stmt = Conexion::conectar()->prepare("SELECT id FROM preinscripciones WHERE id_curso = :id_curso AND id_estudiante = :id_estudiante AND estado = 'cancelado'");
 			$stmt->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
 			$stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
+			$stmt->execute();
+			$preinscripcionCancelada = $stmt->fetch(PDO::FETCH_ASSOC);
 
-			if ($stmt->execute()) {
-				return [
-					'success' => true,
-					'mensaje' => 'Preinscripción creada exitosamente',
-					'id' => Conexion::conectar()->lastInsertId()
-				];
+			if ($preinscripcionCancelada) {
+				// Reactivar la preinscripción cancelada
+				$stmtUpdate = Conexion::conectar()->prepare("UPDATE preinscripciones SET estado = 'preinscrito', fecha_actualizacion = NOW() WHERE id = :id");
+				$stmtUpdate->bindParam(":id", $preinscripcionCancelada['id'], PDO::PARAM_INT);
+
+				if ($stmtUpdate->execute()) {
+					return [
+						'success' => true,
+						'mensaje' => 'Preinscripción reactivada exitosamente',
+						'id' => $preinscripcionCancelada['id'],
+						'reactivada' => true
+					];
+				} else {
+					return [
+						'success' => false,
+						'mensaje' => 'Error al reactivar la preinscripción'
+					];
+				}
 			} else {
-				return [
-					'success' => false,
-					'mensaje' => 'Error al crear la preinscripción'
-				];
+				// Crear nueva preinscripción
+				$stmtInsert = Conexion::conectar()->prepare("INSERT INTO preinscripciones (id_curso, id_estudiante, estado, fecha_preinscripcion) VALUES (:id_curso, :id_estudiante, 'preinscrito', NOW())");
+				$stmtInsert->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
+				$stmtInsert->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
+
+				if ($stmtInsert->execute()) {
+					return [
+						'success' => true,
+						'mensaje' => 'Preinscripción creada exitosamente',
+						'id' => Conexion::conectar()->lastInsertId(),
+						'reactivada' => false
+					];
+				} else {
+					return [
+						'success' => false,
+						'mensaje' => 'Error al crear la preinscripción'
+					];
+				}
 			}
 		} catch (Exception $e) {
 			return [
@@ -135,7 +163,7 @@ class ModeloInscripciones
 		}
 
 		try {
-			$stmt = Conexion::conectar()->prepare("SELECT id FROM preinscripciones WHERE id_curso = :id_curso AND id_estudiante = :id_estudiante AND estado = 'preinscrito'");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM preinscripciones WHERE id_curso = :id_curso AND id_estudiante = :id_estudiante AND estado = 'preinscrito'");
 
 			$stmt->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
 			$stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
@@ -144,6 +172,43 @@ class ModeloInscripciones
 			return $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch (Exception $e) {
 			error_log("Error en mdlVerificarPreinscripcion: " . $e->getMessage());
+			return false;
+		}
+	}
+
+	/*=============================================
+	Verificar preinscripción con cualquier estado
+	==============================================*/
+	public static function mdlVerificarPreinscripcionTodosEstados($idCurso, $idEstudiante, $estado = null)
+	{
+		// Validaciones
+		if (!$idCurso || !$idEstudiante) {
+			return false;
+		}
+
+		try {
+			$sql = "SELECT * FROM preinscripciones WHERE id_curso = :id_curso AND id_estudiante = :id_estudiante";
+			$parametros = [
+				':id_curso' => $idCurso,
+				':id_estudiante' => $idEstudiante
+			];
+
+			if ($estado !== null) {
+				$sql .= " AND estado = :estado";
+				$parametros[':estado'] = $estado;
+			}
+
+			$stmt = Conexion::conectar()->prepare($sql);
+
+			foreach ($parametros as $key => $value) {
+				$stmt->bindValue($key, $value);
+			}
+
+			$stmt->execute();
+
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch (Exception $e) {
+			error_log("Error en mdlVerificarPreinscripcionTodosEstados: " . $e->getMessage());
 			return false;
 		}
 	}
