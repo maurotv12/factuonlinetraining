@@ -1,0 +1,169 @@
+/* 
+ * Estilos para la página de gestión de estudiantes del profesor
+ * estudiantesProfe.php
+ */
+
+.badge-estado {
+    font-size: 0.75em;
+    padding: 0.5em 0.75em;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 0.875rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+}
+
+.student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.student-details {
+    flex: 1;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.student-id {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.curso-badge {
+    display: inline-block;
+    margin: 2px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    border-radius: 12px;
+}
+
+.curso-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.curso-activo {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #b8daff;
+}
+
+/* Media queries para responsive design */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+
+    .student-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Estilos adicionales para mejorar la experiencia */
+.loading-overlay {
+    position: relative;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* Animaciones suaves */
+.card {
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.btn {
+    transition: all 0.15s ease-in-out;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.025);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* Mejoras para badges */
+.badge {
+    font-weight: 500;
+}
+
+/* Estilos para inputs y formularios */
+.form-control:focus,
+.form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Responsividad para filtros */
+@media (max-width: 576px) {
+    .col-md-4 {
+        margin-bottom: 1rem;
+    }
+
+    .btn-group .btn {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.3rem;
+    }
+}

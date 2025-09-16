@@ -32,7 +32,6 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/menu.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/usuarios.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/crearCurso.css">
     <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/estudiante.css">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
