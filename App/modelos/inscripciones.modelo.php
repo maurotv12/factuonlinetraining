@@ -371,6 +371,12 @@ class ModeloInscripciones
 			// Verificar si existe una preinscripción activa para convertir
 			$preinscripcionActiva = self::mdlVerificarPreinscripcion($datos['idCurso'], $datos['idEstudiante']);
 
+			// Si no hay preinscripción activa, verificar si hay una cancelada
+			$preinscripcionCancelada = null;
+			if (!$preinscripcionActiva) {
+				$preinscripcionCancelada = self::mdlVerificarPreinscripcionTodosEstados($datos['idCurso'], $datos['idEstudiante'], 'cancelado');
+			}
+
 			// Crear la inscripción
 			$stmt = $conexion->prepare("INSERT INTO inscripciones (id_curso, id_estudiante, estado, fecha_registro) VALUES (:id_curso, :id_estudiante, :estado, NOW())");
 
@@ -388,14 +394,34 @@ class ModeloInscripciones
 					$stmtUpdate->bindParam(":id_preinscripcion", $preinscripcionActiva['id'], PDO::PARAM_INT);
 					$stmtUpdate->execute();
 				}
+				// Si existe una preinscripción cancelada, también convertirla
+				elseif ($preinscripcionCancelada) {
+					$stmtUpdate = $conexion->prepare("UPDATE preinscripciones SET estado = 'convertido', id_inscripcion = :id_inscripcion, fecha_actualizacion = NOW() WHERE id = :id_preinscripcion");
+					$stmtUpdate->bindParam(":id_inscripcion", $idInscripcion, PDO::PARAM_INT);
+					$stmtUpdate->bindParam(":id_preinscripcion", $preinscripcionCancelada['id'], PDO::PARAM_INT);
+					$stmtUpdate->execute();
+				}
 
 				$conexion->commit();
 
+				// Determinar el mensaje según el tipo de preinscripción convertida
+				$mensajePreinscripcion = '';
+				$preinscripcionConvertida = false;
+
+				if ($preinscripcionActiva) {
+					$mensajePreinscripcion = ' y preinscripción activa convertida';
+					$preinscripcionConvertida = true;
+				} elseif ($preinscripcionCancelada) {
+					$mensajePreinscripcion = ' y preinscripción cancelada reactivada y convertida';
+					$preinscripcionConvertida = true;
+				}
+
 				return [
 					'success' => true,
-					'mensaje' => 'Inscripción creada exitosamente' . ($preinscripcionActiva ? ' y preinscripción convertida' : ''),
+					'mensaje' => 'Inscripción creada exitosamente' . $mensajePreinscripcion,
 					'id' => $idInscripcion,
-					'preinscripcion_convertida' => (bool)$preinscripcionActiva
+					'preinscripcion_convertida' => $preinscripcionConvertida,
+					'tipo_preinscripcion' => $preinscripcionActiva ? 'activa' : ($preinscripcionCancelada ? 'cancelada' : 'ninguna')
 				];
 			} else {
 				$conexion->rollBack();
