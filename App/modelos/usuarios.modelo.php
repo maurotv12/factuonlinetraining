@@ -214,4 +214,107 @@ Actualizar usuario completar datos perfil
 			return "error: " . $e->getMessage();
 		}
 	}
+
+	/*=============================================
+	Obtener estudiantes con inscripciones pendientes en cursos del profesor
+	=============================================*/
+	public static function mdlObtenerEstudiantesInscripcionesPendientes($idProfesor)
+	{
+		$conexion = Conexion::conectar();
+
+		$stmt = $conexion->prepare("
+			SELECT DISTINCT 
+				p.id,
+				p.nombre,
+				p.email,
+				p.foto,
+				p.fecha_registro,
+				COUNT(DISTINCT i.id) as inscripciones_pendientes,
+				COUNT(DISTINCT i2.id) as inscripciones_activas
+			FROM persona p
+			INNER JOIN persona_roles pr ON p.id = pr.id_persona
+			INNER JOIN roles r ON pr.id_rol = r.id
+			INNER JOIN inscripciones i ON p.id = i.id_estudiante
+			INNER JOIN curso c ON i.id_curso = c.id
+			LEFT JOIN inscripciones i2 ON p.id = i2.id_estudiante AND i2.estado = 'activo'
+			LEFT JOIN curso c2 ON i2.id_curso = c2.id AND c2.id_persona = :idProfesor
+			WHERE r.nombre = 'estudiante'
+			AND c.id_persona = :idProfesor
+			AND i.estado = 'pendiente'
+			AND p.estado = 'activo'
+			GROUP BY p.id, p.nombre, p.email, p.foto, p.fecha_registro
+			ORDER BY p.nombre ASC
+		");
+
+		$stmt->bindParam(":idProfesor", $idProfesor, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/*=============================================
+	Obtener cursos con inscripciones pendientes de un estudiante para un profesor
+	=============================================*/
+	public static function mdlObtenerCursosPendientesEstudiante($idEstudiante, $idProfesor)
+	{
+		$conexion = Conexion::conectar();
+
+		$stmt = $conexion->prepare("
+			SELECT 
+				i.id as inscripcion_id,
+				i.estado,
+				i.fecha_registro as fecha_inscripcion,
+				c.id as curso_id,
+				c.nombre as curso_nombre,
+				c.banner as curso_banner,
+				c.valor as curso_valor,
+				cat.nombre as categoria_nombre
+			FROM inscripciones i
+			INNER JOIN curso c ON i.id_curso = c.id
+			LEFT JOIN categoria cat ON c.id_categoria = cat.id
+			WHERE i.id_estudiante = :idEstudiante
+			AND c.id_persona = :idProfesor
+			AND i.estado = 'pendiente'
+			ORDER BY i.fecha_registro DESC
+		");
+
+		$stmt->bindParam(":idEstudiante", $idEstudiante, PDO::PARAM_INT);
+		$stmt->bindParam(":idProfesor", $idProfesor, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/*=============================================
+	Obtener cursos activos de un estudiante para un profesor
+	=============================================*/
+	public static function mdlObtenerCursosActivosEstudiante($idEstudiante, $idProfesor)
+	{
+		$conexion = Conexion::conectar();
+
+		$stmt = $conexion->prepare("
+			SELECT 
+				i.id as inscripcion_id,
+				i.estado,
+				i.fecha_registro as fecha_inscripcion,
+				c.id as curso_id,
+				c.nombre as curso_nombre,
+				c.banner as curso_banner,
+				c.valor as curso_valor,
+				cat.nombre as categoria_nombre
+			FROM inscripciones i
+			INNER JOIN curso c ON i.id_curso = c.id
+			LEFT JOIN categoria cat ON c.id_categoria = cat.id
+			WHERE i.id_estudiante = :idEstudiante
+			AND c.id_persona = :idProfesor
+			AND i.estado = 'activo'
+			ORDER BY i.fecha_registro DESC
+		");
+
+		$stmt->bindParam(":idEstudiante", $idEstudiante, PDO::PARAM_INT);
+		$stmt->bindParam(":idProfesor", $idProfesor, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }

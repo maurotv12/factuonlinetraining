@@ -320,6 +320,7 @@ class ControladorGeneral
 			'cursos' => ['profesor', 'admin'],
 			'profesores' => ['profesor', 'admin'],
 			'profesores/gestionPerfil/perfilProfesor' => ['profesor', 'admin', 'estudiante'],
+			'profesores/estudiantesProfe' => ['profesor', 'admin'],
 
 			// Páginas para estudiantes, profesores y administradores
 			'misCursos' => ['estudiante', 'profesor', 'admin'],

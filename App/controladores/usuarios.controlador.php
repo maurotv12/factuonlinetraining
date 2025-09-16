@@ -379,4 +379,49 @@ class ControladorUsuarios
 			'errores' => $errores
 		];
 	}
+
+	/*=============================================
+	Obtener estudiantes con inscripciones pendientes para el profesor
+	=============================================*/
+	public static function ctrObtenerEstudiantesInscripcionesPendientes($idProfesor)
+	{
+		return ModeloUsuarios::mdlObtenerEstudiantesInscripcionesPendientes($idProfesor);
+	}
+
+	/*=============================================
+	Obtener cursos con inscripciones pendientes de un estudiante
+	=============================================*/
+	public static function ctrObtenerCursosPendientesEstudiante($idEstudiante, $idProfesor)
+	{
+		return ModeloUsuarios::mdlObtenerCursosPendientesEstudiante($idEstudiante, $idProfesor);
+	}
+
+	/*=============================================
+	Obtener cursos activos de un estudiante
+	=============================================*/
+	public static function ctrObtenerCursosActivosEstudiante($idEstudiante, $idProfesor)
+	{
+		return ModeloUsuarios::mdlObtenerCursosActivosEstudiante($idEstudiante, $idProfesor);
+	}
+
+	/*=============================================
+	Cargar datos para gestión de estudiantes del profesor
+	=============================================*/
+	public static function ctrCargarDatosEstudiantesProfesor($idProfesor)
+	{
+		// Obtener estudiantes con inscripciones pendientes
+		$estudiantes = self::ctrObtenerEstudiantesInscripcionesPendientes($idProfesor);
+
+		// Para cada estudiante, obtener cursos pendientes y activos
+		foreach ($estudiantes as &$estudiante) {
+			$estudiante['cursos_pendientes'] = self::ctrObtenerCursosPendientesEstudiante($estudiante['id'], $idProfesor);
+			$estudiante['cursos_activos'] = self::ctrObtenerCursosActivosEstudiante($estudiante['id'], $idProfesor);
+			$estudiante['foto_validada'] = self::ctrValidarFotoUsuario($estudiante['foto']);
+		}
+
+		return [
+			'estudiantes' => $estudiantes,
+			'total_estudiantes' => count($estudiantes)
+		];
+	}
 }

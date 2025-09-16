@@ -367,3 +367,100 @@ if (isset($_POST["action"]) && $_POST["action"] == "actualizar_privacidad") {
 		echo json_encode(["success" => false, "message" => "Datos incompletos"]);
 	}
 }
+
+/*=============================================
+Cargar estudiantes con inscripciones pendientes
+=============================================*/
+if (isset($_POST["accion"]) && $_POST["accion"] == "cargar_estudiantes_pendientes") {
+	session_start();
+
+	if (!isset($_SESSION['idU'])) {
+		echo json_encode(["success" => false, "message" => "Sesión no válida"]);
+		exit;
+	}
+
+	// Verificar que el usuario sea profesor
+	if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+		echo json_encode(["success" => false, "message" => "No tienes permisos para esta acción"]);
+		exit;
+	}
+
+	$datos = ControladorUsuarios::ctrCargarDatosEstudiantesProfesor($_SESSION['idU']);
+	echo json_encode(["success" => true, "data" => $datos]);
+}
+
+/*=============================================
+Obtener cursos pendientes de un estudiante
+=============================================*/
+if (isset($_POST["accion"]) && $_POST["accion"] == "obtener_cursos_pendientes") {
+	session_start();
+
+	if (!isset($_SESSION['idU']) || !isset($_POST["idEstudiante"])) {
+		echo json_encode(["success" => false, "message" => "Datos incompletos"]);
+		exit;
+	}
+
+	// Verificar que el usuario sea profesor
+	if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+		echo json_encode(["success" => false, "message" => "No tienes permisos para esta acción"]);
+		exit;
+	}
+
+	$idEstudiante = $_POST["idEstudiante"];
+	$cursos = ControladorUsuarios::ctrObtenerCursosPendientesEstudiante($idEstudiante, $_SESSION['idU']);
+
+	echo json_encode(["success" => true, "cursos" => $cursos]);
+}
+
+/*=============================================
+Obtener cursos activos de un estudiante
+=============================================*/
+if (isset($_POST["accion"]) && $_POST["accion"] == "obtener_cursos_activos") {
+	session_start();
+
+	if (!isset($_SESSION['idU']) || !isset($_POST["idEstudiante"])) {
+		echo json_encode(["success" => false, "message" => "Datos incompletos"]);
+		exit;
+	}
+
+	// Verificar que el usuario sea profesor
+	if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+		echo json_encode(["success" => false, "message" => "No tienes permisos para esta acción"]);
+		exit;
+	}
+
+	$idEstudiante = $_POST["idEstudiante"];
+	$cursos = ControladorUsuarios::ctrObtenerCursosActivosEstudiante($idEstudiante, $_SESSION['idU']);
+
+	echo json_encode(["success" => true, "cursos" => $cursos]);
+}
+
+/*=============================================
+Activar inscripción de estudiante
+=============================================*/
+if (isset($_POST["accion"]) && $_POST["accion"] == "activar_inscripcion") {
+	session_start();
+
+	if (!isset($_SESSION['idU']) || !isset($_POST["idInscripcion"])) {
+		echo json_encode(["success" => false, "message" => "Datos incompletos"]);
+		exit;
+	}
+
+	// Verificar que el usuario sea profesor
+	if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+		echo json_encode(["success" => false, "message" => "No tienes permisos para esta acción"]);
+		exit;
+	}
+
+	// Incluir controlador de inscripciones
+	require_once "../controladores/inscripciones.controlador.php";
+
+	$idInscripcion = $_POST["idInscripcion"];
+	$respuesta = ControladorInscripciones::ctrActualizarEstadoInscripcion($idInscripcion, 'activo');
+
+	if ($respuesta['success']) {
+		echo json_encode(["success" => true, "message" => "Inscripción activada correctamente"]);
+	} else {
+		echo json_encode(["success" => false, "message" => $respuesta['mensaje']]);
+	}
+}
