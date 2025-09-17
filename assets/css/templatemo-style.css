@@ -537,75 +537,6 @@
     font-weight: bold;
   }
 
-  #categorias .team-marg {
-    margin-top: 30px;
-  }
-
-  .team-thumb {
-    background: #ffffff;
-    overflow: hidden;
-    text-align: left;
-    border-radius: 10px;
-    box-shadow: 5px 5px 20px 7px rgba(0, 0, 0, 0.18), -5px -5px 30px 7px rgba(0, 0, 0, 0.20);
-    cursor: pointer;
-    transition: 0.4s;
-    padding: 0px 0px 0px 0px;
-  }
-
-  .team-info {
-    padding: 5px 20px;
-  }
-
-  #categorias .text-info {
-    font-size: 14px;
-    color: #f0f0f0;
-  }
-
-  .team-image img {
-    width: 100%;
-  }
-
-  .team-thumb .social-icon {
-    border-top: 1px solid #f0f0f0;
-    padding: 4px 20px 0 20px;
-  }
-
-  .team-thumb .social-icon li a {
-    background: #ffffff;
-    color: #252020;
-  }
-
-  .team-info h3 {
-    font-size: 16px;
-    margin: 0;
-  }
-
-  .team-info .valorC {
-    font-size: 20px;
-    color: #ff8c11;
-  }
-
-  .team-info .ver-btn {
-    background: #0b0472;
-    border-radius: 50px;
-    border: 2px solid #ff8c11;
-    color: #ffffff;
-    font-size: 16px;
-    padding: 5px 5px;
-    transition: 0.5s;
-  }
-
-  .team-info .ver-btn:hover {
-    background: #ff8c11;
-    border-radius: 50px;
-    border-color: 2px solid #173f65;
-    color: #000000;
-  }
-
-
-
-
-
   /*---------------------------------------
       COURSES
   -----------------------------------------*/
@@ -847,7 +778,6 @@
 
     .feature-thumb,
     .about-info,
-    .team-thumb,
     .footer-info {
       margin-bottom: 20px;
     }

@@ -146,9 +146,9 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
                   <div class="col-md-4 col-sm-6 team-marg mb-4">
                      <div class="team-thumb card-curso">
                         <div class="team-image">
-                           <a href="<?= $value["url_amiga"] ?>"><img src="App/<?= $value["banner"] ?>" class="img-responsive post-curso" alt="Curso"></a>
+                           <a href="<?= $value["url_amiga"] ?>"><img src="<?= $value["banner"] ?>" class="img-responsive post-curso" alt="Curso"></a>
                         </div>
-                        <div class="team-info">
+                        <div class="team-info pb-4">
                            <h3><a href="<?= $value["url_amiga"] ?>"><?= $rnCurso ?></a></h3>
                            <a href="<?= $value["url_amiga"] ?>"><span><?= $resulDescripcion ?></span></a>
                            <div class="curso-footer">
@@ -159,12 +159,6 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
                               </div>
                            </div>
                         </div>
-                        <ul class="social-icon mt-auto">
-                           <li><a href="https://www.instagram.com/festivaldecine_calibelula/" class="fa fa-instagram" target="_blank"></a></li>
-                           <li><a href="https://www.facebook.com/festivaldecinecalibelula/" class="fa fa-facebook-square" target="_blank"></a></li>
-                           <li><a href="https://www.youtube.com/channel/UCWbTp6hNKlX7QPKsNMYbCWg" class="fa fa-youtube-play" target="_blank"></a></li>
-                           <li><a href="https://twitter.com/FCalibelula" class="fa fa-twitter" target="_blank"></a></li>
-                        </ul>
                      </div>
                   </div>
                <?php endforeach; ?>
