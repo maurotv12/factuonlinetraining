@@ -436,6 +436,27 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "obtener_cursos_activos") {
 }
 
 /*=============================================
+Obtener estudiantes con cursos detallados del profesor
+=============================================*/
+if (isset($_POST["accion"]) && $_POST["accion"] == "obtener_estudiantes_cursos_profesor") {
+	session_start();
+
+	if (!isset($_SESSION['idU'])) {
+		echo json_encode(["success" => false, "message" => "No hay sesión activa"]);
+		exit;
+	}
+
+	// Verificar que el usuario sea profesor
+	if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+		echo json_encode(["success" => false, "message" => "No tienes permisos para esta acción"]);
+		exit;
+	}
+
+	$datos = ControladorUsuarios::ctrObtenerEstudiantesConCursosProfesor($_SESSION['idU']);
+	echo json_encode(["success" => true, "data" => $datos]);
+}
+
+/*=============================================
 Activar inscripción de estudiante
 =============================================*/
 if (isset($_POST["accion"]) && $_POST["accion"] == "activar_inscripcion") {

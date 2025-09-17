@@ -317,4 +317,71 @@ Actualizar usuario completar datos perfil
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+	/*=============================================
+	Obtener estudiantes con preinscripciones e inscripciones por profesor
+	Devuelve un registro por cada curso al que el estudiante esté preinscrito o inscrito
+	=============================================*/
+	public static function mdlObtenerEstudiantesConCursosProfesor($idProfesor)
+	{
+		$conexion = Conexion::conectar();
+
+		$stmt = $conexion->prepare("
+			(SELECT 
+				p.id as estudiante_id,
+				p.nombre as estudiante_nombre,
+				p.email as estudiante_email,
+				p.foto as estudiante_foto,
+				c.id as curso_id,
+				c.nombre as curso_nombre,
+				cat.nombre as categoria_nombre,
+				'preinscrito' as tipo,
+				pr.estado as estado,
+				pr.fecha_preinscripcion as fecha_registro,
+				pr.id as registro_id
+			FROM persona p
+			INNER JOIN persona_roles prol ON p.id = prol.id_persona
+			INNER JOIN roles r ON prol.id_rol = r.id
+			INNER JOIN preinscripciones pr ON p.id = pr.id_estudiante
+			INNER JOIN curso c ON pr.id_curso = c.id
+			LEFT JOIN categoria cat ON c.id_categoria = cat.id
+			WHERE r.nombre = 'estudiante'
+			AND c.id_persona = :idProfesor1
+			AND pr.estado = 'preinscrito'
+			AND p.estado = 'activo')
+			
+			UNION ALL
+			
+			(SELECT 
+				p.id as estudiante_id,
+				p.nombre as estudiante_nombre,
+				p.email as estudiante_email,
+				p.foto as estudiante_foto,
+				c.id as curso_id,
+				c.nombre as curso_nombre,
+				cat.nombre as categoria_nombre,
+				'inscrito' as tipo,
+				i.estado as estado,
+				i.fecha_registro as fecha_registro,
+				i.id as registro_id
+			FROM persona p
+			INNER JOIN persona_roles prol ON p.id = prol.id_persona
+			INNER JOIN roles r ON prol.id_rol = r.id
+			INNER JOIN inscripciones i ON p.id = i.id_estudiante
+			INNER JOIN curso c ON i.id_curso = c.id
+			LEFT JOIN categoria cat ON c.id_categoria = cat.id
+			WHERE r.nombre = 'estudiante'
+			AND c.id_persona = :idProfesor2
+			AND i.estado IN ('pendiente', 'activo')
+			AND p.estado = 'activo')
+			
+			ORDER BY fecha_registro DESC
+		");
+
+		$stmt->bindParam(":idProfesor1", $idProfesor, PDO::PARAM_INT);
+		$stmt->bindParam(":idProfesor2", $idProfesor, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }

@@ -424,4 +424,32 @@ class ControladorUsuarios
 			'total_estudiantes' => count($estudiantes)
 		];
 	}
+
+	/*=============================================
+	Obtener estudiantes con preinscripciones e inscripciones detalladas
+	=============================================*/
+	public static function ctrObtenerEstudiantesConCursosProfesor($idProfesor)
+	{
+		$datos = ModeloUsuarios::mdlObtenerEstudiantesConCursosProfesor($idProfesor);
+
+		// Procesar las fotos de los estudiantes y formatear datos
+		foreach ($datos as &$registro) {
+			$registro['estudiante_foto_validada'] = self::ctrValidarFotoUsuario($registro['estudiante_foto']);
+
+			// Formatear fecha para mostrar
+			$registro['fecha_formateada'] = date('d/m/Y H:i', strtotime($registro['fecha_registro']));
+
+			// Crear iniciales para el avatar si no hay foto
+			$nombres = explode(' ', $registro['estudiante_nombre']);
+			$iniciales = '';
+			foreach ($nombres as $nombre) {
+				if (!empty($nombre)) {
+					$iniciales .= strtoupper(substr($nombre, 0, 1));
+				}
+			}
+			$registro['iniciales'] = substr($iniciales, 0, 2);
+		}
+
+		return $datos;
+	}
 }
