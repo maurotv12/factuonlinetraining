@@ -143,7 +143,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
                   $nCurso = $value["nombre"];
                   $rnCurso = substr($nCurso, 0, 30);
                   ?>
-                  <div class="col-md-4 col-sm-6 team-marg mb-4">
+                  <div class="col-lg-4 col-md-6 col-sm-12 team-marg mb-4">
                      <div class="team-thumb card-curso">
                         <div class="team-image">
                            <a href="<?= $value["url_amiga"] ?>"><img src="<?= $value["banner"] ?>" class="img-responsive post-curso" alt="Curso"></a>

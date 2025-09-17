@@ -1,100 +1,218 @@
-/* ESTILOS PARA IGUALAR LOS TAMAÑOS DEL CARD */
+/* ===== VARIABLES CSS ===== */
+:root {
+    --primary: #3682c4;
+    --accent: #ff8d14;
+    --dark: #040c2c;
+    --background: #fffffe;
+    --gray: #8a9cac;
+}
+
+/* ===== GRID RESPONSIVO DE CURSOS (COMPATIBLE CON BOOTSTRAP) ===== */
+.row-eq-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row-eq-height>[class*='col-'] {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+/* Forzar 3 columnas en pantallas grandes */
+@media (min-width: 992px) {
+    .row-eq-height>[class*='col-'] {
+        flex: 0 0 calc(33.333333% - 1rem);
+        max-width: calc(33.333333% - 1rem);
+    }
+}
+
+/* Forzar 2 columnas en tablets */
+@media (min-width: 576px) and (max-width: 991px) {
+    .row-eq-height>[class*='col-'] {
+        flex: 0 0 calc(50% - 0.5rem);
+        max-width: calc(50% - 0.5rem);
+    }
+}
+
+/* Mantener 1 columna en móviles */
+@media (max-width: 575px) {
+    .row-eq-height>[class*='col-'] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* ===== CARDS DE CURSOS MODERNIZADAS ===== */
+.team-thumb.card-curso {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(138, 156, 172, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 450px;
+    width: 100%;
+}
+
+.team-thumb.card-curso:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(4, 12, 44, 0.15);
+}
+
+/* ===== IMAGEN DEL CURSO ===== */
 .post-curso {
     width: 100%;
-    /* la imagen ocupe todo el ancho del contenedor */
-    height: 300px;
-    /*  altura fija para todas las imágenes */
+    height: 200px;
     object-fit: cover;
-    /* Ajusta la imagen para que llene el contenedor sin deformarse */
     object-position: center;
-    /* Centra la imagen si el ancho es menor que el contenedor */
     display: block;
-    /* Elimina el espacio extra debajo de las imágenes */
     transition: transform 0.3s ease;
 }
 
 .post-curso:hover,
 .post-curso:focus {
-    transform: scale(1.1);
-    /* Aumentar el tamaño al pasar el mouse */
+    transform: scale(1.05);
 }
 
-.card-curso {
-    height: 600px;
-    /* altura uniforme para todos los cards */
-    width: 100%;
-    /* depende del col-md-4, pero puedes forzar si es necesario */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border: 1px solid #ccc;
-    padding: 1px;
-    box-sizing: border-box;
+.team-image {
+    overflow: hidden;
+    position: relative;
 }
 
 .team-image img {
     width: 100%;
-    height: 250px;
+    height: 200px;
     object-fit: cover;
 }
 
+/* ===== CONTENIDO DE LA CARD ===== */
 .team-info {
     flex-grow: 1;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 5px 20px;
-    /* Agregado desde templatemo-style.css */
+    padding: 1.5rem;
+}
+
+.team-info.pb-4 {
+    padding-bottom: 1.5rem !important;
 }
 
 .team-info h3 {
-    height: 50px;
-    /* Altura fija para los títulos */
+    color: var(--dark);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0 0 0.8rem 0;
+    min-height: 60px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 16px;
-    /* Agregado desde templatemo-style.css */
+}
+
+.team-info h3 a {
+    color: var(--dark);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.team-info h3 a:hover {
+    color: var(--primary);
+}
+
+.team-info span {
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    display: block;
+    min-height: 60px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.team-info span a {
+    color: var(--gray);
+    text-decoration: none;
+}
+
+/* ===== FOOTER DE LA CARD ===== */
+.curso-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.team-info .valorC,
+.curso-footer .valorC {
+    color: var(--accent);
+    font-size: 1.4rem;
+    font-weight: 700;
     margin: 0;
-    /* Agregado desde templatemo-style.css */
 }
 
-/* Valor */
-.team-info .valorC {
-    font-size: 30px;
-    color: #ff8c11;
+.curso-footer p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.team-info .ver-btn {
-    background: #0b0472;
-    border-radius: 50px;
-    border: 2px solid #ff8c11;
-    color: #ffffff;
-    font-size: 16px;
-    padding: 5px 5px;
-    transition: 0.5s;
+.curso-footer .d-grid {
+    margin-top: 0.5rem;
 }
 
-.team-info .ver-btn:hover {
-    background: #ff8c11;
-    border-radius: 50px;
-    border-color: 2px solid #173f65;
-    color: #000000;
+/* ===== BOTÓN DE LA CARD ===== */
+.ingresar-btn {
+    padding: 0.7rem 1.3rem;
+    background: var(--primary);
+    color: white !important;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
 }
 
-/* Estilos para categorias y team-thumb */
+.ingresar-btn:hover {
+    background: var(--dark);
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+    text-decoration: none;
+}
+
+/* ===== ESTILOS PARA CATEGORIAS ===== */
 #categorias .team-marg {
-    margin-top: 30px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .team-thumb {
     background: #ffffff;
     overflow: hidden;
     text-align: left;
-    border-radius: 10px;
-    box-shadow: 5px 5px 20px 7px rgba(0, 0, 0, 0.18), -5px -5px 30px 7px rgba(0, 0, 0, 0.20);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1);
     cursor: pointer;
-    transition: 0.4s;
-    padding: 0px 0px 0px 0px;
+    transition: all 0.3s ease;
+    padding: 0;
+    border: 1px solid rgba(138, 156, 172, 0.1);
 }
 
 #categorias .text-info {
@@ -102,8 +220,98 @@
     color: #f0f0f0;
 }
 
+/* ===== ANIMACIONES ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
 
-/* Estilos responsivos para team-thumb */
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.team-thumb.card-curso {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.team-thumb.card-curso:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.team-thumb.card-curso:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.team-thumb.card-curso:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 767px) {
+    .row-eq-height {
+        gap: 1rem;
+    }
+
+    .row-eq-height>[class*='col-'] {
+        margin-bottom: 1.5rem;
+    }
+
+    .team-info {
+        padding: 1rem;
+    }
+
+    .team-info h3 {
+        font-size: 1.1rem;
+        min-height: 50px;
+    }
+
+    .team-info span {
+        min-height: 50px;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    .team-thumb.card-curso {
+        min-height: 380px;
+    }
+}
+
+@media (max-width: 575px) {
+    .row-eq-height {
+        gap: 0.5rem;
+    }
+
+    .team-info {
+        padding: 0.8rem;
+    }
+
+    .post-curso {
+        height: 180px;
+    }
+
+    .team-image img {
+        height: 180px;
+    }
+
+    .team-thumb.card-curso {
+        min-height: 350px;
+    }
+}
+
+/* ===== RESPONSIVE PARA TABLETS ===== */
+@media (min-width: 768px) and (max-width: 991px) {
+    .row-eq-height {
+        gap: 1rem;
+    }
+
+    .team-thumb.card-curso {
+        min-height: 420px;
+    }
+}
+
 @media only screen and (max-width: 992px) {
     .team-thumb {
         margin-bottom: 20px;
