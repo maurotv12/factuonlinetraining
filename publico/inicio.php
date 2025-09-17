@@ -4,6 +4,9 @@
 include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
 ?>
 
+<!-- CSS específico para el carrusel -->
+<link rel="stylesheet" href="/cursosapp/assets/css/carrusel.css">
+
 <body>
    <?php
    include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/menu.php";
@@ -20,43 +23,37 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
       $cursos = [$cursos];
    }
 
-   // Obtener cursos destacados para el carrusel
-   $cursosDestacados = ControladorCursosDestacados::ctrObtenerCursosDestacados(3);
-   $cursosCarrusel = ControladorCursosDestacados::ctrFormatearCursosParaCarrusel($cursosDestacados);
-
-   // Si no hay cursos destacados, mostrar al menos contenido estático en el carrusel
-   if (empty($cursosCarrusel)) {
-      $cursosCarrusel = [
-         [
-            'id' => 0,
-            'titulo' => 'Aprende Animación',
-            'descripcion' => 'Descubre técnicas profesionales de animación en nuestros cursos',
-            'imagen' => 'assets/img/slider1.jpg',
-            'url' => '#',
-            'precio' => 'Varios precios'
-         ],
-         [
-            'id' => 0,
-            'titulo' => 'Cine y Dirección',
-            'descripcion' => 'Aprende a dirigir cortometrajes y películas con nuestros expertos',
-            'imagen' => 'assets/img/slider2.jpg',
-            'url' => '#',
-            'precio' => 'Varios precios'
-         ],
-         [
-            'id' => 0,
-            'titulo' => 'Stop Motion',
-            'descripcion' => 'Domina las técnicas de Stop Motion con proyectos prácticos',
-            'imagen' => 'assets/img/slider3.jpg',
-            'url' => '#',
-            'precio' => 'Varios precios'
-         ]
-      ];
-   }
+   // Carrusel publicitario con imágenes motivacionales - no requiere base de datos
+   $cursosCarrusel = [
+      [
+         'id' => 1,
+         'titulo' => '¡Comienza Tu Aventura Creativa!',
+         'descripcion' => 'Descubre el mundo de la animación y da vida a tus ideas. ¡Tu creatividad no tiene límites!',
+         'imagen' => '/cursosapp/storage/public/carrusel/1.png',
+         'url' => '#cardscursos',
+         'cta' => 'Explorar Cursos'
+      ],
+      [
+         'id' => 2,
+         'titulo' => 'Convierte Tu Pasión en Profesión',
+         'descripcion' => 'Aprende de los mejores profesionales y transforma tu hobby en una carrera exitosa',
+         'imagen' => '/cursosapp/storage/public/carrusel/2.jpg',
+         'url' => '#cardscursos',
+         'cta' => 'Ver Todos los Cursos'
+      ],
+      [
+         'id' => 3,
+         'titulo' => 'El Futuro Está en Tus Manos',
+         'descripcion' => 'Domina las técnicas más innovadoras y conviértete en el creador que siempre soñaste ser',
+         'imagen' => '/cursosapp/storage/public/carrusel/3.png',
+         'url' => '#cardscursos',
+         'cta' => 'Empezar Ahora'
+      ]
+   ];
    ?>
 
    <!-- Sección del Carrusel -->
-   <section id="carrusel-destacados" class="py-4">
+   <section id="carrusel-destacados" class=" mt-5">
       <div class="container">
          <div class="row">
             <div class="col-md-12">
@@ -73,33 +70,18 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/assets/plantilla/head.php";
                      <?php endforeach; ?>
                   </div>
                   <div class="carousel-inner">
-                     <div class="carousel-item active">
-                        <div class="d-block w-100 carousel-img-container" style="height: 400px; background-image: url('assets/img/slider1.jpg'); background-size: cover; background-position: center;">
-                           <div class="carousel-caption d-none d-md-block">
-                              <h3>Aprende Animación</h3>
-                              <p>Descubre técnicas profesionales de animación en nuestros cursos</p>
-                              <a href="#" class="btn btn-primary">Ver cursos</a>
+                     <?php foreach ($cursosCarrusel as $key => $slide): ?>
+                        <div class="carousel-item <?= ($key === 0) ? 'active' : '' ?>">
+                           <div class="d-block w-100 carousel-img-container"
+                              style="height: 400px; background-image: url('<?= $slide['imagen'] ?>'); background-size: cover; background-position: center;">
+                              <div class="carousel-caption d-none d-md-block">
+                                 <h3><?= htmlspecialchars($slide['titulo']) ?></h3>
+                                 <p><?= htmlspecialchars($slide['descripcion']) ?></p>
+                                 <a href="<?= $slide['url'] ?>" class="btn btn-primary btn-lg"><?= htmlspecialchars($slide['cta']) ?></a>
+                              </div>
                            </div>
                         </div>
-                     </div>
-                     <div class="carousel-item">
-                        <div class="d-block w-100 carousel-img-container" style="height: 400px; background-image: url('assets/img/slider2.jpg'); background-size: cover; background-position: center;">
-                           <div class="carousel-caption d-none d-md-block">
-                              <h3>Cine y Dirección</h3>
-                              <p>Aprende a dirigir cortometrajes y películas con nuestros expertos</p>
-                              <a href="#" class="btn btn-primary">Explorar</a>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="carousel-item">
-                        <div class="d-block w-100 carousel-img-container" style="height: 400px; background-image: url('assets/img/slider3.jpg'); background-size: cover; background-position: center;">
-                           <div class="carousel-caption d-none d-md-block">
-                              <h3>Stop Motion</h3>
-                              <p>Domina las técnicas de Stop Motion con proyectos prácticos</p>
-                              <a href="#" class="btn btn-primary">Inscríbete</a>
-                           </div>
-                        </div>
-                     </div>
+                     <?php endforeach; ?>
                   </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#carouselCursos" data-bs-slide="prev">
                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>

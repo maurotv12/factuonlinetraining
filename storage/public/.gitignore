@@ -31,3 +31,5 @@
 
 # Permitir archivos de configuración de imágenes
 !image-config.json
+
+!.carrusel
