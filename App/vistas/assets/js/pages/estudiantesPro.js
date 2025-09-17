@@ -172,18 +172,28 @@ function poblarTabla(datos) {
             </td>
             <td>
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-info" 
+                    <button type="button" class="btn-action btn-ver-detalles" 
                             onclick="verDetallesEstudiante(${registro.estudiante_id})" 
                             title="Ver detalles del estudiante">
                         <i class="fas fa-eye"></i>
+                        Ver Detalles
                     </button>
                     ${registro.tipo === 'inscrito' && registro.estado === 'pendiente'
-                ? `<button type="button" class="btn btn-sm btn-outline-success" 
+                ? `<button type="button" class="btn-action btn-activar-inscripcion" 
                                    onclick="activarInscripcion(${registro.registro_id})" 
-                                   title="Activar inscripción">
+                                   title="Activar inscripción"
+                                   data-inscripcion-id="${registro.registro_id}">
                                <i class="fas fa-check"></i>
+                               Activar
                            </button>`
-                : ''}
+                : registro.tipo === 'inscrito' && registro.estado === 'activo'
+                    ? `<button type="button" class="btn-action btn-inscripcion-activada" 
+                                       title="Inscripción ya activada"
+                                       disabled>
+                                   <i class="fas fa-check-circle"></i>
+                                   Activado
+                               </button>`
+                    : ''}
                 </div>
             </td>
         `;
@@ -311,6 +321,14 @@ function activarInscripcion(idInscripcion) {
         return;
     }
 
+    // Encontrar el botón específico y mostrar loading
+    const boton = document.querySelector(`[data-inscripcion-id="${idInscripcion}"]`);
+    if (boton) {
+        boton.classList.add('loading');
+        boton.disabled = true;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activando...';
+    }
+
     const formData = new FormData();
     formData.append('accion', 'activar_inscripcion');
     formData.append('idInscripcion', idInscripcion);
@@ -323,14 +341,42 @@ function activarInscripcion(idInscripcion) {
         .then(data => {
             if (data.success) {
                 mostrarExito('Inscripción activada correctamente');
-                refrescarDatos();
+
+                // Cambiar el botón a estado activado
+                if (boton) {
+                    boton.classList.remove('loading', 'btn-activar-inscripcion');
+                    boton.classList.add('btn-inscripcion-activada');
+                    boton.innerHTML = '<i class="fas fa-check-circle"></i> Activado';
+                    boton.title = 'Inscripción ya activada';
+                    boton.disabled = true;
+                }
+
+                // Actualizar los datos locales
+                const indice = datosEstudiantes.findIndex(item => item.registro_id == idInscripcion);
+                if (indice !== -1) {
+                    datosEstudiantes[indice].estado = 'activo';
+                }
             } else {
                 mostrarError('Error al activar la inscripción: ' + (data.message || 'Error desconocido'));
+
+                // Restaurar el botón en caso de error
+                if (boton) {
+                    boton.classList.remove('loading');
+                    boton.disabled = false;
+                    boton.innerHTML = '<i class="fas fa-check"></i> Activar';
+                }
             }
         })
         .catch(error => {
             console.error('Error:', error);
             mostrarError('Error de conexión al activar la inscripción');
+
+            // Restaurar el botón en caso de error
+            if (boton) {
+                boton.classList.remove('loading');
+                boton.disabled = false;
+                boton.innerHTML = '<i class="fas fa-check"></i> Activar';
+            }
         });
 }
 
@@ -475,13 +521,61 @@ function calcularTiempoRelativo(fecha) {
 }
 
 function mostrarExito(mensaje) {
-    // Implementar notificación de éxito (usar toastr, SweetAlert, etc.)
-    alert('✓ ' + mensaje);
+    // Implementar notificación de éxito elegante
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: mensaje,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end'
+        });
+    } else {
+        // Fallback simple
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="fas fa-check-circle mr-2"></i>
+            ${mensaje}
+            <button type="button" class="close" onclick="this.parentElement.remove()">
+                <span>&times;</span>
+            </button>
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 5000);
+    }
 }
 
 function mostrarError(mensaje) {
-    // Implementar notificación de error (usar toastr, SweetAlert, etc.)
-    alert('✗ ' + mensaje);
+    // Implementar notificación de error elegante
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: mensaje,
+            showConfirmButton: true,
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#dc3545'
+        });
+    } else {
+        // Fallback simple
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            ${mensaje}
+            <button type="button" class="close" onclick="this.parentElement.remove()">
+                <span>&times;</span>
+            </button>
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 7000);
+    }
 }
 
 // Hacer disponibles las funciones globalmente

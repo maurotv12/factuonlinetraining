@@ -28,95 +28,97 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
 
 <!-- Main content -->
 <section class="content">
-    <div class="container-fluid">
+    <div class="estudiantes-profesor-container">
+        <div class="container-fluid">
 
-        <!-- Filtros y controles -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="filtroTipo">Filtrar por tipo:</label>
-                    <select class="form-control" id="filtroTipo">
-                        <option value="">Todos</option>
-                        <option value="preinscrito">Preinscripciones</option>
-                        <option value="inscrito">Inscripciones</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="filtroEstado">Filtrar por estado:</label>
-                    <select class="form-control" id="filtroEstado">
-                        <option value="">Todos</option>
-                        <option value="preinscrito">Preinscrito</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="activo">Activo</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary" id="btnRefrescar" title="Refrescar datos">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-success" id="btnExportar" title="Exportar datos">
-                        <i class="fas fa-download"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tarjeta principal -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-graduation-cap mr-2"></i>
-                    Estudiantes en mis Cursos
-                </h3>
-                <div class="card-tools">
-                    <span class="badge badge-info" id="totalRegistros">0 registros</span>
-                </div>
-            </div>
-
-            <div class="card-body">
-                <!-- Indicador de carga -->
-                <div id="loadingIndicator" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="sr-only">Cargando...</span>
+            <!-- Filtros y controles -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="filtroTipo">Filtrar por tipo:</label>
+                        <select class="form-control" id="filtroTipo">
+                            <option value="">Todos</option>
+                            <option value="preinscrito">Preinscripciones</option>
+                            <option value="inscrito">Inscripciones</option>
+                        </select>
                     </div>
-                    <p class="mt-2 text-muted">Cargando datos de estudiantes...</p>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="filtroEstado">Filtrar por estado:</label>
+                        <select class="form-control" id="filtroEstado">
+                            <option value="">Todos</option>
+                            <option value="preinscrito">Preinscrito</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="activo">Activo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" id="btnRefrescar" title="Refrescar datos">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-success" id="btnExportar" title="Exportar datos">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-                <!-- Tabla de estudiantes -->
-                <div id="tablaContainer" style="display: none;">
-                    <div class="table-responsive">
-                        <table id="tablaEstudiantesCursos" class="table table-striped table-hover">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Estudiante</th>
-                                    <th>Curso</th>
-                                    <th>Categoría</th>
-                                    <th>Tipo</th>
-                                    <th>Estado</th>
-                                    <th>Fecha Registro</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Los datos se cargarán dinámicamente -->
-                            </tbody>
-                        </table>
+            <!-- Tarjeta principal -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        Estudiantes en mis Cursos
+                    </h3>
+                    <div class="card-tools">
+                        <span class="badge" id="totalRegistros">0 registros</span>
                     </div>
                 </div>
 
-                <!-- Mensaje cuando no hay datos -->
-                <div id="noDataMessage" class="text-center py-5" style="display: none;">
-                    <div class="mb-3">
-                        <i class="fas fa-users fa-3x text-muted"></i>
+                <div class="card-body">
+                    <!-- Indicador de carga -->
+                    <div id="loadingIndicator" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Cargando datos de estudiantes...</p>
                     </div>
-                    <h5 class="text-muted">No hay estudiantes registrados</h5>
-                    <p class="text-muted">
-                        Aún no tienes estudiantes preinscriptos o inscriptos en tus cursos.
-                    </p>
+
+                    <!-- Tabla de estudiantes -->
+                    <div id="tablaContainer" style="display: none;">
+                        <div class="table-responsive">
+                            <table id="tablaEstudiantesCursos" class="table table-striped table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Curso</th>
+                                        <th>Categoría</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th>Fecha Registro</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Los datos se cargarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Mensaje cuando no hay datos -->
+                    <div id="noDataMessage" class="text-center py-5" style="display: none;">
+                        <div class="mb-3">
+                            <i class="fas fa-users fa-3x text-muted"></i>
+                        </div>
+                        <h5 class="text-muted">No hay estudiantes registrados</h5>
+                        <p class="text-muted">
+                            Aún no tienes estudiantes preinscriptos o inscriptos en tus cursos.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
