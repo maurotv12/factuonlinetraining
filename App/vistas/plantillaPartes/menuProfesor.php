@@ -14,7 +14,7 @@
         </a>
     </li>
     <li class="sidebar-item">
-        <a href="/cursosApp/App/estudiantesProfe" class='sidebar-link'>
+        <a href="/cursosApp/App/estudiantesPro" class='sidebar-link'>
             <i class="bi bi-person-check"></i>
             <span>Estudiantes</span>
         </a>
