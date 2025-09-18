@@ -51,15 +51,6 @@ function inicializarDataTable() {
                         orderable: false,
                         searchable: false
                     },
-                    {
-                        targets: 4, // Valor
-                        render: function (data, type, row) {
-                            if (type === 'display') {
-                                return '$' + Number(data).toLocaleString('es-CO');
-                            }
-                            return data;
-                        }
-                    }
                 ],
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
                     '<"row"<"col-sm-12"tr>>' +

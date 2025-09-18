@@ -104,7 +104,7 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                             <td><?= htmlspecialchars($curso["categoria"]) ?></td>
                                             <td>
                                                 <?php if (isset($curso["valor"]) && $curso["valor"] !== null): ?>
-                                                    <?= number_format($curso["valor"], 0, ',', '.') ?>
+                                                    $<?= number_format($curso["valor"], 0, ',', '.') ?>
                                                 <?php else: ?>
                                                     <span class="text-muted">Sin valor</span>
                                                 <?php endif; ?>
