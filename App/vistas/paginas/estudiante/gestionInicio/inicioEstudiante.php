@@ -109,7 +109,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                                     <span class="course-price">
                                         <?php
                                         if ($curso['valor'] && $curso['valor'] > 0) {
-                                            echo '$' . number_format($curso['valor'], 0, ',', '.');
+                                            echo '$' . number_format($curso['valor'], 0, ',', '.') . ' COL';
                                         } else {
                                             echo 'Gratis';
                                         }

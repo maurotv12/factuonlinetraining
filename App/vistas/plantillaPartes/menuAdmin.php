@@ -1,12 +1,4 @@
 <ul class="menu">
-    <li class="sidebar-title">Menú Principal</li>
-
-    <li class="sidebar-item">
-        <a href="/cursosApp/App/dashboard" class='sidebar-link'>
-            <i class="bi bi-speedometer2"></i>
-            <span>Dashboard</span>
-        </a>
-    </li>
 
     <li class="sidebar-title">Gestión de Usuarios</li>
 
@@ -14,13 +6,6 @@
         <a href="/cursosApp/App/usuarios" class='sidebar-link'>
             <i class="bi bi-people"></i>
             <span>Usuarios</span>
-        </a>
-    </li>
-
-    <li class="sidebar-item">
-        <a href="/cursosApp/App/solicitudesInstructores" class='sidebar-link'>
-            <i class="bi bi-person-check"></i>
-            <span>Solicitudes de Instructores</span>
         </a>
     </li>
 
@@ -32,15 +17,6 @@
             <span>Todos los Cursos</span>
         </a>
     </li>
-
-    <li class="sidebar-item">
-        <a href="/cursosApp/App/categorias" class='sidebar-link'>
-            <i class="bi bi-tags"></i>
-            <span>Categorías</span>
-        </a>
-    </li>
-
-    <li class="sidebar-title">Finanzas</li>
 
     <li class="sidebar-item">
         <a href="/cursosApp/App/pagos" class='sidebar-link'>
