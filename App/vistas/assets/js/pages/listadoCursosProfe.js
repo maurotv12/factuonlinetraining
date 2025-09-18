@@ -185,45 +185,89 @@ function verificarImagenesCursos() {
  * Mostrar modal con imagen ampliada
  */
 function mostrarModalImagen(src, alt) {
+    // Función para limpiar completamente cualquier modal residual
+    function limpiarModalesResiduales() {
+        // Eliminar todos los modales existentes
+        document.querySelectorAll('#modalImagenCurso').forEach(modal => modal.remove());
+
+        // Eliminar todos los backdrops
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+
+        // Restaurar el body
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+        document.documentElement.style.removeProperty('overflow');
+    }
+
+    // Limpiar antes de crear el nuevo modal
+    limpiarModalesResiduales();
+
+    // Crear el modal con un ID único para evitar conflictos
+    const modalId = 'modalImagenCurso_' + Date.now();
     const modalHtml = `
-        <div class="modal fade" id="modalImagenCurso" tabindex="-1">
+        <div class="modal" id="${modalId}" tabindex="-1" style="z-index: 1055;">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Vista previa de imagen</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close cerrar-modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body text-center">
                         <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;" 
                              onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='/cursosApp/storage/public/banners/default/defaultCurso.png';">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-secondary cerrar-modal">Cerrar</button>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="modal-backdrop show" style="z-index: 1050;"></div>
     `;
-
-    // Eliminar modal existente si lo hay
-    const modalExistente = document.getElementById('modalImagenCurso');
-    if (modalExistente) {
-        modalExistente.remove();
-    }
 
     // Añadir modal al DOM
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // Mostrar modal
-    if (typeof bootstrap !== 'undefined') {
-        const modal = new bootstrap.Modal(document.getElementById('modalImagenCurso'));
-        modal.show();
+    const modalElement = document.getElementById(modalId);
+    const backdrop = document.querySelector('.modal-backdrop.show');
 
-        // Eliminar modal del DOM al cerrar
-        document.getElementById('modalImagenCurso').addEventListener('hidden.bs.modal', function () {
-            this.remove();
-        });
+    // Función para cerrar el modal
+    function cerrarModal() {
+        modalElement.style.display = 'none';
+        modalElement.remove();
+        if (backdrop) backdrop.remove();
+        limpiarModalesResiduales();
     }
+
+    // Configurar eventos de cierre
+    modalElement.querySelectorAll('.cerrar-modal').forEach(btn => {
+        btn.addEventListener('click', cerrarModal);
+    });
+
+    // Cerrar al hacer clic en el backdrop
+    if (backdrop) {
+        backdrop.addEventListener('click', cerrarModal);
+    }
+
+    // Cerrar con la tecla Escape
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            cerrarModal();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    });
+
+    // Mostrar el modal
+    modalElement.style.display = 'block';
+    modalElement.classList.add('show');
+
+    // Aplicar estilos al body para el modal
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+
+    // Enfocar en el modal para accesibilidad
+    modalElement.focus();
 }
 
 /**

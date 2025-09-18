@@ -188,14 +188,14 @@ function mostrarModalImagen(src, alt) {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Vista previa de imagen</h5>
-                        <button type="button" class="btn-close" onclick="cerrarModalImagen()"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="cerrarModalImagen()"></button>
                     </div>
                     <div class="modal-body text-center">
                         <img src="${src}" alt="${alt}" class="img-fluid rounded" style="max-height: 70vh;"
                              onerror="if(this.src.indexOf('defaultCurso.png') === -1) this.src='storage/public/banners/default/defaultCurso.png';">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="cerrarModalImagen()">Cerrar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cerrarModalImagen()">Cerrar</button>
                     </div>
                 </div>
             </div>
