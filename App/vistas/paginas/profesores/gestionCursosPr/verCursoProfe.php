@@ -471,7 +471,7 @@ if (isset($_SESSION['mensaje_error'])) {
 
                                                         <!-- Biografía -->
                                                         <?php if (!empty($profesor['biografia'])): ?>
-                                                            <div class="profesor-biografia">
+                                                            <div class="profesor-biografia text-wrap text-break">
                                                                 <h6><i class="bi bi-person-badge"></i> Acerca del profesor</h6>
                                                                 <p><?= nl2br(htmlspecialchars($profesor['biografia'])) ?></p>
                                                             </div>

@@ -11,6 +11,17 @@ if (file_exists("modelos/cursos.modelo.php")) {
 	require_once __DIR__ . "/../modelos/cursos.modelo.php";
 }
 
+// Incluir controlador general - Ruta adaptativa
+if (file_exists("controladores/general.controlador.php")) {
+	require_once "controladores/general.controlador.php";
+} elseif (file_exists("../controladores/general.controlador.php")) {
+	require_once "../controladores/general.controlador.php";
+} elseif (file_exists("App/controladores/general.controlador.php")) {
+	require_once "App/controladores/general.controlador.php";
+} else {
+	require_once __DIR__ . "/general.controlador.php";
+}
+
 class ControladorCursos
 {
 
