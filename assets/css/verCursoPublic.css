@@ -1,0 +1,1741 @@
+/* Paleta de colores del proyecto
+   Primary: #3682c4
+   Secondary: #3682c4  
+   Background: #fffffe
+   Accent: #ff8d14
+   Dark: #040c2c
+   Gray: #8a9cac
+*/
+
+:root {
+    --primary-color: #3682c4;
+    --secondary-color: #3682c4;
+    --background-color: #fffffe;
+    --accent-color: #ff8d14;
+    --dark-color: #040c2c;
+    --gray-color: #8a9cac;
+    --white: #ffffff;
+    --shadow: 0 4px 6px rgba(4, 12, 44, 0.1);
+    --shadow-lg: 0 8px 25px rgba(4, 12, 44, 0.15);
+}
+
+/* Contenedor principal */
+.ver-curso-container {
+    background-color: var(--background-color);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+/* Header del curso */
+.curso-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.breadcrumb-custom {
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    color: var(--white);
+}
+
+.curso-titulo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--white);
+}
+
+.curso-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.badge-categoria {
+    background-color: var(--accent-color);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-estado {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-activo {
+    background-color: #28a745;
+    color: var(--white);
+}
+
+.badge-inactivo {
+    background-color: var(--gray-color);
+    color: var(--white);
+}
+
+.badge-borrador {
+    background-color: #ffc107;
+    color: var(--dark-color);
+}
+
+.curso-precio {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+/* Video principal */
+.video-container {
+    background: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+}
+
+/* Video wrapper especial para placeholder */
+.video-wrapper:has(.placeholder-content) {
+    padding-bottom: 0;
+    height: auto;
+}
+
+/* Fallback para navegadores que no soportan :has() */
+.video-wrapper .placeholder-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.main-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+}
+
+.image-wrapper {
+    position: relative;
+}
+
+.main-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* Estilos para el botón de cambiar banner */
+.banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.banner-actions .btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+}
+
+.banner-actions .btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+}
+
+.banner-actions .btn:active {
+    transform: translateY(0);
+}
+
+.banner-actions .btn i {
+    margin-right: 0.5rem;
+}
+
+.banner-actions .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.placeholder-content {
+    text-align: center;
+    color: var(--gray-color);
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+}
+
+.placeholder-content i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.video-overlay,
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(4, 12, 44, 0.8));
+    color: var(--white);
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-wrapper:hover .video-overlay,
+.image-wrapper:hover .image-overlay {
+    opacity: 1;
+}
+
+.video-title,
+.image-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Controles de video en la parte inferior */
+.video-controls-bottom {
+    background: var(--white);
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.video-info {
+    flex: 1;
+}
+
+.video-info .video-title {
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.video-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.video-actions .btn {
+    border-radius: 8px;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.video-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive para controles de video */
+@media (max-width: 768px) {
+    .video-controls-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .video-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* Información del curso */
+.curso-info {
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.info-tabs .nav-tabs {
+    border: none;
+    background-color: #f8f9fa;
+}
+
+.info-tabs .nav-link {
+    border: none;
+    color: var(--gray-color);
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.info-tabs .nav-link:hover {
+    color: var(--primary-color);
+    background-color: transparent;
+}
+
+.info-tabs .nav-link.active {
+    color: var(--primary-color);
+    background-color: var(--white);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.tab-content {
+    padding: 2rem;
+}
+
+.content-section h5 {
+    color: var(--dark-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.content-section h6 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.lista-puntos,
+.lista-aprendizaje,
+.lista-requisitos {
+    list-style: none;
+    padding: 0;
+}
+
+.lista-aprendizaje li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.lista-aprendizaje li:hover {
+    background-color: #f8f9fa;
+}
+
+.lista-aprendizaje i {
+    color: #28a745;
+    font-size: 1.2rem;
+}
+
+.lista-requisitos li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.lista-requisitos i {
+    color: var(--accent-color);
+    font-size: 1rem;
+}
+
+.lista-puntos li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.lista-puntos li::before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* Información del profesor */
+.profesor-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profesor-avatar {
+    flex-shrink: 0;
+}
+
+.avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.profesor-datos h5 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.profesor-email {
+    color: var(--gray-color);
+    margin: 0;
+}
+
+/* Sidebar del curso - Estructura simple */
+.curso-sidebar {
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    overflow: visible;
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.sidebar-header-content {
+    background: linear-gradient(135deg, var(--primary-color));
+    color: var(--white);
+    padding: 1.5rem;
+}
+
+.sidebar-header h4 {
+    margin: 0;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.curso-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Lista de contenido - Estructura simple con scroll */
+.contenido-lista {
+    padding: 1.5rem;
+    background: transparent;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Personalizar scrollbar */
+.contenido-lista::-webkit-scrollbar {
+    width: 8px;
+}
+
+.contenido-lista::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.contenido-lista::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+.contenido-lista::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-color);
+}
+
+/* Secciones - Estructura simple y limpia */
+.seccion-container {
+    margin-bottom: 1rem;
+}
+
+.seccion-header {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.seccion-header:hover {
+    background: var(--dark-color);
+}
+
+.seccion-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.seccion-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.seccion-content {
+    background: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    padding: 1rem;
+    display: none;
+}
+
+.seccion-content.show {
+    display: block;
+}
+
+.seccion-description {
+    margin-bottom: 1rem;
+    color: var(--gray-color);
+    font-style: italic;
+}
+
+/* Área de subida de archivos */
+.upload-area {
+    margin-top: 1rem;
+}
+
+.upload-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.upload-col {
+    flex: 1;
+}
+
+.drop-area {
+    border: 2px dashed var(--gray-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    background: var(--white);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.drop-area:hover {
+    border-color: var(--primary-color);
+    background: #f8f9fa;
+}
+
+.drop-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(54, 130, 196, 0.1);
+}
+
+.drop-area i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.drop-area p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.drop-area small {
+    color: var(--gray-color);
+}
+
+.file-input {
+    display: none;
+}
+
+/* Items de contenido */
+.contenido-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.contenido-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--white);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.contenido-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    background: linear-gradient(135deg, #f8f9fa, var(--background-color));
+}
+
+.item-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-titulo {
+    display: block;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-duracion {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gray-color);
+}
+
+.item-action {
+    flex-shrink: 0;
+}
+
+.btn-preview {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-preview:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    transform: scale(1.1);
+}
+
+/* Contenido vacío */
+.empty-content {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--gray-color);
+}
+
+.empty-content i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-content h6 {
+    color: var(--gray-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Botones */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    border: none;
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--dark-color), var(--primary-color));
+    color: var(--white);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ver-curso-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .curso-header {
+        padding: 1.5rem;
+    }
+
+    .curso-titulo {
+        font-size: 2rem;
+    }
+
+    .curso-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .tab-content {
+        padding: 1rem;
+    }
+
+    .profesor-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .contenido-item {
+        padding: 0.5rem;
+    }
+
+    .item-titulo {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+    }
+
+    .curso-sidebar {
+        margin-top: 2rem;
+        position: relative;
+    }
+
+    .contenido-lista {
+        max-height: 400px;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .curso-titulo {
+        font-size: 1.5rem;
+    }
+
+    .info-tabs .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.curso-header {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.video-container {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.curso-info {
+    animation: fadeInUp 1s ease-out;
+}
+
+.curso-sidebar {
+    animation: slideInRight 0.8s ease-out;
+}
+
+/* Estados de loading */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 0.3rem solid #f3f3f3;
+    border-top: 0.3rem solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   ESTILOS PARA GESTIÓN DE CONTENIDO
+======================================== */
+
+/* Contenedor de contenido completo */
+.contenido-item-completo {
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    background: #f8f9fa !important;
+}
+
+.contenido-item-completo:hover {
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.15);
+    border-color: var(--primary-color) !important;
+}
+
+/* Header del contenido */
+.contenido-info h6 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.contenido-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contenido-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Assets del contenido */
+.contenido-assets {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 0.75rem;
+}
+
+.asset-group {
+    padding: 0.5rem 0;
+    cursor: pointer;
+}
+
+.asset-group:not(:last-child) {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.asset-group .fw-bold {
+    font-size: 0.9rem;
+    color: var(--dark-color);
+}
+
+/* Lista de PDFs colapsable */
+.pdf-list {
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.pdf-item {
+    font-size: 0.875rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.pdf-item:last-child {
+    border-bottom: none;
+}
+
+/* Botón crear contenido */
+.btn-crear-contenido {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: var(--white);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-crear-contenido:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Modal de contenido */
+#modalContenido .modal-dialog {
+    max-width: 800px;
+}
+
+#modalContenido .form-text {
+    font-size: 0.8rem;
+    color: var(--gray-color);
+}
+
+/* Info de archivos seleccionados */
+#video-file-info .alert,
+#pdf-files-info .alert {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+#pdf-files-info ul {
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+#pdf-files-info li {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Loading state del botón */
+.btn-loading .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Estados responsive del contenido */
+@media (max-width: 768px) {
+    .contenido-info {
+        margin-bottom: 1rem;
+    }
+
+    .contenido-actions {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .asset-group .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+    }
+
+    #modalContenido .modal-dialog {
+        margin: 0.5rem;
+        max-width: none;
+    }
+
+    #modalContenido .row .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Efectos hover para botones de asset */
+.contenido-actions .btn:hover {
+    transform: scale(1.05);
+}
+
+/* Animaciones para aparición de contenido */
+.contenido-item-completo {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para empty state mejorado */
+.text-center.text-muted.py-3 {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.text-center.text-muted.py-3 i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.6;
+}
+
+/* ========================================
+   ESTILOS PARA VIDEO CONTAINER DINÁMICO
+   ======================================== */
+
+/* Botones de reproducir video */
+.reproducir-video {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border: none;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.reproducir-video:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+    color: white;
+}
+
+.reproducir-video:active {
+    transform: translateY(0);
+}
+
+.reproducir-video i {
+    margin-right: 0.25rem;
+}
+
+/* Video overlay mejorado */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, transparent 30%, transparent 70%, rgba(0, 0, 0, 0.7) 100%);
+    color: white;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-wrapper:hover .video-overlay {
+    opacity: 1;
+}
+
+.video-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.video-actions {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.video-actions .btn {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.video-actions .btn:hover {
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Asset groups mejorados */
+.asset-group {
+    padding: 0.75rem;
+    background: rgba(54, 130, 196, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.asset-group:last-child {
+    margin-bottom: 0;
+}
+
+.asset-group .fw-bold {
+    color: var(--primary-color);
+}
+
+/* Animaciones para contenido dinámico */
+.contenido-item-completo {
+    animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Transiciones suaves para el video container */
+#video-container {
+    transition: all 0.3s ease;
+}
+
+#video-container .video-wrapper,
+#video-container .image-wrapper,
+#video-container .placeholder-wrapper {
+    transition: all 0.3s ease;
+}
+
+/* Estados de carga */
+.loading-video {
+    position: relative;
+}
+
+.loading-video::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(54, 130, 196, 0.3);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Estilos para botones de descarga de PDFs */
+.btn-descargar-pdf {
+    color: var(--dark-color) !important;
+    text-align: left !important;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: inherit !important;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-descargar-pdf:hover {
+    color: var(--primary-color) !important;
+    text-decoration: none !important;
+    transform: translateX(2px);
+}
+
+.btn-descargar-pdf:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* ===== ESTILOS PARA DESCARGA DE PDFs ===== */
+.btn-descargar-pdf {
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border: none !important;
+    background: none !important;
+}
+
+.btn-descargar-pdf:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-descargar-pdf:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+.pdf-item {
+    border-radius: 4px;
+    padding: 4px 8px;
+    transition: all 0.3s ease;
+    margin: 0.25rem 0;
+}
+
+.pdf-item:hover {
+    background-color: rgba(54, 130, 196, 0.05);
+    transform: translateX(4px);
+    border-radius: 8px;
+}
+
+.spinner-border-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+
+
+/* Notificaciones de descarga */
+.toast-download {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+}
+
+.toast-download .toast-header {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Mejoras para archivos PDF */
+.pdf-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.pdf-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pdf-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.pdf-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.pdf-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* =========================================
+   ESTILOS PARA INFORMACIÓN DEL PROFESOR
+   ========================================= */
+
+.profesor-info-container {
+    padding: 0;
+}
+
+.profesor-card {
+    background: var(--white);
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.profesor-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.profesor-avatar {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.profesor-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.profesor-photo:hover {
+    transform: scale(1.05);
+}
+
+.profesor-details {
+    text-align: left;
+}
+
+.profesor-nombre {
+    color: var(--dark-color);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-profesion {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-contact-info {
+    margin-bottom: 1.5rem;
+}
+
+.contact-item {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-color);
+    font-size: 0.95rem;
+}
+
+.contact-item i {
+    color: var(--primary-color);
+    width: 18px;
+    text-align: center;
+}
+
+.contact-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.profesor-ubicacion {
+    color: var(--gray-color);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-ubicacion i {
+    color: var(--primary-color);
+}
+
+.profesor-biografia {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.profesor-biografia h6 {
+    color: var(--dark-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profesor-biografia h6 i {
+    color: var(--primary-color);
+}
+
+.profesor-biografia p {
+    color: var(--dark-color);
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.profesor-fecha-registro {
+    margin-bottom: 0;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.profesor-fecha-registro i {
+    color: var(--primary-color);
+}
+
+/* Enlaces del profesor */
+.profesor-avatar-link {
+    display: inline-block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 50%;
+}
+
+.profesor-avatar-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(54, 130, 196, 0.4);
+}
+
+.profesor-avatar-link:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+.profesor-nombre-link {
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+.profesor-nombre-link:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.profesor-nombre-link:focus {
+    color: var(--primary-color);
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Cursor pointer para elementos clickeables */
+.profesor-avatar-link,
+.profesor-nombre-link {
+    cursor: pointer;
+}
+
+/* Responsivo para tablets */
+@media (max-width: 768px) {
+    .profesor-card {
+        padding: 1.5rem;
+    }
+
+    .profesor-details {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .profesor-nombre {
+        font-size: 1.3rem;
+        justify-content: center;
+    }
+
+    .profesor-profesion {
+        justify-content: center;
+    }
+
+    .contact-item {
+        justify-content: center;
+    }
+
+    .profesor-ubicacion {
+        justify-content: center;
+    }
+}
+
+/* Responsivo para móviles */
+@media (max-width: 480px) {
+    .profesor-card {
+        padding: 1rem;
+    }
+
+    .profesor-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profesor-nombre {
+        font-size: 1.2rem;
+    }
+
+    .profesor-profesion {
+        font-size: 1rem;
+    }
+
+    .profesor-biografia {
+        padding: 1rem;
+    }
+}
+
+/* Estilos para mensaje de fallback del profesor */
+.profesor-fallback {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--gray-color);
+    margin-top: 1rem;
+}
+
+.profesor-fallback p {
+    margin: 0.5rem 0;
+    color: var(--dark-color);
+}
+
+.profesor-fallback strong {
+    color: var(--primary-color);
+}
+
+/* =======================================================
+   ESTILOS PARA BOTONES DE INSCRIPCIÓN
+   ======================================================= */
+
+.inscription-buttons {
+    min-width: 100px;
+    max-width: 100%;
+}
+
+.inscription-buttons .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    min-height: 36px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-login-responsive {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.btn-login-responsive i {
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.btn-login-responsive .btn-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.inscription-buttons .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.inscription-buttons .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), #2c5aa0);
+    border: none;
+    box-shadow: 0 4px 15px rgba(54, 130, 196, 0.3);
+}
+
+.inscription-buttons .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(54, 130, 196, 0.4);
+}
+
+.inscription-buttons .btn-secondary {
+    background: linear-gradient(135deg, var(--gray-color), #7a8a9a);
+    border: none;
+    box-shadow: 0 4px 15px rgba(138, 156, 172, 0.3);
+}
+
+.inscription-buttons .btn-secondary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(138, 156, 172, 0.4);
+}
+
+.inscription-buttons .btn-success {
+    background: linear-gradient(135deg, #28a745, #218838);
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.inscription-buttons .btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    border: none;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+}
+
+.inscription-buttons .btn-outline-danger {
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+}
+
+.inscription-buttons .btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.inscription-buttons .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.alert-info.instructor-info {
+    border: 2px solid var(--primary-color);
+    background: linear-gradient(135deg, rgba(54, 130, 196, 0.1), rgba(54, 130, 196, 0.05));
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.alert-info.instructor-info i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .curso-header .col-md-2 {
+        max-width: 120px;
+        flex: 0 0 120px;
+    }
+
+    .btn-login-responsive {
+        font-size: 0.75rem;
+        padding: 6px 8px;
+        gap: 2px;
+    }
+
+    .btn-login-responsive .btn-text {
+        display: none;
+    }
+}
+
+@media (max-width: 992px) {
+    .curso-header .col-md-2 {
+        margin-top: 1rem;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .inscription-buttons {
+        min-width: auto;
+        width: 200px;
+        margin: 0 auto;
+    }
+
+    .btn-login-responsive {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        gap: 6px;
+    }
+
+    .btn-login-responsive .btn-text {
+        display: inline;
+    }
+}
+
+@media (max-width: 768px) {
+    .curso-header .row {
+        flex-direction: column;
+    }
+
+    .curso-header .col-md-10,
+    .curso-header .col-md-2 {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .inscription-buttons {
+        width: 100%;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .btn-login-responsive {
+        font-size: 0.85rem;
+        padding: 10px 20px;
+        gap: 8px;
+    }
+
+    .btn-login-responsive .btn-text {
+        display: inline;
+    }
+}
+
+@media (max-width: 576px) {
+    .inscription-buttons {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .btn-login-responsive {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        gap: 6px;
+    }
+}

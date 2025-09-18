@@ -1,0 +1,47 @@
+/* 
+ * CSS adicional para corregir layout del footer 
+ * Asegurar que el footer se mantenga al final de la página
+ */
+
+/* Asegurar que html y body ocupen toda la altura */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Usar flexbox para el layout general */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* El contenido principal debe ocupar el espacio disponible */
+main {
+    flex: 1;
+    padding-bottom: 20px;
+    /* Espacio antes del footer */
+}
+
+/* Footer fijo en la parte inferior */
+footer {
+    margin-top: auto;
+    /* Empuja el footer hacia abajo */
+    background: #252020;
+    padding: 20px 0;
+    color: #909090;
+    width: 100%;
+}
+
+/* Prevenir que el footer se superponga con el contenido */
+body>main {
+    margin-bottom: 0;
+}
+
+/* Asegurar que el contenido no se superponga con el footer */
+.ver-curso-container,
+.container {
+    margin-bottom: 0;
+}
