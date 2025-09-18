@@ -845,6 +845,236 @@
 }
 
 /* ========================================
+   ESTILOS PARA BANNER DEL CURSO
+======================================== */
+
+/* Contenedor del banner */
+.banner-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    border: 2px solid #e9ecef;
+    overflow: hidden;
+}
+
+/* Imagen del banner con dimensiones específicas */
+.banner-image {
+    width: 600px !important;
+    height: 400px !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+    max-width: 100% !important;
+    border: 1px solid #dee2e6 !important;
+    background: var(--white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.banner-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive para el banner */
+@media (max-width: 768px) {
+    .banner-image {
+        width: 500px !important;
+        height: 333px !important;
+        /* Mantiene proporción 3:2 */
+    }
+
+    .banner-wrapper {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .banner-image {
+        width: 400px !important;
+        height: 267px !important;
+        /* Mantiene proporción 3:2 */
+    }
+
+    .banner-wrapper {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .banner-image {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 250px !important;
+    }
+}
+
+/* ========================================
+   ESTILOS PARA BOTÓN DE INSCRIPCIÓN
+======================================== */
+
+/* Contenedor del botón de inscripción */
+.inscripcion-container {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin: 1rem 0;
+    border: 2px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.inscripcion-container:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Botón de inscripción principal */
+.btn-inscripcion {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border: none;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(54, 130, 196, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-inscripcion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-inscripcion:hover::before {
+    left: 100%;
+}
+
+.btn-inscripcion:hover {
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(54, 130, 196, 0.4);
+    text-decoration: none;
+}
+
+.btn-inscripcion:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(54, 130, 196, 0.3);
+}
+
+.btn-inscripcion:focus {
+    outline: 3px solid rgba(54, 130, 196, 0.3);
+    outline-offset: 2px;
+}
+
+/* Icono del botón */
+.btn-inscripcion i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-inscripcion:hover i {
+    transform: scale(1.1);
+}
+
+/* Texto del botón responsive */
+.btn-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    text-align: center;
+}
+
+/* Responsive para tablets */
+@media (max-width: 768px) {
+    .btn-inscripcion {
+        font-size: 1rem;
+        padding: 0.875rem 1.25rem;
+    }
+
+    .btn-text {
+        font-size: 0.95rem;
+    }
+
+    .inscripcion-container {
+        margin: 0.75rem 0;
+        padding: 0.75rem !important;
+    }
+}
+
+/* Responsive para móviles */
+@media (max-width: 576px) {
+    .btn-inscripcion {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .btn-text {
+        font-size: 0.85rem;
+        white-space: normal;
+        line-height: 1.2;
+    }
+
+    .btn-inscripcion i {
+        font-size: 1.1rem;
+    }
+
+    .inscripcion-container {
+        padding: 0.5rem !important;
+        margin: 0.5rem 0;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 360px) {
+    .btn-text {
+        font-size: 0.8rem;
+    }
+
+    .btn-inscripcion {
+        padding: 0.625rem 0.75rem;
+    }
+
+    .btn-inscripcion i {
+        font-size: 1rem;
+    }
+}
+
+/* Estados adicionales */
+.btn-inscripcion:disabled {
+    background: var(--gray-color);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-inscripcion:disabled:hover {
+    background: var(--gray-color);
+    transform: none;
+    box-shadow: none;
+}
+
+/* ========================================
    ESTILOS PARA GESTIÓN DE CONTENIDO
 ======================================== */
 
@@ -1542,105 +1772,8 @@
     color: var(--primary-color);
 }
 
-/* =======================================================
-   ESTILOS PARA BOTONES DE INSCRIPCIÓN
-   ======================================================= */
 
-.inscription-buttons {
-    min-width: 100px;
-    max-width: 100%;
-}
 
-.inscription-buttons .btn {
-    border-radius: 8px;
-    font-weight: 600;
-    padding: 8px 12px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    font-size: 0.8rem;
-    line-height: 1.2;
-    min-height: 36px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-}
-
-.btn-login-responsive {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.btn-login-responsive i {
-    flex-shrink: 0;
-    font-size: 0.9rem;
-}
-
-.btn-login-responsive .btn-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-}
-
-.inscription-buttons .btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.inscription-buttons .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), #2c5aa0);
-    border: none;
-    box-shadow: 0 4px 15px rgba(54, 130, 196, 0.3);
-}
-
-.inscription-buttons .btn-primary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(54, 130, 196, 0.4);
-}
-
-.inscription-buttons .btn-secondary {
-    background: linear-gradient(135deg, var(--gray-color), #7a8a9a);
-    border: none;
-    box-shadow: 0 4px 15px rgba(138, 156, 172, 0.3);
-}
-
-.inscription-buttons .btn-secondary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(138, 156, 172, 0.4);
-}
-
-.inscription-buttons .btn-success {
-    background: linear-gradient(135deg, #28a745, #218838);
-    border: none;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-}
-
-.inscription-buttons .btn-info {
-    background: linear-gradient(135deg, #17a2b8, #138496);
-    border: none;
-    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
-}
-
-.inscription-buttons .btn-outline-danger {
-    border: 2px solid #dc3545;
-    color: #dc3545;
-    background: transparent;
-}
-
-.inscription-buttons .btn-outline-danger:hover {
-    background: #dc3545;
-    color: white;
-    transform: translateY(-1px);
-}
-
-.inscription-buttons .spinner-border-sm {
-    width: 1rem;
-    height: 1rem;
-}
 
 .alert-info.instructor-info {
     border: 2px solid var(--primary-color);
@@ -1654,88 +1787,4 @@
     font-size: 1.5rem;
     color: var(--primary-color);
     margin-bottom: 8px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    .curso-header .col-md-2 {
-        max-width: 120px;
-        flex: 0 0 120px;
-    }
-
-    .btn-login-responsive {
-        font-size: 0.75rem;
-        padding: 6px 8px;
-        gap: 2px;
-    }
-
-    .btn-login-responsive .btn-text {
-        display: none;
-    }
-}
-
-@media (max-width: 992px) {
-    .curso-header .col-md-2 {
-        margin-top: 1rem;
-        max-width: 100%;
-        flex: 0 0 100%;
-    }
-
-    .inscription-buttons {
-        min-width: auto;
-        width: 200px;
-        margin: 0 auto;
-    }
-
-    .btn-login-responsive {
-        font-size: 0.8rem;
-        padding: 8px 16px;
-        gap: 6px;
-    }
-
-    .btn-login-responsive .btn-text {
-        display: inline;
-    }
-}
-
-@media (max-width: 768px) {
-    .curso-header .row {
-        flex-direction: column;
-    }
-
-    .curso-header .col-md-10,
-    .curso-header .col-md-2 {
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: 1rem;
-    }
-
-    .inscription-buttons {
-        width: 100%;
-        max-width: 250px;
-        margin: 0 auto;
-    }
-
-    .btn-login-responsive {
-        font-size: 0.85rem;
-        padding: 10px 20px;
-        gap: 8px;
-    }
-
-    .btn-login-responsive .btn-text {
-        display: inline;
-    }
-}
-
-@media (max-width: 576px) {
-    .inscription-buttons {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .btn-login-responsive {
-        font-size: 0.8rem;
-        padding: 8px 16px;
-        gap: 6px;
-    }
 }
