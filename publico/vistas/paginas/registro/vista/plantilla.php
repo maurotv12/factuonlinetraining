@@ -26,9 +26,9 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <link rel="stylesheet" href="/cursosApp/assets/css/auth.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/cursosInicio.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublico.css">
-  <link rel="stylesheet" href="/cursosapp/assets/css/carrusel.css">
-  <!-- CSS para validación de registro -->
+  <link rel="stylesheet" href="/cursosApp/assets/css/carrusel.css">
   <link rel="stylesheet" href="/cursosApp/assets/css/validacionRegistro.css">
+  <link rel="stylesheet" href="/cursosApp/assets/css/footer-fix.css">
 
   <!-- Favicons -->
   <link rel="icon" href="/cursosApp/assets/favicon.ico" sizes="32x32" />
@@ -36,35 +36,33 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 
 <body>
   <!-- MENU -->
-  <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/menu.php"; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php"; ?>
 
-  </main>
-  <?php
-  // Cargar la página solicitada
-  ControladorRuta::cargarVistaCursoInicio();
-  ?>
+  <!-- CONTENIDO PRINCIPAL -->
   <main>
+    <?php
+    // Cargar la página solicitada
+    ControladorRuta::cargarVistaCursoInicio();
+    ?>
+  </main>
 
-    <footer>
-      <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosAPP/assets/plantilla/footer.php"; ?>
-    </footer>
+  <!-- FOOTER -->
+  <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/footer.php"; ?>
 
-    <!-- Bootstrap JS CDN -->
+  <!-- JavaScript para validación de registro -->
+  <script src="/cursosApp/assets/js/validacionRegistro.js"></script>
 
-    <!-- JavaScript para validación de registro -->
-    <script src="/cursosApp/assets/js/validacionRegistro.js"></script>
+  <!-- JavaScript para validación de login (solo si es necesario) -->
+  <script>
+    // Cargar script de login solo si estamos en página de login
+    if (document.querySelector('input[name="emailIngreso"]')) {
+      const script = document.createElement('script');
+      script.src = '/cursosApp/assets/js/validacionLogin.js';
+      document.head.appendChild(script);
+    }
+  </script>
 
-    <!-- JavaScript para validación de login (solo si es necesario) -->
-    <script>
-      // Cargar script de login solo si estamos en página de login
-      if (document.querySelector('input[name="emailIngreso"]')) {
-        const script = document.createElement('script');
-        script.src = '/cursosApp/assets/js/validacionLogin.js';
-        document.head.appendChild(script);
-      }
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>
 
 </html>
