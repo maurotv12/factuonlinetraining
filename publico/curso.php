@@ -81,7 +81,11 @@ echo '<link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublic.css?v=' 
 
                     <!-- Precio -->
                     <span class="curso-precio ms-2">
-                        $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>
+                        <?php if ($curso["valor"] == 0): ?>
+                            Gratis
+                        <?php else: ?>
+                            $<?= number_format($curso["valor"], 0, ',', '.') ?> COL
+                        <?php endif; ?>
                     </span>
                 </div>
             </div>

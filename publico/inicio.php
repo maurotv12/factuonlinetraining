@@ -134,8 +134,14 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
                            <h3><a href="<?= $value["url_amiga"] ?>"><?= $rnCurso ?></a></h3>
                            <a href="<?= $value["url_amiga"] ?>"><span><?= $resulDescripcion ?></span></a>
                            <div class="curso-footer">
-                              <h4 class="valorC">$ <?= $value["valor"] == 0 ? "Gratis" : $value["valor"] ?></h4>
-                              <p>Profesor: <?= $value["id_persona"] ?></p>
+                              <h4 class="valorC">
+                                 <?php if ($value["valor"] == 0): ?>
+                                    Gratis
+                                 <?php else: ?>
+                                    $<?= number_format($value["valor"], 0, ',', '.') ?> COL
+                                 <?php endif; ?>
+                              </h4>
+                              <p>Profesor: <?= !empty($value["nombre_profesor"]) ? htmlspecialchars($value["nombre_profesor"]) : 'No asignado' ?></p>
                               <div class="d-grid gap-2">
                                  <a class="ingresar-btn btn btn-default" href="<?= $value["url_amiga"] ?>" role="button">Ver Curso</a>
                               </div>
