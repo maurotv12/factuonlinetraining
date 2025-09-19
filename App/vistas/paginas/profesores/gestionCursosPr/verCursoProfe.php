@@ -11,6 +11,7 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin', 'estudian
 }
 
 require_once "controladores/cursos.controlador.php";
+require_once "controladores/inscripciones.controlador.php";
 
 // Obtener el identificador del curso de la URL (puede ser ID o URL amigable)
 $identificadorCurso = isset($_GET['identificador']) ? $_GET['identificador'] : (isset($_GET['id']) ? $_GET['id'] : null);
@@ -547,8 +548,33 @@ if (isset($_SESSION['mensaje_error'])) {
                     </div>
                 </div>
 
+                <?php
+                // Verificar si el usuario es estudiante y tiene inscripción activa
+                $puedeVerContenido = true;
+                $mensajeRestriccion = '';
+
+                if (isset($_SESSION['idU']) && ControladorGeneral::ctrUsuarioTieneRol('estudiante') && !ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+                    // Es solo estudiante, verificar inscripción activa
+                    $inscripcion = ControladorInscripciones::ctrVerificarInscripcion($curso['id'], $_SESSION['idU']);
+
+                    if (!$inscripcion || $inscripcion['estado'] !== 'activo') {
+                        $puedeVerContenido = false;
+                        $mensajeRestriccion = 'Debes tener una inscripción activa para visualizar el contenido del curso ¡Inscríbete Ahora! o contacta al
+                        administrador del curso que active tu inscripción.';
+                    }
+                }
+                ?>
+
                 <div class="contenido-lista">
-                    <?php if (!empty($secciones)): ?>
+                    <?php if (!$puedeVerContenido): ?>
+                        <!-- Mensaje para estudiantes sin inscripción activa -->
+                        <div class="alert alert-info text-center p-4">
+                            <i class="bi bi-exclamation-triangle fs-1 mb-3 text-warning"></i>
+                            <h5>Acceso Restringido</h5>
+                            <p class="mb-3"><?= $mensajeRestriccion ?></p>
+
+                        </div>
+                    <?php elseif (!empty($secciones)): ?>
                         <div id="secciones-container">
                             <?php foreach ($secciones as $index => $seccion): ?>
                                 <div class="seccion-container" data-seccion-id="<?= $seccion['id'] ?>">
