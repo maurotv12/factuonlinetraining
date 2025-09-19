@@ -92,46 +92,51 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
         <div class="courses-grid" id="coursesContainer">
             <?php if ($cursos && count($cursos) > 0): ?>
                 <?php foreach ($cursos as $curso): ?>
-                    <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
-                        <img src="<?php echo ControladorCursos::ctrValidarImagenCurso($curso['banner']); ?>"
-                            alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
-                            class="course-image"
-                            onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                    <?php
+                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                    ?>
+                    <a href="<?php echo $urlVer; ?>" class="text-decoration-none">
+                        <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
+                            <img src="<?php echo ControladorCursos::ctrValidarImagenCurso($curso['banner']); ?>"
+                                alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
+                                class="course-image"
+                                onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
 
-                        <div class="course-content">
-                            <h3 class="course-title">
-                                <?php echo htmlspecialchars($curso['nombre']); ?>
-                            </h3>
+                            <div class="course-content">
+                                <h3 class="course-title">
+                                    <?php echo htmlspecialchars($curso['nombre']); ?>
+                                </h3>
 
-                            <div class="course-professor">
-                                <i class="bi bi-person-circle"></i>
-                                <span><?php echo htmlspecialchars($curso['profesor'] ?? 'Instructor'); ?></span>
-                            </div>
+                                <div class="course-professor">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span><?php echo htmlspecialchars($curso['profesor'] ?? 'Instructor'); ?></span>
+                                </div>
 
-                            <!-- Categoría del curso -->
-                            <div class="course-category" style="margin-bottom: 1rem;">
-                                <i class="bi bi-tag" style="color: var(--gray); margin-right: 0.5rem;"></i>
-                                <span style="color: var(--gray); font-size: 0.85rem;">
-                                    <?php echo htmlspecialchars($curso['categoria'] ?? 'Sin categoría'); ?>
-                                </span>
-                            </div>
+                                <!-- Categoría del curso -->
+                                <div class="course-category" style="margin-bottom: 1rem;">
+                                    <i class="bi bi-tag" style="color: var(--gray); margin-right: 0.5rem;"></i>
+                                    <span style="color: var(--gray); font-size: 0.85rem;">
+                                        <?php echo htmlspecialchars($curso['categoria'] ?? 'Sin categoría'); ?>
+                                    </span>
+                                </div>
 
-                            <div class="course-footer">
-                                <span class="course-price">
-                                    <?php
-                                    if ($curso['valor'] && $curso['valor'] > 0) {
-                                        echo '$' . number_format($curso['valor'], 0, ',', '.');
-                                    } else {
-                                        echo 'Gratis';
-                                    }
-                                    ?>
-                                </span>
-                                <button class="course-btn" onclick="viewCourse(<?php echo $curso['id']; ?>)">
-                                    Ver curso
-                                </button>
+                                <div class="course-footer">
+                                    <span class="course-price">
+                                        <?php
+                                        if ($curso['valor'] && $curso['valor'] > 0) {
+                                            echo '$' . number_format($curso['valor'], 0, ',', '.') . ' COL';
+                                        } else {
+                                            echo 'Gratis';
+                                        }
+                                        ?>
+                                    </span>
+                                    <button class="course-btn">
+                                        Ver curso
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="no-courses" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
@@ -154,11 +159,6 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios("id", $idUsuario);
 <script src="/cursosApp/App/vistas/assets/js/pages/cursosCategorias.js"></script>
 
 <script>
-    // Función para ver curso
-    window.viewCourse = function(courseId) {
-        window.location.href = `/cursosApp/App/verCurso/${courseId}`;
-    };
-
     // Estilos dinámicos para botones de filtro
     document.addEventListener('DOMContentLoaded', function() {
         const filterButtons = document.querySelectorAll('.filter-btn');

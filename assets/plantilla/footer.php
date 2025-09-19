@@ -1,8 +1,3 @@
-<!--=====================================
-FOOTER
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-6/07/2020 CursosApp
-======================================-->
 <!-- FOOTER -->
 <footer id="footer">
      <div class="container">
@@ -11,15 +6,8 @@ FOOTER
                     <div class="footer-info">
                          <h2 class="titleFes">CursosApp</h2>
                          <address>
-                              <p>CursosApp es un servicio de aprendizaje donde puedes ver una gran variedad de cursssssos.</p>
+                              <p>CursosApp es un servicio de aprendizaje donde puedes ver una gran variedad de cursos.</p>
                          </address>
-
-                         <ul class="social-icon">
-                              <li><a href="#" class="fa fa-facebook" attr="facebook icon" target="_blank"></a></li>
-                              <li><a href="#" class="fa fa-instagram" target="_blank"></a></li>
-                              <li><a href="#" class="fa fa-youtube-play" target="_blank"></a></li>
-                              <li><a href="#" target="_blank" class="fa fa-twitter"></a></li>
-                         </ul>
                     </div>
                </div>
                <div class="col-md-4 col-sm-6">
@@ -38,10 +26,9 @@ FOOTER
                          <div class="footer_menu">
                               <ul>
                                    <li><a href="inicio">Inicio</a></li>
-                                   <li><a href="#cursos">Cursos</a></li>
                                    <li><a href="#nosotros">Nosotros</a></li>
                                    <li><a href="#contacto">Contáctenos</a></li>
-                                   <li><a href="registro/login">Ingresar</a></li>
+                                   <li><a href="/cursosApp/login">Ingresar</a></li>
                               </ul>
                          </div>
                          <br>

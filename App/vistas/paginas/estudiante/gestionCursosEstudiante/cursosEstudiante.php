@@ -177,7 +177,7 @@ foreach ($cursosInscritos as $inscripcion) {
                                         }
                                         ?>
                                     </span>
-                                    <button class="course-btn" onclick="viewCourse(<?php echo $curso['id']; ?>)">
+                                    <button class="course-btn">
                                         Ver curso
                                     </button>
                                 </div>

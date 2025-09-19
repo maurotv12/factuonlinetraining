@@ -21,7 +21,7 @@
                             <button class="btn btn1 me-3 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                                 ☰
                             </button>
-                            <a class="navbar-brand d-flex align-items-center" href="/">
+                            <a class="navbar-brand d-flex align-items-center" href="/cursosApp/App/inicioEstudiante">
                                 <?php
                                 // Ruta dinámica que siempre apuntará al logo
                                 $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
