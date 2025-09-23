@@ -4,6 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Incluir PHPMailer
+require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/extensiones/vendor/autoload.php";
+
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -296,149 +299,269 @@ class ControladorAutenticacion
 =============================================*/
     public static function ctrRecuperarPassword()
     {
-
         if (isset($_POST["emailRecuperarPassword"])) {
-            if (preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $_POST["emailRecuperarPassword"])) {
+            // Validar formato de email usando filter_var (más robusto)
+            if (filter_var($_POST["emailRecuperarPassword"], FILTER_VALIDATE_EMAIL)) {
                 /*=============================================
-GENERAR CONTRASEÑA ALEATORIA
-=============================================*/
+                GENERAR CONTRASEÑA ALEATORIA
+                =============================================*/
                 function generarPassword($longitud)
                 {
-                    $str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+                    // Incluir caracteres especiales para mayor seguridad
+                    $mayusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    $minusculas = "abcdefghijklmnopqrstuvwxyz";
+                    $numeros = "1234567890";
+                    $especiales = "!@#$%&*";
+
                     $password = "";
-                    //Reconstruimos la contraseña segun la longitud que se quiera
-                    for ($i = 0; $i < $longitud; $i++) {
-                        //obtenemos un caracter aleatorio escogido de la cadena de caracteres
-                        $password .= substr($str, rand(0, 62), 1);
+
+                    // Asegurar al menos un carácter de cada tipo
+                    $password .= $mayusculas[rand(0, strlen($mayusculas) - 1)];
+                    $password .= $minusculas[rand(0, strlen($minusculas) - 1)];
+                    $password .= $numeros[rand(0, strlen($numeros) - 1)];
+                    $password .= $especiales[rand(0, strlen($especiales) - 1)];
+
+                    // Completar con caracteres aleatorios
+                    $todosCaracteres = $mayusculas . $minusculas . $numeros . $especiales;
+                    for ($i = 4; $i < $longitud; $i++) {
+                        $password .= $todosCaracteres[rand(0, strlen($todosCaracteres) - 1)];
                     }
-                    return $password;
+
+                    // Mezclar la contraseña
+                    return str_shuffle($password);
                 }
 
-                $nuevoPassword = generarPassword(8);
-                $encriptar = crypt($nuevoPassword, '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
-                $tabla = "usuarios";
+                $nuevoPassword = generarPassword(12); // Contraseña más larga y segura
+                $hashPassword = password_hash($nuevoPassword, PASSWORD_DEFAULT); // Usar password_hash en lugar de crypt
+
+                // Usar la tabla correcta de tu proyecto
+                $tabla = "persona";
                 $item = "email";
                 $valor = $_POST["emailRecuperarPassword"];
+
                 $traerUsuario = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+
                 if ($traerUsuario) {
-                    $id = $traerUsuario["id_usuario"];
-                    $item = "password";
-                    $valor = $encriptar;
-                    $actualizarPassword = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
-                    if ($actualizarPassword  == "ok") {
+                    // Actualizar contraseña usando la estructura correcta
+                    $datosActualizar = array(
+                        "id" => $traerUsuario["id"], // Usar "id" en lugar de "id_usuario"
+                        "password" => $hashPassword
+                    );
+
+                    // Usar método de actualización apropiado
+                    $actualizarPassword = ModeloUsuarios::mdlActualizarPassword($datosActualizar);
+
+                    if ($actualizarPassword == "ok") {
                         /*=============================================
-	Verificación Correo Electrónico
-	=============================================*/
-                        $ruta = ControladorRuta::ctrRuta();
+                        Envío de correo electrónico
+                        =============================================*/
+                        $ruta = ControladorGeneral::ctrRutaApp();
                         date_default_timezone_set("America/Bogota");
-                        $mail = new PHPMailer;
-                        $mail->Charset = "UTF-8";
 
-                        $mail->isSMTP();
-                        $mail->Host = 'smtp.mi.com.co';
-                        $mail->SMTPAuth = true;
-                        $mail->Username = 'info@modelo-de-negocio-labs.com.co';
-                        $mail->Password = 'KwkModb93oz';
-                        $mail->SMTPSecure = 'ssl';
-                        $mail->Port = 465;
+                        $mail = new PHPMailer(true);
+                        $mail->CharSet = "UTF-8";
 
-                        $mail->setFrom("info@modelo-de-negocio-labs.com.co", "Modelo De Negocio Labs");
-                        $mail->addReplyTo("modelodenegocioapp@gmail.com", "Modelo De Negocio Labs");
-                        $mail->Subject  = "Solicitud de recuperar password, Modelod de Negocio Labs";
-                        $mail->addAddress($traerUsuario["email"]);
+                        try {
+                            // Configuración SMTP
+                            $mail->isSMTP();
+                            $mail->Host = 'sandbox.smtp.mailtrap.io';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = 'd26b5cb1025efd';
+                            $mail->Password = 'dfaaeca0ba5f82';
+                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                            $mail->Port = 465;
 
-                        $mail->addCC('grcarvajal@gmail.com', 'Solicitud de recuperar password, Modelo De Negocio Labs');
+                            $mail->setFrom("hello@demomailtrap.co", "Cursos App");
+                            $mail->addReplyTo("hello@demomailtrap.co", "Soporte Cursos App");
+                            $mail->Subject = "Recuperación de contraseña - Cursos App";
+                            $mail->addAddress($traerUsuario["email"]);
 
+                            $mail->isHTML(true);
+                            $mail->Body = '
+                            <div style="width:100%; background:#f4f4f4; position:relative; font-family:Arial, sans-serif; padding:40px 0">
+                                <div style="position:relative; margin:auto; max-width:600px; background:white; padding:40px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1)">		
+                                    <div style="text-align:center; margin-bottom:30px">
+                                        <h1 style="color:#333; font-weight:300; margin:0">Recuperación de Contraseña</h1>
+                                        <hr style="border:none; height:2px; background:#007bff; width:100px; margin:20px auto">
+                                    </div>
+                                    
+                                    <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin:20px 0">
+                                        <p style="color:#666; font-size:16px; line-height:1.6; margin:0 0 15px 0">
+                                            Hola <strong>' . htmlspecialchars($traerUsuario["nombre"]) . '</strong>,
+                                        </p>
+                                        <p style="color:#666; font-size:16px; line-height:1.6; margin:0 0 15px 0">
+                                            Has solicitado recuperar tu contraseña. Tu nueva contraseña temporal es:
+                                        </p>
+                                        <div style="text-align:center; background:#007bff; color:white; padding:15px; border-radius:5px; font-size:18px; font-weight:bold; letter-spacing:2px; margin:20px 0">
+                                            ' . $nuevoPassword . '
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="text-align:center; margin:30px 0">
+                                        <a href="' . $ruta . 'login" 
+                                           style="background:#007bff; color:white; padding:15px 30px; text-decoration:none; border-radius:5px; font-weight:bold; display:inline-block">
+                                            Iniciar Sesión
+                                        </a>
+                                    </div>
+                                    
+                                    <div style="background:#fff3cd; border:1px solid #ffeaa7; padding:15px; border-radius:5px; margin:20px 0">
+                                        <p style="color:#856404; font-size:14px; margin:0; text-align:center">
+                                            <strong>Importante:</strong> Por tu seguridad, te recomendamos cambiar esta contraseña después de iniciar sesión.
+                                        </p>
+                                    </div>
+                                    
+                                    <hr style="border:none; height:1px; background:#eee; margin:30px 0">
+                                    
+                                    <p style="color:#999; font-size:12px; text-align:center; margin:0">
+                                        Si no solicitaste este cambio, puedes ignorar este correo. Tu cuenta permanece segura.
+                                    </p>
+                                </div>
+                            </div>';
 
-                        $mail->msgHTML('<div style="width:100%; background:white; position:relative; font-family:sans-serif; padding-bottom:40px">
-				
-				<div style="position:relative; margin:auto; width:600px; background:#eee; padding:20px">		
-					<center>
-					<h1 style="font-weight:100; color:#999">SOLICITUD DE NUEVO PASSWORD</h1>
-					<hr style="border:1px solid #ccc; width:80%">
-					<h2 style="font-weight:100; color:#999; padding:0 20px"><strong>Su nuevo password es: </strong>' . $nuevoPassword . '</h2>
-					<a href="' . $ruta . 'ingreso" target="_blank" style="text-decoration:none">
-					<div style="line-height:30px; background:#FF7E09; width:60%; padding:20px; color:white">		
-						Clic para ingresar
-					</div>
-					</a>
-					<h4 style="font-weight:100; color:#999; padding:0 20px">Ingrese nuevamente al sitio con este password y recuerde cambiarlo en el panel de perfil de usuario</h4>
-					<br>
-					<hr style="border:1px solid #ccc; width:80%">
-					<h5 style="font-weight:100; color:#999">Si no se inscribio en esta cuenta, puede ignorar este e-mail y la cuenta se eliminara.</h5>
-					</center>
-				</div>
-				    <div style="background:#000000;">
-            			<center>
-            				<img src="https://modelo-de-negocio-labs.com.co/img/logo-medelo-de-negocio.png" alt="Modelo de Negocio Labs">
-            			</center>
-        			</div>
-    		      <center>
-                     <a style="list-style: none; text-decoration: none; color:#00AAAA;" href="https://www.facebook.com/ModeloDeNegocio/" target="_black"><img src="https://modelo-de-negocio-labs.com.co/RI/backoffice/vistas/img/inicio/iconFacebook.png" width="36" height="36"> Facebook</a>
-                    <a style="list-style: none; text-decoration: none; color:#00AAAA;" href="https://www.instagram.com/modelodenegocioapp/" target="_black"><img src="https://modelo-de-negocio-labs.com.co/RI/backoffice/vistas/img/inicio/iconInstagram.png" width="36" height="36"> Instagram</a>
-                     <a style="list-style: none; text-decoration: none; color:#00AAAA;" href="https://www.youtube.com/channel/UCBQCJlK4ON1b0PjbHO-ZOGw/featured" target="_black"><img src="https://modelo-de-negocio-labs.com.co/RI/backoffice/vistas/img/inicio/iconYoutube.png" width="36" height="36"> Youtube</a> 
-                    </center>   
-			</div>');
-                        $envio = $mail->Send();
-                        if (!$envio) {
+                            $envio = $mail->send();
+
                             echo '<script>
-			swal({
-				type:"error",
-				title: "¡ERROR!",
-				text: "¡¡Ha ocurrido un problema enviando verificación de correo electrónico a ' . $traerUsuario["email"] . ' ' . $mail->ErrorInfo . ', por favor inténtelo nuevamente",
-				showConfirmButton: true,
-				confirmButtonText: "Cerrar"
-				}).then(function(result){
-				if(result.value){
-					history.back();
-				}
-			});	
-		</script>';
-                        } else {
+                                if (typeof Swal !== "undefined") {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "¡Contraseña Enviada!",
+                                        text: "Se ha enviado una nueva contraseña a tu correo electrónico. Revisa tu bandeja de entrada y la carpeta de spam.",
+                                        showConfirmButton: true,
+                                        confirmButtonText: "Ir a Iniciar Sesión"
+                                    }).then(function(result){
+                                        if(result.value){
+                                            window.location = "' . $ruta . 'login";
+                                        }
+                                    });
+                                } else {
+                                    swal({
+                                        type:"success",
+                                        title: "¡Contraseña Enviada!",
+                                        text: "Se ha enviado una nueva contraseña a tu correo electrónico. Revisa tu bandeja de entrada y la carpeta de spam.",
+                                        showConfirmButton: true,
+                                        confirmButtonText: "Ir a Iniciar Sesión"
+                                    }).then(function(result){
+                                        if(result.value){
+                                            window.location = "' . $ruta . 'login";
+                                        }
+                                    });
+                                }
+                            </script>';
+                        } catch (Exception $e) {
                             echo '<script>
-					swal({
-						type:"success",
-						title: "¡SU NUEVA CONTRASEÑA HA SIDO ENVIADA!",
-						text: "¡Por favor revise la bandeja de entrada o la carpeta SPAM de su correo electrónico para tomar la nueva contraseña!",
-						showConfirmButton: true,
-						confirmButtonText: "Cerrar"
-						}).then(function(result){
-						if(result.value){
-							window.location = "' . $ruta . 'ingreso";
-						}
-					});	
-				</script>';
+                                if (typeof Swal !== "undefined") {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error de Envío",
+                                        text: "Ha ocurrido un problema al enviar el correo. Por favor, inténtalo nuevamente.",
+                                        showConfirmButton: true,
+                                        confirmButtonText: "Cerrar"
+                                    }).then(function(result){
+                                        if(result.value){
+                                            history.back();
+                                        }
+                                    });
+                                } else {
+                                    swal({
+                                        type:"error",
+                                        title: "Error de Envío",
+                                        text: "Ha ocurrido un problema al enviar el correo. Por favor, inténtalo nuevamente.",
+                                        showConfirmButton: true,
+                                        confirmButtonText: "Cerrar"
+                                    }).then(function(result){
+                                        if(result.value){
+                                            history.back();
+                                        }
+                                    });
+                                }
+                            </script>';
                         }
+                    } else {
+                        echo '<script>
+                            if (typeof Swal !== "undefined") {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: "Ha ocurrido un error al actualizar la contraseña. Inténtalo nuevamente.",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "Cerrar"
+                                }).then(function(result){
+                                    if(result.value){
+                                        history.back();
+                                    }
+                                });
+                            } else {
+                                swal({
+                                    type:"error",
+                                    title: "Error",
+                                    text: "Ha ocurrido un error al actualizar la contraseña. Inténtalo nuevamente.",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "Cerrar"
+                                }).then(function(result){
+                                    if(result.value){
+                                        history.back();
+                                    }
+                                });
+                            }
+                        </script>';
                     }
                 } else {
                     echo '<script>
-				swal({
-					type:"error",
-				  	title: "¡ERROR!",
-				  	text: "¡El correo no existe en el sistema, puede registrase nuevamente con ese correo!",
-				  	showConfirmButton: true,
-					confirmButtonText: "Cerrar"				  
-					}).then(function(result){
-						if(result.value){   
-						    history.back();
-						  } 
-				});
-			</script>';
+                        if (typeof Swal !== "undefined") {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Usuario No Encontrado",
+                                text: "El correo electrónico no está registrado en el sistema.",
+                                showConfirmButton: true,
+                                confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                                if(result.value){
+                                    history.back();
+                                }
+                            });
+                        } else {
+                            swal({
+                                type:"error",
+                                title: "Usuario No Encontrado",
+                                text: "El correo electrónico no está registrado en el sistema.",
+                                showConfirmButton: true,
+                                confirmButtonText: "Cerrar"
+                            }).then(function(result){
+                                if(result.value){
+                                    history.back();
+                                }
+                            });
+                        }
+                    </script>';
                 }
             } else {
                 echo '<script>
-			swal({
-				type:"error",
-				title: "¡CORREGIR!",
-				text: "¡Error al escribir el correo!",
-				showConfirmButton: true,
-				confirmButtonText: "Cerrar"
-				}).then(function(result){
-				if(result.value){
-					history.back();
-				}
-			});	
-		</script>';
+                    if (typeof Swal !== "undefined") {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Email Inválido",
+                            text: "Por favor, ingresa un correo electrónico válido.",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                        }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                        });
+                    } else {
+                        swal({
+                            type:"error",
+                            title: "Email Inválido",
+                            text: "Por favor, ingresa un correo electrónico válido.",
+                            showConfirmButton: true,
+                            confirmButtonText: "Cerrar"
+                        }).then(function(result){
+                            if(result.value){
+                                history.back();
+                            }
+                        });
+                    }
+                </script>';
             }
         }
     }

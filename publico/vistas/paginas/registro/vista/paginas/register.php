@@ -8,7 +8,7 @@ $registro->ctrRegistroUsuario();
 $rutaLogin = ControladorRuta::ctrRutaLogin();
 ?>
 <div id="auth">
-    <div class="row h-100">
+    <div class="row h-100 pt-5">
         <div class="col-lg-4 col-12">
         </div>
         <div class="col-lg-4 col-12">

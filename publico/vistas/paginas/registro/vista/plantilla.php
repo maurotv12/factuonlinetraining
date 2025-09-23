@@ -39,7 +39,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php"; ?>
 
   <!-- CONTENIDO PRINCIPAL -->
-  <main>
+  <main class="pt-5">
     <?php
     // Cargar la página solicitada
     ControladorRuta::cargarVistaCursoInicio();

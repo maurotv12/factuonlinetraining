@@ -319,6 +319,23 @@ Actualizar usuario completar datos perfil
 	}
 
 	/*=============================================
+	Actualizar contraseña de usuario
+	=============================================*/
+	public static function mdlActualizarPassword($datos)
+	{
+		$stmt = Conexion::conectar()->prepare("UPDATE persona SET password = :password WHERE id = :id");
+
+		$stmt->bindParam(":password", $datos["password"], PDO::PARAM_STR);
+		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+
+		if ($stmt->execute()) {
+			return "ok";
+		} else {
+			return "error";
+		}
+	}
+
+	/*=============================================
 	Obtener estudiantes con preinscripciones e inscripciones por profesor
 	Devuelve un registro por cada curso al que el estudiante esté preinscrito o inscrito
 	=============================================*/
