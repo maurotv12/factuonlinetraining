@@ -20,9 +20,13 @@ function isActivePage($page, $currentPath)
 <nav class="estudiante-navbar">
     <div class="estudiante-nav-container">
         <div class="nav-content">
-            <a href="/cursosApp/App/inicioEstudiante" class="nav-brand">
-                <i class="bi bi-book-fill"></i>
-                CursosApp
+            <a class="navbar-brand d-flex align-items-center" href="/cursosApp/App/inicioEstudiante">
+                <?php
+                // Ruta dinámica que siempre apuntará al logo
+                $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
+                $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+                ?>
+                <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 80px;">
             </a>
 
             <div class="search-container">
