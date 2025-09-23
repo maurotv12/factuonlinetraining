@@ -317,3 +317,101 @@
         margin-bottom: 20px;
     }
 }
+
+/* ===== FILTROS DE CATEGORÍAS ===== */
+.category-filters {
+    margin: 2rem 0;
+}
+
+.category-filters .btn {
+    border-radius: 25px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary);
+    margin: 0 5px 10px 0;
+}
+
+.category-filters .btn-outline-primary {
+    color: var(--primary);
+    background-color: transparent;
+}
+
+.category-filters .btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(54, 130, 196, 0.3);
+}
+
+.category-filters .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 8px rgba(54, 130, 196, 0.3);
+}
+
+.category-filters .btn-primary:hover {
+    background-color: #2968a3;
+    border-color: #2968a3;
+    transform: translateY(-2px);
+}
+
+/* Título de sección con contador */
+.section-title-with-count {
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--dark);
+}
+
+.section-title-with-count h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.section-title-with-count .text-muted {
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+/* Mensaje de no hay cursos */
+.no-courses-message {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+}
+
+.no-courses-message h4 {
+    color: var(--gray);
+    margin-bottom: 1rem;
+}
+
+.no-courses-message p {
+    color: var(--gray);
+    margin-bottom: 0;
+}
+
+.no-courses-message a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.no-courses-message a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive para filtros */
+@media (max-width: 768px) {
+    .category-filters .d-flex {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-filters .btn {
+        width: 200px;
+        margin: 0 0 10px 0;
+    }
+}

@@ -18,14 +18,23 @@ class ModeloCursosInicio
 			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item");
 			$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 			$stmt->execute();
-			return $stmt->fetch();
+			return $stmt->fetchAll();
 		} else {
 			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id");
 			$stmt->execute();
 			return $stmt->fetchAll();
 		}
-		$stmt->close();
-		$stmt = null;
+	}
+
+	/*=============================================
+	Mostrar UN SOLO curso en inicio
+=============================================*/
+	public static function mdlMostrarUnCursoInicio($tabla, $item, $valor)
+	{
+		$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item");
+		$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
+		$stmt->execute();
+		return $stmt->fetch();
 	}
 
 	/*==========================================================================
@@ -37,8 +46,6 @@ class ModeloCursosInicio
 		$stmt = Conexion::conectar()->prepare("SELECT COUNT(*) total FROM $tabla");
 		$stmt->execute();
 		return $stmt->fetch();
-		$stmt->close();
-		$stmt = null;
 	}
 	/*==============================================
 	 Consultar los datos de un curso en inicio

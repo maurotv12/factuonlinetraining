@@ -6,6 +6,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
 
 <!-- CSS específico para el carrusel -->
 <link rel="stylesheet" href="/cursosApp/assets/css/carrusel.css">
+<link rel="stylesheet" href="/cursosApp/assets/css/cursosInicio.css">
 
 <body>
    <?php
@@ -14,14 +15,15 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosDestacados.controlador.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/modelos/cursosInicio.modelo.php";
 
-   // Obtener todos los cursos
-   $cursos = ControladorCursosInicio::ctrMostrarCursosInicio();
+   // Obtener parámetro de categoría para filtrado
+   $categoriaSeleccionada = isset($_GET['categoria']) ? $_GET['categoria'] : 'todas';
+
+   // Obtener cursos (filtrados o todos)
+   $cursos = ControladorCursosInicio::ctrMostrarCursosPorCategoria($categoriaSeleccionada);
    if (!$cursos) {
       $cursos = [];
    }
-   if (isset($cursos['id'])) {
-      $cursos = [$cursos];
-   }
+   $categorias = ControladorCursosInicio::ctrObtenerCategorias();
 
    // Carrusel publicitario con imágenes motivacionales - no requiere base de datos
    $cursosCarrusel = [
@@ -103,8 +105,27 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
             <div class="col-md-12 col-sm-12">
                <div>
                   <h2 class="titleFes" id="testimonial">Cursos <small>
-                        <p>Animación, cine, stop motion</p>
+                        <p>Explora por categorías</p>
                      </small></h2>
+               </div>
+            </div>
+         </div>
+         <!-- Filtros de categorías -->
+         <div class="row mb-4">
+            <div class="col-md-12">
+               <div class="category-filters">
+                  <div class="d-flex flex-wrap gap-2 justify-content-center">
+                     <a href="?categoria=todas"
+                        class="btn <?= ($categoriaSeleccionada === 'todas') ? 'btn-primary' : 'btn-outline-primary' ?> mb-2">
+                        Todas las categorías
+                     </a>
+                     <?php foreach ($categorias as $categoria): ?>
+                        <a href="?categoria=<?= $categoria['id'] ?>"
+                           class="btn <?= ($categoriaSeleccionada == $categoria['id']) ? 'btn-primary' : 'btn-outline-primary' ?> mb-2">
+                           <?= htmlspecialchars($categoria['nombre']) ?>
+                        </a>
+                     <?php endforeach; ?>
+                  </div>
                </div>
             </div>
          </div>
@@ -114,9 +135,40 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
 
    <section id="cardscursos">
       <div class="container">
+         <!-- Título de la sección actual -->
+         <div class="row mb-3">
+            <div class="col-md-12">
+               <div class="section-title-with-count">
+                  <h3>
+                     <?php
+                     if ($categoriaSeleccionada === 'todas') {
+                        echo "Todos los cursos";
+                     } else {
+                        // Buscar el nombre de la categoría seleccionada
+                        $nombreCategoria = 'Categoría';
+                        foreach ($categorias as $cat) {
+                           if ($cat['id'] == $categoriaSeleccionada) {
+                              $nombreCategoria = $cat['nombre'];
+                              break;
+                           }
+                        }
+                        echo "Cursos de " . htmlspecialchars($nombreCategoria);
+                     }
+                     ?>
+                  </h3>
+                  <small class="text-muted d-block">(<?= count($cursos) ?> cursos encontrados)</small>
+               </div>
+            </div>
+         </div>
+
          <div class="row row-eq-height">
             <?php if (count($cursos) === 0): ?>
-               <p>No hay cursos para mostrar.</p>
+               <div class="col-12">
+                  <div class="alert alert-info text-center no-courses-message">
+                     <h4>No hay cursos disponibles</h4>
+                     <p>No se encontraron cursos para la categoría seleccionada. <a href="?categoria=todas">Ver todos los cursos</a></p>
+                  </div>
+               </div>
             <?php else: ?>
                <?php foreach ($cursos as $key => $value): ?>
                   <?php
