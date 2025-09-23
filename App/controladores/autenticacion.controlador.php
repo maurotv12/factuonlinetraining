@@ -572,23 +572,129 @@ Cambiar contraseña
 =============================================*/
     public function ctrCambiarPassword()
     {
-
         if (isset($_POST["idClientePass"])) {
-            if ($_POST['nuevaPassword'] == $_POST['nuevaPassword2']) {
+            // Verificar que vengan todos los campos necesarios
+            $camposRequeridos = [];
+
+            // Detectar qué formulario se está usando
+            if (isset($_POST["passwordActual"]) && isset($_POST["passwordNuevo"]) && isset($_POST["passwordConfirmar"])) {
+                // Formulario del perfil (con validación de contraseña actual)
+                $camposRequeridos = ["passwordActual", "passwordNuevo", "passwordConfirmar"];
+                $passwordActual = $_POST["passwordActual"];
+                $nuevaPassword = $_POST["passwordNuevo"];
+                $confirmarPassword = $_POST["passwordConfirmar"];
+
+                // Verificar contraseña actual
+                $tabla = "persona";
+                $item = "id";
+                $valor = $_POST["idClientePass"];
+                $usuario = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+
+                if (!$usuario || !password_verify($passwordActual, $usuario["password"])) {
+                    echo '<script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            if (typeof Swal !== "undefined") {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: "La contraseña actual no es correcta.",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "Cerrar"
+                                });
+                            } else {
+                                alert("La contraseña actual no es correcta.");
+                            }
+                        });
+                    </script>';
+                    return;
+                }
+            } else if (isset($_POST["nuevaPassword"]) && isset($_POST["nuevaPassword2"])) {
+                // Formulario del modal (sin validación de contraseña actual)
+                $camposRequeridos = ["nuevaPassword", "nuevaPassword2"];
+                $nuevaPassword = $_POST["nuevaPassword"];
+                $confirmarPassword = $_POST["nuevaPassword2"];
+            } else {
+                echo '<script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        if (typeof Swal !== "undefined") {
+                            Swal.fire({
+                                icon: "error",
+                                title: "¡ERROR!",
+                                text: "¡Faltan datos requeridos!",
+                                showConfirmButton: true,
+                                confirmButtonText: "Cerrar"
+                            });
+                        } else {
+                            alert("Faltan datos requeridos.");
+                        }
+                    });
+                </script>';
+                return;
+            }
+
+            // Verificar que las contraseñas coincidan
+            if ($nuevaPassword == $confirmarPassword) {
                 $rutaApp = ControladorGeneral::ctrRutaApp();
-                $hashPassword = password_hash($_POST['nuevaPassword'], PASSWORD_DEFAULT);
-                $tabla = "usuarios";
+                $hashPassword = password_hash($nuevaPassword, PASSWORD_DEFAULT);
+                $tabla = "persona";
                 $id = $_POST["idClientePass"];
                 $item = "password";
                 $valor = $hashPassword;
                 $respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
+
                 if ($respuesta == "ok") {
                     echo '<script>
-						window.location = "' . $rutaApp . 'perfil";
-					</script>';
+                        document.addEventListener("DOMContentLoaded", function() {
+                            if (typeof Swal !== "undefined") {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "¡Éxito!",
+                                    text: "Contraseña cambiada correctamente.",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    timer: 3000
+                                }).then(function(result){
+                                    window.location = "' . $rutaApp . '";
+                                });
+                            } else {
+                                alert("Contraseña cambiada correctamente.");
+                                window.location = "' . $rutaApp . '";
+                            }
+                        });
+                    </script>';
+                } else {
+                    echo '<script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            if (typeof Swal !== "undefined") {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: "Ha ocurrido un error al cambiar la contraseña. Inténtalo nuevamente.",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "Cerrar"
+                                });
+                            } else {
+                                alert("Error al cambiar la contraseña.");
+                            }
+                        });
+                    </script>';
                 }
             } else {
-                echo '<div class="alert alert-danger">¡Debe repetir el mismo password!</div>';
+                echo '<script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        if (typeof Swal !== "undefined") {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Las contraseñas no coinciden.",
+                                showConfirmButton: true,
+                                confirmButtonText: "Cerrar"
+                            });
+                        } else {
+                            alert("Las contraseñas no coinciden.");
+                        }
+                    });
+                </script>';
                 return;
             }
         }
