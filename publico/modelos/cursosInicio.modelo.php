@@ -1,10 +1,4 @@
 <?php
-
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/05/2022 CursosApp
- */
-// require_once "../../App/modelos/conexion.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/conexion.php";
 
 class ModeloCursosInicio

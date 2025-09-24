@@ -1,10 +1,4 @@
 <?php
-
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/04/2022 aplicación PAWers citas de acompañamiento con mascotas
-Modelo de usuarios login, registro y recuperar contraseña
- */
 require_once "conexion.php";
 
 class ModeloUsuarios

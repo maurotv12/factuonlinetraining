@@ -1,10 +1,4 @@
 <?php
-
-/**
-// @grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-// 12/06/2022 CursosApp
- */
-
 class ControladorRuta
 {
 
