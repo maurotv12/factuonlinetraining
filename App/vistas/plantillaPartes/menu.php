@@ -12,7 +12,7 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
             $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
             $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
             ?>
-            <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 50px;">
+            <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 60px;">
         </div>
         <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
