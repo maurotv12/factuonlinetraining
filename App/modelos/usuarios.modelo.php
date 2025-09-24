@@ -36,9 +36,8 @@ class ModeloUsuarios
 		} else {
 			return print_r(Conexion::conectar()->errorInfo());
 		}
-		$stmt->close();
-		$stmt = null;
-	}	/*================================================================
+	}
+	/*================================================================
 	Registro de log de login ingreso del cliente a la aplicacion
 =================================================================*/
 	public static function mdlRegistroIngresoUsuarios($idU, $navU, $ipU)
@@ -75,8 +74,6 @@ class ModeloUsuarios
 			$stmt->execute();
 			return $stmt->fetchAll();
 		}
-		$stmt->close();
-		$stmt = null;
 	}
 
 	/*=============================================
@@ -94,9 +91,6 @@ class ModeloUsuarios
 		} else {
 			return print_r(Conexion::conectar()->errorInfo());
 		}
-		$stmt->close();
-
-		$stmt = null;
 	}
 
 	/*=============================================
@@ -118,8 +112,6 @@ Actualizar usuario completar datos perfil
 		} else {
 			return print_r(Conexion::conectar()->errorInfo());
 		}
-		$stmt->close();
-		$stmt = null;
 	}
 	public static function mdlActualizarRol($idPersona, $nuevoRol)
 	{

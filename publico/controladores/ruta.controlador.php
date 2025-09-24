@@ -109,14 +109,6 @@ class ControladorRuta
 	}
 
 
-
-	//Contar registros en la tabla que se pase como parametro
-	// public static function ctrContarRegistros($tabla)
-	// {
-	// 	$respuesta = ModeloUsuarios::mdlContarRegistros($tabla);
-	// 	return $respuesta;
-	// }
-
 	//funcion de redirecionamiento a la plantilla de inicio o index
 	public function ctrPlantilla()
 	{

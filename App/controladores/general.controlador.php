@@ -118,12 +118,7 @@ class ControladorGeneral
 		include "vistas/plantilla.php";
 	}
 
-	////Contar registros en la tabla que se pase como parametro
-	public static function ctrContarRegistros($tabla)
-	{
-		$respuesta = ModeloGeneral::mdlContarRegistros($tabla);
-		return $respuesta;
-	}
+
 
 	/*=============================================
 	Verificar si el usuario tiene un rol específico
