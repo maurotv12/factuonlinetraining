@@ -894,9 +894,6 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlUpsertProgreso($datos)
 	{
-		// LOG DE DEBUG - Remover en producción
-		error_log("DEBUG mdlUpsertProgreso - Datos recibidos: " . json_encode($datos));
-
 		// Si porcentaje >= 90, forzar visto = 1 y porcentaje = 100
 		if ($datos['porcentaje'] >= 90) {
 			$datos['visto'] = 1;
@@ -914,7 +911,6 @@ class ModeloCursos
 			$stmt->execute();
 
 			$existeRegistro = $stmt->rowCount() > 0;
-			error_log("DEBUG mdlUpsertProgreso - Existe registro: " . ($existeRegistro ? 'SÍ' : 'NO'));
 
 			if ($existeRegistro) {
 				// UPDATE
@@ -948,15 +944,12 @@ class ModeloCursos
 			$resultado = $stmt->execute();
 
 			if ($resultado) {
-				error_log("DEBUG mdlUpsertProgreso - Operación exitosa");
 				return "ok";
 			} else {
-				$errorInfo = $stmt->errorInfo();
-				error_log("DEBUG mdlUpsertProgreso - Error en execute(): " . json_encode($errorInfo));
 				return "error";
 			}
 		} catch (Exception $e) {
-			error_log("DEBUG mdlUpsertProgreso - Excepción: " . $e->getMessage());
+			error_log("Error en mdlUpsertProgreso: " . $e->getMessage());
 			return "error";
 		}
 	}

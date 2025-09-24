@@ -31,10 +31,6 @@ try {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
-    // Log para depuración
-    error_log("CURSOS AJAX - Input recibido: " . $input);
-    error_log("CURSOS AJAX - Data decodificado: " . print_r($data, true));
-
     if (!$data) {
         echo json_encode(['success' => false, 'mensaje' => 'Datos inválidos']);
         exit;
@@ -44,25 +40,19 @@ try {
     $idCurso = $data['idCurso'] ?? null;
     $idUsuario = $_SESSION['idU'];
 
-    error_log("CURSOS AJAX - Acción: $accion, ID Curso: $idCurso, ID Usuario: $idUsuario");
-
     // Verificar que el curso pertenece al usuario (para acciones que lo requieran)
     if ($idCurso && $accion !== 'obtenerCategorias') {
         $curso = ControladorCursos::ctrMostrarCursos('id', $idCurso);
         if (!$curso || $curso[0]['id_persona'] != $idUsuario) {
-            error_log("CURSOS AJAX - Error de permisos para curso $idCurso y usuario $idUsuario");
             echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para editar este curso']);
             exit;
         }
-        error_log("CURSOS AJAX - Permisos verificados correctamente");
     }
 
     switch ($accion) {
         case 'actualizarCampo':
             $campo = $data['campo'] ?? '';
             $valor = $data['valor'] ?? '';
-
-            error_log("CURSOS AJAX - Actualizando campo: $campo con valor: $valor");
 
             if (!$campo) {
                 echo json_encode(['success' => false, 'mensaje' => 'Campo no especificado']);
@@ -102,8 +92,6 @@ try {
  */
 function actualizarCampo($idCurso, $campo, $valor, $idUsuario)
 {
-    error_log("ACTUALIZANDO CAMPO - Curso: $idCurso, Campo: $campo, Valor: $valor");
-
     // Campos permitidos para edición
     $camposPermitidos = [
         'nombre',
@@ -130,8 +118,6 @@ function actualizarCampo($idCurso, $campo, $valor, $idUsuario)
     // Actualizar usando el modelo
     require_once "../modelos/cursos.modelo.php";
     $resultado = ModeloCursos::mdlActualizarCampoCurso($idCurso, $campo, $valor);
-
-    error_log("ACTUALIZANDO CAMPO - Resultado: $resultado");
 
     if ($resultado === "ok") {
         // Generar nueva URL amigable si se cambió el nombre

@@ -485,10 +485,6 @@ switch ($accion) {
 
     // ========== SEGUIMIENTO DE PROGRESO DE ESTUDIANTES ==========
     case 'upsertProgreso':
-        // LOG DE DEBUG - Remover en producción
-        error_log("DEBUG upsertProgreso - Datos recibidos: " . json_encode($datos));
-        error_log("DEBUG upsertProgreso - Sesión idU: " . ($_SESSION['idU'] ?? 'NO_SET'));
-
         // Validar que el usuario esté autenticado
         if (!isset($_SESSION['idU'])) {
             echo json_encode([
@@ -518,7 +514,6 @@ switch ($accion) {
 
         // Validar que el usuario solo pueda actualizar su propio progreso
         if ((int)$datos['id_estudiante'] !== (int)$_SESSION['idU']) {
-            error_log("DEBUG upsertProgreso - ERROR: Usuario {$_SESSION['idU']} intentó actualizar progreso de usuario {$datos['id_estudiante']}");
             echo json_encode([
                 'success' => false,
                 'mensaje' => 'Solo puedes actualizar tu propio progreso'
@@ -554,12 +549,8 @@ switch ($accion) {
             'porcentaje' => $porcentaje
         ];
 
-        error_log("DEBUG upsertProgreso - Datos para controlador: " . json_encode($datosProgreso));
-
         // Llamar al controlador
         $respuesta = ControladorCursos::ctrUpsertProgreso($datosProgreso);
-
-        error_log("DEBUG upsertProgreso - Respuesta del controlador: " . json_encode($respuesta));
 
         echo json_encode($respuesta);
         break;

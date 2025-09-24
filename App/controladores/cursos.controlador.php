@@ -2095,9 +2095,6 @@ class ControladorCursos
 	 */
 	public static function ctrUpsertProgreso($datos)
 	{
-		// LOG DE DEBUG - Remover en producción
-		error_log("DEBUG ctrUpsertProgreso - Datos recibidos: " . json_encode($datos));
-
 		// Validaciones de entrada
 		if (!is_array($datos)) {
 			return [
@@ -2163,13 +2160,9 @@ class ControladorCursos
 			}
 		}
 
-		error_log("DEBUG ctrUpsertProgreso - Datos procesados: " . json_encode($datos));
-
 		try {
 			// Llamar al modelo para insertar/actualizar
 			$resultado = ModeloCursos::mdlUpsertProgreso($datos);
-
-			error_log("DEBUG ctrUpsertProgreso - Resultado del modelo: " . $resultado);
 
 			if ($resultado === "ok") {
 				return [
