@@ -12,7 +12,6 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
    <?php
    include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosInicio.controlador.php";
-   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosDestacados.controlador.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/modelos/cursosInicio.modelo.php";
 
    // Obtener parámetro de categoría para filtrado
