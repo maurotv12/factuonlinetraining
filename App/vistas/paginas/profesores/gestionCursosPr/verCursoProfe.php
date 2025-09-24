@@ -95,6 +95,53 @@ foreach ($categorias as $cat) {
 echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
+// Agregar estilos CSS para indicadores de progreso
+echo '<style>
+.progreso-indicador {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.progreso-indicador.completado {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.progreso-indicador.en-progreso {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.contenido-item {
+    position: relative;
+}
+
+.contenido-item .progreso-indicador {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+/* Para botones de PDFs */
+.btn-pdf-download {
+    position: relative;
+}
+
+.btn-pdf-download .progreso-indicador {
+    position: static;
+    transform: none;
+    margin-left: 5px;
+}
+</style>';
+
 // Mostrar mensajes de la sesión si existen (migrado desde editarCursoProfe.php)
 if (isset($_SESSION['mensaje_exito'])) {
     echo '<script>
@@ -696,6 +743,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                                         <button class="btn btn-link text-decoration-none p-0 text-start btn-descargar-pdf"
                                                                                             data-asset-id="<?= $pdf['id'] ?>"
                                                                                             data-curso-id="<?= $curso['id'] ?>"
+                                                                                            data-contenido-id="<?= $contenido['id'] ?>"
                                                                                             data-nombre="<?= htmlspecialchars(basename($pdf['storage_path'])) ?>"
                                                                                             title="Descargar archivo PDF">
                                                                                             <i class="bi bi-file-pdf-fill text-danger me-1"></i>

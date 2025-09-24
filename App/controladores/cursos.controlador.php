@@ -2089,4 +2089,143 @@ class ControladorCursos
 			];
 		}
 	}
+
+	/**
+	 * Registrar o actualizar progreso del estudiante en un contenido
+	 */
+	public static function ctrUpsertProgreso($datos)
+	{
+		// LOG DE DEBUG - Remover en producción
+		error_log("DEBUG ctrUpsertProgreso - Datos recibidos: " . json_encode($datos));
+
+		// Validaciones de entrada
+		if (!is_array($datos)) {
+			return [
+				'success' => false,
+				'mensaje' => 'Los datos deben ser un array'
+			];
+		}
+
+		// Campos requeridos
+		$camposRequeridos = ['id_contenido', 'id_estudiante', 'porcentaje'];
+		foreach ($camposRequeridos as $campo) {
+			if (!isset($datos[$campo])) {
+				return [
+					'success' => false,
+					'mensaje' => "Campo requerido faltante: $campo"
+				];
+			}
+		}
+
+		// Sanitización y validación de datos
+		$datos['id_contenido'] = (int)$datos['id_contenido'];
+		$datos['id_estudiante'] = (int)$datos['id_estudiante'];
+		$datos['porcentaje'] = (int)$datos['porcentaje'];
+
+		// Validar que los IDs sean positivos
+		if ($datos['id_contenido'] <= 0 || $datos['id_estudiante'] <= 0) {
+			return [
+				'success' => false,
+				'mensaje' => 'Los IDs deben ser números positivos'
+			];
+		}
+
+		// Validar rango del porcentaje
+		if ($datos['porcentaje'] < 0 || $datos['porcentaje'] > 100) {
+			return [
+				'success' => false,
+				'mensaje' => 'El porcentaje debe estar entre 0 y 100'
+			];
+		}
+
+		// Validar progreso_segundos si existe
+		if (isset($datos['progreso_segundos'])) {
+			if ($datos['progreso_segundos'] !== null) {
+				$datos['progreso_segundos'] = (int)$datos['progreso_segundos'];
+				if ($datos['progreso_segundos'] < 0) {
+					return [
+						'success' => false,
+						'mensaje' => 'Los segundos de progreso no pueden ser negativos'
+					];
+				}
+			}
+		} else {
+			$datos['progreso_segundos'] = null;
+		}
+
+		// Validar campo visto
+		if (!isset($datos['visto'])) {
+			$datos['visto'] = 0;
+		} else {
+			$datos['visto'] = (int)$datos['visto'];
+			if ($datos['visto'] !== 0 && $datos['visto'] !== 1) {
+				$datos['visto'] = 0;
+			}
+		}
+
+		error_log("DEBUG ctrUpsertProgreso - Datos procesados: " . json_encode($datos));
+
+		try {
+			// Llamar al modelo para insertar/actualizar
+			$resultado = ModeloCursos::mdlUpsertProgreso($datos);
+
+			error_log("DEBUG ctrUpsertProgreso - Resultado del modelo: " . $resultado);
+
+			if ($resultado === "ok") {
+				return [
+					'success' => true,
+					'mensaje' => 'Progreso guardado correctamente',
+					'datos' => [
+						'id_contenido' => $datos['id_contenido'],
+						'porcentaje' => $datos['porcentaje'],
+						'visto' => $datos['visto'],
+						'progreso_segundos' => $datos['progreso_segundos']
+					]
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al guardar el progreso en la base de datos'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error interno del servidor: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/**
+	 * Obtener progreso de un estudiante en un contenido específico
+	 */
+	public static function ctrObtenerProgresoContenido($idContenido, $idEstudiante)
+	{
+		try {
+			// Validar parámetros
+			$idContenido = (int)$idContenido;
+			$idEstudiante = (int)$idEstudiante;
+
+			if ($idContenido <= 0 || $idEstudiante <= 0) {
+				return [
+					'success' => false,
+					'mensaje' => 'IDs inválidos'
+				];
+			}
+
+			// TODO: Implementar modelo para obtener progreso
+			// $progreso = ModeloCursos::mdlObtenerProgreso($idContenido, $idEstudiante);
+
+			return [
+				'success' => true,
+				'progreso' => null,
+				'mensaje' => 'Método en desarrollo'
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al obtener progreso: ' . $e->getMessage()
+			];
+		}
+	}
 }

@@ -20,13 +20,7 @@ require_once $baseDir . "/controladores/cursos.controlador.php";
 require_once $baseDir . "/controladores/general.controlador.php";
 require_once $baseDir . "/modelos/conexion.php";
 
-// Verificar que el usuario sea profesor
-if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
-    echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para editar cursos']);
-    exit;
-}
-
-// Manejar tanto datos JSON como FormData
+// Verificar permisos según la acción
 $accion = '';
 $datos = [];
 
@@ -40,6 +34,23 @@ if (isset($_POST['accion'])) {
     $accion = $datos['accion'] ?? '';
     $datos['id_seccion'] = $datos['idSeccion'] ?? null; // Normalizar nombre
 }
+
+// Verificar permisos específicos por acción
+if ($accion === 'upsertProgreso') {
+    // Para progreso, permitir estudiantes, profesores y admin
+    if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['estudiante', 'profesor', 'admin'])) {
+        echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para registrar progreso']);
+        exit;
+    }
+} else {
+    // Para otras acciones, solo profesores
+    if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
+        echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para editar cursos']);
+        exit;
+    }
+}
+
+// REMOVER las líneas duplicadas de manejo de datos
 
 switch ($accion) {
     case 'crearSeccion':
@@ -472,6 +483,87 @@ switch ($accion) {
         }
         break;
 
+    // ========== SEGUIMIENTO DE PROGRESO DE ESTUDIANTES ==========
+    case 'upsertProgreso':
+        // LOG DE DEBUG - Remover en producción
+        error_log("DEBUG upsertProgreso - Datos recibidos: " . json_encode($datos));
+        error_log("DEBUG upsertProgreso - Sesión idU: " . ($_SESSION['idU'] ?? 'NO_SET'));
+
+        // Validar que el usuario esté autenticado
+        if (!isset($_SESSION['idU'])) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Usuario no autenticado'
+            ]);
+            break;
+        }
+
+        // Validar campos requeridos
+        $camposRequeridos = ['id_contenido', 'id_estudiante', 'porcentaje'];
+        $camposFaltantes = [];
+
+        foreach ($camposRequeridos as $campo) {
+            if (!isset($datos[$campo]) || $datos[$campo] === null || $datos[$campo] === '') {
+                $camposFaltantes[] = $campo;
+            }
+        }
+
+        if (!empty($camposFaltantes)) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Campos requeridos faltantes: ' . implode(', ', $camposFaltantes)
+            ]);
+            break;
+        }
+
+        // Validar que el usuario solo pueda actualizar su propio progreso
+        if ((int)$datos['id_estudiante'] !== (int)$_SESSION['idU']) {
+            error_log("DEBUG upsertProgreso - ERROR: Usuario {$_SESSION['idU']} intentó actualizar progreso de usuario {$datos['id_estudiante']}");
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Solo puedes actualizar tu propio progreso'
+            ]);
+            break;
+        }
+
+        // Validar rangos de datos
+        $porcentaje = (int)$datos['porcentaje'];
+        if ($porcentaje < 0 || $porcentaje > 100) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'El porcentaje debe estar entre 0 y 100'
+            ]);
+            break;
+        }
+
+        $progreso_segundos = isset($datos['progreso_segundos']) ? (int)$datos['progreso_segundos'] : null;
+        if ($progreso_segundos !== null && $progreso_segundos < 0) {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'Los segundos de progreso no pueden ser negativos'
+            ]);
+            break;
+        }
+
+        // Preparar datos para el controlador
+        $datosProgreso = [
+            'id_contenido' => (int)$datos['id_contenido'],
+            'id_estudiante' => (int)$datos['id_estudiante'],
+            'visto' => isset($datos['visto']) ? (int)$datos['visto'] : 0,
+            'progreso_segundos' => $progreso_segundos,
+            'porcentaje' => $porcentaje
+        ];
+
+        error_log("DEBUG upsertProgreso - Datos para controlador: " . json_encode($datosProgreso));
+
+        // Llamar al controlador
+        $respuesta = ControladorCursos::ctrUpsertProgreso($datosProgreso);
+
+        error_log("DEBUG upsertProgreso - Respuesta del controlador: " . json_encode($respuesta));
+
+        echo json_encode($respuesta);
+        break;
+
     default:
         // Manejar caso de acción no válida
         $accionesValidas = [
@@ -503,7 +595,9 @@ switch ($accion) {
             // Video promocional
             'subirVideoPromocional',
             // Reemplazar assets
-            'reemplazarAsset'
+            'reemplazarAsset',
+            // Seguimiento de progreso
+            'upsertProgreso'
         ];
 
         echo json_encode([

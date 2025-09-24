@@ -894,44 +894,69 @@ class ModeloCursos
 	=============================================*/
 	public static function mdlUpsertProgreso($datos)
 	{
+		// LOG DE DEBUG - Remover en producción
+		error_log("DEBUG mdlUpsertProgreso - Datos recibidos: " . json_encode($datos));
+
 		// Si porcentaje >= 90, forzar visto = 1 y porcentaje = 100
 		if ($datos['porcentaje'] >= 90) {
 			$datos['visto'] = 1;
 			$datos['porcentaje'] = 100;
 		}
 
-		$conn = Conexion::conectar();
+		try {
+			$conn = Conexion::conectar();
 
-		// Verificar si ya existe el registro
-		$stmt = $conn->prepare("SELECT id FROM seccion_contenido_progreso 
-								WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
-		$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
-		$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
-		$stmt->execute();
-
-		if ($stmt->rowCount() > 0) {
-			// UPDATE
-			$stmt = $conn->prepare("UPDATE seccion_contenido_progreso SET 
-									visto = :visto, 
-									progreso_segundos = :progreso_segundos, 
-									porcentaje = :porcentaje
+			// Verificar si ya existe el registro
+			$stmt = $conn->prepare("SELECT id FROM seccion_contenido_progreso 
 									WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
-		} else {
-			// INSERT
-			$stmt = $conn->prepare("INSERT INTO seccion_contenido_progreso 
-									(id_contenido, id_estudiante, visto, progreso_segundos, porcentaje, primera_vista) 
-									VALUES (:id_contenido, :id_estudiante, :visto, :progreso_segundos, :porcentaje, NOW())");
-		}
+			$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
+			$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
+			$stmt->execute();
 
-		$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
-		$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
-		$stmt->bindParam(":visto", $datos["visto"], PDO::PARAM_INT);
-		$stmt->bindParam(":progreso_segundos", $datos["progreso_segundos"], PDO::PARAM_INT);
-		$stmt->bindParam(":porcentaje", $datos["porcentaje"], PDO::PARAM_INT);
+			$existeRegistro = $stmt->rowCount() > 0;
+			error_log("DEBUG mdlUpsertProgreso - Existe registro: " . ($existeRegistro ? 'SÍ' : 'NO'));
 
-		if ($stmt->execute()) {
-			return "ok";
-		} else {
+			if ($existeRegistro) {
+				// UPDATE
+				$stmt = $conn->prepare("UPDATE seccion_contenido_progreso SET 
+										visto = :visto, 
+										progreso_segundos = :progreso_segundos, 
+										porcentaje = :porcentaje,
+										ultima_vista = CURRENT_TIMESTAMP
+										WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
+			} else {
+				// INSERT
+				$stmt = $conn->prepare("INSERT INTO seccion_contenido_progreso 
+										(id_contenido, id_estudiante, visto, progreso_segundos, porcentaje, primera_vista) 
+										VALUES (:id_contenido, :id_estudiante, :visto, :progreso_segundos, :porcentaje, NOW())");
+			}
+
+			// Binding con manejo correcto de NULL
+			$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
+			$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
+			$stmt->bindParam(":visto", $datos["visto"], PDO::PARAM_INT);
+
+			// Manejo especial para progreso_segundos que puede ser NULL
+			if ($datos["progreso_segundos"] === null) {
+				$stmt->bindParam(":progreso_segundos", $datos["progreso_segundos"], PDO::PARAM_NULL);
+			} else {
+				$stmt->bindParam(":progreso_segundos", $datos["progreso_segundos"], PDO::PARAM_INT);
+			}
+
+			$stmt->bindParam(":porcentaje", $datos["porcentaje"], PDO::PARAM_INT);
+
+			$resultado = $stmt->execute();
+
+			if ($resultado) {
+				error_log("DEBUG mdlUpsertProgreso - Operación exitosa");
+				return "ok";
+			} else {
+				$errorInfo = $stmt->errorInfo();
+				error_log("DEBUG mdlUpsertProgreso - Error en execute(): " . json_encode($errorInfo));
+				return "error";
+			}
+		} catch (Exception $e) {
+			error_log("DEBUG mdlUpsertProgreso - Excepción: " . $e->getMessage());
 			return "error";
 		}
 	}
