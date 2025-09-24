@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-09-2025 a las 17:50:44
+-- Tiempo de generación: 24-09-2025 a las 16:31:43
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -41,7 +41,13 @@ CREATE TABLE `categoria` (
 INSERT INTO `categoria` (`id`, `nombre`, `descripcion`, `fecha_registro`) VALUES
 (1, 'Stop Motion', 'La animación en volumen​ o animación fotograma a fotograma​ es una técnica de animación que consiste en aparentar el movimiento de objetos estáticos por medio de una serie de imágenes fijas sucesivas.', '2025-07-14 11:21:58'),
 (2, 'Animación 3D', 'La animación 3D usa gráficos por computadora para que parezca que los objetos se mueven en un espacio tridimensional.', '2025-07-14 11:21:58'),
-(3, 'Robotica', 'La robotica del siglo XXI', '2025-08-11 15:42:15');
+(3, 'Robotica', 'La robotica del siglo XXI', '2025-08-11 15:42:15'),
+(4, 'Desarrollo Movil', 'Desarrollar apps para dispositivos moviles como smartphones y tablets', '2025-09-17 13:44:18'),
+(5, 'Crecimiento Personal', 'Aprende a canalizar tus emociones', '2025-09-17 13:44:18'),
+(6, 'Culinaria', 'Aprende a cocinar los mejores platillos', '2025-09-17 13:45:36'),
+(7, 'Costura y Diseño', 'Aprende a confeccionar tu propia ropa', '2025-09-17 13:45:36'),
+(8, 'Joyeria', 'Desde lo más básico hasta joyas Luxury', '2025-09-17 13:46:39'),
+(9, 'Mantenimiento', 'Repara equipos electronicos ', '2025-09-17 13:46:39');
 
 -- --------------------------------------------------------
 
@@ -76,7 +82,6 @@ INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `lo_que_aprende
 (3, 'talleres-libelulitos', 'Talleres Libelulit@s y convocatoria a realizadores cinematográficos', 'La magia del cine y el audiovisual regresan a Cali para el mundo, a partir del 30 de abril, cuando se hará el lanzamiento oficial del 5º- Festival Internacional de Cine Infantil y Juvenil, Calibélula, con la apertura de la convocatoria dirigida a directores, realizadores y productores para que envíen sus producciones cinematográficas antes del 15 de Junio, a través de Festhome y Google Drive. La convocatoria también estará dirigida a instituciones educativas, niños y jóvenes en general para que participen de los talleres de Libelulit@s que se dictáran gratuitamente a partir del mes de mayo.', 'Comprender qué es la programación y por qué es una habilidad clave en el mundo actual.\nEstar preparado para comenzar a aprender cualquier lenguaje de programación con una base conceptual sólida.\nIdentificar los componentes esenciales de un programa: entradas, procesos y salidas.\nDesarrollar pensamiento lógico y estructurado para abordar desafíos de manera secuencial.\nExplicar el concepto de algoritmo y su importancia en la resolución de problemas.\nEntender cómo funcionan las estructuras condicionales y los bucles en la lógica de programación.\nReconocer la importancia de la abstracción y la modularidad en el diseño de soluciones.\nAnalizar cómo los datos se representan y transforman dentro de un programa.\nReflexionar sobre el rol del programador como diseñador de soluciones automatizadas.', NULL, NULL, 'storage/public/banners/1 (3).png', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 100000, 2, 1, 'activo', '2025-07-14 16:24:30'),
 (4, 'curso-php', 'COMO HACER UNA PAGINA WEB', 'Pagina web en PHP y JS', NULL, NULL, NULL, 'storage/public/banners/1 (5).jpg', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 90000, 2, 1, 'activo', '2025-07-14 16:25:20'),
 (5, 'tecnologia-en-aritmetica', 'Tecnologia en Aritmetica', 'Curso es muy importante', NULL, NULL, NULL, 'storage/public/banners/687a7e30812fe_images.jpg', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 70000, 1, 2, 'activo', '2025-07-18 17:02:40'),
-(6, 'tecnologia-en-aritmeticaaaaaaaaa', 'Tecnologia en Aritmeticaaaaaaaaa', 'sadasdad', NULL, NULL, NULL, 'storage/public/banners/687e4f78d35ce_3W2KSMRJUVJHDGDB5UZZCJ3PTE.jpg', NULL, 80, 1, 1, 'activo', '2025-07-21 14:32:24'),
 (7, 'tecnologia-en-programaci-n', 'Tecnologia en Programación', 'gghgfhfh', NULL, NULL, NULL, 'storage/public/banners/687e545a8f012_premium_photo-1666672388644-2d99f3feb9f1.jpg', NULL, 23, 2, 1, 'activo', '2025-07-21 14:53:14'),
 (8, 'tecnologia-en-logica', 'Tecnologia en logica', 'dasdasd', NULL, NULL, NULL, 'storage/public/banners/687e564c4c2bd_depositphotos_234542254-stock-illustration-man-profile-smiling-cartoon-vector.jpg', NULL, 23, 1, 2, 'activo', '2025-07-21 15:01:32'),
 (9, 'tecnologia-en-perritos', 'Tecnologia en perritos', 'La tecnología ha transformado la forma en que cuidamos a nuestros perros, ofreciendo herramientas para mejorar su salud, seguridad y bienestar. Desde dispositivos portátiles que monitorean su actividad y signos vitales, hasta sistemas de ubicación GPS para evitar pérdidas, la innovación tecnológica ha llegado para quedarse en el mundo canino.\r\nWearables:\r\nDispositivos como collares inteligentes con GPS y sensores de salud, que permiten a los dueños monitorear la actividad física, la frecuencia cardíaca y respiratoria, e incluso detectar problemas de salud antes de que se manifiesten síntomas visibles. \r\nComederos y bebederos automáticos:\r\nProgramables para asegurar que tu perro reciba la cantidad adecuada de alimento y agua, incluso cuando no estás en casa. \r\nCámaras de vigilancia:\r\nPermiten observar a tu mascota a distancia, interactuar con ella a través de audio y video, y asegurarte de que está bien. ', NULL, NULL, NULL, 'storage/public/banners/687e68537ff02_287133.jpg', NULL, 80, 1, 1, 'activo', '2025-07-21 16:18:27'),
@@ -86,7 +91,6 @@ INSERT INTO `curso` (`id`, `url_amiga`, `nombre`, `descripcion`, `lo_que_aprende
 (14, 'analitica-de-leche-de-vaca', 'Analitica de leche de vaca', 'asdasdas', 'dasdsadasd', 'asdasdsadasd', 'asdasdasd', 'storage/public/banners/68a77db350d47_1755807155.jpg', NULL, 40000, 3, 2, 'activo', '2025-08-21 20:12:35'),
 (15, 'tecnologia-en-tarottaa', 'Tecnologia en tarottaa', 'dsadada', 'asdasdsa', 'asdasdas', 'dsadasdsad', 'storage/public/banners/68a87ff700a33_1755873271.jpg', 'storage/public/promoVideos/68a87ff700cad_1755873271.mp4', 90000, 1, 2, 'activo', '2025-08-22 14:34:31'),
 (16, 'curso-de-generalidades-1', 'Curso de Generalidades 1', 'sssaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayo viendo que en verCursoProfe.php el if de // Procesar actualización del curso básico (migrado desde editarCursoProfe.php) no está procesando las secciones, el contenido de secciones, el progreso para poder conectarse con la ffffffffffffffs o actualizar o eliminar las secciones   y las secciones se van a manejar de la siguiente manera:\n1. Para Insertar/actualizar sección (curso_secciones):\ncrea una función PHP (PDO) que inserte una sección en `curso_secciones`\n// Parámetros: $idCurso, $titulo, $descripcion, $orden (int)\n// Retorna: id de la sección creada\n// Usa SQL INSERT INTO curso_secciones (id_curso, titulo, descripcion, orden) VALUES (....);\n// No Manejes timestamps por defecto.\n// Valida que $orden sea >= 1. \n// Si existe, crea también una función actualizarSeccion($idSeccion, $titulo, $descripcion, $orden)\n2. Insertar contenido de tipo video/pdf en seccion_contenido\ncrea una función PHP (PDO) crearContenido($idSeccion, $titulo, $descripcion, $tipo, $duracion, $orden)\n// `tipo` ∈ {\'video\',\'pdf\'}. Para video, `duracion` = \'MM:SS\' o \'HH:MM:SS\'; para PDF puede ser NULL.\n// SQL: INSERT INTO seccion_contenido (id_seccion, titulo, descripcion, tipo, duracion, orden) VALUES (…);\n// Retorna: id del contenido\n// Valida que $orden >= 1 y tipo válido.\n3. Subir archivo y crear asset en seccion_contenido_assets\nescribe una función GuardarContenidoAsset($idContenido, $assetTipo, $rutaDestinoAbsoluta, $urlPublica = null, $tamanoBytes = null, $duracionSegundos = null)\n// Inserta en seccion_contenido_assets (id_contenido, asset_tipo, storage_path, public_url, tamano_bytes, duracion_segundos)\n// asset_tipo: \'attachment\' para MP4 directo, \'pdf\' para PDF, no generas miniatura\n4. Validaciones de subida MP4 ≤10min / hasta 1280×720 y PDF\nen el controller de subida, valida MIME:\n// - video/mp4 (max 10 min, 1280x720) -> rechaza si excede\n// - application/pdf\n// Calcula duración del video (si ffprobe está disponible) y pásala a crearContenido/guardarContenidoAsset\n// Construye rutas tipo que cree las carpetas si no existen \npara video usa storage/public/section_assets/{curso}/{seccion}/{contenido}/video/archivo.mp4 \npara pdf usa storage/public/section_assets/{curso}/{seccion}/{contenido}/pdf/archivo.pdf \n// Asegura permisos de carpeta (Windows + XAMPP), mueve el archivo y crea el asset\n\n5. Marcar progreso al consumir el contenido\nfunción upsertProgreso($idContenido, $idEstudiante, $visto, $progresoSegundos, $porcentaje)\n// Si existe fila (contenido+estudiante), haz UPDATE; si no, INSERT.\n// Si $porcentaje >= 90, fuerza $visto = 1 y porcentaje = 100.\n// Actualiza `ultima_vista` automáticamente (columna con ON UPDATE).', 'aaaaaaaaaaaaaaaaaaaainteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'zzzzzzzaaaaaaaaaaaaaaaaaLooooos requisitos son Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabadasdasdasdasdasd\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilida', 'zzzzzzzzzzzzaaaaaaaaaaaaaaaaaaeeeeeeeeeeeeEs para Crear un videojuego 3d AAA con inteligencia artificial, menús, distintos niveles y con acabad\nAprender nociones de diseño de juego básicas y avanzadas así como de balance de jugabilidaasdasdasdasd', 'storage/public/banners/68b48d809a2f9_1756663168.png', 'storage/public/promoVideos/68c08833ad608_1757448243.mp4', 30000, 1, 1, 'activo', '2025-08-31 17:59:28'),
-(17, 'curso-prueba-secciones-test', 'Curso de Prueba Secciones - TEST DIRECTO', 'Descripción de prueba directa', 'Test directo', 'Test directo', 'Test directo', '', '', 88000, 1, 10, 'activo', '2025-09-05 02:10:03'),
 (18, 'asdasdasd', 'asdasdasd', 'asdasdasdsaasdasdasdsaasdasdasdsaasdasdasdsaasdasdasdsa', 'asdasdasdsaasdasdasdsaasdasdasdsa', 'asdasdasdsaasdasdasdsaasdasdasdsa', 'asdasdasdsaasdasdasdsaasdasdasdsa', 'storage/public/banners/68bd9e76149b3_1757257334.png', 'storage/public/promoVideos/68bd9e7615168_1757257334.mp4', 0, 2, 1, 'activo', '2025-09-07 15:02:15'),
 (19, 'cursod-e-pruebaacursod-e-pruebaacursod-e-pruebaa', 'Cursod e pruebaaCursod e pruebaaCursod e pruebaa', 'Cursod e pruebaaCursod e pruebaaCursod e pruebaaCursod e pruebaaaaaaaaaaaaaaaaaaaaaaaaa', 'Cursod e pruebaaCursod e pruebaa', 'Cursod e pruebaaCursod e pruebaa', 'Cursod e pruebaaCursod e pruebaa', 'storage/public/banners/68bd9ea87fb25_1757257384.png', 'storage/public/promoVideos/68be2c347aa60_1757293620.mp4', 0, 2, 1, 'borrador', '2025-09-07 15:03:04'),
 (20, 'curso-1', 'curso 1', 'dasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsad\ndasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasds\naddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd\nsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasda\nsdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddas\ndasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsadda\nsdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsadd\nasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdas\ndsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdas\ndsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdas\ndsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdas\ndsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd\nsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasds\naddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasds\naddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasds\naddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddsdasdsadd', 'dasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd\n\ndasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd', 'dasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd', 'dasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd\n\ndasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasdsaddasdasd', 'storage/public/banners/68bf3e980be1c_1757363864.png', 'storage/public/promoVideos/68bf3ea6f1890_1757363878.mp4', 0, 1, 8, 'activo', '2025-09-08 20:02:11');
@@ -191,10 +195,17 @@ CREATE TABLE `inscripciones` (
 --
 
 INSERT INTO `inscripciones` (`id`, `id_curso`, `id_estudiante`, `estado`, `finalizado`, `fecha_registro`) VALUES
-(22, 2, 3, 'pendiente', 0, '2025-09-16 13:35:10'),
-(23, 20, 3, 'activo', 0, '2025-09-16 15:49:21'),
-(24, 18, 3, 'activo', 0, '2025-09-16 15:49:30'),
-(25, 7, 3, 'pendiente', 0, '2025-09-17 15:16:45');
+(22, 2, 3, 'activo', 0, '2025-09-16 13:35:10'),
+(23, 20, 3, 'pendiente', 0, '2025-09-16 15:49:21'),
+(24, 18, 3, 'pendiente', 0, '2025-09-16 15:49:30'),
+(25, 7, 3, 'activo', 0, '2025-09-17 15:16:45'),
+(26, 14, 3, 'activo', 0, '2025-09-17 16:49:08'),
+(27, 2, 12, 'activo', 0, '2025-09-17 18:00:15'),
+(28, 1, 12, 'activo', 0, '2025-09-17 18:00:20'),
+(29, 4, 3, 'activo', 0, '2025-09-17 18:01:56'),
+(30, 8, 12, 'activo', 0, '2025-09-17 18:06:59'),
+(31, 18, 12, 'activo', 0, '2025-09-17 18:07:20'),
+(32, 16, 3, 'activo', 0, '2025-09-24 14:13:39');
 
 -- --------------------------------------------------------
 
@@ -544,7 +555,39 @@ INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha
 INSERT INTO `log_ingreso` (`id`, `id_persona`, `ip_usuario`, `navegador`, `fecha_registro`) VALUES
 (327, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 10:04:35'),
 (328, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 10:15:30'),
-(329, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 10:16:03');
+(329, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 10:16:03'),
+(330, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 11:49:36'),
+(331, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 11:49:57'),
+(332, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 11:50:17'),
+(333, 12, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 12:59:45'),
+(334, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 13:00:37'),
+(335, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', '2025-09-17 13:01:46'),
+(336, 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 13:13:48'),
+(337, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 13:53:48'),
+(338, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 13:54:45'),
+(339, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 13:54:58'),
+(340, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 13:59:54'),
+(341, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 14:05:34'),
+(342, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 14:06:28'),
+(343, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 14:14:36'),
+(344, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 14:35:35'),
+(345, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 14:37:43'),
+(346, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 15:38:54'),
+(347, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 15:47:02'),
+(348, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 15:47:49'),
+(349, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-17 16:04:35'),
+(350, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 09:16:02'),
+(351, 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 09:16:49'),
+(352, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 09:32:16'),
+(353, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 09:40:55'),
+(354, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 09:56:10'),
+(355, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 09:56:43'),
+(356, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 10:12:47'),
+(357, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 10:16:30'),
+(358, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 10:19:39'),
+(359, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 15:48:02'),
+(360, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-23 15:48:41'),
+(361, 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '2025-09-24 09:12:43');
 
 -- --------------------------------------------------------
 
@@ -595,17 +638,16 @@ CREATE TABLE `persona` (
 --
 
 INSERT INTO `persona` (`id`, `usuario_link`, `nombre`, `email`, `password`, `verificacion`, `foto`, `profesion`, `telefono`, `direccion`, `biografia`, `pais`, `ciudad`, `estado`, `mostrar_email`, `mostrar_telefono`, `mostrar_identificacion`, `numero_identificacion`, `fecha_registro`) VALUES
-(1, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozsanchez12@gmail.com', '$2y$10$XJjXQcSuxiVhdhkovif7B.YfVKNSkVEK2Tl0ZBJa48CDWKY3.r80a', 1, 'storage/public/usuarios/1/perfil_1757360359_504.jpg', 'Escritor de novelas acuaticas', '3135529157', 'cra - 26k8121', 'J. Robert Oppenheimer[a]​ (Nueva York, 22 de abril de 1904-Princeton, Nueva Jersey, 18 de febrero de 1967) fue un físico teórico estadounidense y profesor de física en la Universidad de California en Berkeley. Es una de las personas a menudo nombradas como «padre de la bomba atómica» debido a su destacada participación en el Proyecto Manhattan, el proyecto que consiguió desarrollar las primeras armas nucleares de la historia, durante la Segunda Guerra Mundial. La primera bomba nuclear fue detonada el 16 de julio de 1945 en la Prueba Trinity, en Nuevo México, Estados Unidos. Oppenheimer declararía más tarde que le vinieron a la mente las palabras del Bhagavad-gītā: «Ahora me he convertido en la muerte, el destructor de mundos».[4]​[b]​ Oppenheimer siempre expresó su pesar por el fallecimiento de víctimas inocentes cuando las bombas nucleares fueron lanzadas contra los japoneses en Hiroshima y Nagasaki los días 6 y 9 de agosto de 1945.\r\n\r\nDespués de la guerra ocupó el cargo de asesor jefe en la recién creada Comisión de Energía Atómica de los Estados Unidos y utilizó su posición para abogar por el control internacional del poder nuclear, evitar la proliferación de armamento nuclear y frenar la carrera armamentística entre Estados Unidos y la Unión Soviética. Después de provocar la ira de numerosos políticos por sus opiniones públicas se le acabaron retirando sus pases de seguridad, perdiendo el acceso a los documentos militares secretos de su país, y se le acabó despojando de su influencia política directa durante una muy publicitada audiencia en 1954. En esa década Estados Unidos vivía en el macartismo y todas aquellas personas sospechosas de simpatizar con el comunismo o simplemente de ser disidentes fueron perseguidas por el gobierno; Oppenheimer pudo continuar escribiendo, trabajando en física y dando conferencias. Nueve años después de la audiencia, los presidentes John F. Kennedy y Lyndon B. Johnson le concedieron y otorgaron respectivamente el Premio Enrico Fermi como un gesto de rehabilitación de su figura.', 'Ecuador', 'Cundinamarca', 'activo', 1, 1, 0, '66847374', '2025-07-10 19:18:15'),
+(1, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozsanchez12@gmail.com', '$2y$10$y/0YBt7NJI.vE8eRZnymOupuSu0BoC6tz/x3i/glRIdpNNlf09ZNe', 1, 'storage/public/usuarios/1/perfil_1757360359_504.jpg', 'Escritor de novelas acuaticas', '3135529157', 'cra - 26k8121', 'J. Robert Oppenheimer[a]​ (Nueva York, 22 de abril de 1904-Princeton, Nueva Jersey, 18 de febrero de 1967) fue un físico teórico estadounidense y profesor de física en la Universidad de California en Berkeley. Es una de las personas a menudo nombradas como «padre de la bomba atómica» debido a su destacada participación en el Proyecto Manhattan, el proyecto que consiguió desarrollar las primeras armas nucleares de la historia, durante la Segunda Guerra Mundial. La primera bomba nuclear fue detonada el 16 de julio de 1945 en la Prueba Trinity, en Nuevo México, Estados Unidos. Oppenheimer declararía más tarde que le vinieron a la mente las palabras del Bhagavad-gītā: «Ahora me he convertido en la muerte, el destructor de mundos».[4]​[b]​ Oppenheimer siempre expresó su pesar por el fallecimiento de víctimas inocentes cuando las bombas nucleares fueron lanzadas contra los japoneses en Hiroshima y Nagasaki los días 6 y 9 de agosto de 1945.\r\n\r\nDespués de la guerra ocupó el cargo de asesor jefe en la recién creada Comisión de Energía Atómica de los Estados Unidos y utilizó su posición para abogar por el control internacional del poder nuclear, evitar la proliferación de armamento nuclear y frenar la carrera armamentística entre Estados Unidos y la Unión Soviética. Después de provocar la ira de numerosos políticos por sus opiniones públicas se le acabaron retirando sus pases de seguridad, perdiendo el acceso a los documentos militares secretos de su país, y se le acabó despojando de su influencia política directa durante una muy publicitada audiencia en 1954. En esa década Estados Unidos vivía en el macartismo y todas aquellas personas sospechosas de simpatizar con el comunismo o simplemente de ser disidentes fueron perseguidas por el gobierno; Oppenheimer pudo continuar escribiendo, trabajando en física y dando conferencias. Nueve años después de la audiencia, los presidentes John F. Kennedy y Lyndon B. Johnson le concedieron y otorgaron respectivamente el Premio Enrico Fermi como un gesto de rehabilitación de su figura.', 'Ecuador', 'Cundinamarca', 'activo', 1, 1, 0, '66847374', '2025-07-10 19:18:15'),
 (2, 'clienteRegistro', 'Derly Pipicano', 'm-mau55@hotmail.com', '$2y$10$AlrkWRiRR2kIBFLn7qA.nux7d6//Va6PB818ZJK7NnrENSAv8a6kS', 0, 'storage/public/usuarios/2/perfil_1755891648_811.jpg', NULL, NULL, NULL, 'No hay mucho que contar de mi a parte de que soy profesora', 'Ecuador', 'Quito', 'activo', 1, 1, 1, NULL, '2025-07-15 13:42:06'),
-(3, 'clienteRegistro', 'Carlos Sanchez', 'mauro@gmail.com', '$2y$10$LwHLfPUetTXIxcrXlEp9hO/4brtB2Gdh5MbGRN.LmE1GpFa4OJpBO', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 14:28:33'),
+(3, 'clienteRegistro', 'Carlos Sanchez', 'mauro@gmail.com', '$2y$10$0k.Ofv.ppqSrw5aNuOh7OOXsNNJqNpAGsP4tnNqolO0ht27sxalt2', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 14:28:33'),
 (4, 'clienteRegistro', 'Carlitos', 'mauriciomuozschez12@gmail.com', '$2y$10$dzomT0r6vKvgANN6W/AXYuRgMfkpmboCRlD0IJz35UFuYzwyIkgTG', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 16:37:46'),
 (5, 'clienteRegistro', 'Derly Pipicanos', 'nchez12@gmail.com', '$2y$10$wDpjPYqssXWyW/kNmKgnTu0x2pqzVLcwc/cvqFOSfSDBZhOv6CX7y', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:49:30'),
 (6, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciomuozhez12@gmail.com', '$2y$10$94VTVOeFRnB3oJOHsh5SS.3e5aDOs.m0ThuyUIenG9VGR58pRaOLm', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:50:00'),
 (7, 'clienteRegistro', 'Mauricio Muñoz', 'mauriciozsanchez12@gmail.com', '$2y$10$W7HQnUVY3VuBc9.8/EUWt.JyFzofGiDafxWjlFq7XqwVhVX7c.6Jm', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:50:43'),
 (8, 'clienteRegistro', 'Carlitos', 'maurinchez12@gmail.com', '$2y$10$halO6g.l5OXIoWVuMhQ80.oefbRxyiMVCyHovqxaRDomE/2e.zR5i', 1, 'vistas/img/usuarios/default/default.png', 'Ingeniero', NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-05 19:55:02'),
 (9, 'clienteRegistro', 'fgdfgdfg', 'mauricisanchez12@gmail.com', '$2y$10$iUjo10ZEIA39.toMBRbQveKk.SOlDrXXCn8wklKOagJtGDXl8erVS', 1, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-08-06 19:22:28'),
-(10, 'profesor-prueba', 'Profesor Prueba', 'profesor@test.com', '$2y$10$OqwueFd4hsseEvQumx6ZfOlF8ymUuvK3JDCWIQG.e3b9FQxLQ8t3i', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-09-05 02:10:03'),
-(11, 'estudiante-prueba', 'Estudiante Prueba', 'estudiante@test.com', '$2y$10$vK0SLpm9LkjSfd9S8lZjjug7JA2WSPRiOPWvbswxDBPGaxi4ZByYq', 0, 'vistas/img/usuarios/default/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-09-05 02:10:03');
+(12, 'clienteRegistro', 'Andres Almejo', 'mau@gmail.com', '$2a$12$Uk5azQlBdv//EmCwVLj91eOVfzLwzm3ZTgwd4boN7j645d6mapMV2', 1, 'storage/public/usuarios/default.png', NULL, NULL, NULL, NULL, NULL, NULL, 'activo', 0, 0, 0, NULL, '2025-09-17 17:59:04');
 
 -- --------------------------------------------------------
 
@@ -636,7 +678,8 @@ INSERT INTO `persona_roles` (`id_persona`, `id_rol`) VALUES
 (8, 1),
 (8, 2),
 (8, 3),
-(9, 3);
+(9, 3),
+(12, 3);
 
 -- --------------------------------------------------------
 
@@ -663,8 +706,11 @@ INSERT INTO `preinscripciones` (`id`, `id_curso`, `id_estudiante`, `id_inscripci
 (23, 11, 3, NULL, 'preinscrito', '2025-09-16 15:49:01', NULL),
 (24, 10, 3, NULL, 'preinscrito', '2025-09-16 15:49:08', NULL),
 (25, 12, 3, NULL, 'preinscrito', '2025-09-17 15:16:10', NULL),
-(26, 16, 3, NULL, 'preinscrito', '2025-09-17 15:16:24', NULL),
-(27, 9, 3, NULL, 'preinscrito', '2025-09-17 15:16:40', NULL);
+(26, 16, 3, 32, 'convertido', '2025-09-17 15:16:24', '2025-09-24 14:13:39'),
+(27, 9, 3, NULL, 'preinscrito', '2025-09-17 15:16:40', NULL),
+(28, 8, 3, NULL, 'cancelado', '2025-09-17 16:48:52', NULL),
+(30, 7, 12, NULL, 'preinscrito', '2025-09-17 18:00:02', NULL),
+(31, 9, 12, NULL, 'preinscrito', '2025-09-17 18:02:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -915,7 +961,7 @@ ALTER TABLE `solicitudes_instructores`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `curso`
@@ -945,13 +991,13 @@ ALTER TABLE `gestion_pagos`
 -- AUTO_INCREMENT de la tabla `inscripciones`
 --
 ALTER TABLE `inscripciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `log_ingreso`
 --
 ALTER TABLE `log_ingreso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=330;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=362;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -963,13 +1009,13 @@ ALTER TABLE `mensajes`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `preinscripciones`
 --
 ALTER TABLE `preinscripciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
