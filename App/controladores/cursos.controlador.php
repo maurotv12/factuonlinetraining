@@ -2175,6 +2175,18 @@ class ControladorCursos
 						'progreso_segundos' => $datos['progreso_segundos']
 					]
 				];
+			} elseif ($resultado === "ya_visto") {
+				return [
+					'success' => true,
+					'mensaje' => 'El contenido ya está marcado como visto',
+					'ya_visto' => true,
+					'datos' => [
+						'id_contenido' => $datos['id_contenido'],
+						'porcentaje' => 100, // Si ya está visto, asumir 100%
+						'visto' => 1,
+						'progreso_segundos' => $datos['progreso_segundos']
+					]
+				];
 			} else {
 				return [
 					'success' => false,

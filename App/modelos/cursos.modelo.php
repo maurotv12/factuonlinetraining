@@ -903,17 +903,23 @@ class ModeloCursos
 		try {
 			$conn = Conexion::conectar();
 
-			// Verificar si ya existe el registro
-			$stmt = $conn->prepare("SELECT id FROM seccion_contenido_progreso 
+			// Verificar si ya existe el registro y obtener el estado actual
+			$stmt = $conn->prepare("SELECT id, visto FROM seccion_contenido_progreso 
 									WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
 			$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
 			$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
 			$stmt->execute();
 
-			$existeRegistro = $stmt->rowCount() > 0;
+			$registroExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+			$existeRegistro = $registroExistente !== false;
+
+			// Si ya existe el registro y está marcado como visto (1), no actualizar
+			if ($existeRegistro && $registroExistente['visto'] == 1) {
+				return "ya_visto"; // Indicar que ya está visto, no necesita actualización
+			}
 
 			if ($existeRegistro) {
-				// UPDATE
+				// UPDATE - Solo si no está visto o si queremos actualizar el progreso
 				$stmt = $conn->prepare("UPDATE seccion_contenido_progreso SET 
 										visto = :visto, 
 										progreso_segundos = :progreso_segundos, 
@@ -921,7 +927,7 @@ class ModeloCursos
 										ultima_vista = CURRENT_TIMESTAMP
 										WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
 			} else {
-				// INSERT
+				// INSERT - Nuevo registro
 				$stmt = $conn->prepare("INSERT INTO seccion_contenido_progreso 
 										(id_contenido, id_estudiante, visto, progreso_segundos, porcentaje, primera_vista) 
 										VALUES (:id_contenido, :id_estudiante, :visto, :progreso_segundos, :porcentaje, NOW())");

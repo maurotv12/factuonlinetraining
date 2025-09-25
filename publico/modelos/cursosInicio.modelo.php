@@ -9,12 +9,12 @@ class ModeloCursosInicio
 	public static function mdlMostrarCursosInicio($tabla, $item, $valor)
 	{
 		if ($item != null && $valor != null) {
-			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item");
+			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item AND c.estado = 'activo'");
 			$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 			$stmt->execute();
 			return $stmt->fetchAll();
 		} else {
-			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id");
+			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.estado = 'activo'");
 			$stmt->execute();
 			return $stmt->fetchAll();
 		}
@@ -25,7 +25,7 @@ class ModeloCursosInicio
 =============================================*/
 	public static function mdlMostrarUnCursoInicio($tabla, $item, $valor)
 	{
-		$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item");
+		$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item AND c.estado = 'activo'");
 		$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 		$stmt->execute();
 		return $stmt->fetch();
@@ -61,7 +61,7 @@ class ModeloCursosInicio
 	static public function mdlObtenerCursosDestacados($tabla, $limite = 3)
 	{
 		try {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE destacado = 1 ORDER BY fecha_creacion DESC LIMIT :limite");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE destacado = 1 AND estado = 'activo' ORDER BY fecha_creacion DESC LIMIT :limite");
 			$stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
 			$stmt->execute();
 			$resultado = $stmt->fetchAll();
