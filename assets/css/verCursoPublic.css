@@ -473,6 +473,7 @@
     background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: var(--white);
     padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
 }
 
 .sidebar-header h4 {
