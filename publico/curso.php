@@ -84,7 +84,7 @@ echo '<link rel="stylesheet" href="/factuonlinetraining/assets/css/verCursoPubli
                         <?php if ($curso["valor"] == 0): ?>
                             Gratis
                         <?php else: ?>
-                            $<?= number_format($curso["valor"], 0, ',', '.') ?> COL
+                            $<?= number_format($curso["valor"], 0, ',', '.') ?> COP
                         <?php endif; ?>
                     </span>
                 </div>

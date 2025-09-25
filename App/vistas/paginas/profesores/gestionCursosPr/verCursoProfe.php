@@ -230,7 +230,7 @@ if (isset($_SESSION['mensaje_error'])) {
                         <span class="curso-precio"
                             id="valor-display"
                             data-valor-original="$<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>">
-                            $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?> COL
+                            $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?> COP
                         </span>
                         <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
                             <button class="btn btn-sm btn-outline-primary edit-btn"

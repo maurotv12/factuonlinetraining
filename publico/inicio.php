@@ -185,7 +185,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/head.
                                  <?php if ($value["valor"] == 0): ?>
                                     Gratis
                                  <?php else: ?>
-                                    $<?= number_format($value["valor"], 0, ',', '.') ?> COL
+                                    $<?= number_format($value["valor"], 0, ',', '.') ?> COP
                                  <?php endif; ?>
                               </h4>
                               <p>Profesor: <?= !empty($value["nombre_profesor"]) ? htmlspecialchars($value["nombre_profesor"]) : 'No asignado' ?></p>

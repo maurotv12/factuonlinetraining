@@ -300,10 +300,65 @@ a:hover {
     flex-direction: column;
     gap: 0.8rem;
 }
+/* ===== PRECIO DEL CURSO - ESTILO GLASSMORPHISM ===== */
+.valorC {
+    display: inline-block;
+    background: rgba(255, 141, 20, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 141, 20, 0.2);
+    color: var(--accent);
+    font-size: 1.4rem;
+    font-weight: 800;
+    padding: 0.6rem 1.2rem;
+    border-radius: 15px;
+    margin: 0.5rem 0;
+    box-shadow: 0 8px 32px rgba(255, 141, 20, 0.1);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
+.valorC::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 141, 20, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%);
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card-curso:hover .valorC {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(255, 141, 20, 0.2);
+    background: rgba(255, 141, 20, 0.2);
+}
+
+.card-curso:hover .valorC::before {
+    opacity: 1;
+}
+
+/* Variante para cursos gratis */
+.valorC.gratis {
+    background: rgba(40, 167, 69, 0.15);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    box-shadow: 0 8px 32px rgba(40, 167, 69, 0.1);
+}
+
+.valorC.gratis::before {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+}
+
+.card-curso:hover .valorC.gratis {
+    background: rgba(40, 167, 69, 0.2);
+    box-shadow: 0 12px 40px rgba(40, 167, 69, 0.2);
+}
 .team-info .valorC,
 .curso-footer .valorC {
-    color: var(--accent);
+    color: #040c2c;
     font-size: 1.4rem;
     font-weight: 700;
     margin: 0;
