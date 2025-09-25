@@ -143,7 +143,7 @@ $rutaLogin = ControladorRuta::ctrRutaLogin();
                                 </ul>
 
                                 <h6>Propiedad Intelectual</h6>
-                                <p>Todo el contenido de los cursos, incluyendo videos, textos, ejercicios y materiales, es propiedad de CursosApp y está protegido por derechos de autor.</p>
+                                <p>Todo el contenido de los cursos, incluyendo videos, textos, ejercicios y materiales, es propiedad de Factu Online Training y está protegido por derechos de autor.</p>
 
                                 <h6>Modificaciones</h6>
                                 <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Le notificaremos sobre cambios significativos.</p>

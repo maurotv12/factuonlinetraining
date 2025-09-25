@@ -58,10 +58,6 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
       <div class="container">
          <div class="row">
             <div class="col-md-12">
-               <h2 class="titleFes mb-3">Destacados <small>
-                     <p>Nuestros mejores cursos</p>
-                  </small></h2>
-
                <div id="carouselCursos" class="carousel slide" data-bs-ride="carousel">
                   <div class="carousel-indicators">
                      <?php foreach ($cursosCarrusel as $key => $slide): ?>
