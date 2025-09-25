@@ -36,7 +36,7 @@
 <body>
     <h1>404</h1>
     <p>La página que buscas no existe o ha sido movida.</p>
-    <p><a href="/cursosApp/">Volver al inicio</a></p>
+    <p><a href="/factuonlinetraining/">Volver al inicio</a></p>
 </body>
 
 </html>

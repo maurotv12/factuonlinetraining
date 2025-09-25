@@ -6,30 +6,30 @@ class ControladorRuta
 
 	public static function ctrRutaInicio()
 	{
-		return "http://localhost/cursosApp";
+		return "http://localhost/factuonlinetraining";
 	}
 
 	public static function ctrRuta()
 	{
-		return "http://localhost/cursosApp/register";
+		return "http://localhost/factuonlinetraining/register";
 	}
 	//generame la ruta para login
 	public static function ctrRutaLogin()
 	{
 		// Ruta exacta al login
-		return "http://localhost/cursosApp/login";
+		return "http://localhost/factuonlinetraining/login";
 	}
 
 
 	public static function ctrRutaApp()
 	{
-		return "http://localhost/cursosApp/App/"; //Ruta ingresar al dashboard entorno local
+		return "http://localhost/factuonlinetraining/App/"; //Ruta ingresar al dashboard entorno local
 
 	}
 
 	public static function ctrRutaForgotPassword()
 	{
-		return "http://localhost/cursosApp/forgot-password";
+		return "http://localhost/factuonlinetraining/forgot-password";
 	}
 
 	// Unificación de lógica: retorna la ruta de la vista principal (curso, inicio o error404)
@@ -45,7 +45,7 @@ class ControladorRuta
 		if ($ruta && file_exists($ruta)) {
 			include $ruta;
 		} else {
-			include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas/error404.php";
+			include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/vistas/paginas/error404.php";
 		}
 	}
 
@@ -59,12 +59,12 @@ class ControladorRuta
 			if (class_exists('ControladorCursosInicio')) {
 				$curso = ControladorCursosInicio::ctrMostrarUnCursoInicio($item, $valor);
 				if (isset($curso["url_amiga"])) {
-					return $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/curso.php";
+					return $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/curso.php";
 				}
 			}
 		}
 		// Si no es curso, buscar la vista tradicional
-		$basePath = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/";
+		$basePath = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/";
 		if (isset($_GET["pagina"])) {
 			$pagina = $_GET["pagina"];
 			// Seguridad: solo permitimos letras, números, guiones y barras
@@ -72,7 +72,7 @@ class ControladorRuta
 				return $basePath . "vistas/paginas/error404.php";
 			}
 			// Búsqueda recursiva en todas las subcarpetas de vistas/paginas
-			$directorioBase = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas";
+			$directorioBase = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/vistas/paginas";
 			$archivoBuscado = $pagina . ".php";
 			$ruta = self::buscarArchivo($directorioBase, $archivoBuscado);
 			if ($ruta) {
@@ -107,6 +107,6 @@ class ControladorRuta
 	public function ctrPlantilla()
 	{
 		// include "vistas/paginas/registro/vista/plantilla.php";
-		include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/vistas/paginas/registro/vista/plantilla.php";
+		include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/vistas/paginas/registro/vista/plantilla.php";
 	}
 }

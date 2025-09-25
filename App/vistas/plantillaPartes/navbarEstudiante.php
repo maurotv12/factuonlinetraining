@@ -20,11 +20,11 @@ function isActivePage($page, $currentPath)
 <nav class="estudiante-navbar">
     <div class="estudiante-nav-container">
         <div class="nav-content">
-            <a class="navbar-brand d-flex align-items-center" href="/cursosApp/App/inicioEstudiante">
+            <a class="navbar-brand d-flex align-items-center" href="/factuonlinetraining/App/inicioEstudiante">
                 <?php
                 // Ruta dinámica que siempre apuntará al logo
-                $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
-                $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+                $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/vistas/img/logo.png";
+                $rutaWebLogo = "/factuonlinetraining/App/vistas/img/logo.png";
                 ?>
                 <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 80px;">
             </a>
@@ -38,19 +38,19 @@ function isActivePage($page, $currentPath)
             </div>
 
             <div class="nav-buttons">
-                <a href="/cursosApp/App/cursosCategorias"
+                <a href="/factuonlinetraining/App/cursosCategorias"
                     class="nav-btn <?php echo isActivePage('cursosCategorias', $currentPath) ? 'accent' : ''; ?>"
                     id="categoriesBtn">
                     <i class="bi bi-grid-3x3-gap"></i>
                     Categorías
                 </a>
-                <a href="/cursosApp/App/preinscripciones"
+                <a href="/factuonlinetraining/App/preinscripciones"
                     class="nav-btn <?php echo isActivePage('preinscripciones', $currentPath) ? 'accent' : ''; ?>"
                     id="preregistrationBtn">
                     <i class="bi bi-cart3"></i>
                     Preinscripciones
                 </a>
-                <a href="/cursosApp/App/cursosEstudiante"
+                <a href="/factuonlinetraining/App/cursosEstudiante"
                     class="nav-btn <?php echo isActivePage('cursosEstudiante', $currentPath) ? 'accent' : ''; ?>"
                     id="myCoursesBtn">
                     <i class="bi bi-journal-bookmark"></i>
@@ -67,17 +67,17 @@ function isActivePage($page, $currentPath)
         <!-- Menú móvil -->
         <div class="nav-menu-mobile" id="navMenu" style="display: none;">
             <div class="nav-buttons-mobile">
-                <a href="/cursosApp/App/cursosCategorias"
+                <a href="/factuonlinetraining/App/cursosCategorias"
                     class="nav-btn-mobile <?php echo isActivePage('cursosCategorias', $currentPath) ? 'active' : ''; ?>">
                     <i class="bi bi-grid-3x3-gap"></i>
                     Categorías
                 </a>
-                <a href="/cursosApp/App/preinscripciones"
+                <a href="/factuonlinetraining/App/preinscripciones"
                     class="nav-btn-mobile <?php echo isActivePage('preinscripciones', $currentPath) ? 'active' : ''; ?>">
                     <i class="bi bi-cart3"></i>
                     Preinscripciones
                 </a>
-                <a href="/cursosApp/App/cursosEstudiante"
+                <a href="/factuonlinetraining/App/cursosEstudiante"
                     class="nav-btn-mobile <?php echo isActivePage('cursosEstudiante', $currentPath) ? 'active' : ''; ?>">
                     <i class="bi bi-journal-bookmark"></i>
                     Mis Cursos
@@ -88,10 +88,10 @@ function isActivePage($page, $currentPath)
 </nav>
 
 <!-- JavaScript de navegación de estudiante -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/estudianteBase.js"></script>
 
 <!-- JavaScript base para funcionalidad de estudiante -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudianteBase.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/estudianteBase.js"></script>
 
 <script>
     // Inicializar funcionalidades del navbar cuando se carga

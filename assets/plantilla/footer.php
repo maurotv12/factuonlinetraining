@@ -28,7 +28,7 @@
                                    <li><a href="inicio">Inicio</a></li>
                                    <li><a href="#nosotros">Nosotros</a></li>
                                    <li><a href="#contacto">Contáctenos</a></li>
-                                   <li><a href="/cursosApp/login">Ingresar</a></li>
+                                   <li><a href="/factuonlinetraining/login">Ingresar</a></li>
                               </ul>
                          </div>
                          <br>

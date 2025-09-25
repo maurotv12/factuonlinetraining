@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Mostrar indicador de carga
         mostrarIndicadorCargaNombre(nombreInput, true);
 
-        fetch('/cursosApp/App/ajax/validaciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/validaciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

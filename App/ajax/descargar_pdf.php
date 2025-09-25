@@ -60,7 +60,7 @@ try {
         $rutaCompleta = $asset['storage_path'];
     } else {
         // Si es relativa, construir desde document root
-        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $asset['storage_path'];
+        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/factuonlinetraining/' . $asset['storage_path'];
     }
 
     // Si es diagnóstico, mostrar información

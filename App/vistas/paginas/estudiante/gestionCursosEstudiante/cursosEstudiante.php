@@ -51,7 +51,7 @@ foreach ($cursosInscritos as $inscripcion) {
         <nav aria-label="breadcrumb" style="margin-bottom: 2rem;">
             <ol class="breadcrumb" style="background: none; padding: 0;">
                 <li class="breadcrumb-item">
-                    <a href="/cursosApp/App/inicioEstudiante" style="color: var(--primary);">Inicio</a>
+                    <a href="/factuonlinetraining/App/inicioEstudiante" style="color: var(--primary);">Inicio</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page" style="color: var(--gray);">
                     Mis Cursos
@@ -141,7 +141,7 @@ foreach ($cursosInscritos as $inscripcion) {
             <?php if ($cursos && count($cursos) > 0): ?>
                 <?php foreach ($cursos as $curso): ?>
                     <?php
-                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                    $urlVer = "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"];
                     ?>
                     <a href="<?php echo $urlVer; ?>" class="text-decoration-none">
                         <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
@@ -155,7 +155,7 @@ foreach ($cursosInscritos as $inscripcion) {
                                         ?>"
                                 alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                                 class="course-image"
-                                onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                                onerror="this.onerror=null; this.src='/factuonlinetraining/storage/public/banners/default/defaultCurso.png'">
 
                             <div class="course-content">
                                 <h3 class="course-title">
@@ -217,10 +217,8 @@ foreach ($cursosInscritos as $inscripcion) {
     </div>
 </div>
 
-<?php include "vistas/plantillaPartes/footer.php"; ?>
-
 <!-- JavaScript específico para mis cursos -->
-<script src="/cursosApp/App/vistas/assets/js/pages/cursosEstudiante.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/cursosEstudiante.js"></script>
 
 <script>
     // Cargar datos iniciales

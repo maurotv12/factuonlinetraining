@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-     <title>CursosApp :: Cursos y Talleres</title>
+     <title>factuonlinetraining :: Cursos y Talleres</title>
      <meta charset="UTF-8">
      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
      <meta name="description" content="">

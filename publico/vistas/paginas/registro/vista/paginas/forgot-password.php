@@ -1,6 +1,6 @@
     <?php
-    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/publico/controladores/ruta.controlador.php";
-    require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosapp/App/controladores/autenticacion.controlador.php";
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/controladores/ruta.controlador.php";
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/autenticacion.controlador.php";
 
     $rutaLogin = ControladorRuta::ctrRutaLogin();
 

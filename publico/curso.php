@@ -1,8 +1,8 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php";
 
-require_once  $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/cursos.controlador.php";
+require_once  $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/cursos.controlador.php";
 
 // Obtener el identificador del curso de la URL (puede ser ID o URL amigable)
 $identificadorCurso = isset($_GET['identificador']) ? $_GET['identificador'] : (isset($_GET['id']) ? $_GET['id'] : null);
@@ -59,7 +59,7 @@ foreach ($categorias as $cat) {
 }
 
 // Incluir CSS para la página
-echo '<link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublic.css?v=' . time() . '">';
+echo '<link rel="stylesheet" href="/factuonlinetraining/assets/css/verCursoPublic.css?v=' . time() . '">';
 ?>
 
 <!-- Vista del curso -->
@@ -200,7 +200,7 @@ echo '<link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublic.css?v=' 
                                                         $fotoProfesor = $profesor['foto'] ?? 'storage/public/usuarios/default.png';
 
                                                         // Limpiar ruta para evitar rutas duplicadas
-                                                        $fotoProfesor = str_replace(['vistas/img/usuarios/default/', '/cursosApp/'], '', $fotoProfesor);
+                                                        $fotoProfesor = str_replace(['vistas/img/usuarios/default/', '/factuonlinetraining/'], '', $fotoProfesor);
 
                                                         // Si es la foto por defecto antigua, usar la nueva ruta
                                                         if (strpos($fotoProfesor, 'default.png') !== false) {
@@ -208,15 +208,15 @@ echo '<link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublic.css?v=' 
                                                         }
 
                                                         // Validar si el archivo existe, sino usar default
-                                                        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $fotoProfesor;
+                                                        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/factuonlinetraining/' . $fotoProfesor;
                                                         if (!file_exists($rutaCompleta)) {
                                                             $fotoProfesor = 'storage/public/usuarios/default.png';
                                                         }
                                                         ?>
-                                                        <img src="/cursosApp/<?= htmlspecialchars($fotoProfesor) ?>"
+                                                        <img src="/factuonlinetraining/<?= htmlspecialchars($fotoProfesor) ?>"
                                                             alt="<?= htmlspecialchars($profesor['nombre']) ?>"
                                                             class="profesor-photo"
-                                                            onerror="this.src='/cursosApp/storage/public/usuarios/default.png'">
+                                                            onerror="this.src='/factuonlinetraining/storage/public/usuarios/default.png'">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-9">
@@ -294,7 +294,7 @@ echo '<link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublic.css?v=' 
                 <!-- Botón de inscripción centrado y responsive -->
                 <div class="inscripcion-container text-center p-3">
                     <div class="inscripcion-button">
-                        <a href="/cursosApp/login" class="btn btn-inscripcion btn-lg w-100">
+                        <a href="/factuonlinetraining/login" class="btn btn-inscripcion btn-lg w-100">
                             <i class="bi bi-cart4 me-2"></i>
                             <span class="btn-text">Inicia sesión para inscribirte</span>
                         </a>

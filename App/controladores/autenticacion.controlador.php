@@ -5,16 +5,16 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Incluir PHPMailer
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/extensiones/vendor/autoload.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/extensiones/vendor/autoload.php";
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/usuarios.modelo.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/general.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/modelos/usuarios.modelo.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/usuarios.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/general.controlador.php";
 
 class ControladorAutenticacion
 {

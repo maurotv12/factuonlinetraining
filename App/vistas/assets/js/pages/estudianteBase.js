@@ -53,7 +53,7 @@ function initSearchFunctionality() {
 function searchCourses(query) {
     showLoadingCards();
 
-    fetch('/cursosApp/App/ajax/buscarCursos.php', {
+    fetch('/factuonlinetraining/App/ajax/buscarCursos.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -96,7 +96,7 @@ function loadCourses(category = null, forceReload = false) {
 
     showLoadingCards();
 
-    let url = '/cursosApp/App/ajax/obtenerCursos.php';
+    let url = '/factuonlinetraining/App/ajax/obtenerCursos.php';
     let body = '';
 
     if (category) {
@@ -163,14 +163,14 @@ function createCourseCard(course) {
     if (course.banner) {
         // Si la ruta comienza con "vistas/", construir ruta completa desde App/
         if (course.banner.startsWith('vistas/')) {
-            image = '/cursosApp/App/' + course.banner;
+            image = '/factuonlinetraining/App/' + course.banner;
         } else {
             // Si ya tiene ruta completa, usarla tal como está
             image = course.banner;
         }
     } else {
         // Si no hay banner, usar imagen por defecto de storage
-        image = '/cursosApp/storage/public/banners/default/defaultCurso.png';
+        image = '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
     }
 
     return `
@@ -179,7 +179,7 @@ function createCourseCard(course) {
             ${course.esPopular ? '<div class="course-badge badge-popular">Popular</div>' : ''}
             
             <img src="${image}" alt="${course.nombre}" class="course-image" 
-                 onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                 onerror="this.onerror=null; this.src='/factuonlinetraining/storage/public/banners/default/defaultCurso.png'">
             
             <div class="course-content">
                 <h3 class="course-title">${course.nombre}</h3>
@@ -228,7 +228,7 @@ function initCourseCards() {
 
 // Ver curso
 function viewCourse(courseId) {
-    window.location.href = `/cursosApp/App/verCurso/${courseId}`;
+    window.location.href = `/factuonlinetraining/App/verCurso/${courseId}`;
 }
 
 // Acciones rápidas de navegación
@@ -240,21 +240,21 @@ function initQuickActions() {
     if (categoryBtn) {
         categoryBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            window.location.href = '/cursosApp/App/cursosCategorias';
+            window.location.href = '/factuonlinetraining/App/cursosCategorias';
         });
     }
 
     if (preregistrationBtn) {
         preregistrationBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            window.location.href = '/cursosApp/App/preinscripciones';
+            window.location.href = '/factuonlinetraining/App/preinscripciones';
         });
     }
 
     if (myCoursesBtn) {
         myCoursesBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            window.location.href = '/cursosApp/App/cursosEstudiante';
+            window.location.href = '/factuonlinetraining/App/cursosEstudiante';
         });
     }
 }

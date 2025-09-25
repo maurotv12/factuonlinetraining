@@ -290,7 +290,7 @@ if (file_exists("controladores/cursos.controlador.php")) {
                                         <?php foreach ($cursosProfesore as $curso): ?>
                                             <?php
                                             // Usar URL amigable 
-                                            $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                                            $urlVer = "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"];
                                             ?>
                                             <div class="col-md-6 mb-4">
                                                 <div class="course-card" role="group" data-url="<?php echo $urlVer; ?>" style="cursor: pointer;">

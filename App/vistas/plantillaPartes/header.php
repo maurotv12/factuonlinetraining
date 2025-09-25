@@ -1,7 +1,7 @@
             <script>
                 function cerrarSesion() {
                     if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                        window.location.href = '/cursosApp/App/index.php?pagina=general/salir';
+                        window.location.href = '/factuonlinetraining/App/index.php?pagina=general/salir';
                     }
                 }
             </script>
@@ -21,11 +21,11 @@
                             <button class="btn btn1 me-3 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                                 <i class="bi bi-list"></i>
                             </button>
-                            <a class="navbar-brand d-flex align-items-center" href="/cursosApp/App/inicioEstudiante">
+                            <a class="navbar-brand d-flex align-items-center" href="/factuonlinetraining/App/inicioEstudiante">
                                 <?php
                                 // Ruta dinámica que siempre apuntará al logo
-                                $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
-                                $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+                                $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/vistas/img/logo.png";
+                                $rutaWebLogo = "/factuonlinetraining/App/vistas/img/logo.png";
                                 ?>
                                 <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 60px;">
                             </a>

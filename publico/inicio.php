@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/head.php";
 ?>
 
 <!-- CSS específico para el carrusel -->
-<link rel="stylesheet" href="/cursosApp/assets/css/carrusel.css">
-<link rel="stylesheet" href="/cursosApp/assets/css/cursosInicio.css">
+<link rel="stylesheet" href="/factuonlinetraining/assets/css/carrusel.css">
+<link rel="stylesheet" href="/factuonlinetraining/assets/css/cursosInicio.css">
 
 <body>
    <?php
-   include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php";
-   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosInicio.controlador.php";
-   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/modelos/cursosInicio.modelo.php";
+   include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php";
+   require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/controladores/cursosInicio.controlador.php";
+   require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/modelos/cursosInicio.modelo.php";
 
    // Obtener parámetro de categoría para filtrado
    $categoriaSeleccionada = isset($_GET['categoria']) ? $_GET['categoria'] : 'todas';
@@ -30,7 +30,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
          'id' => 1,
          'titulo' => '¡Comienza Tu Aventura Creativa!',
          'descripcion' => 'Descubre el mundo de la animación y da vida a tus ideas. ¡Tu creatividad no tiene límites!',
-         'imagen' => '/cursosApp/storage/public/carrusel/1.png',
+         'imagen' => '/factuonlinetraining/storage/public/carrusel/1.png',
          'url' => '#cardscursos',
          'cta' => 'Explorar Cursos'
       ],
@@ -38,7 +38,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
          'id' => 2,
          'titulo' => 'Convierte Tu Pasión en Profesión',
          'descripcion' => 'Aprende de los mejores profesionales y transforma tu hobby en una carrera exitosa',
-         'imagen' => '/cursosApp/storage/public/carrusel/2.jpg',
+         'imagen' => '/factuonlinetraining/storage/public/carrusel/2.jpg',
          'url' => '#cardscursos',
          'cta' => 'Ver Todos los Cursos'
       ],
@@ -46,7 +46,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
          'id' => 3,
          'titulo' => 'El Futuro Está en Tus Manos',
          'descripcion' => 'Domina las técnicas más innovadoras y conviértete en el creador que siempre soñaste ser',
-         'imagen' => '/cursosApp/storage/public/carrusel/3.png',
+         'imagen' => '/factuonlinetraining/storage/public/carrusel/3.png',
          'url' => '#cardscursos',
          'cta' => 'Empezar Ahora'
       ]
@@ -203,7 +203,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
    </section>
 
    <!-- Script para el carrusel -->
-   <script src="/cursosApp/assets/js/carrusel.js"></script>
+   <script src="/factuonlinetraining/assets/js/carrusel.js"></script>
 
 </body>
 

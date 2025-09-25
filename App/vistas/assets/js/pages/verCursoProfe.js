@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const assetId = boton.dataset.assetId;
         const cursoId = boton.dataset.cursoId;
 
-        const urlDiagnostico = `/cursosApp/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}&diagnostico=1`;
+        const urlDiagnostico = `/factuonlinetraining/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}&diagnostico=1`;
         window.open(urlDiagnostico, '_blank');
     }
 
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         boton.disabled = true;
 
         // URL de descarga directa
-        const urlDescarga = `/cursosApp/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}`;
+        const urlDescarga = `/factuonlinetraining/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}`;
 
         try {
             // Crear enlace temporal para descarga
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btnCambiarBanner.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i> Subiendo...';
         btnCambiarBanner.disabled = true;
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         })
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Enviar datos al servidor
-        fetch('/cursosApp/App/ajax/cursos.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/cursos.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1008,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', function () {
             datos.idSeccion = id;
         }
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1083,7 +1083,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     window.editarSeccion = function (id) {
         // Obtener datos específicos de la sección
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1134,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1236,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const progressBar = crearBarraProgreso(file.name, 'video');
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         })
@@ -1289,7 +1289,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function obtenerCategorias() {
         try {
-            const response = await fetch('/cursosApp/App/ajax/cursos.ajax.php', {
+            const response = await fetch('/factuonlinetraining/App/ajax/cursos.ajax.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1660,7 +1660,7 @@ document.addEventListener('DOMContentLoaded', function () {
             datosContenido.id = id;
         }
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1710,7 +1710,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formDataVideo.append('idCurso', cursoId);
             formDataVideo.append('idSeccion', seccionId);
 
-            const promesaVideo = fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            const promesaVideo = fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                 method: 'POST',
                 body: formDataVideo
             }).then(response => response.json());
@@ -1728,7 +1728,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 formDataPDF.append('idCurso', cursoId);
                 formDataPDF.append('idSeccion', seccionId);
 
-                const promesaPDF = fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                const promesaPDF = fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                     method: 'POST',
                     body: formDataPDF
                 }).then(response => response.json());
@@ -1853,7 +1853,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Recargar contenido de una sección específica
      */
     function recargarContenidoSeccion(seccionId) {
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1890,7 +1890,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Obtener datos del contenido
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1983,7 +1983,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2035,7 +2035,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -2084,12 +2084,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Si es una ruta relativa, construir la URL completa
         if (url.startsWith('storage/')) {
-            return `/cursosApp/${url}`;
+            return `/factuonlinetraining/${url}`;
         }
 
         // Si no empieza con /, agregarlo
         if (!url.startsWith('/')) {
-            return `/cursosApp/${url}`;
+            return `/factuonlinetraining/${url}`;
         }
 
         return url;
@@ -2375,7 +2375,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Enviar progreso via AJAX
      */
     function enviarProgresoAjax(datos) {
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2490,7 +2490,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
 
                 navigator.sendBeacon(
-                    '/cursosApp/App/ajax/curso_secciones.ajax.php',
+                    '/factuonlinetraining/App/ajax/curso_secciones.ajax.php',
                     new Blob([JSON.stringify(datos)], { type: 'application/json' })
                 );
             }

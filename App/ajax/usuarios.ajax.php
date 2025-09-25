@@ -21,7 +21,7 @@ function eliminarFotoAnteriorAjax($idUsuario)
 		}
 
 		// Construir ruta completa del archivo actual
-		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/" . $fotoActual;
+		$rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/" . $fotoActual;
 
 		// Eliminar archivo si existe
 		if (file_exists($rutaCompleta) && is_file($rutaCompleta)) {
@@ -73,7 +73,7 @@ class AjaxUsuarios
 		} else {
 			echo json_encode([
 				"success" => false,
-				"foto" => "/cursosApp/storage/public/usuarios/default.png"
+				"foto" => "/factuonlinetraining/storage/public/usuarios/default.png"
 			]);
 		}
 	}
@@ -237,7 +237,7 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "actualizar_foto") {
 		}
 
 		// Crear directorio del usuario en nueva estructura storage
-		$directorioUsuario = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/usuarios/" . $idUsuario;
+		$directorioUsuario = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/storage/public/usuarios/" . $idUsuario;
 
 		if (!file_exists($directorioUsuario)) {
 			mkdir($directorioUsuario, 0755, true);
@@ -314,7 +314,7 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "actualizar_foto") {
 					echo json_encode([
 						"success" => true,
 						"message" => "Foto actualizada correctamente",
-						"nueva_ruta" => "/cursosApp/" . $rutaBD
+						"nueva_ruta" => "/factuonlinetraining/" . $rutaBD
 					]);
 				} else {
 					echo json_encode(["success" => false, "message" => "Error al actualizar la foto en base de datos"]);

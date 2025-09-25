@@ -9,8 +9,8 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
     <div class="offcanvas-header justify-content-center">
         <div style="font-family: 'Nunito', sans-serif;" class="d-flex align-items-center justify-content-center w-100">
             <?php
-            $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/vistas/img/logo.png";
-            $rutaWebLogo = "/cursosApp/App/vistas/img/logo.png";
+            $rutaLogo = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/vistas/img/logo.png";
+            $rutaWebLogo = "/factuonlinetraining/App/vistas/img/logo.png";
             ?>
             <img src="<?php echo $rutaWebLogo; ?>" alt="Logo" class="logo-offcanvas me-2" style="height: 60px;">
         </div>
@@ -85,7 +85,7 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
 
                             <?php if (in_array(1, $idsRoles)) { ?>
                                 <li class="sidebar-item">
-                                    <a href="/cursosApp/App/paginas" class='sidebar-link'>
+                                    <a href="/factuonlinetraining/App/paginas" class='sidebar-link'>
                                         <i class="bi bi-file-earmark-text"></i>
                                         <span>Páginas</span>
                                     </a>
@@ -93,14 +93,14 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
                             <?php } ?>
 
                             <li class="sidebar-item">
-                                <a href="/cursosApp/App/faq" class='sidebar-link'>
+                                <a href="/factuonlinetraining/App/faq" class='sidebar-link'>
                                     <i class="bi bi-question-circle"></i>
                                     <span>FAQs</span>
                                 </a>
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="/cursosApp/App/soporte" class='sidebar-link'>
+                                <a href="/factuonlinetraining/App/soporte" class='sidebar-link'>
                                     <i class="bi bi-envelope-paper"></i>
                                     <span>Soporte</span>
                                 </a>
@@ -111,14 +111,14 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
                             <li class="sidebar-title">Configuración</li>
 
                             <li class="sidebar-item">
-                                <a href="/cursosApp/App/configuracion" class='sidebar-link'>
+                                <a href="/factuonlinetraining/App/configuracion" class='sidebar-link'>
                                     <i class="bi bi-gear-fill"></i>
                                     <span>Configuración General</span>
                                 </a>
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="/cursosApp/App/perfil" class='sidebar-link'>
+                                <a href="/factuonlinetraining/App/perfil" class='sidebar-link'>
                                     <i class="bi bi-person-circle"></i>
                                     <span>Perfil</span>
                                 </a>
@@ -146,7 +146,7 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
 <script>
     function cerrarSesion() {
         if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-            window.location.href = '/cursosApp/App/index.php?pagina=general/salir';
+            window.location.href = '/factuonlinetraining/App/index.php?pagina=general/salir';
         }
     }
 

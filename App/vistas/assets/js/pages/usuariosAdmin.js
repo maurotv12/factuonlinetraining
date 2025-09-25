@@ -217,7 +217,7 @@ function cargarCursosEnModal(usuarioId, cursosPorProfesor) {
         const fechaCreacion = curso.fecha_registro || 'No disponible';
         const precio = curso.valor || '0';
 
-        const urlVer = `/cursosApp/App/verCursoProfe/${curso.url_amiga}`;
+        const urlVer = `/factuonlinetraining/App/verCursoProfe/${curso.url_amiga}`;
 
         cursosHtml += `
             <div class="curso-item" style="animation-delay: ${index * 0.1}s; cursor: pointer;" data-curso-url="${urlVer}"

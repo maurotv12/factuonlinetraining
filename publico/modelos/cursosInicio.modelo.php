@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/conexion.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/modelos/conexion.php";
 
 class ModeloCursosInicio
 {

@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/usuarios.modelo.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/modelos/usuarios.modelo.php";
 
 class ControladorUsuarios
 {
@@ -58,7 +58,7 @@ class ControladorUsuarios
 
 				// Crear directorio del usuario en nueva estructura storage
 				$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-				$directorioUsuario = $documentRoot . "/cursosApp/storage/public/usuarios/" . $idUsuario;
+				$directorioUsuario = $documentRoot . "/factuonlinetraining/storage/public/usuarios/" . $idUsuario;
 				$directorioUsuario = str_replace('/', DIRECTORY_SEPARATOR, $directorioUsuario);
 
 				if (!file_exists($directorioUsuario)) {
@@ -138,7 +138,7 @@ class ControladorUsuarios
 
 			// Construir ruta completa del archivo actual
 			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-			$rutaCompleta = $documentRoot . "/cursosApp/" . $fotoActual;
+			$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $fotoActual;
 			$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
 
 			// Eliminar archivo si existe
@@ -283,7 +283,7 @@ class ControladorUsuarios
 	{
 		// Si no hay foto asignada, devolver imagen por defecto de storage
 		if (empty($rutaFoto) || $rutaFoto === null) {
-			return '/cursosApp/storage/public/usuarios/default.png';
+			return '/factuonlinetraining/storage/public/usuarios/default.png';
 		}
 
 		// Construir la ruta completa del archivo
@@ -292,12 +292,12 @@ class ControladorUsuarios
 
 		// Si la ruta ya incluye storage/, usar tal como está
 		if (strpos($rutaFoto, 'storage/') === 0) {
-			$rutaCompleta = $documentRoot . '/cursosApp/' . $rutaFoto;
-			$rutaPublica = '/cursosApp/' . $rutaFoto;
+			$rutaCompleta = $documentRoot . '/factuonlinetraining/' . $rutaFoto;
+			$rutaPublica = '/factuonlinetraining/' . $rutaFoto;
 		} else {
 			// Para compatibilidad con rutas antiguas
-			$rutaCompleta = $documentRoot . '/cursosApp/App/' . $rutaFoto;
-			$rutaPublica = '/cursosApp/App/' . $rutaFoto;
+			$rutaCompleta = $documentRoot . '/factuonlinetraining/App/' . $rutaFoto;
+			$rutaPublica = '/factuonlinetraining/App/' . $rutaFoto;
 		}
 
 		// Convertir barras para Windows si es necesario
@@ -313,7 +313,7 @@ class ControladorUsuarios
 		}
 
 		// Si llegamos aquí, la imagen no existe o no es válida
-		return '/cursosApp/storage/public/usuarios/default.png';
+		return '/factuonlinetraining/storage/public/usuarios/default.png';
 	}
 
 	/*=============================================
@@ -339,12 +339,12 @@ class ControladorUsuarios
 			// Solo migrar si tiene foto y no está ya en storage
 			if (!empty($usuario['foto']) && strpos($usuario['foto'], 'storage/') !== 0) {
 				$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-				$rutaAntigua = $documentRoot . '/cursosApp/App/' . $usuario['foto'];
+				$rutaAntigua = $documentRoot . '/factuonlinetraining/App/' . $usuario['foto'];
 				$rutaAntigua = str_replace('/', DIRECTORY_SEPARATOR, $rutaAntigua);
 
 				if (file_exists($rutaAntigua)) {
 					// Crear directorio del usuario
-					$directorioNuevo = $documentRoot . '/cursosApp/storage/public/usuarios/' . $usuario['id'];
+					$directorioNuevo = $documentRoot . '/factuonlinetraining/storage/public/usuarios/' . $usuario['id'];
 					$directorioNuevo = str_replace('/', DIRECTORY_SEPARATOR, $directorioNuevo);
 
 					if (!file_exists($directorioNuevo)) {

@@ -1,7 +1,7 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/autenticacion.controlador.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/ruta.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/usuarios.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/autenticacion.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/controladores/ruta.controlador.php";
 
 $rutaRegistro = ControladorRuta::ctrRuta();
 $ruta = ControladorRuta::ctrCargarPagina();

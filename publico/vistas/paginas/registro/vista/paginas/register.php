@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/autenticacion.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/usuarios.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/autenticacion.controlador.php";
 
 $registro = new ControladorAutenticacion();
 $registro->ctrRegistroUsuario();
@@ -8,7 +8,7 @@ $registro->ctrRegistroUsuario();
 $rutaLogin = ControladorRuta::ctrRutaLogin();
 ?>
 
-<link rel="stylesheet" href="/cursosApp/assets/css/validacionRegistro.css">
+<link rel="stylesheet" href="/factuonlinetraining/assets/css/validacionRegistro.css">
 <div id="auth">
     <div class="row h-100 pt-5">
         <div class="col-lg-4 col-12">

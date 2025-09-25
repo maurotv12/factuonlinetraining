@@ -2,8 +2,8 @@
 // Verificar acceso (solo profesores)
 if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor'])) {
     $editarUrl = !empty($curso["url_amiga"])
-        ? "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"]
-        : "/cursosApp/App/verCursoProfe?id=" . $curso["id"];
+        ? "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"]
+        : "/factuonlinetraining/App/verCursoProfe?id=" . $curso["id"];
     echo '<div class="alert alert-danger">No tienes permisos para acceder a esta página.</div>';
     return;
 }
@@ -17,13 +17,13 @@ $cursos = ControladorCursos::ctrCargarListadoCursosProfesor();
 if (empty($cursos)) {
     echo '<div class="alert alert-info">
         <i class="bi bi-info-circle"></i> 
-        Aún no has creado ningún curso. <a href="/cursosApp/App/crearCursoProfe" class="alert-link">¡Crea tu primer curso aquí!</a>
+        Aún no has creado ningún curso. <a href="/factuonlinetraining/App/crearCursoProfe" class="alert-link">¡Crea tu primer curso aquí!</a>
     </div>';
 }
 ?>
 
 <!-- Incluir CSS específico para esta página -->
-<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/listadoCursos.css">
+<link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/css/pages/listadoCursos.css">
 
 <div class="listado-cursos-container">
     <div class="row">
@@ -38,7 +38,7 @@ if (empty($cursos)) {
                         <span class="badge bg-primary me-2">
                             <?= count($cursos) ?> curso<?= count($cursos) !== 1 ? 's' : '' ?>
                         </span>
-                        <a href="/cursosApp/App/crearCursoProfe" class="btn btn-success btn-sm">
+                        <a href="/factuonlinetraining/App/crearCursoProfe" class="btn btn-success btn-sm">
                             <i class="bi bi-plus-circle"></i> Crear Nuevo Curso
                         </a>
                     </div>
@@ -106,7 +106,7 @@ if (empty($cursos)) {
                                                 <div class="btn-group" role="group">
                                                     <?php
                                                     // Usar URL amigable si está disponible, sino usar ID para ver
-                                                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                                                    $urlVer = "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"];
                                                     ?>
                                                     <a href="<?= $urlVer ?>" class="btn btn-sm btn-info" title="Ver curso y editarlo">
                                                         <i class="bi bi-eye"></i> Ver y editar
@@ -128,7 +128,7 @@ if (empty($cursos)) {
                             <p class="text-muted mb-4">
                                 Aún no tienes cursos creados. Comienza compartiendo tu conocimiento con el mundo.
                             </p>
-                            <a href="/cursosApp/App/crearCursoProfe" class="btn btn-primary btn-lg">
+                            <a href="/factuonlinetraining/App/crearCursoProfe" class="btn btn-primary btn-lg">
                                 <i class="bi bi-plus-circle"></i> Crear Mi Primer Curso
                             </a>
                         </div>
@@ -140,15 +140,15 @@ if (empty($cursos)) {
 </div>
 
 <!-- Incluir el archivo JavaScript para la página -->
-<script src="/cursosApp/App/vistas/assets/js/pages/listadoCursosProfe.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/listadoCursosProfe.js"></script>
 
 <script>
     // Función para gestionar contenido del curso
     function gestionarContenido(identificador, esUrlAmiga) {
         if (esUrlAmiga) {
-            window.location.href = `/cursosApp/App/verCursoProfe/${identificador}`;
+            window.location.href = `/factuonlinetraining/App/verCursoProfe/${identificador}`;
         } else {
-            window.location.href = `/cursosApp/App/verCursoProfe?id=${identificador}`;
+            window.location.href = `/factuonlinetraining/App/verCursoProfe?id=${identificador}`;
         }
     }
 </script>

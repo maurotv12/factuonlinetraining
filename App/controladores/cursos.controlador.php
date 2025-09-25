@@ -79,7 +79,7 @@ class ControladorCursos
 	{
 		// Verificar si existe el modelo de usuarios, si no, incluirlo
 		if (!class_exists('ModeloUsuarios')) {
-			require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/usuarios.modelo.php";
+			require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/modelos/usuarios.modelo.php";
 		}
 
 		// Obtener conexión a base de datos
@@ -110,7 +110,7 @@ class ControladorCursos
 		// Determinar la ruta base del proyecto
 		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
 
-		$rutaCompleta = $documentRoot . "/cursosApp/storage/public/" . $subdirectorio;
+		$rutaCompleta = $documentRoot . "/factuonlinetraining/storage/public/" . $subdirectorio;
 
 		// Convertir barras para Windows si es necesario
 		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
@@ -299,7 +299,7 @@ class ControladorCursos
 		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
 
 		// Construir ruta completa
-		$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+		$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $rutaArchivo;
 
 		// Convertir barras para Windows si es necesario
 		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
@@ -338,7 +338,7 @@ class ControladorCursos
 		} else {
 			// Si es relativa, construir ruta completa
 			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-			$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+			$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $rutaArchivo;
 		}
 
 		// Convertir barras para Windows si es necesario
@@ -402,7 +402,7 @@ class ControladorCursos
 		if ($resultado) {
 			// Limpiar directorios vacíos después de eliminar el archivo
 			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-			$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+			$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $rutaArchivo;
 			$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
 
 			self::limpiarDirectoriosVacios($rutaCompleta);
@@ -608,7 +608,7 @@ class ControladorCursos
 	{
 		// Verificar si existe el controlador de usuarios, si no, incluirlo
 		if (!class_exists('ControladorUsuarios')) {
-			require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+			require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/usuarios.controlador.php";
 		}
 
 		// Delegar al método del controlador de usuarios
@@ -1184,7 +1184,7 @@ class ControladorCursos
 	public static function ctrCrearEstructuraDirectoriosAssets($idCurso, $idSeccion, $idContenido)
 	{
 		// Ruta base para assets de secciones
-		$rutaBase = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/section_assets";
+		$rutaBase = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/storage/public/section_assets";
 
 		// Crear estructura: storage/public/section_assets/{curso}/{seccion}/{contenido}/
 		$rutaCurso = $rutaBase . "/" . $idCurso;
@@ -1582,7 +1582,7 @@ class ControladorCursos
 	private static function organizarArchivosPorCurso($idCurso, $rutaBanner, $rutaVideo = '')
 	{
 		$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? 'C:\\xampp\\htdocs';
-		$basePath = $documentRoot . "/cursosApp/storage/public/";
+		$basePath = $documentRoot . "/factuonlinetraining/storage/public/";
 
 		// Crear directorios específicos del curso
 		$directorioBanner = $basePath . "banners/" . $idCurso . "/";
@@ -1599,9 +1599,9 @@ class ControladorCursos
 		$rutaVideoFinal = $rutaVideo;
 
 		// Mover banner si existe
-		if ($rutaBanner && file_exists($documentRoot . "/cursosApp/" . $rutaBanner)) {
+		if ($rutaBanner && file_exists($documentRoot . "/factuonlinetraining/" . $rutaBanner)) {
 			$nombreArchivo = basename($rutaBanner);
-			$rutaOrigen = $documentRoot . "/cursosApp/" . $rutaBanner;
+			$rutaOrigen = $documentRoot . "/factuonlinetraining/" . $rutaBanner;
 			$rutaDestino = $directorioBanner . $nombreArchivo;
 
 			if (rename($rutaOrigen, $rutaDestino)) {
@@ -1610,9 +1610,9 @@ class ControladorCursos
 		}
 
 		// Mover video si existe
-		if ($rutaVideo && file_exists($documentRoot . "/cursosApp/" . $rutaVideo)) {
+		if ($rutaVideo && file_exists($documentRoot . "/factuonlinetraining/" . $rutaVideo)) {
 			$nombreArchivo = basename($rutaVideo);
-			$rutaOrigen = $documentRoot . "/cursosApp/" . $rutaVideo;
+			$rutaOrigen = $documentRoot . "/factuonlinetraining/" . $rutaVideo;
 			$rutaDestino = $directorioVideo . $nombreArchivo;
 
 			if (rename($rutaOrigen, $rutaDestino)) {
@@ -1960,21 +1960,21 @@ class ControladorCursos
 	{
 		// Si no hay imagen asignada, devolver imagen por defecto de storage
 		if (empty($rutaImagen) || $rutaImagen === null) {
-			return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+			return '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
 		}
 
 		// SOLO aceptar rutas de storage
 		if (strpos($rutaImagen, 'storage/public/banners/') !== 0) {
 			// Si no es una ruta de storage, devolver imagen por defecto
-			return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+			return '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
 		}
 
 		// Determinar la ruta base del proyecto
 		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
 
 		// Construir la ruta completa del archivo
-		$rutaCompleta = $documentRoot . '/cursosApp/' . $rutaImagen;
-		$rutaPublica = '/cursosApp/' . $rutaImagen;
+		$rutaCompleta = $documentRoot . '/factuonlinetraining/' . $rutaImagen;
+		$rutaPublica = '/factuonlinetraining/' . $rutaImagen;
 
 		// Convertir barras para Windows si es necesario
 		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
@@ -1989,7 +1989,7 @@ class ControladorCursos
 		}
 
 		// Si llegamos aquí, la imagen no existe o no es válida
-		return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+		return '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
 	}
 
 	/*=============================================
@@ -2008,7 +2008,7 @@ class ControladorCursos
 		}
 
 		// Devolver URL pública para storage
-		return '/cursosApp/' . $rutaVideo;
+		return '/factuonlinetraining/' . $rutaVideo;
 	}
 
 	/*=============================================
