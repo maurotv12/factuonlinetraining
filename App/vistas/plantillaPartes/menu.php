@@ -82,8 +82,8 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
                     <div class="general-content">
                         <ul class="menu">
                             <li class="sidebar-title">Contenido y Soporte</li>
-
-                            <?php if (in_array(1, $idsRoles)) { ?>
+                            <!-- Futuro Desarrollo -->
+                            <!-- <?php if (in_array(1, $idsRoles)) { ?>
                                 <li class="sidebar-item">
                                     <a href="/factuonlinetraining/App/paginas" class='sidebar-link'>
                                         <i class="bi bi-file-earmark-text"></i>
@@ -104,18 +104,18 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
                                     <i class="bi bi-envelope-paper"></i>
                                     <span>Soporte</span>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
 
                         <ul class="menu">
                             <li class="sidebar-title">Configuración</li>
-
-                            <li class="sidebar-item">
+                                <!-- Futuro Desarrollo -->
+                            <!-- <li class="sidebar-item">
                                 <a href="/factuonlinetraining/App/configuracion" class='sidebar-link'>
                                     <i class="bi bi-gear-fill"></i>
                                     <span>Configuración General</span>
                                 </a>
-                            </li>
+                            </li> -->
 
                             <li class="sidebar-item">
                                 <a href="/factuonlinetraining/App/perfil" class='sidebar-link'>

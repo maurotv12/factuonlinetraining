@@ -17,8 +17,8 @@
             <span>Todos los Cursos</span>
         </a>
     </li>
-
-    <li class="sidebar-item">
+    <!-- Futuro desarrollo -->
+    <!-- <li class="sidebar-item">
         <a href="/factuonlinetraining/App/pagos" class='sidebar-link'>
             <i class="bi bi-currency-dollar"></i>
             <span>Pagos</span>
@@ -37,5 +37,5 @@
             <i class="bi bi-graph-up-arrow"></i>
             <span>Reportes Financieros</span>
         </a>
-    </li>
+    </li> -->
 </ul>
