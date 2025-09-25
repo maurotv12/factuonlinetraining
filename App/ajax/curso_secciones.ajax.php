@@ -555,6 +555,20 @@ switch ($accion) {
         echo json_encode($respuesta);
         break;
 
+    // ========== OBTENER PROGRESO DE SECCIONES ==========
+    case 'obtenerProgresoSecciones':
+        $idCurso = $datos['idCurso'] ?? null;
+        $idEstudiante = $_SESSION['idU']; // Usuario actual
+
+        if (!$idCurso) {
+            echo json_encode(['success' => false, 'mensaje' => 'ID de curso requerido']);
+            break;
+        }
+
+        $respuesta = ControladorCursos::ctrObtenerProgresoSecciones($idCurso, $idEstudiante);
+        echo json_encode($respuesta);
+        break;
+
     default:
         // Manejar caso de acción no válida
         $accionesValidas = [
@@ -588,7 +602,8 @@ switch ($accion) {
             // Reemplazar assets
             'reemplazarAsset',
             // Seguimiento de progreso
-            'upsertProgreso'
+            'upsertProgreso',
+            'obtenerProgresoSecciones'
         ];
 
         echo json_encode([

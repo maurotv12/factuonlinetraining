@@ -1307,4 +1307,33 @@ class ModeloCursos
 			return "error";
 		}
 	}
+
+	/*=============================================
+	Obtener progreso de secciones de un curso para un estudiante
+	=============================================*/
+	public static function mdlObtenerProgresoSecciones($idCurso, $idEstudiante)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("
+				SELECT 
+					cs.id as seccion_id,
+					sc.id as contenido_id,
+					COALESCE(scp.visto, 0) as visto
+				FROM curso_secciones cs
+				LEFT JOIN seccion_contenido sc ON cs.id = sc.id_seccion AND sc.estado = 'activo'
+				LEFT JOIN seccion_contenido_progreso scp ON sc.id = scp.id_contenido AND scp.id_estudiante = :id_estudiante
+				WHERE cs.id_curso = :id_curso AND cs.estado = 'activo'
+				ORDER BY cs.orden ASC, sc.orden ASC
+			");
+
+			$stmt->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
+			$stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
+			$stmt->execute();
+
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch (Exception $e) {
+			error_log("Error en mdlObtenerProgresoSecciones: " . $e->getMessage());
+			return false;
+		}
+	}
 }

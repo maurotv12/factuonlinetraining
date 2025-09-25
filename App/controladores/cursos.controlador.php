@@ -2233,4 +2233,68 @@ class ControladorCursos
 			];
 		}
 	}
+
+	/**
+	 * Obtener progreso de secciones de un curso para un estudiante
+	 */
+	public static function ctrObtenerProgresoSecciones($idCurso, $idEstudiante)
+	{
+		try {
+			$idCurso = (int)$idCurso;
+			$idEstudiante = (int)$idEstudiante;
+
+			if ($idCurso <= 0 || $idEstudiante <= 0) {
+				return [
+					'success' => false,
+					'mensaje' => 'IDs inválidos'
+				];
+			}
+
+			$progreso = ModeloCursos::mdlObtenerProgresoSecciones($idCurso, $idEstudiante);
+
+			if ($progreso === false) {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al obtener progreso de secciones'
+				];
+			}
+
+			// Procesar resultados para agrupar por sección
+			$seccionesProgreso = [];
+			foreach ($progreso as $item) {
+				$seccionId = $item['seccion_id'];
+				if (!isset($seccionesProgreso[$seccionId])) {
+					$seccionesProgreso[$seccionId] = [
+						'seccion_id' => $seccionId,
+						'total_contenidos' => 0,
+						'contenidos_vistos' => 0,
+						'completada' => false
+					];
+				}
+
+				if ($item['contenido_id'] !== null) {
+					$seccionesProgreso[$seccionId]['total_contenidos']++;
+					if ($item['visto'] == 1) {
+						$seccionesProgreso[$seccionId]['contenidos_vistos']++;
+					}
+				}
+			}
+
+			// Determinar si cada sección está completada
+			foreach ($seccionesProgreso as &$seccion) {
+				$seccion['completada'] = $seccion['total_contenidos'] > 0 && 
+					$seccion['contenidos_vistos'] >= $seccion['total_contenidos'];
+			}
+
+			return [
+				'success' => true,
+				'progreso' => array_values($seccionesProgreso)
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al obtener progreso de secciones: ' . $e->getMessage()
+			];
+		}
+	}
 }

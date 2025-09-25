@@ -552,6 +552,15 @@
     background: var(--dark-color);
 }
 
+/* Estado de sección completada */
+.seccion-header.completada {
+    background: #2c2c2c !important;
+}
+
+.seccion-header.completada:hover {
+    background: #1a1a1a !important;
+}
+
 .seccion-title {
     font-weight: 600;
     font-size: 1rem;

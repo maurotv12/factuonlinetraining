@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarDescargaPDFs();
     inicializarCambioBanner();
     inicializarEventosGlobalesModal();
+    inicializarProgresoSecciones();
 
     /**
      * Inicializar eventos globales para manejo de modales
@@ -2387,6 +2388,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (result.success) {
                     // Actualizar indicador visual si existe
                     actualizarIndicadorProgreso(datos.porcentaje, datos.visto);
+                    
+                    // Actualizar progreso de la sección si el contenido fue marcado como visto
+                    if (datos.visto === 1) {
+                        // Obtener la sección del contenido actual
+                        const contenidoElement = document.querySelector(`[data-contenido-id="${datos.id_contenido}"]`);
+                        if (contenidoElement) {
+                            const seccionContainer = contenidoElement.closest('.seccion-container');
+                            if (seccionContainer) {
+                                const seccionId = seccionContainer.dataset.seccionId;
+                                if (seccionId && window.actualizarProgresoSeccion) {
+                                    // Pequeño delay para asegurar que la BD esté actualizada
+                                    setTimeout(() => {
+                                        window.actualizarProgresoSeccion(seccionId);
+                                    }, 500);
+                                }
+                            }
+                        }
+                    }
                 } else {
                     console.warn('Error al guardar progreso:', result.mensaje);
                 }
@@ -2506,6 +2525,95 @@ document.addEventListener('DOMContentLoaded', function () {
         limpiarSeguimientoProgreso,
         guardarProgresoContenido
     };
+
+    /**
+     * Inicializar manejo de progreso de secciones
+     */
+    function inicializarProgresoSecciones() {
+        // Solo ejecutar si el usuario está autenticado
+        if (!cursoId) return;
+
+        cargarProgresoSecciones();
+    }
+
+    /**
+     * Cargar progreso de secciones desde el servidor
+     */
+    function cargarProgresoSecciones() {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerProgresoSecciones',
+                idCurso: cursoId
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.progreso) {
+                aplicarEstilosSecciones(result.progreso);
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar progreso de secciones:', error);
+        });
+    }
+
+    /**
+     * Aplicar estilos visuales a las secciones según su progreso
+     */
+    function aplicarEstilosSecciones(progreso) {
+        progreso.forEach(seccion => {
+            const seccionHeader = document.querySelector(`[data-seccion-id="${seccion.seccion_id}"] .seccion-header`);
+            if (seccionHeader) {
+                if (seccion.completada) {
+                    seccionHeader.classList.add('completada');
+                } else {
+                    seccionHeader.classList.remove('completada');
+                }
+            }
+        });
+    }
+
+    /**
+     * Actualizar progreso de una sección específica
+     */
+    function actualizarProgresoSeccion(seccionId) {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerProgresoSecciones',
+                idCurso: cursoId
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.progreso) {
+                const seccionProgreso = result.progreso.find(s => s.seccion_id == seccionId);
+                if (seccionProgreso) {
+                    const seccionHeader = document.querySelector(`[data-seccion-id="${seccionId}"] .seccion-header`);
+                    if (seccionHeader) {
+                        if (seccionProgreso.completada) {
+                            seccionHeader.classList.add('completada');
+                        } else {
+                            seccionHeader.classList.remove('completada');
+                        }
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error al actualizar progreso de sección:', error);
+        });
+    }
+
+    // Exponer función para uso externo
+    window.actualizarProgresoSeccion = actualizarProgresoSeccion;
 
     /**
      * Función global para limpiar backdrop (accesible desde consola)
