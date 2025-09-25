@@ -25,7 +25,7 @@
                          <h2 class="titleFes">Enlaces rápidos</h2>
                          <div class="footer_menu">
                               <ul>
-                                   <li><a href="inicio">Inicio</a></li>
+                                   <li><a href="/factuonlinetraining">Inicio</a></li>
                                    <li><a href="#nosotros">Nosotros</a></li>
                                    <li><a href="#contacto">Contáctenos</a></li>
                                    <li><a href="/factuonlinetraining/login">Ingresar</a></li>

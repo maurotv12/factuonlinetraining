@@ -18,9 +18,6 @@
             color: #e74c3c;
         }
 
-        p {
-            font-size: 1.5em;
-        }
 
         a {
             color: #3498db;
