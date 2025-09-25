@@ -174,8 +174,8 @@ class ControladorCursos
 			return "formato_invalido";
 		}
 
-		// Validar tamaño (máximo 40MB para videos HD/FHD)
-		if ($video['size'] > 40 * 1024 * 1024) {
+		// Validar tamaño (máximo 50MB para videos HD/FHD)
+		if ($video['size'] > 50 * 1024 * 1024) {
 			return "archivo_grande";
 		}
 
@@ -1000,12 +1000,12 @@ class ControladorCursos
 			];
 		}
 
-		// Validar tamaño (máximo 40MB - aumentado desde 40MB)
-		$tamanoMaximo = 40 * 1024 * 1024; // 40MB en bytes
+		// Validar tamaño (máximo 50MB - aumentado desde 40MB)
+		$tamanoMaximo = 50 * 1024 * 1024; // 50MB en bytes
 		if ($archivo['size'] > $tamanoMaximo) {
 			return [
 				'success' => false,
-				'mensaje' => 'El video no puede superar los 40MB'
+				'mensaje' => 'El video no puede superar los 50MB'
 			];
 		}
 
@@ -1089,10 +1089,10 @@ class ControladorCursos
 		if ($output === null || empty(trim($output))) {
 			// Si ffprobe no está disponible, validar solo el tamaño básico
 			$fileSize = filesize($rutaArchivo);
-			if ($fileSize > 100 * 1024 * 1024) { // 100MB
+			if ($fileSize > 50 * 1024 * 1024) { // 50MB
 				return [
 					'success' => false,
-					'mensaje' => 'El archivo es demasiado grande (máximo 100MB)'
+					'mensaje' => 'El archivo es demasiado grande (máximo 50MB)'
 				];
 			}
 
@@ -1123,10 +1123,10 @@ class ControladorCursos
 
 			// Fallback: validación básica sin ffprobe
 			$fileSize = filesize($rutaArchivo);
-			if ($fileSize > 100 * 1024 * 1024) { // 100MB
+			if ($fileSize > 50 * 1024 * 1024) { // 50MB
 				return [
 					'success' => false,
-					'mensaje' => 'El archivo es demasiado grande (máximo 100MB)'
+					'mensaje' => 'El archivo es demasiado grande (máximo 50MB)'
 				];
 			}
 

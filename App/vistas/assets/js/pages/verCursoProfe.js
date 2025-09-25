@@ -2105,10 +2105,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
 
-        // Validar tamaño (100MB máximo)
-        const tamanosMaximo = 100 * 1024 * 1024; // 100MB en bytes
+        // Validar tamaño (50MB máximo)
+        const tamanosMaximo = 50 * 1024 * 1024; // 50MB en bytes
         if (file.size > tamanosMaximo) {
-            mostrarNotificacion('El archivo no puede superar los 100MB', 'error');
+            mostrarNotificacion('El archivo no puede superar los 50MB', 'error');
             return false;
         }
 
