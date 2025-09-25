@@ -28,7 +28,7 @@
 
 /* Header del curso */
 .curso-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: var(--white);
     padding: 2rem;
     border-radius: 15px;
@@ -69,7 +69,7 @@
 }
 
 .badge-categoria {
-    background-color: var(--accent-color);
+    background-color: #0b1b2b;
     color: var(--white);
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -437,7 +437,7 @@
 }
 
 .sidebar-header-content {
-    background: linear-gradient(135deg, var(--primary-color));
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: var(--white);
     padding: 1.5rem;
 }

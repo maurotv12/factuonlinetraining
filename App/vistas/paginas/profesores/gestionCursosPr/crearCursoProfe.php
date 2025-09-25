@@ -25,6 +25,8 @@ $idProfesorLogueado = $_SESSION['id'] ?? null;
 $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
 ?>
 
+<link rel="stylesheet" href="vistas/assets/css/pages/crearCursoProfe.css">
+
 <div class="crear-curso-profesor-container">
     <div class="row">
         <div class="col-12">
@@ -237,7 +239,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             <a href="listadoCursosProfe" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Volver al Listado
                             </a>
-                            <button type="submit" class="btn-crear-curso-profesor" id="btn-crear-curso">
+                            <button type="submit" class="btn btn-secondary btn-crear-curso-profesor" id="btn-crear-curso">
                                 <i class="fas fa-plus-circle"></i> Crear Curso
                             </button>
                         </div>
