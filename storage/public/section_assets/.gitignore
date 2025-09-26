@@ -1,0 +1,15 @@
+# Ignorar todas las carpetas de usuarios específicos
+#*/
+
+# Permitir la imagen por defecto
+!default.png
+
+# Permitir este archivo .gitignore
+!.gitignore
+
+
+!*.jpg
+!*.jpeg
+!*.png
+!*.mp4
+!*.pdf
