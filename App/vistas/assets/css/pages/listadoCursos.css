@@ -18,7 +18,7 @@
 }
 
 .listado-cursos-container .card-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: white;
     border-radius: 12px 12px 0 0;
     padding: 1.5rem;
@@ -134,6 +134,7 @@
 .btn-group .btn {
     border-radius: 6px;
     font-weight: 500;
+    color: white;
     padding: 0.5rem 1rem;
     transition: all 0.3s ease;
     border: none;
@@ -146,7 +147,7 @@
 }
 
 .btn-info {
-    background: linear-gradient(135deg, #17a2b8, #138496);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
 }
 
 .btn-warning {
@@ -155,7 +156,7 @@
 }
 
 .btn-info:hover {
-    background: linear-gradient(135deg, #138496, #0f6674);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
 }
 
 .btn-warning:hover {

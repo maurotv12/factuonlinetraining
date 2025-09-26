@@ -1,11 +1,5 @@
 <?php
-
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/05/2022 CursosApp
- */
-// require_once "../../App/modelos/conexion.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/conexion.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/modelos/conexion.php";
 
 class ModeloCursosInicio
 {
@@ -15,17 +9,26 @@ class ModeloCursosInicio
 	public static function mdlMostrarCursosInicio($tabla, $item, $valor)
 	{
 		if ($item != null && $valor != null) {
-			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item");
+			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item AND c.estado = 'activo'");
 			$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
 			$stmt->execute();
-			return $stmt->fetch();
+			return $stmt->fetchAll();
 		} else {
-			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id");
+			$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.estado = 'activo'");
 			$stmt->execute();
 			return $stmt->fetchAll();
 		}
-		$stmt->close();
-		$stmt = null;
+	}
+
+	/*=============================================
+	Mostrar UN SOLO curso en inicio
+=============================================*/
+	public static function mdlMostrarUnCursoInicio($tabla, $item, $valor)
+	{
+		$stmt = Conexion::conectar()->prepare("SELECT c.*, p.nombre as nombre_profesor FROM $tabla c LEFT JOIN persona p ON c.id_persona = p.id WHERE c.$item = :$item AND c.estado = 'activo'");
+		$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
+		$stmt->execute();
+		return $stmt->fetch();
 	}
 
 	/*==========================================================================
@@ -37,8 +40,6 @@ class ModeloCursosInicio
 		$stmt = Conexion::conectar()->prepare("SELECT COUNT(*) total FROM $tabla");
 		$stmt->execute();
 		return $stmt->fetch();
-		$stmt->close();
-		$stmt = null;
 	}
 	/*==============================================
 	 Consultar los datos de un curso en inicio
@@ -60,7 +61,7 @@ class ModeloCursosInicio
 	static public function mdlObtenerCursosDestacados($tabla, $limite = 3)
 	{
 		try {
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE destacado = 1 ORDER BY fecha_creacion DESC LIMIT :limite");
+			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE destacado = 1 AND estado = 'activo' ORDER BY fecha_creacion DESC LIMIT :limite");
 			$stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
 			$stmt->execute();
 			$resultado = $stmt->fetchAll();

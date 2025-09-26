@@ -1,10 +1,4 @@
 <?php
-
-/**
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/04/2022 aplicación PAWers citas de acompañamiento con mascotas
-Modelo de usuarios login, registro y recuperar contraseña
- */
 require_once "conexion.php";
 
 class ModeloUsuarios
@@ -36,9 +30,8 @@ class ModeloUsuarios
 		} else {
 			return print_r(Conexion::conectar()->errorInfo());
 		}
-		$stmt->close();
-		$stmt = null;
-	}	/*================================================================
+	}
+	/*================================================================
 	Registro de log de login ingreso del cliente a la aplicacion
 =================================================================*/
 	public static function mdlRegistroIngresoUsuarios($idU, $navU, $ipU)
@@ -75,8 +68,6 @@ class ModeloUsuarios
 			$stmt->execute();
 			return $stmt->fetchAll();
 		}
-		$stmt->close();
-		$stmt = null;
 	}
 
 	/*=============================================
@@ -85,18 +76,15 @@ class ModeloUsuarios
 
 	public static function mdlActualizarUsuario($tabla, $id, $item, $valor)
 	{
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET $item = :$item WHERE id = :id_usuario");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET $item = :$item WHERE id = :id");
 
 		$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
-		$stmt->bindParam(":id_usuario", $id, PDO::PARAM_INT);
+		$stmt->bindParam(":id", $id, PDO::PARAM_INT);
 		if ($stmt->execute()) {
 			return "ok";
 		} else {
 			return print_r(Conexion::conectar()->errorInfo());
 		}
-		$stmt->close();
-
-		$stmt = null;
 	}
 
 	/*=============================================
@@ -118,8 +106,6 @@ Actualizar usuario completar datos perfil
 		} else {
 			return print_r(Conexion::conectar()->errorInfo());
 		}
-		$stmt->close();
-		$stmt = null;
 	}
 	public static function mdlActualizarRol($idPersona, $nuevoRol)
 	{

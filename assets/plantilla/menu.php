@@ -1,11 +1,6 @@
-<!--===================================================================
-@grcarvajal grcarvajal@gmail.com **Gildardo Restrepo Carvajal**
-26/05/2022 CursosApp
-=====================================================================-->
-<!-- MENU -->
 <?php
 // Usa ruta absoluta para el require
-require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/ruta.controlador.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/controladores/ruta.controlador.php";
 $rutaInicio = ControladorRuta::ctrRutaInicio();
 $rutaLogin = ControladorRuta::ctrRutaLogin(); // Usa la función específica para login
 ?>
@@ -13,7 +8,7 @@ $rutaLogin = ControladorRuta::ctrRutaLogin(); // Usa la función específica par
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top custom-navbar">
   <div class="container">
     <!-- lOGO TEXT HERE -->
-    <a href="<?php echo $rutaInicio; ?>" class="navbar-brand"><img src="/cursosApp/App/vistas/img/logo.png" style="height: 50px;"></a>
+    <a href="<?php echo $rutaInicio; ?>" class="navbar-brand"><img src="/factuonlinetraining/App/vistas/img/logo.png" style="height: 70px;"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

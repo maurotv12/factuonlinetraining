@@ -900,38 +900,62 @@ class ModeloCursos
 			$datos['porcentaje'] = 100;
 		}
 
-		$conn = Conexion::conectar();
+		try {
+			$conn = Conexion::conectar();
 
-		// Verificar si ya existe el registro
-		$stmt = $conn->prepare("SELECT id FROM seccion_contenido_progreso 
-								WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
-		$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
-		$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
-		$stmt->execute();
-
-		if ($stmt->rowCount() > 0) {
-			// UPDATE
-			$stmt = $conn->prepare("UPDATE seccion_contenido_progreso SET 
-									visto = :visto, 
-									progreso_segundos = :progreso_segundos, 
-									porcentaje = :porcentaje
+			// Verificar si ya existe el registro y obtener el estado actual
+			$stmt = $conn->prepare("SELECT id, visto FROM seccion_contenido_progreso 
 									WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
-		} else {
-			// INSERT
-			$stmt = $conn->prepare("INSERT INTO seccion_contenido_progreso 
-									(id_contenido, id_estudiante, visto, progreso_segundos, porcentaje, primera_vista) 
-									VALUES (:id_contenido, :id_estudiante, :visto, :progreso_segundos, :porcentaje, NOW())");
-		}
+			$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
+			$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
+			$stmt->execute();
 
-		$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
-		$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
-		$stmt->bindParam(":visto", $datos["visto"], PDO::PARAM_INT);
-		$stmt->bindParam(":progreso_segundos", $datos["progreso_segundos"], PDO::PARAM_INT);
-		$stmt->bindParam(":porcentaje", $datos["porcentaje"], PDO::PARAM_INT);
+			$registroExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+			$existeRegistro = $registroExistente !== false;
 
-		if ($stmt->execute()) {
-			return "ok";
-		} else {
+			// Si ya existe el registro y está marcado como visto (1), no actualizar
+			if ($existeRegistro && $registroExistente['visto'] == 1) {
+				return "ya_visto"; // Indicar que ya está visto, no necesita actualización
+			}
+
+			if ($existeRegistro) {
+				// UPDATE - Solo si no está visto o si queremos actualizar el progreso
+				$stmt = $conn->prepare("UPDATE seccion_contenido_progreso SET 
+										visto = :visto, 
+										progreso_segundos = :progreso_segundos, 
+										porcentaje = :porcentaje,
+										ultima_vista = CURRENT_TIMESTAMP
+										WHERE id_contenido = :id_contenido AND id_estudiante = :id_estudiante");
+			} else {
+				// INSERT - Nuevo registro
+				$stmt = $conn->prepare("INSERT INTO seccion_contenido_progreso 
+										(id_contenido, id_estudiante, visto, progreso_segundos, porcentaje, primera_vista) 
+										VALUES (:id_contenido, :id_estudiante, :visto, :progreso_segundos, :porcentaje, NOW())");
+			}
+
+			// Binding con manejo correcto de NULL
+			$stmt->bindParam(":id_contenido", $datos["id_contenido"], PDO::PARAM_INT);
+			$stmt->bindParam(":id_estudiante", $datos["id_estudiante"], PDO::PARAM_INT);
+			$stmt->bindParam(":visto", $datos["visto"], PDO::PARAM_INT);
+
+			// Manejo especial para progreso_segundos que puede ser NULL
+			if ($datos["progreso_segundos"] === null) {
+				$stmt->bindParam(":progreso_segundos", $datos["progreso_segundos"], PDO::PARAM_NULL);
+			} else {
+				$stmt->bindParam(":progreso_segundos", $datos["progreso_segundos"], PDO::PARAM_INT);
+			}
+
+			$stmt->bindParam(":porcentaje", $datos["porcentaje"], PDO::PARAM_INT);
+
+			$resultado = $stmt->execute();
+
+			if ($resultado) {
+				return "ok";
+			} else {
+				return "error";
+			}
+		} catch (Exception $e) {
+			error_log("Error en mdlUpsertProgreso: " . $e->getMessage());
 			return "error";
 		}
 	}
@@ -1281,6 +1305,35 @@ class ModeloCursos
 			return "ok";
 		} else {
 			return "error";
+		}
+	}
+
+	/*=============================================
+	Obtener progreso de secciones de un curso para un estudiante
+	=============================================*/
+	public static function mdlObtenerProgresoSecciones($idCurso, $idEstudiante)
+	{
+		try {
+			$stmt = Conexion::conectar()->prepare("
+				SELECT 
+					cs.id as seccion_id,
+					sc.id as contenido_id,
+					COALESCE(scp.visto, 0) as visto
+				FROM curso_secciones cs
+				LEFT JOIN seccion_contenido sc ON cs.id = sc.id_seccion AND sc.estado = 'activo'
+				LEFT JOIN seccion_contenido_progreso scp ON sc.id = scp.id_contenido AND scp.id_estudiante = :id_estudiante
+				WHERE cs.id_curso = :id_curso AND cs.estado = 'activo'
+				ORDER BY cs.orden ASC, sc.orden ASC
+			");
+
+			$stmt->bindParam(":id_curso", $idCurso, PDO::PARAM_INT);
+			$stmt->bindParam(":id_estudiante", $idEstudiante, PDO::PARAM_INT);
+			$stmt->execute();
+
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch (Exception $e) {
+			error_log("Error en mdlObtenerProgresoSecciones: " . $e->getMessage());
+			return false;
 		}
 	}
 }

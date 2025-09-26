@@ -122,7 +122,7 @@ function searchInCategory(query) {
 
     showLoadingCards();
 
-    fetch('/cursosApp/App/ajax/buscarCursos.php', {
+    fetch('/factuonlinetraining/App/ajax/buscarCursos.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

@@ -9,7 +9,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CursosApp :: Cursos y Talleres</title>
+  <title>Factu Online Training :: Cursos y Talleres</title>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -21,22 +21,18 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- CSS locales (solo si existen) -->
-  <link rel="stylesheet" href="/cursosApp/assets/css/templatemo-style.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/styleCursos.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/auth.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/cursosInicio.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/verCursoPublico.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/carrusel.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/validacionRegistro.css">
-  <link rel="stylesheet" href="/cursosApp/assets/css/footer-fix.css">
+  <link rel="stylesheet" href="/factuonlinetraining/assets/css/templatemo-style.css">
+  <link rel="stylesheet" href="/factuonlinetraining/assets/css/styleCursos.css">
+  <link rel="stylesheet" href="/factuonlinetraining/assets/css/auth.css">
+  <link rel="stylesheet" href="/factuonlinetraining/assets/css/footer-fix.css">
 
   <!-- Favicons -->
-  <link rel="icon" href="/cursosApp/assets/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/factuonlinetraining/assets/favicon.ico" sizes="32x32" />
 </head>
 
 <body>
   <!-- MENU -->
-  <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php"; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php"; ?>
 
   <!-- CONTENIDO PRINCIPAL -->
   <main class="pt-5">
@@ -47,17 +43,17 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
   </main>
 
   <!-- FOOTER -->
-  <?php include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/footer.php"; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/footer.php"; ?>
 
   <!-- JavaScript para validación de registro -->
-  <script src="/cursosApp/assets/js/validacionRegistro.js"></script>
+  <script src="/factuonlinetraining/assets/js/validacionRegistro.js"></script>
 
   <!-- JavaScript para validación de login (solo si es necesario) -->
   <script>
     // Cargar script de login solo si estamos en página de login
     if (document.querySelector('input[name="emailIngreso"]')) {
       const script = document.createElement('script');
-      script.src = '/cursosApp/assets/js/validacionLogin.js';
+      script.src = '/factuonlinetraining/assets/js/validacionLogin.js';
       document.head.appendChild(script);
     }
   </script>

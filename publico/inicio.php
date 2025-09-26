@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/head.php";
 ?>
 
 <!-- CSS específico para el carrusel -->
-<link rel="stylesheet" href="/cursosApp/assets/css/carrusel.css">
+<link rel="stylesheet" href="/factuonlinetraining/assets/css/carrusel.css">
+<link rel="stylesheet" href="/factuonlinetraining/assets/css/cursosInicio.css">
 
 <body>
    <?php
-   include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/menu.php";
-   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosInicio.controlador.php";
-   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/controladores/cursosDestacados.controlador.php";
-   require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/publico/modelos/cursosInicio.modelo.php";
+   include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php";
+   require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/controladores/cursosInicio.controlador.php";
+   require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/modelos/cursosInicio.modelo.php";
 
-   // Obtener todos los cursos
-   $cursos = ControladorCursosInicio::ctrMostrarCursosInicio();
+   // Obtener parámetro de categoría para filtrado
+   $categoriaSeleccionada = isset($_GET['categoria']) ? $_GET['categoria'] : 'todas';
+
+   // Obtener cursos (filtrados o todos)
+   $cursos = ControladorCursosInicio::ctrMostrarCursosPorCategoria($categoriaSeleccionada);
    if (!$cursos) {
       $cursos = [];
    }
-   if (isset($cursos['id'])) {
-      $cursos = [$cursos];
-   }
+   $categorias = ControladorCursosInicio::ctrObtenerCategorias();
 
    // Carrusel publicitario con imágenes motivacionales - no requiere base de datos
    $cursosCarrusel = [
@@ -29,7 +30,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
          'id' => 1,
          'titulo' => '¡Comienza Tu Aventura Creativa!',
          'descripcion' => 'Descubre el mundo de la animación y da vida a tus ideas. ¡Tu creatividad no tiene límites!',
-         'imagen' => '/cursosApp/storage/public/carrusel/1.png',
+         'imagen' => '/factuonlinetraining/storage/public/carrusel/1.png',
          'url' => '#cardscursos',
          'cta' => 'Explorar Cursos'
       ],
@@ -37,7 +38,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
          'id' => 2,
          'titulo' => 'Convierte Tu Pasión en Profesión',
          'descripcion' => 'Aprende de los mejores profesionales y transforma tu hobby en una carrera exitosa',
-         'imagen' => '/cursosApp/storage/public/carrusel/2.jpg',
+         'imagen' => '/factuonlinetraining/storage/public/carrusel/2.jpg',
          'url' => '#cardscursos',
          'cta' => 'Ver Todos los Cursos'
       ],
@@ -45,7 +46,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
          'id' => 3,
          'titulo' => 'El Futuro Está en Tus Manos',
          'descripcion' => 'Domina las técnicas más innovadoras y conviértete en el creador que siempre soñaste ser',
-         'imagen' => '/cursosApp/storage/public/carrusel/3.png',
+         'imagen' => '/factuonlinetraining/storage/public/carrusel/3.png',
          'url' => '#cardscursos',
          'cta' => 'Empezar Ahora'
       ]
@@ -57,10 +58,6 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
       <div class="container">
          <div class="row">
             <div class="col-md-12">
-               <h2 class="titleFes mb-3">Destacados <small>
-                     <p>Nuestros mejores cursos</p>
-                  </small></h2>
-
                <div id="carouselCursos" class="carousel slide" data-bs-ride="carousel">
                   <div class="carousel-indicators">
                      <?php foreach ($cursosCarrusel as $key => $slide): ?>
@@ -103,8 +100,27 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
             <div class="col-md-12 col-sm-12">
                <div>
                   <h2 class="titleFes" id="testimonial">Cursos <small>
-                        <p>Animación, cine, stop motion</p>
+                        <p>Explora por categorías</p>
                      </small></h2>
+               </div>
+            </div>
+         </div>
+         <!-- Filtros de categorías -->
+         <div class="row mb-4">
+            <div class="col-md-12">
+               <div class="category-filters">
+                  <div class="d-flex flex-wrap gap-2 justify-content-center">
+                     <a href="?categoria=todas"
+                        class="btn <?= ($categoriaSeleccionada === 'todas') ? 'btn-primary' : 'btn-outline-primary' ?> mb-2">
+                        Todas las categorías
+                     </a>
+                     <?php foreach ($categorias as $categoria): ?>
+                        <a href="?categoria=<?= $categoria['id'] ?>"
+                           class="btn <?= ($categoriaSeleccionada == $categoria['id']) ? 'btn-primary' : 'btn-outline-primary' ?> mb-2">
+                           <?= htmlspecialchars($categoria['nombre']) ?>
+                        </a>
+                     <?php endforeach; ?>
+                  </div>
                </div>
             </div>
          </div>
@@ -114,9 +130,40 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
 
    <section id="cardscursos">
       <div class="container">
+         <!-- Título de la sección actual -->
+         <div class="row mb-3">
+            <div class="col-md-12">
+               <div class="section-title-with-count">
+                  <h3>
+                     <?php
+                     if ($categoriaSeleccionada === 'todas') {
+                        echo "Todos los cursos";
+                     } else {
+                        // Buscar el nombre de la categoría seleccionada
+                        $nombreCategoria = 'Categoría';
+                        foreach ($categorias as $cat) {
+                           if ($cat['id'] == $categoriaSeleccionada) {
+                              $nombreCategoria = $cat['nombre'];
+                              break;
+                           }
+                        }
+                        echo "Cursos de " . htmlspecialchars($nombreCategoria);
+                     }
+                     ?>
+                  </h3>
+                  <small class="text-muted d-block">(<?= count($cursos) ?> cursos encontrados)</small>
+               </div>
+            </div>
+         </div>
+
          <div class="row row-eq-height">
             <?php if (count($cursos) === 0): ?>
-               <p>No hay cursos para mostrar.</p>
+               <div class="col-12">
+                  <div class="alert alert-info text-center no-courses-message">
+                     <h4>No hay cursos disponibles</h4>
+                     <p>No se encontraron cursos para la categoría seleccionada. <a href="?categoria=todas">Ver todos los cursos</a></p>
+                  </div>
+               </div>
             <?php else: ?>
                <?php foreach ($cursos as $key => $value): ?>
                   <?php
@@ -138,7 +185,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
                                  <?php if ($value["valor"] == 0): ?>
                                     Gratis
                                  <?php else: ?>
-                                    $<?= number_format($value["valor"], 0, ',', '.') ?> COL
+                                    $<?= number_format($value["valor"], 0, ',', '.') ?> COP
                                  <?php endif; ?>
                               </h4>
                               <p>Profesor: <?= !empty($value["nombre_profesor"]) ? htmlspecialchars($value["nombre_profesor"]) : 'No asignado' ?></p>
@@ -156,7 +203,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/assets/plantilla/head.php";
    </section>
 
    <!-- Script para el carrusel -->
-   <script src="/cursosApp/assets/js/carrusel.js"></script>
+   <script src="/factuonlinetraining/assets/js/carrusel.js"></script>
 
 </body>
 

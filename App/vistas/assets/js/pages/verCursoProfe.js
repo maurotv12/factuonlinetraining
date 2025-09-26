@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarDescargaPDFs();
     inicializarCambioBanner();
     inicializarEventosGlobalesModal();
+    inicializarProgresoSecciones();
 
     /**
      * Inicializar eventos globales para manejo de modales
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const assetId = boton.dataset.assetId;
         const cursoId = boton.dataset.cursoId;
 
-        const urlDiagnostico = `/cursosApp/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}&diagnostico=1`;
+        const urlDiagnostico = `/factuonlinetraining/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}&diagnostico=1`;
         window.open(urlDiagnostico, '_blank');
     }
 
@@ -86,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function descargarPDF(boton) {
         const assetId = boton.dataset.assetId;
         const cursoId = boton.dataset.cursoId;
+        const contenidoId = boton.dataset.contenidoId; // Nuevo atributo
         const nombreArchivo = boton.dataset.nombre;
 
         if (!assetId || !cursoId) {
@@ -101,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         boton.disabled = true;
 
         // URL de descarga directa
-        const urlDescarga = `/cursosApp/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}`;
+        const urlDescarga = `/factuonlinetraining/App/ajax/descargar_pdf.php?asset_id=${assetId}&curso_id=${cursoId}`;
 
         try {
             // Crear enlace temporal para descarga
@@ -114,6 +116,14 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.appendChild(enlaceDescarga);
             enlaceDescarga.click();
             document.body.removeChild(enlaceDescarga);
+
+            // Marcar PDF como visto si hay contenidoId y usuario logueado
+            if (contenidoId && window.cursoData?.usuario_actual_id) {
+                // Esperar un poco antes de marcar como visto para asegurar que la descarga inicie
+                setTimeout(() => {
+                    window.ProgresoContenido?.marcarPDFVisto(contenidoId);
+                }, 1000);
+            }
 
             // Mostrar mensaje de éxito
             setTimeout(() => {
@@ -251,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btnCambiarBanner.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i> Subiendo...';
         btnCambiarBanner.disabled = true;
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         })
@@ -412,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Enviar datos al servidor
-        fetch('/cursosApp/App/ajax/cursos.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/cursos.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -642,6 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Configurar controles personalizados si es necesario
         video.addEventListener('loadedmetadata', function () {
             // Video cargado correctamente
+            inicializarSeguimientoProgreso(video);
         });
 
         video.addEventListener('error', function () {
@@ -777,6 +788,9 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function reproducirVideoSeccion(videoUrl, titulo, contenidoId) {
         renderizarVideoSeccion(videoUrl, titulo, contenidoId);
+
+        // Inicializar seguimiento de progreso para este contenido
+        inicializarProgresoVideoSeccion(contenidoId);
 
         // Scroll al video container
         document.getElementById('video-container').scrollIntoView({
@@ -995,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', function () {
             datos.idSeccion = id;
         }
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1070,7 +1084,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     window.editarSeccion = function (id) {
         // Obtener datos específicos de la sección
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1121,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1223,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const progressBar = crearBarraProgreso(file.name, 'video');
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         })
@@ -1276,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function obtenerCategorias() {
         try {
-            const response = await fetch('/cursosApp/App/ajax/cursos.ajax.php', {
+            const response = await fetch('/factuonlinetraining/App/ajax/cursos.ajax.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1647,7 +1661,7 @@ document.addEventListener('DOMContentLoaded', function () {
             datosContenido.id = id;
         }
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1697,7 +1711,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formDataVideo.append('idCurso', cursoId);
             formDataVideo.append('idSeccion', seccionId);
 
-            const promesaVideo = fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+            const promesaVideo = fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                 method: 'POST',
                 body: formDataVideo
             }).then(response => response.json());
@@ -1715,7 +1729,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 formDataPDF.append('idCurso', cursoId);
                 formDataPDF.append('idSeccion', seccionId);
 
-                const promesaPDF = fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                const promesaPDF = fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                     method: 'POST',
                     body: formDataPDF
                 }).then(response => response.json());
@@ -1840,7 +1854,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Recargar contenido de una sección específica
      */
     function recargarContenidoSeccion(seccionId) {
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1877,7 +1891,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Obtener datos del contenido
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1970,7 +1984,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2022,7 +2036,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+                fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -2071,12 +2085,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Si es una ruta relativa, construir la URL completa
         if (url.startsWith('storage/')) {
-            return `/cursosApp/${url}`;
+            return `/factuonlinetraining/${url}`;
         }
 
         // Si no empieza con /, agregarlo
         if (!url.startsWith('/')) {
-            return `/cursosApp/${url}`;
+            return `/factuonlinetraining/${url}`;
         }
 
         return url;
@@ -2092,10 +2106,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
 
-        // Validar tamaño (100MB máximo)
-        const tamanosMaximo = 100 * 1024 * 1024; // 100MB en bytes
+        // Validar tamaño (50MB máximo)
+        const tamanosMaximo = 50 * 1024 * 1024; // 50MB en bytes
         if (file.size > tamanosMaximo) {
-            mostrarNotificacion('El archivo no puede superar los 100MB', 'error');
+            mostrarNotificacion('El archivo no puede superar los 50MB', 'error');
             return false;
         }
 
@@ -2196,6 +2210,410 @@ document.addEventListener('DOMContentLoaded', function () {
         // Limpiar todos los backdrops
         limpiarBackdropModal();
     };
+
+    // ========================================
+    // SISTEMA DE SEGUIMIENTO DE PROGRESO
+    // ========================================
+
+    // Variables globales para el seguimiento de progreso
+    let progresoActual = {
+        idContenido: null,
+        idEstudiante: null,
+        duracionTotal: 0,
+        ultimoTiempoReportado: 0,
+        intervaloPersistencia: null,
+        tipoContenido: 'video' // 'video' o 'pdf'
+    };
+
+    /**
+     * Inicializar seguimiento de progreso para un video
+     */
+    function inicializarSeguimientoProgreso(video) {
+        if (!video || !window.cursoData?.usuario_actual_id) return;
+
+        // Obtener ID del contenido actual desde el elemento de video
+        const videoContainer = document.getElementById('video-container');
+        const contenidoId = videoContainer?.dataset.contenidoId;
+
+        if (!contenidoId) return;
+
+        // Configurar variables de progreso
+        progresoActual = {
+            idContenido: parseInt(contenidoId),
+            idEstudiante: window.cursoData.usuario_actual_id,
+            duracionTotal: 0,
+            ultimoTiempoReportado: 0,
+            intervaloPersistencia: null,
+            tipoContenido: 'video'
+        };
+
+        // Esperar a que el video tenga metadatos
+        video.addEventListener('loadedmetadata', function () {
+            progresoActual.duracionTotal = Math.floor(video.duration);
+
+            // Configurar eventos de seguimiento
+            configurarEventosProgreso(video);
+        });
+
+        // Si los metadatos ya están cargados
+        if (video.readyState >= 1) {
+            progresoActual.duracionTotal = Math.floor(video.duration);
+            configurarEventosProgreso(video);
+        }
+    }
+
+    /**
+     * Configurar eventos de seguimiento de progreso
+     */
+    function configurarEventosProgreso(video) {
+        // Evento timeupdate - se ejecuta cada vez que cambia currentTime
+        video.addEventListener('timeupdate', function () {
+            const tiempoActual = Math.floor(video.currentTime);
+
+            // Solo actualizar si hay cambio significativo (cada 5 segundos)
+            if (tiempoActual !== progresoActual.ultimoTiempoReportado &&
+                tiempoActual % 5 === 0) {
+                progresoActual.ultimoTiempoReportado = tiempoActual;
+            }
+        });
+
+        // Guardar progreso cuando el video se pausa
+        video.addEventListener('pause', function () {
+            const tiempoActual = Math.floor(video.currentTime);
+            if (tiempoActual > 0) {
+                guardarProgresoContenido(tiempoActual);
+            }
+        });
+
+        // Guardar progreso cuando el video termina
+        video.addEventListener('ended', function () {
+            guardarProgresoContenido(progresoActual.duracionTotal, true);
+        });
+
+        // Iniciar persistencia automática cada 30 segundos
+        iniciarPersistenciaAutomatica();
+    }
+
+    /**
+     * Iniciar persistencia automática del progreso
+     */
+    function iniciarPersistenciaAutomatica() {
+        // Limpiar intervalo anterior si existe
+        if (progresoActual.intervaloPersistencia) {
+            clearInterval(progresoActual.intervaloPersistencia);
+        }
+
+        // Guardar progreso cada 30 segundos
+        progresoActual.intervaloPersistencia = setInterval(() => {
+            const video = document.getElementById('videoPlayer');
+            if (video && !video.paused) {
+                const tiempoActual = Math.floor(video.currentTime);
+                if (tiempoActual > progresoActual.ultimoTiempoReportado) {
+                    progresoActual.ultimoTiempoReportado = tiempoActual;
+                    guardarProgresoContenido(tiempoActual);
+                }
+            }
+        }, 30000); // 30 segundos
+    }
+
+    /**
+     * Detener persistencia automática
+     */
+    function detenerPersistenciaAutomatica() {
+        if (progresoActual.intervaloPersistencia) {
+            clearInterval(progresoActual.intervaloPersistencia);
+            progresoActual.intervaloPersistencia = null;
+        }
+    }
+
+    /**
+     * Guardar progreso del contenido (video o PDF)
+     */
+    function guardarProgresoContenido(tiempoSegundos = null, forzarCompleto = false) {
+        if (!progresoActual.idContenido || !progresoActual.idEstudiante) return;
+
+        let progreso_segundos = tiempoSegundos;
+        let porcentaje = 0;
+        let visto = 0;
+
+        if (progresoActual.tipoContenido === 'video') {
+            if (progreso_segundos === null) {
+                const video = document.getElementById('videoPlayer');
+                progreso_segundos = video ? Math.floor(video.currentTime) : 0;
+            }
+
+            // Calcular porcentaje
+            if (progresoActual.duracionTotal > 0) {
+                porcentaje = Math.floor((progreso_segundos / progresoActual.duracionTotal) * 100);
+            }
+        } else if (progresoActual.tipoContenido === 'pdf') {
+            // Para PDFs, marcar como visto cuando se considere consumido
+            progreso_segundos = null;
+            porcentaje = forzarCompleto ? 100 : 100; // PDFs se marcan como vistos inmediatamente
+        }
+
+        // Forzar completado si se indica
+        if (forzarCompleto) {
+            porcentaje = 100;
+            visto = 1;
+        }
+
+        // Preparar datos para el AJAX
+        const datos = {
+            accion: 'upsertProgreso',
+            id_contenido: progresoActual.idContenido,
+            id_estudiante: progresoActual.idEstudiante,
+            visto: visto,
+            progreso_segundos: progreso_segundos,
+            porcentaje: porcentaje
+        };
+
+        // Enviar via AJAX
+        enviarProgresoAjax(datos);
+    }
+
+    /**
+     * Enviar progreso via AJAX
+     */
+    function enviarProgresoAjax(datos) {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Actualizar indicador visual si existe
+                    actualizarIndicadorProgreso(datos.porcentaje, datos.visto);
+                    
+                    // Actualizar progreso de la sección si el contenido fue marcado como visto
+                    if (datos.visto === 1) {
+                        // Obtener la sección del contenido actual
+                        const contenidoElement = document.querySelector(`[data-contenido-id="${datos.id_contenido}"]`);
+                        if (contenidoElement) {
+                            const seccionContainer = contenidoElement.closest('.seccion-container');
+                            if (seccionContainer) {
+                                const seccionId = seccionContainer.dataset.seccionId;
+                                if (seccionId && window.actualizarProgresoSeccion) {
+                                    // Pequeño delay para asegurar que la BD esté actualizada
+                                    setTimeout(() => {
+                                        window.actualizarProgresoSeccion(seccionId);
+                                    }, 500);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    console.warn('Error al guardar progreso:', result.mensaje);
+                }
+            })
+            .catch(error => {
+                console.error('Error en AJAX de progreso:', error);
+            });
+    }
+
+    /**
+     * Actualizar indicador visual de progreso
+     */
+    function actualizarIndicadorProgreso(porcentaje, visto) {
+        const contenidoElement = document.querySelector(`[data-contenido-id="${progresoActual.idContenido}"]`);
+        if (!contenidoElement) return;
+
+        // Buscar o crear indicador de progreso
+        let indicador = contenidoElement.querySelector('.progreso-indicador');
+        if (!indicador) {
+            indicador = document.createElement('span');
+            indicador.className = 'progreso-indicador';
+            contenidoElement.appendChild(indicador);
+        }
+
+        // Actualizar texto del indicador
+        if (visto) {
+            indicador.textContent = '✓ Completado';
+            indicador.className = 'progreso-indicador completado';
+        } else if (porcentaje > 0) {
+            indicador.textContent = `${porcentaje}%`;
+            indicador.className = 'progreso-indicador en-progreso';
+        }
+    }
+
+    /**
+     * Marcar contenido PDF como visto
+     */
+    function marcarPDFVisto(idContenido) {
+        if (!window.cursoData?.usuario_actual_id) return;
+
+        progresoActual = {
+            idContenido: parseInt(idContenido),
+            idEstudiante: window.cursoData.usuario_actual_id,
+            duracionTotal: 0,
+            ultimoTiempoReportado: 0,
+            intervaloPersistencia: null,
+            tipoContenido: 'pdf'
+        };
+
+        // Marcar PDF como visto inmediatamente
+        guardarProgresoContenido(null, true);
+    }
+
+    /**
+     * Limpiar seguimiento de progreso al cambiar contenido
+     */
+    function limpiarSeguimientoProgreso() {
+        detenerPersistenciaAutomatica();
+        progresoActual = {
+            idContenido: null,
+            idEstudiante: null,
+            duracionTotal: 0,
+            ultimoTiempoReportado: 0,
+            intervaloPersistencia: null,
+            tipoContenido: 'video'
+        };
+    }
+
+    /**
+     * Inicializar progreso al reproducir video de sección
+     */
+    function inicializarProgresoVideoSeccion(contenidoId) {
+        // Limpiar progreso anterior
+        limpiarSeguimientoProgreso();
+
+        // Configurar nuevo progreso
+        const videoContainer = document.getElementById('video-container');
+        if (videoContainer) {
+            videoContainer.dataset.contenidoId = contenidoId;
+        }
+
+        // El progreso se inicializará automáticamente cuando el video cargue
+    }
+
+    // Eventos de limpieza
+    window.addEventListener('beforeunload', function () {
+        // Guardar progreso antes de salir de la página
+        const video = document.getElementById('videoPlayer');
+        if (video && progresoActual.idContenido) {
+            const tiempoActual = Math.floor(video.currentTime);
+            if (tiempoActual > 0) {
+                // Usar sendBeacon para envío síncrono al cerrar la página
+                const datos = {
+                    accion: 'upsertProgreso',
+                    id_contenido: progresoActual.idContenido,
+                    id_estudiante: progresoActual.idEstudiante,
+                    visto: 0,
+                    progreso_segundos: tiempoActual,
+                    porcentaje: progresoActual.duracionTotal > 0 ?
+                        Math.floor((tiempoActual / progresoActual.duracionTotal) * 100) : 0
+                };
+
+                navigator.sendBeacon(
+                    '/factuonlinetraining/App/ajax/curso_secciones.ajax.php',
+                    new Blob([JSON.stringify(datos)], { type: 'application/json' })
+                );
+            }
+        }
+
+        detenerPersistenciaAutomatica();
+    });
+
+    // Exponer funciones para uso externo
+    window.ProgresoContenido = {
+        inicializarProgresoVideoSeccion,
+        marcarPDFVisto,
+        limpiarSeguimientoProgreso,
+        guardarProgresoContenido
+    };
+
+    /**
+     * Inicializar manejo de progreso de secciones
+     */
+    function inicializarProgresoSecciones() {
+        // Solo ejecutar si el usuario está autenticado
+        if (!cursoId) return;
+
+        cargarProgresoSecciones();
+    }
+
+    /**
+     * Cargar progreso de secciones desde el servidor
+     */
+    function cargarProgresoSecciones() {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerProgresoSecciones',
+                idCurso: cursoId
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.progreso) {
+                aplicarEstilosSecciones(result.progreso);
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar progreso de secciones:', error);
+        });
+    }
+
+    /**
+     * Aplicar estilos visuales a las secciones según su progreso
+     */
+    function aplicarEstilosSecciones(progreso) {
+        progreso.forEach(seccion => {
+            const seccionHeader = document.querySelector(`[data-seccion-id="${seccion.seccion_id}"] .seccion-header`);
+            if (seccionHeader) {
+                if (seccion.completada) {
+                    seccionHeader.classList.add('completada');
+                } else {
+                    seccionHeader.classList.remove('completada');
+                }
+            }
+        });
+    }
+
+    /**
+     * Actualizar progreso de una sección específica
+     */
+    function actualizarProgresoSeccion(seccionId) {
+        fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accion: 'obtenerProgresoSecciones',
+                idCurso: cursoId
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.progreso) {
+                const seccionProgreso = result.progreso.find(s => s.seccion_id == seccionId);
+                if (seccionProgreso) {
+                    const seccionHeader = document.querySelector(`[data-seccion-id="${seccionId}"] .seccion-header`);
+                    if (seccionHeader) {
+                        if (seccionProgreso.completada) {
+                            seccionHeader.classList.add('completada');
+                        } else {
+                            seccionHeader.classList.remove('completada');
+                        }
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error al actualizar progreso de sección:', error);
+        });
+    }
+
+    // Exponer función para uso externo
+    window.actualizarProgresoSeccion = actualizarProgresoSeccion;
 
     /**
      * Función global para limpiar backdrop (accesible desde consola)

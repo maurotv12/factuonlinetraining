@@ -92,8 +92,55 @@ foreach ($categorias as $cat) {
 }
 
 // Incluir CSS para la página
-echo '<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
+echo '<link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/css/pages/verCurso.css?v=' . time() . '">';
 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+
+// Agregar estilos CSS para indicadores de progreso
+echo '<style>
+.progreso-indicador {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.progreso-indicador.completado {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.progreso-indicador.en-progreso {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.contenido-item {
+    position: relative;
+}
+
+.contenido-item .progreso-indicador {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+/* Para botones de PDFs */
+.btn-pdf-download {
+    position: relative;
+}
+
+.btn-pdf-download .progreso-indicador {
+    position: static;
+    transform: none;
+    margin-left: 5px;
+}
+</style>';
 
 // Mostrar mensajes de la sesión si existen (migrado desde editarCursoProfe.php)
 if (isset($_SESSION['mensaje_exito'])) {
@@ -133,7 +180,7 @@ if (isset($_SESSION['mensaje_error'])) {
             <div class="col-md-10">
                 <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
                     <div class="breadcrumb-custom">
-                        <a href="/cursosApp/App/listadoCursosProfe" class="breadcrumb-link">
+                        <a href="/factuonlinetraining/App/listadoCursosProfe" class="breadcrumb-link">
                             <i class="bi bi-arrow-left"></i> Volver a mis cursos
                         </a>
                     </div>
@@ -183,7 +230,7 @@ if (isset($_SESSION['mensaje_error'])) {
                         <span class="curso-precio"
                             id="valor-display"
                             data-valor-original="$<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?>">
-                            $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?> COL
+                            $<?= number_format($curso['valor'] ?? 0, 0, ',', '.') ?> COP
                         </span>
                         <?php if ($curso['id_persona'] == $_SESSION['idU']): ?>
                             <button class="btn btn-sm btn-outline-primary edit-btn"
@@ -219,7 +266,7 @@ if (isset($_SESSION['mensaje_error'])) {
                     <?php endif; ?>
                 <?php else: ?>
                     <div class="inscription-buttons d-flex flex-column gap-2">
-                        <a href="/cursosApp/login" class="btn btn-primary">
+                        <a href="/factuonlinetraining/login" class="btn btn-primary">
                             <i class="bi bi-box-arrow-in-right me-2"></i>
                             Iniciar sesión para inscribirse
                         </a>
@@ -387,7 +434,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                         $fotoProfesor = $profesor['foto'] ?? 'storage/public/usuarios/default.png';
 
                                                         // Limpiar ruta para evitar rutas duplicadas
-                                                        $fotoProfesor = str_replace(['vistas/img/usuarios/default/', '/cursosApp/'], '', $fotoProfesor);
+                                                        $fotoProfesor = str_replace(['vistas/img/usuarios/default/', '/factuonlinetraining/'], '', $fotoProfesor);
 
                                                         // Si es la foto por defecto antigua, usar la nueva ruta
                                                         if (strpos($fotoProfesor, 'default.png') !== false) {
@@ -395,25 +442,25 @@ if (isset($_SESSION['mensaje_error'])) {
                                                         }
 
                                                         // Validar si el archivo existe, sino usar default
-                                                        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/cursosApp/' . $fotoProfesor;
+                                                        $rutaCompleta = $_SERVER['DOCUMENT_ROOT'] . '/factuonlinetraining/' . $fotoProfesor;
                                                         if (!file_exists($rutaCompleta)) {
                                                             $fotoProfesor = 'storage/public/usuarios/default.png';
                                                         }
                                                         ?>
-                                                        <a href="/cursosApp/App/perfilProfesor?id=<?= $profesor['id'] ?>"
+                                                        <a href="/factuonlinetraining/App/perfilProfesor?id=<?= $profesor['id'] ?>"
                                                             class="profesor-avatar-link"
                                                             title="Ver perfil de <?= htmlspecialchars($profesor['nombre']) ?>">
-                                                            <img src="/cursosApp/<?= htmlspecialchars($fotoProfesor) ?>"
+                                                            <img src="/factuonlinetraining/<?= htmlspecialchars($fotoProfesor) ?>"
                                                                 alt="<?= htmlspecialchars($profesor['nombre']) ?>"
                                                                 class="profesor-photo"
-                                                                onerror="this.src='/cursosApp/storage/public/usuarios/default.png'">
+                                                                onerror="this.src='/factuonlinetraining/storage/public/usuarios/default.png'">
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-9">
                                                     <div class="profesor-details">
                                                         <h4 class="profesor-nombre">
-                                                            <a href="/cursosApp/App/perfilProfesor?id=<?= $profesor['id'] ?>"
+                                                            <a href="/factuonlinetraining/App/perfilProfesor?id=<?= $profesor['id'] ?>"
                                                                 class="profesor-nombre-link"
                                                                 title="Ver perfil de <?= htmlspecialchars($profesor['nombre']) ?>">
                                                                 <?= htmlspecialchars($profesor['nombre']) ?>
@@ -696,6 +743,7 @@ if (isset($_SESSION['mensaje_error'])) {
                                                                                         <button class="btn btn-link text-decoration-none p-0 text-start btn-descargar-pdf"
                                                                                             data-asset-id="<?= $pdf['id'] ?>"
                                                                                             data-curso-id="<?= $curso['id'] ?>"
+                                                                                            data-contenido-id="<?= $contenido['id'] ?>"
                                                                                             data-nombre="<?= htmlspecialchars(basename($pdf['storage_path'])) ?>"
                                                                                             title="Descargar archivo PDF">
                                                                                             <i class="bi bi-file-pdf-fill text-danger me-1"></i>
@@ -768,5 +816,5 @@ if (isset($_SESSION['mensaje_error'])) {
 </script>
 
 <!-- Incluir JavaScript para la página -->
-<script src="/cursosApp/App/vistas/assets/js/pages/inscripciones.js?v=<?= time() ?>"></script>
-<script src="/cursosApp/App/vistas/assets/js/pages/verCursoProfe.js?v=<?= time() ?>"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/inscripciones.js?v=<?= time() ?>"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/verCursoProfe.js?v=<?= time() ?>"></script>

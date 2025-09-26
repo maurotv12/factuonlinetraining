@@ -5,7 +5,7 @@ class ControladorGeneral
 
 	public static function ctrRuta()
 	{
-		return "http://localhost/cursosApp/"; //Ruta de inicio para entorno local
+		return "http://localhost/factuonlinetraining/"; //Ruta de inicio para entorno local
 
 
 	}
@@ -22,7 +22,7 @@ class ControladorGeneral
 
 		// Si no hay usuario logueado, redirigir al área pública
 		if (!$idUsuario) {
-			return "http://localhost/cursosApp/";
+			return "http://localhost/factuonlinetraining/";
 		}
 
 		// Obtener roles del usuario desde la sesión o base de datos
@@ -42,7 +42,7 @@ class ControladorGeneral
 
 		// Si no tiene roles, redirigir a área pública
 		if (empty($rolesUsuario)) {
-			return "http://localhost/cursosApp/";
+			return "http://localhost/factuonlinetraining/";
 		}
 
 		// Extraer solo los nombres de los roles
@@ -51,26 +51,26 @@ class ControladorGeneral
 		// Determinar ruta según prioridad de roles:
 		// 1. Admin tiene máxima prioridad
 		if (in_array('admin', $nombresRoles) || in_array('superadmin', $nombresRoles)) {
-			return "http://localhost/cursosApp/App/usuarios";
+			return "http://localhost/factuonlinetraining/App/usuarios";
 		}
 
 		// 2. Profesor (si no es admin)
 		if (in_array('profesor', $nombresRoles)) {
-			return "http://localhost/cursosApp/App/listadoCursosProfe";
+			return "http://localhost/factuonlinetraining/App/listadoCursosProfe";
 		}
 
 		// 3. Estudiante (si no tiene roles superiores)
 		if (in_array('estudiante', $nombresRoles)) {
-			return "http://localhost/cursosApp/App/inicioEstudiante";
+			return "http://localhost/factuonlinetraining/App/inicioEstudiante";
 		}
 
 		// Fallback: dashboard general
-		return "http://localhost/cursosApp/App/dashboard";
+		return "http://localhost/factuonlinetraining/App/dashboard";
 	}
 
 	public static function ctrRutaVerCurso()
 	{
-		return "http://localhost/cursosApp/verCurso.php"; //Ruta para ver un curso específico
+		return "http://localhost/factuonlinetraining/verCurso.php"; //Ruta para ver un curso específico
 	}
 
 
@@ -118,12 +118,7 @@ class ControladorGeneral
 		include "vistas/plantilla.php";
 	}
 
-	////Contar registros en la tabla que se pase como parametro
-	public static function ctrContarRegistros($tabla)
-	{
-		$respuesta = ModeloGeneral::mdlContarRegistros($tabla);
-		return $respuesta;
-	}
+
 
 	/*=============================================
 	Verificar si el usuario tiene un rol específico

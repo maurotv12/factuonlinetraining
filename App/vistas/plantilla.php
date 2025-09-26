@@ -22,16 +22,16 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     <title>Tablero :: Cursos</title>
 
     <!-- Favicons -->
-    <link rel="icon" href="/cursosApp/assets/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/factuonlinetraining/assets/favicon.ico" sizes="32x32" />
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/iconly/bold.css">
+    <link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/vendors/iconly/bold.css">
 
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/menu.css">
-    <link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/estudiante.css">
+    <link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/css/pages/menu.css">
+    <link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/css/pages/estudiante.css">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 

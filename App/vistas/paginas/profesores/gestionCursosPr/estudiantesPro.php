@@ -151,7 +151,7 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
 </div>
 
 <!-- Scripts específicos para esta página -->
-<script src="/cursosApp/App/vistas/assets/js/pages/estudiantesPro.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/estudiantesPro.js"></script>
 
 <!-- Estilos específicos para esta página -->
-<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/estudiantesPro.css">
+<link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/css/pages/estudiantesPro.css">

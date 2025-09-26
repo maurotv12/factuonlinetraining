@@ -28,7 +28,7 @@
 
 /* Header del curso */
 .curso-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: var(--white);
     padding: 2rem;
     border-radius: 15px;
@@ -69,7 +69,7 @@
 }
 
 .badge-categoria {
-    background-color: var(--accent-color);
+    background-color:  #0b1b2b;
     color: var(--white);
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -98,9 +98,42 @@
     background-color: #ffc107;
     color: var(--dark-color);
 }
-
+/* ===== PRECIO DEL CURSO - GLASSMORPHISM ELEGANTE ===== */
 .curso-precio {
-    font-size: 1.5rem;
+    display: inline-block;
+    background: rgba(255, 141, 20, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 141, 20, 0.25);
+    color: var(--accent-color);
+    font-size: 1.8rem;
+    font-weight: 800;
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .curso-precio {
+        font-size: 1.5rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .curso-precio {
+        font-size: 1.3rem;
+        padding: 0.5rem 1rem;
+        border-radius: 14px;
+    }
+}
+.curso-precio {
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--accent-color);
 }
@@ -437,9 +470,10 @@
 }
 
 .sidebar-header-content {
-    background: linear-gradient(135deg, var(--primary-color));
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: var(--white);
     padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
 }
 
 .sidebar-header h4 {
@@ -933,7 +967,7 @@
 
 /* Botón de inscripción principal */
 .btn-inscripcion {
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     border: none;
     color: var(--white);
     font-weight: 700;
@@ -1242,7 +1276,9 @@
         transform: translateY(0);
     }
 }
-
+.text-muted{
+    color:white !important;
+}
 /* Estilos para empty state mejorado */
 .text-center.text-muted.py-3 {
     background: linear-gradient(135deg, #f8f9fa, #e9ecef);
@@ -1777,7 +1813,7 @@
 
 .alert-info.instructor-info {
     border: 2px solid var(--primary-color);
-    background: linear-gradient(135deg, rgba(54, 130, 196, 0.1), rgba(54, 130, 196, 0.05));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.911), rgba(212, 222, 231, 0.637));
     border-radius: 12px;
     font-size: 0.9rem;
     margin: 0;

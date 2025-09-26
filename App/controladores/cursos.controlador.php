@@ -79,7 +79,7 @@ class ControladorCursos
 	{
 		// Verificar si existe el modelo de usuarios, si no, incluirlo
 		if (!class_exists('ModeloUsuarios')) {
-			require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/modelos/usuarios.modelo.php";
+			require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/modelos/usuarios.modelo.php";
 		}
 
 		// Obtener conexión a base de datos
@@ -110,7 +110,7 @@ class ControladorCursos
 		// Determinar la ruta base del proyecto
 		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
 
-		$rutaCompleta = $documentRoot . "/cursosApp/storage/public/" . $subdirectorio;
+		$rutaCompleta = $documentRoot . "/factuonlinetraining/storage/public/" . $subdirectorio;
 
 		// Convertir barras para Windows si es necesario
 		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
@@ -174,8 +174,8 @@ class ControladorCursos
 			return "formato_invalido";
 		}
 
-		// Validar tamaño (máximo 40MB para videos HD/FHD)
-		if ($video['size'] > 40 * 1024 * 1024) {
+		// Validar tamaño (máximo 50MB para videos HD/FHD)
+		if ($video['size'] > 50 * 1024 * 1024) {
 			return "archivo_grande";
 		}
 
@@ -299,7 +299,7 @@ class ControladorCursos
 		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
 
 		// Construir ruta completa
-		$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+		$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $rutaArchivo;
 
 		// Convertir barras para Windows si es necesario
 		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
@@ -338,7 +338,7 @@ class ControladorCursos
 		} else {
 			// Si es relativa, construir ruta completa
 			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-			$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+			$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $rutaArchivo;
 		}
 
 		// Convertir barras para Windows si es necesario
@@ -402,7 +402,7 @@ class ControladorCursos
 		if ($resultado) {
 			// Limpiar directorios vacíos después de eliminar el archivo
 			$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
-			$rutaCompleta = $documentRoot . "/cursosApp/" . $rutaArchivo;
+			$rutaCompleta = $documentRoot . "/factuonlinetraining/" . $rutaArchivo;
 			$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
 
 			self::limpiarDirectoriosVacios($rutaCompleta);
@@ -608,7 +608,7 @@ class ControladorCursos
 	{
 		// Verificar si existe el controlador de usuarios, si no, incluirlo
 		if (!class_exists('ControladorUsuarios')) {
-			require_once $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/App/controladores/usuarios.controlador.php";
+			require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/App/controladores/usuarios.controlador.php";
 		}
 
 		// Delegar al método del controlador de usuarios
@@ -1000,12 +1000,12 @@ class ControladorCursos
 			];
 		}
 
-		// Validar tamaño (máximo 40MB - aumentado desde 40MB)
-		$tamanoMaximo = 40 * 1024 * 1024; // 40MB en bytes
+		// Validar tamaño (máximo 50MB - aumentado desde 40MB)
+		$tamanoMaximo = 50 * 1024 * 1024; // 50MB en bytes
 		if ($archivo['size'] > $tamanoMaximo) {
 			return [
 				'success' => false,
-				'mensaje' => 'El video no puede superar los 40MB'
+				'mensaje' => 'El video no puede superar los 50MB'
 			];
 		}
 
@@ -1089,10 +1089,10 @@ class ControladorCursos
 		if ($output === null || empty(trim($output))) {
 			// Si ffprobe no está disponible, validar solo el tamaño básico
 			$fileSize = filesize($rutaArchivo);
-			if ($fileSize > 100 * 1024 * 1024) { // 100MB
+			if ($fileSize > 50 * 1024 * 1024) { // 50MB
 				return [
 					'success' => false,
-					'mensaje' => 'El archivo es demasiado grande (máximo 100MB)'
+					'mensaje' => 'El archivo es demasiado grande (máximo 50MB)'
 				];
 			}
 
@@ -1123,10 +1123,10 @@ class ControladorCursos
 
 			// Fallback: validación básica sin ffprobe
 			$fileSize = filesize($rutaArchivo);
-			if ($fileSize > 100 * 1024 * 1024) { // 100MB
+			if ($fileSize > 50 * 1024 * 1024) { // 50MB
 				return [
 					'success' => false,
-					'mensaje' => 'El archivo es demasiado grande (máximo 100MB)'
+					'mensaje' => 'El archivo es demasiado grande (máximo 50MB)'
 				];
 			}
 
@@ -1184,7 +1184,7 @@ class ControladorCursos
 	public static function ctrCrearEstructuraDirectoriosAssets($idCurso, $idSeccion, $idContenido)
 	{
 		// Ruta base para assets de secciones
-		$rutaBase = $_SERVER['DOCUMENT_ROOT'] . "/cursosApp/storage/public/section_assets";
+		$rutaBase = $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/storage/public/section_assets";
 
 		// Crear estructura: storage/public/section_assets/{curso}/{seccion}/{contenido}/
 		$rutaCurso = $rutaBase . "/" . $idCurso;
@@ -1582,7 +1582,7 @@ class ControladorCursos
 	private static function organizarArchivosPorCurso($idCurso, $rutaBanner, $rutaVideo = '')
 	{
 		$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? 'C:\\xampp\\htdocs';
-		$basePath = $documentRoot . "/cursosApp/storage/public/";
+		$basePath = $documentRoot . "/factuonlinetraining/storage/public/";
 
 		// Crear directorios específicos del curso
 		$directorioBanner = $basePath . "banners/" . $idCurso . "/";
@@ -1599,9 +1599,9 @@ class ControladorCursos
 		$rutaVideoFinal = $rutaVideo;
 
 		// Mover banner si existe
-		if ($rutaBanner && file_exists($documentRoot . "/cursosApp/" . $rutaBanner)) {
+		if ($rutaBanner && file_exists($documentRoot . "/factuonlinetraining/" . $rutaBanner)) {
 			$nombreArchivo = basename($rutaBanner);
-			$rutaOrigen = $documentRoot . "/cursosApp/" . $rutaBanner;
+			$rutaOrigen = $documentRoot . "/factuonlinetraining/" . $rutaBanner;
 			$rutaDestino = $directorioBanner . $nombreArchivo;
 
 			if (rename($rutaOrigen, $rutaDestino)) {
@@ -1610,9 +1610,9 @@ class ControladorCursos
 		}
 
 		// Mover video si existe
-		if ($rutaVideo && file_exists($documentRoot . "/cursosApp/" . $rutaVideo)) {
+		if ($rutaVideo && file_exists($documentRoot . "/factuonlinetraining/" . $rutaVideo)) {
 			$nombreArchivo = basename($rutaVideo);
-			$rutaOrigen = $documentRoot . "/cursosApp/" . $rutaVideo;
+			$rutaOrigen = $documentRoot . "/factuonlinetraining/" . $rutaVideo;
 			$rutaDestino = $directorioVideo . $nombreArchivo;
 
 			if (rename($rutaOrigen, $rutaDestino)) {
@@ -1960,21 +1960,21 @@ class ControladorCursos
 	{
 		// Si no hay imagen asignada, devolver imagen por defecto de storage
 		if (empty($rutaImagen) || $rutaImagen === null) {
-			return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+			return '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
 		}
 
 		// SOLO aceptar rutas de storage
 		if (strpos($rutaImagen, 'storage/public/banners/') !== 0) {
 			// Si no es una ruta de storage, devolver imagen por defecto
-			return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+			return '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
 		}
 
 		// Determinar la ruta base del proyecto
 		$documentRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:\\xampp\\htdocs';
 
 		// Construir la ruta completa del archivo
-		$rutaCompleta = $documentRoot . '/cursosApp/' . $rutaImagen;
-		$rutaPublica = '/cursosApp/' . $rutaImagen;
+		$rutaCompleta = $documentRoot . '/factuonlinetraining/' . $rutaImagen;
+		$rutaPublica = '/factuonlinetraining/' . $rutaImagen;
 
 		// Convertir barras para Windows si es necesario
 		$rutaCompleta = str_replace('/', DIRECTORY_SEPARATOR, $rutaCompleta);
@@ -1989,7 +1989,7 @@ class ControladorCursos
 		}
 
 		// Si llegamos aquí, la imagen no existe o no es válida
-		return '/cursosApp/storage/public/banners/default/defaultCurso.png';
+		return '/factuonlinetraining/storage/public/banners/default/defaultCurso.png';
 	}
 
 	/*=============================================
@@ -2008,7 +2008,7 @@ class ControladorCursos
 		}
 
 		// Devolver URL pública para storage
-		return '/cursosApp/' . $rutaVideo;
+		return '/factuonlinetraining/' . $rutaVideo;
 	}
 
 	/*=============================================
@@ -2086,6 +2086,214 @@ class ControladorCursos
 			return [
 				'error' => true,
 				'mensaje' => 'Error al actualizar el estado del curso.'
+			];
+		}
+	}
+
+	/**
+	 * Registrar o actualizar progreso del estudiante en un contenido
+	 */
+	public static function ctrUpsertProgreso($datos)
+	{
+		// Validaciones de entrada
+		if (!is_array($datos)) {
+			return [
+				'success' => false,
+				'mensaje' => 'Los datos deben ser un array'
+			];
+		}
+
+		// Campos requeridos
+		$camposRequeridos = ['id_contenido', 'id_estudiante', 'porcentaje'];
+		foreach ($camposRequeridos as $campo) {
+			if (!isset($datos[$campo])) {
+				return [
+					'success' => false,
+					'mensaje' => "Campo requerido faltante: $campo"
+				];
+			}
+		}
+
+		// Sanitización y validación de datos
+		$datos['id_contenido'] = (int)$datos['id_contenido'];
+		$datos['id_estudiante'] = (int)$datos['id_estudiante'];
+		$datos['porcentaje'] = (int)$datos['porcentaje'];
+
+		// Validar que los IDs sean positivos
+		if ($datos['id_contenido'] <= 0 || $datos['id_estudiante'] <= 0) {
+			return [
+				'success' => false,
+				'mensaje' => 'Los IDs deben ser números positivos'
+			];
+		}
+
+		// Validar rango del porcentaje
+		if ($datos['porcentaje'] < 0 || $datos['porcentaje'] > 100) {
+			return [
+				'success' => false,
+				'mensaje' => 'El porcentaje debe estar entre 0 y 100'
+			];
+		}
+
+		// Validar progreso_segundos si existe
+		if (isset($datos['progreso_segundos'])) {
+			if ($datos['progreso_segundos'] !== null) {
+				$datos['progreso_segundos'] = (int)$datos['progreso_segundos'];
+				if ($datos['progreso_segundos'] < 0) {
+					return [
+						'success' => false,
+						'mensaje' => 'Los segundos de progreso no pueden ser negativos'
+					];
+				}
+			}
+		} else {
+			$datos['progreso_segundos'] = null;
+		}
+
+		// Validar campo visto
+		if (!isset($datos['visto'])) {
+			$datos['visto'] = 0;
+		} else {
+			$datos['visto'] = (int)$datos['visto'];
+			if ($datos['visto'] !== 0 && $datos['visto'] !== 1) {
+				$datos['visto'] = 0;
+			}
+		}
+
+		try {
+			// Llamar al modelo para insertar/actualizar
+			$resultado = ModeloCursos::mdlUpsertProgreso($datos);
+
+			if ($resultado === "ok") {
+				return [
+					'success' => true,
+					'mensaje' => 'Progreso guardado correctamente',
+					'datos' => [
+						'id_contenido' => $datos['id_contenido'],
+						'porcentaje' => $datos['porcentaje'],
+						'visto' => $datos['visto'],
+						'progreso_segundos' => $datos['progreso_segundos']
+					]
+				];
+			} elseif ($resultado === "ya_visto") {
+				return [
+					'success' => true,
+					'mensaje' => 'El contenido ya está marcado como visto',
+					'ya_visto' => true,
+					'datos' => [
+						'id_contenido' => $datos['id_contenido'],
+						'porcentaje' => 100, // Si ya está visto, asumir 100%
+						'visto' => 1,
+						'progreso_segundos' => $datos['progreso_segundos']
+					]
+				];
+			} else {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al guardar el progreso en la base de datos'
+				];
+			}
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error interno del servidor: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/**
+	 * Obtener progreso de un estudiante en un contenido específico
+	 */
+	public static function ctrObtenerProgresoContenido($idContenido, $idEstudiante)
+	{
+		try {
+			// Validar parámetros
+			$idContenido = (int)$idContenido;
+			$idEstudiante = (int)$idEstudiante;
+
+			if ($idContenido <= 0 || $idEstudiante <= 0) {
+				return [
+					'success' => false,
+					'mensaje' => 'IDs inválidos'
+				];
+			}
+
+			// TODO: Implementar modelo para obtener progreso
+			// $progreso = ModeloCursos::mdlObtenerProgreso($idContenido, $idEstudiante);
+
+			return [
+				'success' => true,
+				'progreso' => null,
+				'mensaje' => 'Método en desarrollo'
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al obtener progreso: ' . $e->getMessage()
+			];
+		}
+	}
+
+	/**
+	 * Obtener progreso de secciones de un curso para un estudiante
+	 */
+	public static function ctrObtenerProgresoSecciones($idCurso, $idEstudiante)
+	{
+		try {
+			$idCurso = (int)$idCurso;
+			$idEstudiante = (int)$idEstudiante;
+
+			if ($idCurso <= 0 || $idEstudiante <= 0) {
+				return [
+					'success' => false,
+					'mensaje' => 'IDs inválidos'
+				];
+			}
+
+			$progreso = ModeloCursos::mdlObtenerProgresoSecciones($idCurso, $idEstudiante);
+
+			if ($progreso === false) {
+				return [
+					'success' => false,
+					'mensaje' => 'Error al obtener progreso de secciones'
+				];
+			}
+
+			// Procesar resultados para agrupar por sección
+			$seccionesProgreso = [];
+			foreach ($progreso as $item) {
+				$seccionId = $item['seccion_id'];
+				if (!isset($seccionesProgreso[$seccionId])) {
+					$seccionesProgreso[$seccionId] = [
+						'seccion_id' => $seccionId,
+						'total_contenidos' => 0,
+						'contenidos_vistos' => 0,
+						'completada' => false
+					];
+				}
+
+				if ($item['contenido_id'] !== null) {
+					$seccionesProgreso[$seccionId]['total_contenidos']++;
+					if ($item['visto'] == 1) {
+						$seccionesProgreso[$seccionId]['contenidos_vistos']++;
+					}
+				}
+			}
+
+			// Determinar si cada sección está completada
+			foreach ($seccionesProgreso as &$seccion) {
+				$seccion['completada'] = $seccion['total_contenidos'] > 0 && 
+					$seccion['contenidos_vistos'] >= $seccion['total_contenidos'];
+			}
+
+			return [
+				'success' => true,
+				'progreso' => array_values($seccionesProgreso)
+			];
+		} catch (Exception $e) {
+			return [
+				'success' => false,
+				'mensaje' => 'Error al obtener progreso de secciones: ' . $e->getMessage()
 			];
 		}
 	}

@@ -51,7 +51,7 @@ foreach ($cursosInscritos as $inscripcion) {
         <nav aria-label="breadcrumb" style="margin-bottom: 2rem;">
             <ol class="breadcrumb" style="background: none; padding: 0;">
                 <li class="breadcrumb-item">
-                    <a href="/cursosApp/App/inicioEstudiante" style="color: var(--primary);">Inicio</a>
+                    <a href="/factuonlinetraining/App/inicioEstudiante" style="color: var(--primary);">Inicio</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page" style="color: var(--gray);">
                     Mis Cursos
@@ -79,8 +79,8 @@ foreach ($cursosInscritos as $inscripcion) {
                 <h3 style="color: var(--dark); margin: 0; font-size: 2rem;"><?php echo count($cursosInscritos); ?></h3>
                 <p style="color: var(--gray); margin: 0; font-size: 0.9rem;">Cursos inscritos</p>
             </div>
-
-            <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1); text-align: center;">
+            <!-- Futuro Desarrollo -->
+            <!-- <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1); text-align: center;">
                 <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 0.5rem;">
                     <i class="bi bi-play-circle"></i>
                 </div>
@@ -102,7 +102,7 @@ foreach ($cursosInscritos as $inscripcion) {
                 </div>
                 <h3 style="color: var(--dark); margin: 0; font-size: 2rem;"><?php echo $estadisticas['certificados']; ?></h3>
                 <p style="color: var(--gray); margin: 0; font-size: 0.9rem;">Certificados</p>
-            </div>
+            </div> -->
         </div>
 
         <!-- Filtros -->
@@ -112,7 +112,8 @@ foreach ($cursosInscritos as $inscripcion) {
                     <button class="filter-btn active" data-filter="todos" onclick="filterCourses('todos')">
                         Todos
                     </button>
-                    <button class="filter-btn" data-filter="en_progreso" onclick="filterCourses('en_progreso')">
+                    <!-- Futuro Desarrollo -->
+                    <!-- <button class="filter-btn" data-filter="en_progreso" onclick="filterCourses('en_progreso')">
                         En progreso
                     </button>
                     <button class="filter-btn" data-filter="completados" onclick="filterCourses('completados')">
@@ -120,14 +121,13 @@ foreach ($cursosInscritos as $inscripcion) {
                     </button>
                     <button class="filter-btn" data-filter="no_iniciados" onclick="filterCourses('no_iniciados')">
                         No iniciados
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="sort-container" style="display: flex; align-items: center; gap: 0.5rem;">
                     <label for="sortSelect" style="color: var(--gray); font-size: 0.9rem;">Ordenar por:</label>
                     <select id="sortSelect" onchange="sortCourses(this.value)" style="padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem;">
                         <option value="recientes">Más recientes</option>
-                        <option value="progreso">Progreso</option>
                         <option value="nombre">Nombre A-Z</option>
                         <option value="fecha_inscripcion">Fecha de inscripción</option>
                     </select>
@@ -141,7 +141,7 @@ foreach ($cursosInscritos as $inscripcion) {
             <?php if ($cursos && count($cursos) > 0): ?>
                 <?php foreach ($cursos as $curso): ?>
                     <?php
-                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                    $urlVer = "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"];
                     ?>
                     <a href="<?php echo $urlVer; ?>" class="text-decoration-none">
                         <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
@@ -155,7 +155,7 @@ foreach ($cursosInscritos as $inscripcion) {
                                         ?>"
                                 alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                                 class="course-image"
-                                onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                                onerror="this.onerror=null; this.src='/factuonlinetraining/storage/public/banners/default/defaultCurso.png'">
 
                             <div class="course-content">
                                 <h3 class="course-title">
@@ -217,10 +217,8 @@ foreach ($cursosInscritos as $inscripcion) {
     </div>
 </div>
 
-<?php include "vistas/plantillaPartes/footer.php"; ?>
-
 <!-- JavaScript específico para mis cursos -->
-<script src="/cursosApp/App/vistas/assets/js/pages/cursosEstudiante.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/cursosEstudiante.js"></script>
 
 <script>
     // Cargar datos iniciales

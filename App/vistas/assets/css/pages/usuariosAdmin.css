@@ -18,7 +18,7 @@
 }
 
 .usuarios-admin-container .card-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: white;
     border-radius: 12px 12px 0 0;
     padding: 1.5rem;
@@ -70,12 +70,12 @@
 }
 
 #modalCursos .modal-body::-webkit-scrollbar-thumb {
-    background: #28a745;
+    background: #3781c6;
     border-radius: 10px;
 }
 
 #modalCursos .modal-body::-webkit-scrollbar-thumb:hover {
-    background: #20c997;
+    background: #3781c6;
 }
 
 /* Efecto hover mejorado para el botón ver cursos */
@@ -277,7 +277,7 @@
 
 /* Botón ver cursos */
 .btn.ver-cursos {
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     border: none;
     border-radius: 8px;
     font-weight: 500;
@@ -288,9 +288,9 @@
 }
 
 .btn.ver-cursos:hover {
-    background: linear-gradient(135deg, #20c997, #17a2b8);
+    background: linear-gradient(135deg, #2964a0 0%, #449ef3 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 8px rgba(57, 130, 198, 0.3);
     color: white;
 }
 
@@ -310,7 +310,7 @@
 }
 
 #modalCursos .modal-header {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: white;
     border-radius: 12px 12px 0 0;
     border: none;
@@ -347,7 +347,7 @@
 
 .curso-item:hover {
     background: #e9ecef;
-    border-color: #28a745;
+    border-color: #3781c6;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -496,7 +496,7 @@
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: white;
     border-radius: 12px 12px 0 0;
     border: none;
@@ -527,16 +527,16 @@
 
 .form-check:hover {
     background: #e9ecef;
-    border-color: #667eea;
+    border-color: #3781c6;
 }
 
 .form-check-input:checked {
-    background-color: #667eea;
-    border-color: #667eea;
+    background-color: #3781c6;
+    border-color: #3781c6;
 }
 
 .form-check-input:checked+.form-check-label {
-    color: #667eea;
+    color: #3781c6;
     font-weight: 600;
 }
 
@@ -652,8 +652,8 @@
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
+    background: linear-gradient(135deg, #3781c6 0%, #449ef3 100%);
+    border-color: #3781c6;
 }
 
 /* Forzar estilos de header en DataTables */
@@ -736,7 +736,7 @@
 
 .loading-spinner {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
+    border-top: 4px solid #3781c6;
     border-radius: 50%;
     width: 50px;
     height: 50px;

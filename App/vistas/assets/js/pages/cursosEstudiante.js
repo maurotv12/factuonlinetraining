@@ -167,19 +167,19 @@ function continuarCurso(courseId) {
 
     // Simular carga y redirigir
     setTimeout(() => {
-        window.location.href = `/cursosApp/App/curso/${courseId}/continuar`;
+        window.location.href = `/factuonlinetraining/App/curso/${courseId}/continuar`;
     }, 500);
 }
 
 // Revisar curso completado
 function revisarCurso(courseId) {
-    window.location.href = `/cursosApp/App/curso/${courseId}/revisar`;
+    window.location.href = `/factuonlinetraining/App/curso/${courseId}/revisar`;
 }
 
 // Ver certificado
 function verCertificado(courseId) {
     // Abrir en nueva ventana
-    window.open(`/cursosApp/App/certificado/${courseId}`, '_blank');
+    window.open(`/factuonlinetraining/App/certificado/${courseId}`, '_blank');
 }
 
 // Actualizar información de mis cursos

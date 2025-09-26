@@ -1,10 +1,105 @@
-/* ===== VARIABLES CSS ===== */
+/* ===== VARIABLES CSS Y FUENTES ===== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+
 :root {
     --primary: #3682c4;
     --accent: #ff8d14;
     --dark: #040c2c;
     --background: #fffffe;
     --gray: #8a9cac;
+    --light-gray: #f8f9fa;
+}
+
+/* ===== TYPOGRAPHY GLOBAL ===== */
+body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--dark);
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+p {
+    color: var(--gray);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* ===== SECTION TITLES ===== */
+.titleFes {
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+/* ===== GENERAL UTILITIES ===== */
+.centra-texto {
+    text-align: center;
+}
+
+.centra-div {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+section {
+    position: relative;
+    padding: 20px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title h2 {
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.section-title small {
+    color: var(--gray);
+    font-size: 1.1rem;
+    display: block;
+}
+
+/* ===== LINKS GLOBALES ===== */
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--accent);
+    text-decoration: none;
 }
 
 /* ===== GRID RESPONSIVO DE CURSOS (COMPATIBLE CON BOOTSTRAP) ===== */
@@ -40,6 +135,60 @@
         flex: 0 0 100%;
         max-width: 100%;
     }
+}
+
+/* ===== CAROUSEL STYLES ===== */
+.carousel-img-container {
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-caption {
+    background: linear-gradient(180deg, transparent 0%, rgba(4, 12, 44, 0.8) 100%);
+    border-radius: 0 0 15px 15px;
+    padding: 2rem;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.carousel-caption h3 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+.carousel-caption p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.5rem;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: var(--primary);
+    border-radius: 50%;
+    padding: 20px;
+    width: 40px;
+    height: 40px;
+}
+
+.carousel-indicators [data-bs-target] {
+    background-color: var(--accent);
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    opacity: 0.5;
+}
+
+.carousel-indicators .active {
+    opacity: 1;
+    transform: scale(1.2);
 }
 
 /* ===== CARDS DE CURSOS MODERNIZADAS ===== */
@@ -151,10 +300,65 @@
     flex-direction: column;
     gap: 0.8rem;
 }
+/* ===== PRECIO DEL CURSO - ESTILO GLASSMORPHISM ===== */
+.valorC {
+    display: inline-block;
+    background: rgba(255, 141, 20, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 141, 20, 0.2);
+    color: var(--accent);
+    font-size: 1.4rem;
+    font-weight: 800;
+    padding: 0.6rem 1.2rem;
+    border-radius: 15px;
+    margin: 0.5rem 0;
+    box-shadow: 0 8px 32px rgba(255, 141, 20, 0.1);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
+.valorC::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 141, 20, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%);
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card-curso:hover .valorC {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(255, 141, 20, 0.2);
+    background: rgba(255, 141, 20, 0.2);
+}
+
+.card-curso:hover .valorC::before {
+    opacity: 1;
+}
+
+/* Variante para cursos gratis */
+.valorC.gratis {
+    background: rgba(40, 167, 69, 0.15);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    box-shadow: 0 8px 32px rgba(40, 167, 69, 0.1);
+}
+
+.valorC.gratis::before {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+}
+
+.card-curso:hover .valorC.gratis {
+    background: rgba(40, 167, 69, 0.2);
+    box-shadow: 0 12px 40px rgba(40, 167, 69, 0.2);
+}
 .team-info .valorC,
 .curso-footer .valorC {
-    color: var(--accent);
+    color: #040c2c;
     font-size: 1.4rem;
     font-weight: 700;
     margin: 0;
@@ -171,6 +375,33 @@
 
 .curso-footer .d-grid {
     margin-top: 0.5rem;
+}
+
+/* ===== BOTONES GLOBALES ===== */
+.btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--dark);
+    border-color: var(--dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
 }
 
 /* ===== BOTÓN DE LA CARD ===== */
@@ -315,5 +546,161 @@
 @media only screen and (max-width: 992px) {
     .team-thumb {
         margin-bottom: 20px;
+    }
+}
+
+/* ===== FILTROS DE CATEGORÍAS ===== */
+.category-filters {
+    margin: 2rem 0;
+}
+
+.category-filters .btn {
+    border-radius: 25px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary);
+    margin: 0 5px 10px 0;
+}
+
+.category-filters .btn-outline-primary {
+    color: var(--primary);
+    background-color: transparent;
+}
+
+.category-filters .btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(54, 130, 196, 0.3);
+}
+
+.category-filters .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 8px rgba(54, 130, 196, 0.3);
+}
+
+.category-filters .btn-primary:hover {
+    background-color: #2968a3;
+    border-color: #2968a3;
+    transform: translateY(-2px);
+}
+
+/* Título de sección con contador */
+.section-title-with-count {
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--dark);
+}
+
+.section-title-with-count h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.section-title-with-count .text-muted {
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+/* Mensaje de no hay cursos */
+.no-courses-message {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+}
+
+.no-courses-message h4 {
+    color: var(--gray);
+    margin-bottom: 1rem;
+}
+
+.no-courses-message p {
+    color: var(--gray);
+    margin-bottom: 0;
+}
+
+.no-courses-message a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.no-courses-message a:hover {
+    text-decoration: underline;
+}
+
+/* Mensaje de no hay cursos */
+.no-courses-message {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, var(--light-gray) 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+    margin: 2rem 0;
+}
+
+.no-courses-message h4 {
+    color: var(--gray);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.no-courses-message p {
+    color: var(--gray);
+    margin-bottom: 0;
+}
+
+.no-courses-message a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.no-courses-message a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+/* ===== ANIMATIONS Y TRANSICIONES ===== */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Responsive para filtros */
+@media (max-width: 768px) {
+    .category-filters .d-flex {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-filters .btn {
+        width: 200px;
+        margin: 0 0 10px 0;
     }
 }

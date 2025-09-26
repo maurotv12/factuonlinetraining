@@ -28,7 +28,7 @@ async function reemplazarAsset(idAsset, nuevoArchivo, tipoAsset) {
         mostrarCargando(`Reemplazando ${tipoAsset}...`);
 
         // Enviar petición
-        const response = await fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         });
@@ -77,7 +77,7 @@ async function subirVideoContenido(idContenido, idCurso, idSeccion, archivoVideo
 
         mostrarCargando('Subiendo video...');
 
-        const response = await fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         });
@@ -128,7 +128,7 @@ async function eliminarAssetConConfirmacion(idAsset, idContenido, nombreAsset) {
 
         mostrarCargando('Eliminando archivo...');
 
-        const response = await fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -178,7 +178,7 @@ async function actualizarVideoPromocional(idCurso, nuevoVideo) {
 
         mostrarCargando('Actualizando video promocional...');
 
-        const response = await fetch('/cursosApp/App/ajax/curso_secciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/curso_secciones.ajax.php', {
             method: 'POST',
             body: formData
         });
@@ -191,8 +191,8 @@ async function actualizarVideoPromocional(idCurso, nuevoVideo) {
             // Actualizar el video container
             const videoContainer = document.getElementById('video-container');
             if (videoContainer) {
-                videoContainer.dataset.promoVideo = `/cursosApp/${data.ruta}`;
-                renderizarVideoPromo(`/cursosApp/${data.ruta}`);
+                videoContainer.dataset.promoVideo = `/factuonlinetraining/${data.ruta}`;
+                renderizarVideoPromo(`/factuonlinetraining/${data.ruta}`);
             }
 
             return data;

@@ -60,7 +60,7 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
 ?>
 
 <!-- Incluir CSS específico para esta página -->
-<link rel="stylesheet" href="/cursosApp/App/vistas/assets/css/pages/listadoCursos.css">
+<link rel="stylesheet" href="/factuonlinetraining/App/vistas/assets/css/pages/listadoCursos.css">
 
 <div class="listado-cursos-container">
     <div class="row">
@@ -126,7 +126,7 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
                                                 <div class="btn-group" role="group">
                                                     <?php
                                                     // Usar URL amigable si está disponible, sino usar ID para ver
-                                                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                                                    $urlVer = "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"];
                                                     ?>
                                                     <a href="<?= $urlVer ?>" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> Ver
@@ -218,4 +218,4 @@ if (empty($cursos) || !isset($cursos[0]['valor'])) {
 </div>
 
 <!-- Incluir el archivo JavaScript para la página -->
-<script src="/cursosApp/App/vistas/assets/js/pages/listadoCursos.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/listadoCursos.js"></script>

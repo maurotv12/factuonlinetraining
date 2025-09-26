@@ -86,7 +86,7 @@ async function verificarPreinscripcion(idCurso) {
     try {
         console.log('Verificando preinscripción para curso:', idCurso);
 
-        const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ async function verificarInscripcion(idCurso) {
     try {
         console.log('Verificando inscripción para curso:', idCurso);
 
-        const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ async function manejarInscripcion() {
     if (!confirmacion.isConfirmed) return;
 
     try {
-        const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -283,7 +283,7 @@ async function manejarPreinscripcion() {
     if (!confirmacion.isConfirmed) return;
 
     try {
-        const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -331,7 +331,7 @@ async function cancelarPreinscripcion(idPreinscripcion) {
     if (!confirmacion.isConfirmed) return;
 
     try {
-        const response = await fetch('/cursosApp/App/ajax/inscripciones.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/inscripciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

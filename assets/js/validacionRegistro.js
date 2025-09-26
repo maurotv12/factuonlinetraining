@@ -159,7 +159,7 @@ function inicializarValidacion() {
         emailInput.parentNode.appendChild(loadingDiv);
 
         // Realizar petición AJAX
-        fetch('/cursosApp/App/ajax/verificarEmail.php', {
+        fetch('/factuonlinetraining/App/ajax/verificarEmail.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

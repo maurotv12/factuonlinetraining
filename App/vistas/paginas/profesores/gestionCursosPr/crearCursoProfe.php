@@ -25,6 +25,8 @@ $idProfesorLogueado = $_SESSION['id'] ?? null;
 $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
 ?>
 
+<link rel="stylesheet" href="vistas/assets/css/pages/crearCursoProfe.css">
+
 <div class="crear-curso-profesor-container">
     <div class="row">
         <div class="col-12">
@@ -110,7 +112,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             <textarea class="form-control" id="descripcion" name="descripcion" rows="6" required
                                 placeholder="Describe detalladamente de qué trata tu curso, qué lo hace único y por qué los estudiantes deberían elegirlo..."></textarea>
                             <div class="contador-caracteres">
-                                <span id="contador-descripcion">0</span>/2000 caracteres
+                                <span id="contador-descripcion">0</span>/5000 caracteres
                             </div>
                             <div class="help-text">Una buena descripción ayuda a los estudiantes a entender el valor de tu curso.</div>
                         </div>
@@ -126,7 +128,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <textarea class="form-control" id="lo_que_aprenderas" name="lo_que_aprenderas" rows="6" required
                                 placeholder="Ejemplo:&#10;Aprenderás a utilizar herramientas avanzadas de diseño gráfico.&#10;Dominarás las técnicas de ilustración digital.&#10;Crearás proyectos profesionales desde cero."></textarea>
-                            <div class="form-text">Cada línea se mostrará como una viñeta en la vista del curso. Máximo 10 líneas.</div>
+                            <div class="form-text">Cada línea debe tener un máximo de 300 caracteres.</div>
                             <div id="error-aprendizajes"></div>
                         </div>
 
@@ -136,7 +138,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <textarea class="form-control" id="requisitos" name="requisitos" rows="4"
                                 placeholder="Ejemplo:&#10;Conocimientos básicos de diseño.&#10;Computador con Adobe Photoshop instalado.&#10;Ganas de aprender y practicar."></textarea>
-                            <div class="form-text">Cada línea se mostrará como una viñeta. Si no hay requisitos específicos, puedes dejarlo vacío.</div>
+                            <div class="form-text">Cada línea debe tener un máximo de 300 caracteres. Si no hay requisitos específicos, puedes dejarlo vacío.</div>
                             <div id="error-requisitos"></div>
                         </div>
 
@@ -146,7 +148,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <textarea class="form-control" id="para_quien" name="para_quien" rows="4" required
                                 placeholder="Ejemplo:&#10;Diseñadores gráficos que quieran mejorar sus habilidades.&#10;Emprendedores que deseen crear sus propias piezas gráficas.&#10;Estudiantes de arte y diseño."></textarea>
-                            <div class="form-text">Cada línea se mostrará como una viñeta. Define claramente tu audiencia objetivo.</div>
+                            <div class="form-text">Cada línea debe tener un máximo de 300 caracteres. Define claramente tu audiencia objetivo.</div>
                             <div id="error-para-quien"></div>
                         </div>
 
@@ -209,7 +211,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             </label>
                             <input class="form-control" type="file" id="video_promocional" name="video_promocional" accept="video/*">
                             <div class="form-text">
-                                Formatos permitidos: MP4. Duración máxima para video promocional: 5 minutos.
+                                Formatos permitidos: MP4. Duración máxima para video promocional: 10 minutos.
                             </div>
                             <div id="info-video"></div>
                             <div class="help-text">El video promocional ayuda a los estudiantes a conocer mejor tu curso.</div>
@@ -237,7 +239,7 @@ $nombreProfesorLogueado = $_SESSION['nombre'] ?? 'Profesor';
                             <a href="listadoCursosProfe" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Volver al Listado
                             </a>
-                            <button type="submit" class="btn-crear-curso-profesor" id="btn-crear-curso">
+                            <button type="submit" class="btn btn-secondary btn-crear-curso-profesor" id="btn-crear-curso">
                                 <i class="fas fa-plus-circle"></i> Crear Curso
                             </button>
                         </div>

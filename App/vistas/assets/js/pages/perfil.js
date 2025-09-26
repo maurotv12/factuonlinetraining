@@ -203,7 +203,7 @@ async function saveField(fieldName) {
     editElement.classList.add('loading');
 
     try {
-        const response = await fetch('/cursosApp/App/ajax/usuarios.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/usuarios.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -409,7 +409,7 @@ async function uploadImage(file) {
     uploadContainer.classList.add('loading');
 
     try {
-        const response = await fetch('/cursosApp/App/ajax/usuarios.ajax.php', {
+        const response = await fetch('/factuonlinetraining/App/ajax/usuarios.ajax.php', {
             method: 'POST',
             body: formData
         });

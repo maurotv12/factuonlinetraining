@@ -18,9 +18,6 @@
             color: #e74c3c;
         }
 
-        p {
-            font-size: 1.5em;
-        }
 
         a {
             color: #3498db;
@@ -36,7 +33,7 @@
 <body>
     <h1>404</h1>
     <p>La página que buscas no existe o ha sido movida.</p>
-    <p><a href="/cursosApp/">Volver al inicio</a></p>
+    <p><a href="/factuonlinetraining/">Volver al inicio</a></p>
 </body>
 
 </html>

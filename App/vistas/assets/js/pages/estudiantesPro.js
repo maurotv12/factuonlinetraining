@@ -48,7 +48,7 @@ function cargarDatosEstudiantes() {
     const formData = new FormData();
     formData.append('accion', 'obtener_estudiantes_cursos_profesor');
 
-    fetch('/cursosApp/App/ajax/usuarios.ajax.php', {
+    fetch('/factuonlinetraining/App/ajax/usuarios.ajax.php', {
         method: 'POST',
         body: formData
     })
@@ -132,7 +132,7 @@ function poblarTabla(datos) {
             <td>
                 <div class="student-info">
                     <div class="student-avatar">
-                        ${registro.estudiante_foto_validada !== '/cursosApp/storage/public/usuarios/default.png'
+                        ${registro.estudiante_foto_validada !== '/factuonlinetraining/storage/public/usuarios/default.png'
                 ? `<img src="${registro.estudiante_foto_validada}" alt="${registro.estudiante_nombre}" class="avatar-img">`
                 : registro.iniciales}
                     </div>
@@ -271,7 +271,7 @@ function verDetallesEstudiante(idEstudiante) {
         <div class="row">
             <div class="col-md-4 text-center">
                 <div class="student-avatar-large mb-3">
-                    ${estudiante.estudiante_foto_validada !== '/cursosApp/storage/public/usuarios/default.png'
+                    ${estudiante.estudiante_foto_validada !== '/factuonlinetraining/storage/public/usuarios/default.png'
             ? `<img src="${estudiante.estudiante_foto_validada}" alt="${estudiante.estudiante_nombre}" class="img-fluid rounded-circle" style="width: 120px; height: 120px;">`
             : `<div class="avatar-large">${estudiante.iniciales}</div>`}
                 </div>
@@ -333,7 +333,7 @@ function activarInscripcion(idInscripcion) {
     formData.append('accion', 'activar_inscripcion');
     formData.append('idInscripcion', idInscripcion);
 
-    fetch('/cursosApp/App/ajax/usuarios.ajax.php', {
+    fetch('/factuonlinetraining/App/ajax/usuarios.ajax.php', {
         method: 'POST',
         body: formData
     })

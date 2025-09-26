@@ -1,891 +1,189 @@
-  @import url('https://fonts.googleapis.com/css?family=Muli:300,700|Nunito');
-  @import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+/* ===== MENU AND FOOTER STYLES FOR factuonlinetraining ===== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
 
-  body {
-    background: #ffffff;
-    font-family: 'Nunito', sans-serif;
-    overflow-x: hidden;
-    padding: 70px 0px 0px 0px;
-  }
+/* ===== GLOBAL BASE STYLES ===== */
+body {
+  background: #ffffff;
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+  padding: 70px 0px 0px 0px;
+}
 
-  .fuenteCalibelula {
-    background: #ffffff;
-    font-family: 'Gloria Hallelujah', cursive;
-  }
+/* ===== MENU STYLES ===== */
+.custom-navbar {
+  background: #ffffff;
+  border-top: 3px solid #ff8d14;
+  border-bottom: 0;
+  -webkit-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  -moz-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
+}
 
-  .tituloCurso {
-    color: #ffffff;
-  }
+.custom-navbar .navbar-brand {
+  padding: 0.5rem 0;
+}
 
-  /*---------------------------------------
-     TYPOGRAPHY
-  -----------------------------------------*/
+.custom-navbar .nav-link {
+  color: #040c2c !important;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: bold;
-    line-height: inherit;
-  }
+.custom-navbar .nav-link:hover,
+.custom-navbar .nav-link.active {
+  color: #3682c4 !important;
+}
 
-  h1 {
-    color: #252525;
-    font-size: 3em;
-    line-height: normal;
-  }
+.custom-navbar .nav-link:hover::after,
+.custom-navbar .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 2px;
+  background: #ff8d14;
+  transition: all 0.3s ease;
+}
 
-  h2 {
-    color: #353535;
-    font-size: 2em;
-    padding-bottom: 10px;
-  }
+/* Login button in menu */
+.ingresar-btn {
+  background: #3682c4;
+  border: none;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+  border-radius: 25px;
+  text-decoration: none !important;
+}
 
-  h3 {
-    font-size: 1.5em;
-    margin-bottom: 0;
-  }
+.ingresar-btn:hover {
+  background: #040c2c;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(54, 130, 196, 0.3);
+}
 
-  h3,
-  h3 a {
-    color: #454545;
-  }
+/* ===== SECTION TITLES ===== */
+.titleFes {
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+  font-weight: 700;
+  color: #040c2c;
+  margin-bottom: 1rem;
+}
 
-  p {
-    color: #757575;
-    font-size: 18px;
-    font-weight: normal;
-    line-height: 24px;
-  }
+/* ===== FOOTER STYLES ===== */
+footer {
+  background: #040c2c;
+  padding: 40px 0 20px 0;
+  color: #8a9cac;
+  margin-top: auto;
+}
 
-  .bajarBotones {
-    padding: 450px 200px 0px 0px;
-  }
+footer .titleFes {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
 
+footer h2 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
 
+footer a {
+  color: #8a9cac;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
 
-  /*//===================================
-    Boton submit sin fondo y me gusta
-    ===================================*/
-  .texMegusta {
-    color: #ff8c11;
-  }
+footer a:hover {
+  color: #ff8d14;
+  text-decoration: none;
+}
 
-  .botonMeGusta {
-    background: transparent;
-    border: 0px;
-    font-size: 16px;
-  }
+footer p {
+  color: #8a9cac;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
 
-  .botonMeGusta:hover {
-    color: #173f65;
-    background: transparent;
-    font-size: 16px;
-  }
+footer address p {
+  margin-bottom: 0.3rem;
+}
 
-  .botonSubmitTaller {
-    background: transparent;
-    border: 0px;
-    font-size: 14px;
-  }
+.footer-info {
+  margin-bottom: 2rem;
+}
 
-  .botonSubmitTaller:hover {
-    color: #173f65;
-    background: transparent;
-    font-size: 14px;
-  }
+.footer-info h2 {
+  padding: 0;
+  margin-bottom: 1rem;
+}
 
-  /* boton ingresar menu  */
-  .ingresar-btn {
-    background: #173f65;
+.footer_menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer_menu li {
+  margin-bottom: 0.5rem;
+}
+
+.footer_menu li a {
+  display: inline-block;
+  padding: 0.2rem 0;
+  transition: all 0.3s ease;
+}
+
+.footer_menu li a:hover {
+  padding-left: 0.5rem;
+  color: #ff8d14;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 991px) {
+  .custom-navbar .navbar-toggler {
     border: none;
-    color: #ffffff;
-    font-size: inherit;
-    font-weight: normal;
-    padding: 8px 15px;
-    transition: 0.5s;
-    border-radius: 20px;
+    padding: 0.25rem 0.5rem;
   }
 
-  .ingresar-btn:hover {
-    background: #000000;
-    border-color: transparent;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+  .custom-navbar .navbar-nav {
+    text-align: center;
+    margin-top: 1rem;
   }
 
-  /*//===========================
-    Fin Boton submit sin fondo
-    ===========================*/
-
-  /* 
-  .cardNotas {
-    -webkit-box-shadow: 7px 20px 32px -16px rgba(49, 46, 68, 0.52);
-    -moz-box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
-    box-shadow: 7px 20px 32px -16px rgba(0, 234, 207, 0.52);
-    border: 1px solid rgba(0, 234, 207, 0.52);
-    border-radius: 80px 0px 80px 0px;
-    -moz-border-radius: 80px 0px 80px 0px;
-    -webkit-border-radius: 80px 0px 80px 0px;
-  } */
-
-  .featureIMG {
-    padding: 30px 40px 0px 0px;
-    text-align: right;
-  }
-
-  .featureIMG img {
-    width: 250px;
-    height: auto;
-  }
-
-  .feature-nota {
-    padding: 0px 40px 30px 20px;
-    text-align: right;
-  }
-
-
-  input[type="checkbox"] {
+  .custom-navbar .nav-link::after {
     display: none;
   }
+}
 
-  label[for="politicas"] span {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    background: #E9ECEF;
-    vertical-align: middle;
-    border-radius: 100%;
-    border: 1px solid #aaa;
-    cursor: pointer;
+@media (max-width: 767px) {
+  body {
+    padding-top: 60px;
   }
-
-  input[type="checkbox"]:checked+label[for="politicas"] span {
-    background: #173f65;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    border: 1px solid #ffffff;
-  }
-
-  /*---------------------------------------
-     GENERAL
-  -----------------------------------------*/
-
-  html {
-    -webkit-font-smoothing: antialiased;
-  }
-
-  a {
-    color: #252525;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    text-decoration: none !important;
-  }
-
-  a,
-  input,
-  button,
-  .form-control {
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-  }
-
-  a:hover,
-  a:active,
-  a:focus {
-    color: #ff8c11;
-    outline: none;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    cursor: pointer;
-    background: #000000;
-  }
-
-  .centra-texto {
-    text-align: center;
-  }
-
-  .centra-div {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .section-title {
-    padding-bottom: 40px;
-  }
-
-  .section-title h2 {
-    margin: 0;
-  }
-
-  .section-title small {
-    display: block;
-  }
-
-  .overlay {
-    background: rgba(20, 20, 20, 0.5);
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .entry-form {
-    background: #252020;
-    border-radius: 100%;
-    text-align: center;
-    padding: 6em;
-    width: 550px;
-    height: 550px;
-  }
-
-  .entry-form h2 {
-    color: #ffffff;
-    margin: 0;
-  }
-
-  .entry-form .form-op {
-    color: #ffffff !important;
-    margin: 0;
-  }
-
-  .entry-form a:hover,
-  a:active,
-  a:focus {
-    color: #ff8c11;
-    outline: none;
-  }
-
-  .entry-form a {
-    color: #909090;
-  }
-
-
-  .entry-form .form-control {
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid;
-    border-radius: 0;
-    box-shadow: none;
-    height: 45px;
-    margin: 10px 0;
-  }
-
-  .entry-form .submit-btn {
-    background: #ff8c11;
-    border-radius: 50px;
-    border: 0;
-    color: #252020;
-    width: 50%;
-    height: 50px;
-    margin: 30px auto;
-    margin-bottom: 10px;
-  }
-
-  .entry-form .submit-btn:hover {
-    background: #ff8c11;
-    color: #ffffff;
-  }
-
-  section {
-    position: relative;
-    padding: 40px 0;
-  }
-
-  #team,
-  #testimonial {
-    background: transparent;
-  }
-
-  #team,
-  #testimonial {
-    text-align: center;
-  }
-
-  #google-map iframe {
-    border: 0;
-    width: 100%;
-    height: 390px;
-  }
-
-  #team .team-title {
-    font-family: 'Gloria Hallelujah', cursive;
-    text-align: center;
-    font-weight: bold;
-  }
-
-
-  /*---------------------------------------
-     BUTTONS
-  -----------------------------------------*/
-  #registro .registro-btn {
-    background: #173f65;
-    border-radius: 50px;
-    border: 0;
-    color: #252020;
-    width: 100%;
-    height: 50px;
-    margin: 30px auto;
-    margin-bottom: 10px;
-  }
-
-  #registro .registro-btn:hover {
-    background: #ff8c11;
-    color: #ffffff;
-  }
-
-  .section-btn {
-    background: #ff8c11;
-    border-radius: 50px;
-    border: 1px solid #ffffff;
-    color: #ffffff;
-    font-size: inherit;
-    font-weight: normal;
-    padding: 15px 30px;
-    transition: 0.5s;
-  }
-
-  .section-btn:hover {
-    background: #ffffff;
-    border-color: transparent;
-  }
-
-
-
-
-
-  /*---------------------------------------
-      MENU
-  -----------------------------------------*/
-  .ancho-navbar {
-    width: 1250px;
-  }
-
-
-  .custom-navbar {
-    font-family: 'Gloria Hallelujah', cursive;
-    background: #ffffff;
-    border-top: 5px solid #ff8c11;
-    border-bottom: 0;
-    -webkit-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-    padding: 12px 0;
-    margin-bottom: 0;
-    padding: 0;
-  }
-
-
-
-  /*---------------------------------------
-      slid de detalle pelicula
-  -----------------------------------------*/
-  #detalleFestival .titleFes {
-    font-family: 'Gloria Hallelujah', cursive;
-    font-size: 25px;
-    font-weight: bold;
-    text-align: left;
-  }
-
-
-  #detalleFestival .sipnosis {
-    font-size: 16px;
-  }
-
-  #detalleFestival .fondoTexto {
-    padding: 90px 20px 0px 0px;
-  }
-
-  #detalleFestival .fondoImagen {
-    text-align: center;
-    padding: 20px 0px 15px 0px;
-  }
-
-  .fondo {
-    background-color: black;
-  }
-
-  .fondoFoter {
-    background-color: #2A2A2A;
-    padding: 10px 0px 10px 0px;
-  }
-
-  #detalleFestival .peq {
-    font-size: 15px;
-    line-height: 1;
-  }
-
-  #detalleFestival .titulosFooter {
-    color: #173f65;
-  }
-
-  #detalleFestival .nombreDirector {
-    color: #ff8c11;
-  }
-
-  #detalleFestival .detalleP-btn {
-    background: #173f65;
-    border-radius: 50px;
-    border: 1px solid #ffffff;
-    color: #ffffff;
-    font-size: inherit;
-    font-weight: normal;
-    padding: 10px 15px;
-    transition: 0.5s;
-  }
-
-  #detalleFestival .detalleP-btn:hover {
-    background: #ffffff;
-    border-color: transparent;
-    color: #173f65;
-  }
-
-
-  /*---------------------------------------
-      FEATURE
-  -----------------------------------------*/
-  #festival .titleFes {
-    font-family: 'Gloria Hallelujah', cursive;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  #registro .titletaller {
-    font-family: 'Gloria Hallelujah', cursive;
-    text-align: center;
-    font-weight: bold;
-    color: #173f65;
-  }
-
-  .feature-thumb {
-    border: 1px solid #f0f0f0;
-    padding: 5em 3em;
-  }
-
-  .feature-thumb span {
-    background: #00EACF;
-    border-radius: 50px;
-    color: #ffffff;
-    font-size: 25px;
-    font-weight: bold;
-    display: inline-block;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    margin-bottom: 5px;
-  }
-
-  .feature-thumb h3 {
-    margin: 10px 0;
-  }
-
-
-
-  /*---------------------------------------
-      ABOUT
-  -----------------------------------------*/
-
-  #about figure {
-    display: inline-block;
-    vertical-align: top;
-    margin-left: 15px;
-  }
-
-  #about figure span {
-    float: left;
-    margin-left: -15px;
-    padding: 15px 10px;
-    position: relative;
-    top: 20px;
-  }
-
-  #about figure span i {
-    background: #4CEBCF;
-    border-radius: 50px;
-    color: #ffffff;
-    font-size: 25px;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-  }
-
-  .titleletra {
-    font-family: 'Gloria Hallelujah', cursive;
-  }
-
-  /*---------------------------------------
-    categorias
-  -----------------------------------------*/
-  #categorias .titleFes {
-    font-family: 'Gloria Hallelujah', cursive;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  /*---------------------------------------
-      COURSES
-  -----------------------------------------*/
-  /* #courses .titleFes {
-    font-family: 'Gloria Hallelujah', cursive;
-    text-align: center;
-    font-weight: bold;
-  }
-
-  #courses .section-title {
-    text-align: center;
-  }
-
-  #courses .owl-theme .owl-nav {
-    margin-top: 30px;
-  }
-
-  #courses .owl-theme .owl-nav [class*=owl-] {
-    border-radius: 2px;
-    font-size: 16px;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    padding: 0;
-  }
-
-  .courses-thumb {
-    background: #f9f9f9;
-    position: relative;
-  }
-
-  .courses-top {
-    position: relative;
-  }
-
-  .courses-image {
-    background: linear-gradient(to right, #202020, #101010);
-  }
-
-  .courses-image-noticia {
-    background: linear-gradient(to right, #202020, #101010);
-    width: 320px;
-    height: 250px;
-  }
-
-  .courses-image-noticia img {
-    width: 320px;
-    height: 250px;
-  }
-
-  .courses-date-noticia {
-    background: linear-gradient(rgba(255, 0, 0, 0), rgba(0, 0, 0, 0.6));
-    width: 320px;
-    position: absolute;
-    bottom: 0;
-    padding: 20px 25px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .courses-date {
-    background: linear-gradient(rgba(255, 0, 0, 0), rgba(0, 0, 0, 0.6));
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    padding: 20px 25px;
-  }
-
-  .courses-date span,
-  .courses-author span {
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .courses-date span {
-    color: #ffffff;
-    display: inline-block;
-    margin-right: 10px;
-  }
-
-  .courses-detail {
-    padding: 25px 25px 15px 25px;
-  }
-
-  .courses-detail h3 {
-    margin: 0 0 2px 0;
-  }
-
-  #courses .textamano {
-    font-size: 30px !important;
-  }
-
-
-  .courses-info {
-    border-top: 1px solid #f0f0f0;
-    position: relative;
-    clear: both;
-    padding: 15px 25px;
-  }
-
-  .courses-author,
-  .courses-author span {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .courses-author img {
-    display: inline-block !important;
-    border-radius: 50px;
-    width: 50px !important;
-    height: 50px;
-    margin-right: 10px;
-  }
-
-  .courses-price {
-    float: right;
-    margin-top: 10px;
-  }
-
-  .courses-price span {
-    background: #29ca8e;
-    border-radius: 2px;
-    color: #ffffff;
-    display: block;
-    padding: 5px 10px;
-  }
-
-  .courses-price.free span {
-    background: #00ECCF;
-  } */
-  /*---------------------------------------
-     FOOTER
-  -----------------------------------------*/
 
   footer {
-    background: #252020;
-    padding: 20px 0;
-    color: #909090;
-  }
-
-  footer .titleFes {
-    font-family: 'Gloria Hallelujah', cursive;
-    font-weight: bold;
-  }
-
-  footer .section-title {
-    padding-bottom: 10px;
-  }
-
-  footer h2 {
-    font-size: 20px;
-    color: #ffffff;
-  }
-
-  footer a,
-  footer p {
-    color: #909090;
-  }
-
-  footer strong {
-    color: #d9d9d9;
-  }
-
-  footer address p {
-    margin-bottom: 0;
-  }
-
-  footer .social-icon {
-    margin-top: 25px;
+    text-align: center;
+    padding: 30px 0 15px 0;
   }
 
   .footer-info {
-    margin-right: 2em;
+    margin-bottom: 1.5rem;
   }
 
-  .footer-info h2 {
-    padding: 0;
+  .custom-navbar .nav-link {
+    padding: 0.5rem 1rem;
   }
-
-  .footer_menu h2 {
-    margin-top: 2em;
-  }
-
-  .footer_menu ul {
-    margin: 0;
-    padding: 0;
-  }
-
-  .footer_menu li {
-    display: inline-block;
-    list-style: none;
-    margin: 5px 10px 5px 0;
-  }
-
-  /*---------------------------------------
-     STICKY FOOTER BASE
-  -----------------------------------------*/
-
-  html,
-  body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  /* Este es el contenedor principal del contenido */
-  main {
-    flex: 1;
-  }
-
-  /*---------------------------------------
-     RESPONSIVE STYLES
-  -----------------------------------------*/
-
-  @media screen and (max-width: 1170px) {
-    .custom-navbar .navbar-nav.navbar-nav-first {
-      margin-left: inherit;
-    }
-  }
-
-  @media only screen and (max-width: 992px) {
-
-    section,
-    footer {
-      padding: 20px 0;
-    }
-
-    .home-slider .item {
-      background-position: center;
-    }
-
-    .feature-thumb,
-    .about-info,
-    .footer-info {
-      margin-bottom: 20px;
-    }
-
-    .contact-image {
-      margin-top: 50px;
-    }
-  }
-
-
-  @media only screen and (min-width: 768px) and (max-width: 991px) {
-    .custom-navbar .nav li a {
-      padding-right: 10px;
-      padding-left: 10px;
-      color: #000000;
-    }
-  }
-
-  @media only screen and (max-width: 767px) {
-    h1 {
-      font-size: 2.5em;
-    }
-
-    h1,
-    h2,
-    h3 {
-      line-height: normal;
-    }
-
-    .custom-navbar {
-      background: #ffffff;
-      -webkit-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-      -moz-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-      box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
-      padding: 10px 0;
-      text-align: center;
-    }
-
-    .custom-navbar .navbar-brand,
-    .custom-navbar .nav li a {
-      line-height: normal;
-      color: #000000 !important;
-    }
-
-    .custom-navbar .nav li a {
-      padding: 10px;
-      color: #000000 !important
-    }
-
-    .custom-navbar .navbar-brand,
-    .top-nav-collapse .navbar-brand {
-      color: #252525;
-      font-weight: 600;
-    }
-
-    .custom-navbar .nav li a,
-    .top-nav-collapse .nav li a {
-      color: #575757 !important
-    }
-
-    .custom-navbar .navbar-nav.navbar-right li {
-      display: inline-block;
-    }
-
-    .footer-info {
-      margin-right: 0;
-    }
-
-    .footer-info.newsletter-form {
-      margin-bottom: 0;
-    }
-
-    .entry-form {
-      display: block;
-      margin: 0 auto;
-    }
-  }
-
-
-  @media only screen and (max-width: 580px) {
-    h2 {
-      font-size: 1.8em;
-    }
-
-    #testimonial .item {
-      padding: 2em;
-    }
-
-    .contact-image {
-      margin-top: 0;
-    }
-  }
-
-  @media only screen and (max-width: 480px) {
-    h1 {
-      font-size: 2em;
-    }
-
-    #home h3 {
-      font-size: 14px;
-    }
-
-    .entry-form {
-      border-radius: 0;
-      padding: 2em;
-      max-width: 100%;
-      max-height: 100%;
-      width: inherit;
-      height: inherit;
-    }
-  }
+}

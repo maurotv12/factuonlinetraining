@@ -33,7 +33,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
         <!-- Acciones rápidas -->
         <div class="quick-actions">
             <div class="actions-grid">
-                <a href="/cursosApp/App/cursosEstudiante" class="action-card">
+                <a href="/factuonlinetraining/App/cursosEstudiante" class="action-card">
                     <div class="action-icon">
                         <i class="bi bi-play-circle"></i>
                     </div>
@@ -43,7 +43,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                     </p>
                 </a>
 
-                <a href="/cursosApp/App/cursosCategorias" class="action-card">
+                <a href="/factuonlinetraining/App/cursosCategorias" class="action-card">
                     <div class="action-icon">
                         <i class="bi bi-compass"></i>
                     </div>
@@ -53,7 +53,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                     </p>
                 </a>
 
-                <a href="/cursosApp/App/preinscripciones" class="action-card">
+                <a href="/factuonlinetraining/App/preinscripciones" class="action-card">
                     <div class="action-icon">
                         <i class="bi bi-bookmark-check"></i>
                     </div>
@@ -79,7 +79,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
             <?php if ($cursos && count($cursos) > 0): ?>
                 <?php foreach ($cursos as $curso): ?>
                     <?php
-                    $urlVer = "/cursosApp/App/verCursoProfe/" . $curso["url_amiga"];
+                    $urlVer = "/factuonlinetraining/App/verCursoProfe/" . $curso["url_amiga"];
                     ?>
                     <a href="<?php echo $urlVer; ?>" class="text-decoration-none">
                         <div class="course-card" data-course-id="<?php echo $curso['id']; ?>">
@@ -93,7 +93,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
                                         ?>"
                                 alt="<?php echo htmlspecialchars($curso['nombre']); ?>"
                                 class="course-image"
-                                onerror="this.onerror=null; this.src='/cursosApp/storage/public/banners/default/defaultCurso.png'">
+                                onerror="this.onerror=null; this.src='/factuonlinetraining/storage/public/banners/default/defaultCurso.png'">
 
                             <div class="course-content">
                                 <h3 class="course-title">
@@ -135,10 +135,8 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
     </div>
 </div>
 
-<?php include "vistas/plantillaPartes/footer.php"; ?>
-
 <!-- JavaScript específico para inicio de estudiante -->
-<script src="/cursosApp/App/vistas/assets/js/pages/inicioEstudiante.js"></script>
+<script src="/factuonlinetraining/App/vistas/assets/js/pages/inicioEstudiante.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -149,7 +147,7 @@ $usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
         // Simular función para ver curso (temporal)
         window.viewCourse = function(courseId) {
             // Redirigir a la página de detalle del curso
-            window.location.href = `/cursosApp/App/verCurso/${courseId}`;
+            window.location.href = `/factuonlinetraining/App/verCurso/${courseId}`;
         };
     });
 </script>

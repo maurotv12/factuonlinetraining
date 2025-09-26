@@ -149,7 +149,7 @@
 
 /* Stats Card */
 .stats-card {
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    background: linear-gradient(135deg, #193f64 0%, #3781c6 100%);
     color: white;
 }
 

@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const longitud = this.value.length;
             contadorDescripcion.textContent = longitud;
 
-            if (longitud > 2000) {
+            if (longitud > 5000) {
                 contadorDescripcion.style.color = '#dc3545';
                 this.classList.add('is-invalid');
             } else {
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Mostrar indicador de carga
         mostrarIndicadorCargaNombre(nombreInput, true);
 
-        fetch('/cursosApp/App/ajax/validaciones.ajax.php', {
+        fetch('/factuonlinetraining/App/ajax/validaciones.ajax.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function validarLineaViñetaCompleta(textarea) {
         const lines = textarea.value.split('\n');
-        const maxCaracteres = 100;
+        const maxCaracteres = 300;
 
         // Limpiar mensajes de error previos
         limpiarMensajeErrorViñeta(textarea);
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function mostrarContadorCaracteresViñetas(textarea) {
         const lines = textarea.value.split('\n');
-        const maxCaracteres = 100;
+        const maxCaracteres = 300;
 
         // Encontrar la línea actual
         const cursorPos = textarea.selectionStart;
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function actualizarContadorCaracteresViñetas(textarea, actuales, restantes) {
         if (textarea.contadorElemento) {
             const color = restantes < 10 ? '#dc3545' : '#6c757d';
-            textarea.contadorElemento.innerHTML = `Línea actual: ${actuales}/100 caracteres`;
+            textarea.contadorElemento.innerHTML = `Línea actual: ${actuales}/300 caracteres`;
             textarea.contadorElemento.style.color = color;
         }
     }
@@ -750,13 +750,13 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         }
 
-        // Validar tamaño (15MB = 15 * 1024 * 1024 bytes)
-        const maxTamaño = 15 * 1024 * 1024; // 15MB
+        // Validar tamaño (aumentado para permitir videos de hasta 10 minutos)
+        const maxTamaño = 50 * 1024 * 1024; // 50MB (aproximado para 10 min de video)
         if (archivo.size > maxTamaño) {
             const tamañoMB = Math.round(archivo.size / 1024 / 1024);
             return {
                 esValido: false,
-                mensaje: `El video es demasiado grande (${tamañoMB}MB). El límite es 15MB.`
+                mensaje: `El video es demasiado grande (${tamañoMB}MB). El límite aproximado es 50MB para videos de hasta 10 minutos.`
             };
         }
 

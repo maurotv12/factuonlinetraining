@@ -22,7 +22,7 @@ class ControladorCursosInicio
      public static function ctrMostrarUnCursoInicio($item, $valor)
      {
           $tabla = "curso";
-          $cursos = ModeloCursosInicio::mdlMostrarCursosInicio($tabla, $item, $valor);
+          $cursos = ModeloCursosInicio::mdlMostrarUnCursoInicio($tabla, $item, $valor);
           return $cursos;
      }
 
@@ -71,6 +71,30 @@ class ControladorCursosInicio
                'bioFull' => $bioFull,
                'showVerMas' => $showVerMas
           ];
+     }
+
+     public static function ctrObtenerCategorias()
+     {
+          $conn = Conexion::conectar();
+          $stmt = $conn->query("SELECT id, nombre FROM categoria");
+          return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     }
+
+     /*--==========================================
+     Mostrar cursos filtrados por categoría
+     ============================================--*/
+     public static function ctrMostrarCursosPorCategoria($idCategoria = null)
+     {
+          $tabla = "curso";
+          $rutaInicio = ControladorRuta::ctrRutaInicio();
+
+          if ($idCategoria && $idCategoria !== 'todas') {
+               $cursos = ModeloCursosInicio::mdlMostrarCursosInicio($tabla, "id_categoria", $idCategoria);
+          } else {
+               $cursos = ModeloCursosInicio::mdlMostrarCursosInicio($tabla, null, null);
+          }
+
+          return $cursos ? $cursos : [];
      }
 
      /*--==========================================

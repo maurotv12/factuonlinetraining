@@ -91,15 +91,15 @@ function updateInitialCount() {
 
 // Funciones específicas para la vista de inicio
 function navigateToCategories() {
-    window.location.href = '/cursosApp/App/cursosCategorias';
+    window.location.href = '/factuonlinetraining/App/cursosCategorias';
 }
 
 function navigateToPreregistrations() {
-    window.location.href = '/cursosApp/App/preinscripciones';
+    window.location.href = '/factuonlinetraining/App/preinscripciones';
 }
 
 function navigateToCourses() {
-    window.location.href = '/cursosApp/App/cursosEstudiante';
+    window.location.href = '/factuonlinetraining/App/cursosEstudiante';
 }
 
 // ===== FUNCIONES PÚBLICAS ESPECÍFICAS =====
