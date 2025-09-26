@@ -10,7 +10,6 @@ include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/head.
 
 <body>
    <?php
-   include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/controladores/cursosInicio.controlador.php";
    require_once $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/publico/modelos/cursosInicio.modelo.php";
 
@@ -106,7 +105,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/head.
             </div>
          </div>
          <!-- Filtros de categorías -->
-         <div class="row mb-4">
+         <div class="row ">
             <div class="col-md-12">
                <div class="category-filters">
                   <div class="d-flex flex-wrap gap-2 justify-content-center">

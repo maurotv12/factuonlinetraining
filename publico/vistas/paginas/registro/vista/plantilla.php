@@ -32,8 +32,7 @@ $rutaInicio = ControladorRuta::ctrRutaInicio();
 
 <body>
   <!-- MENU -->
-  <?php include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php"; ?>
-
+   <?php include $_SERVER['DOCUMENT_ROOT'] . "/factuonlinetraining/assets/plantilla/menu.php"; ?>
   <!-- CONTENIDO PRINCIPAL -->
   <main class="pt-5">
     <?php
