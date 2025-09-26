@@ -145,9 +145,20 @@ $idsRoles = array_column($roles, 'id'); // extrae solo los IDs
 
 <script>
     function cerrarSesion() {
-        if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-            window.location.href = '/factuonlinetraining/App/index.php?pagina=general/salir';
-        }
+        Swal.fire({
+            title: '¿Cerrar sesión?',
+            text: '¿Estás seguro de que quieres salir?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/factuonlinetraining/App/index.php?pagina=general/salir';
+            }
+        });
     }
 
     // Script para manejar la rotación del icono del botón General
