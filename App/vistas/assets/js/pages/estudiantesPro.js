@@ -317,10 +317,32 @@ function verDetallesEstudiante(idEstudiante) {
  * Activar inscripción de un estudiante
  */
 function activarInscripcion(idInscripcion) {
-    if (!confirm('¿Estás seguro de que deseas activar esta inscripción?')) {
-        return;
-    }
+    // Usar SweetAlert2 para la confirmación
+    Swal.fire({
+        title: '¿Activar inscripción?',
+        text: '¿Estás seguro de que deseas activar esta inscripción? Esta acción permitirá al estudiante acceder al curso.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-check"></i> Sí, activar',
+        cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+        reverseButtons: true,
+        focusCancel: false
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
 
+        // Proceder con la activación
+        procesarActivacionInscripcion(idInscripcion);
+    });
+}
+
+/**
+ * Procesar la activación de la inscripción
+ */
+function procesarActivacionInscripcion(idInscripcion) {
     // Encontrar el botón específico y mostrar loading
     const boton = document.querySelector(`[data-inscripcion-id="${idInscripcion}"]`);
     if (boton) {
