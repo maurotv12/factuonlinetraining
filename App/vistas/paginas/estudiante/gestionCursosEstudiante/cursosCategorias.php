@@ -8,9 +8,16 @@ $categoriaSeleccionada = $_GET['categoria'] ?? null;
 $cursos = [];
 
 if ($categoriaSeleccionada) {
-    $cursos = ControladorCursos::ctrMostrarCursos('id_categoria', $categoriaSeleccionada);
+    // Obtener cursos activos de la categoría seleccionada
+    $todosCursos = ControladorCursos::ctrMostrarCursos('estado', 'activo');
+    $cursos = [];
+    foreach ($todosCursos as $curso) {
+        if ($curso['id_categoria'] == $categoriaSeleccionada) {
+            $cursos[] = $curso;
+        }
+    }
 } else {
-    $cursos = ControladorCursos::ctrMostrarCursos(null, null);
+    $cursos = ControladorCursos::ctrMostrarCursos('estado', 'activo');
 }
 
 // Obtener información del usuario actual
