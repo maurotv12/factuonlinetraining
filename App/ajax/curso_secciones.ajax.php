@@ -36,10 +36,10 @@ if (isset($_POST['accion'])) {
 }
 
 // Verificar permisos específicos por acción
-if ($accion === 'upsertProgreso') {
+if ($accion === 'upsertProgreso' || $accion === 'obtenerProgresoSecciones') {
     // Para progreso, permitir estudiantes, profesores y admin
     if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['estudiante', 'profesor', 'admin'])) {
-        echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para registrar progreso']);
+        echo json_encode(['success' => false, 'mensaje' => 'No tienes permisos para acceder al progreso']);
         exit;
     }
 } else {

@@ -70,15 +70,15 @@ foreach ($cursosInscritos as $inscripcion) {
             </p>
         </div>
 
-        <!-- Estadísticas de progreso -->
-        <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <!-- Estadísticas de progreso Futuro Desarrollo-->
+        <!-- <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
             <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1); text-align: center;">
                 <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem;">
                     <i class="bi bi-journal-bookmark"></i>
                 </div>
                 <h3 style="color: var(--dark); margin: 0; font-size: 2rem;"><?php echo count($cursosInscritos); ?></h3>
                 <p style="color: var(--gray); margin: 0; font-size: 0.9rem;">Cursos inscritos</p>
-            </div>
+            </div> -->
             <!-- Futuro Desarrollo -->
             <!-- <div class="stat-card" style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1); text-align: center;">
                 <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 0.5rem;">
@@ -103,7 +103,7 @@ foreach ($cursosInscritos as $inscripcion) {
                 <h3 style="color: var(--dark); margin: 0; font-size: 2rem;"><?php echo $estadisticas['certificados']; ?></h3>
                 <p style="color: var(--gray); margin: 0; font-size: 0.9rem;">Certificados</p>
             </div> -->
-        </div>
+        <!-- </div> -->
 
         <!-- Filtros -->
         <div class="filters-container" style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(4, 12, 44, 0.1); margin-bottom: 3rem;">
