@@ -16,20 +16,16 @@
 *_thumb.*
 *_cache.*
 
+*/
 # Mantener estructura y archivos importantes
 !.gitignore
 !.gitkeep
-!*/
 
 # Permitir imágenes optimizadas
-!*.jpg
-!*.jpeg
-!*.png
-!*.gif
-!*.webp
-!*.svg
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.svg
 
-# Permitir archivos de configuración de imágenes
-!image-config.json
-
-!.carrusel

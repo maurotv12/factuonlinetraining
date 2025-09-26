@@ -17,10 +17,10 @@
 *_original.*
 *_uncompressed.*
 
+*.jpg
+*.jpeg
+*.png
 # Mantener archivos optimizados para web
-!*.jpg
-!*.jpeg
-!*.png
 !*.gif
 !*.webp
 !*.svg

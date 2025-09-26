@@ -16,8 +16,8 @@
 *.tmp
 *.temp
 
+*.mp4
 # Permitir videos finales optimizados
-!*.mp4
 !*.webm
 !*.mov
 
