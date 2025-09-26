@@ -134,8 +134,8 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
                     <i class="fas fa-user-graduate mr-2"></i>
                     Detalles del Estudiante
                 </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                   
                 </button>
             </div>
             <div class="modal-body">
@@ -144,7 +144,7 @@ if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

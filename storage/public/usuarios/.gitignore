@@ -7,5 +7,7 @@
 # Permitir este archivo .gitignore
 !.gitignore
 
-# Nota: Las fotos de perfil son datos privados de usuarios
-# No deben estar en el control de versiones
+
+!*.jpg
+!*.jpeg
+!*.png
