@@ -187,11 +187,12 @@ function poblarTabla(datos) {
                                Activar
                            </button>`
                 : registro.tipo === 'inscrito' && registro.estado === 'activo'
-                    ? `<button type="button" class="btn-action btn-inscripcion-activada" 
-                                       title="Inscripción ya activada"
-                                       disabled>
-                                   <i class="fas fa-check-circle"></i>
-                                   Activado
+                    ? `<button type="button" class="btn-action btn-desactivar-inscripcion" 
+                                       onclick="desactivarInscripcion(${registro.registro_id})" 
+                                       title="Desactivar inscripción"
+                                       data-inscripcion-id="${registro.registro_id}">
+                                   <i class="fas fa-times-circle"></i>
+                                   Desactivar
                                </button>`
                     : ''}
                 </div>
@@ -364,13 +365,14 @@ function procesarActivacionInscripcion(idInscripcion) {
             if (data.success) {
                 mostrarExito('Inscripción activada correctamente');
 
-                // Cambiar el botón a estado activado
+                // Cambiar el botón a estado desactivar
                 if (boton) {
                     boton.classList.remove('loading', 'btn-activar-inscripcion');
-                    boton.classList.add('btn-inscripcion-activada');
-                    boton.innerHTML = '<i class="fas fa-check-circle"></i> Activado';
-                    boton.title = 'Inscripción ya activada';
-                    boton.disabled = true;
+                    boton.classList.add('btn-desactivar-inscripcion');
+                    boton.innerHTML = '<i class="fas fa-times-circle"></i> Desactivar';
+                    boton.title = 'Desactivar inscripción';
+                    boton.disabled = false;
+                    boton.onclick = function() { desactivarInscripcion(idInscripcion); };
                 }
 
                 // Actualizar los datos locales
@@ -398,6 +400,110 @@ function procesarActivacionInscripcion(idInscripcion) {
                 boton.classList.remove('loading');
                 boton.disabled = false;
                 boton.innerHTML = '<i class="fas fa-check"></i> Activar';
+            }
+        });
+}
+
+/**
+ * Desactivar inscripción de un estudiante
+ */
+function desactivarInscripcion(idInscripcion) {
+    // Usar SweetAlert2 para la confirmación
+    Swal.fire({
+        title: '¿Desactivar inscripción?',
+        text: '¿Estás seguro de que deseas desactivar esta inscripción? El estudiante perderá acceso al curso y pasará a estado pendiente.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-times-circle"></i> Sí, desactivar',
+        cancelButtonText: '<i class="fas fa-arrow-left"></i> Cancelar',
+        reverseButtons: true,
+        focusCancel: false
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        // Proceder con la desactivación
+        procesarDesactivacionInscripcion(idInscripcion);
+    });
+}
+
+/**
+ * Procesar la desactivación de la inscripción
+ */
+function procesarDesactivacionInscripcion(idInscripcion) {
+    // Encontrar el botón específico y mostrar loading
+    const boton = document.querySelector(`[data-inscripcion-id="${idInscripcion}"]`);
+    if (boton) {
+        boton.classList.add('loading');
+        boton.disabled = true;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Desactivando...';
+    }
+
+    const formData = new FormData();
+    formData.append('accion', 'desactivar_inscripcion');
+    formData.append('idInscripcion', idInscripcion);
+
+    fetch('/factuonlinetraining/App/ajax/usuarios.ajax.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+            
+            if (data.success) {
+                mostrarExito('Inscripción desactivada correctamente');
+
+                // Cambiar el botón a estado pendiente (activar)
+                if (boton) {
+                    boton.classList.remove('loading', 'btn-desactivar-inscripcion');
+                    boton.classList.add('btn-activar-inscripcion');
+                    boton.innerHTML = '<i class="fas fa-check"></i> Activar';
+                    boton.title = 'Activar inscripción';
+                    boton.disabled = false;
+                    boton.onclick = function() { activarInscripcion(idInscripcion); };
+                }
+
+                // Actualizar los datos locales
+                const indice = datosEstudiantes.findIndex(item => item.registro_id == idInscripcion);
+                if (indice !== -1) {
+                    datosEstudiantes[indice].estado = 'pendiente';
+                }
+            } else {
+                mostrarError('Error al desactivar la inscripción: ' + (data.message || 'Error desconocido'));
+
+                // Restaurar el botón en caso de error
+                if (boton) {
+                    boton.classList.remove('loading');
+                    boton.disabled = false;
+                    boton.innerHTML = '<i class="fas fa-times-circle"></i> Desactivar';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error completo:', error);
+            console.error('Error name:', error.name);
+            console.error('Error message:', error.message);
+            
+            mostrarError('Error de conexión al desactivar la inscripción: ' + error.message);
+
+            // Restaurar el botón en caso de error
+            if (boton) {
+                boton.classList.remove('loading');
+                boton.disabled = false;
+                boton.innerHTML = '<i class="fas fa-times-circle"></i> Desactivar';
             }
         });
 }
@@ -603,5 +709,6 @@ function mostrarError(mensaje) {
 // Hacer disponibles las funciones globalmente
 window.verDetallesEstudiante = verDetallesEstudiante;
 window.activarInscripcion = activarInscripcion;
+window.desactivarInscripcion = desactivarInscripcion;
 window.refrescarDatos = refrescarDatos;
 window.exportarDatos = exportarDatos;

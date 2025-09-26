@@ -485,3 +485,33 @@ if (isset($_POST["accion"]) && $_POST["accion"] == "activar_inscripcion") {
 		echo json_encode(["success" => false, "message" => $respuesta['mensaje']]);
 	}
 }
+
+/*=============================================
+Desactivar inscripción de estudiante
+=============================================*/
+if (isset($_POST["accion"]) && $_POST["accion"] == "desactivar_inscripcion") {
+	session_start();
+
+	if (!isset($_SESSION['idU']) || !isset($_POST["idInscripcion"])) {
+		echo json_encode(["success" => false, "message" => "Datos incompletos"]);
+		exit;
+	}
+
+	// Verificar que el usuario sea profesor
+	if (!ControladorGeneral::ctrUsuarioTieneAlgunRol(['profesor', 'admin'])) {
+		echo json_encode(["success" => false, "message" => "No tienes permisos para esta acción"]);
+		exit;
+	}
+
+	// Incluir controlador de inscripciones
+	require_once "../controladores/inscripciones.controlador.php";
+
+	$idInscripcion = $_POST["idInscripcion"];
+	$respuesta = ControladorInscripciones::ctrActualizarEstadoInscripcion($idInscripcion, 'pendiente');
+
+	if ($respuesta['success']) {
+		echo json_encode(["success" => true, "message" => "Inscripción desactivada correctamente"]);
+	} else {
+		echo json_encode(["success" => false, "message" => $respuesta['mensaje']]);
+	}
+}
